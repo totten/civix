@@ -1,5 +1,3 @@
-== civix ==
-
 Civix is a command-line tool for building CiviCRM extensions.
 
 == Installation ==
@@ -17,12 +15,34 @@ $ php composer.phar create-project civicrm/civix
 
 $ export PATH=$HOME/civix:$PATH
 
-== Example ==
+== Example: Initialize a new extension ==
 
-In this example, we create a new extension with a single web-page:
-
+$ cd <civicrm-extensions-dir>
 $ civix init --type=module com.example.mymodule
+
+You may wish to tweak the "com.example.mymodule/info.xml" file.
+
+To activate this new module, browse to
+
+  http://mysite.example.com/civicrm/admin/extensions?reset=1&action=browse
+
+where you can refresh the extension list and enable the extension.
+
+== Example: Add a basic web page ==
+
 $ cd com.example.mymodule
-$ civix add-page --class=MyPage --path=civirm/mypage
-$ vi Mymodule/Page/MyPage.php
-$ vi templates/Mymodule/Page/MyPage.tpl
+$ civix add-page Greeter civirm/greeting
+$ vi CRM/Mymodule/Page/Greeter.php
+$ vi templates/CRM/Mymodule/Page/Greeter.tpl
+
+Note: Add time of writing, you must rebuild the menu to access this page:
+
+  http://mysite.example.com/civicrm/menu/rebuild?reset=1
+
+== Example: Build a .zip file ==
+
+Once you've implemented the extension, you can build a .zip file for
+redistribution:
+
+$ cd com.example.mymodule
+$ civix build
