@@ -1,5 +1,5 @@
 {
-    "hash": "1315dde5cd878853a5fef2d8f82bb0c7",
+    "hash": "f40125d3222c73d8486d5f18f2fc42e9",
     "packages": [
         {
             "package": "symfony/class-loader",
@@ -15,6 +15,10 @@
         },
         {
             "package": "symfony/finder",
+            "version": "v2.0.12"
+        },
+        {
+            "package": "symfony/process",
             "version": "v2.0.12"
         },
         {
