@@ -6,15 +6,27 @@ set_time_limit(0);
 require_once __DIR__.'/vendor/.composer/autoload.php';
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Finder\Finder;
-use CRM\Civix\Command\GreetCommand;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Templating\PhpEngine;
+use Symfony\Component\Templating\TemplateNameParser;
+use Symfony\Component\Templating\Loader\FilesystemLoader;
+
+use CRM\Civix\Command\AddPageCommand;
+use CRM\Civix\Command\BuildCommand;
 use CRM\Civix\Command\InitCommand;
 
 #$input = new ArgvInput();
 #$env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
 #$debug = !$input->hasParameterOption(array('--no-debug', ''));
 
+$sc = new ContainerBuilder();
+$loader = new FilesystemLoader(__DIR__ . '/templates/%name%');
+$view = new PhpEngine(new TemplateNameParser(), $loader);
+$sc->set('templateEngine', $view);
+
 $application = new Application();
-$finder = new Finder();
-$application->add(new InitCommand());
+$application->add(new InitCommand($sc));
+$application->add(new AddPageCommand($sc));
+$application->add(new BuildCommand($sc));
 $application->run();
