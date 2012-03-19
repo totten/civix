@@ -21,6 +21,7 @@ class Menu extends XML {
     
     function addItem($ctx, $className, $path) {
         $fullClass = implode('_', array($ctx['namespace'], 'Page', $className));
+        $fullClass = preg_replace(':/:', '_', $fullClass);
         $item = $this->get()->addChild('item');
         $item->addChild('path', $path);
         $item->addChild('page_callback', $fullClass);

@@ -13,7 +13,7 @@ class Info extends XML {
         $xml = new SimpleXMLElement('<extension></extension>');
         $xml->addAttribute('key', $ctx['fullName']);
         $xml->addAttribute('type', $ctx['type']);
-        $xml->addChild('downloadUrl', 'http://FIXME/' . $ctx['fullName'] . '-1.0.zip');
+        $xml->addChild('downloadUrl', 'http://FIXME/' . $ctx['fullName'] . '.zip');
         $xml->addChild('file', $ctx['mainFile']);
         $xml->addChild('name', 'FIXME');
         $xml->addChild('description', 'FIXME');
@@ -25,7 +25,7 @@ class Info extends XML {
         $xml->addChild('releaseDate', date('Y-m-d'));
         $xml->addChild('version', '1.0');
         $xml->addChild('develStage', 'alpha');
-        $xml->addChild('compatibility')->addChild('ver', '4.2');
+        $xml->addChild('compatibility')->addChild('ver', '4.1');
         $xml->addChild('comments', 'This is a new, undeveloped module');
         
         // store extra metadata to facilitate code manipulation

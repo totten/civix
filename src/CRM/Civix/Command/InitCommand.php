@@ -33,7 +33,7 @@ class InitCommand extends BaseCommand
         $ctx['basedir'] = $ctx['fullName'];
         if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
             $ctx['mainFile'] = $matches[1];
-            $ctx['namespace'] = strtoupper($ctx['mainFile']{0}) . substr($ctx['mainFile'], 1);
+            $ctx['namespace'] = 'CRM/' . strtoupper($ctx['mainFile']{0}) . substr($ctx['mainFile'], 1);
         } else {
             $output->writeln('<error>Malformed package name</error>');
             return;
