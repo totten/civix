@@ -2,7 +2,7 @@ Civix is a command-line tool for building CiviCRM extensions.
 
 == Installation ==
 
-1. If you haven't already, install the PHP tool "composer" (http://getcomposer.org/):
+1. If you haven't already, install the PHP tool "composer" (getcomposer.org):
 
 $ cd $HOME
 $ curl -s http://getcomposer.org/installer | php
@@ -20,7 +20,7 @@ $ export PATH=$HOME/civix:$PATH
 $ cd <civicrm-extensions-dir>
 $ civix init --type=module com.example.mymodule
 
-You may wish to tweak the "com.example.mymodule/info.xml" file.
+You should tweak the "com.example.mymodule/info.xml" file.
 
 To activate this new module, browse to
 
@@ -35,7 +35,7 @@ $ civix add-page Greeter civirm/greeting
 $ vi CRM/Mymodule/Page/Greeter.php
 $ vi templates/CRM/Mymodule/Page/Greeter.tpl
 
-Note: Add time of writing, you must rebuild the menu to access this page:
+Note: At time of writing, you must rebuild the menu to access this page:
 
   http://mysite.example.com/civicrm/menu/rebuild?reset=1
 
