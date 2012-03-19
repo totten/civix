@@ -1,0 +1,26 @@
+{
+    "hash": "5574eca16e5df691415ca695bd931e82",
+    "packages": [
+        {
+            "package": "symfony/class-loader",
+            "version": "v2.0.12"
+        },
+        {
+            "package": "symfony/console",
+            "version": "v2.0.12"
+        },
+        {
+            "package": "symfony/dependency-injection",
+            "version": "v2.0.12"
+        },
+        {
+            "package": "symfony/finder",
+            "version": "v2.0.12"
+        },
+        {
+            "package": "symfony/templating",
+            "version": "v2.0.12"
+        }
+    ],
+    "aliases": []
+}
