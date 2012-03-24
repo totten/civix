@@ -10,6 +10,7 @@ use CRM\Civix\Command\BaseCommand;
 use CRM\Civix\Builder\Collection;
 use CRM\Civix\Builder\Dirs;
 use CRM\Civix\Builder\Info;
+use CRM\Civix\Builder\Module;
 use CRM\Civix\Utils\Path;
 
 class InitCommand extends BaseCommand
@@ -51,6 +52,8 @@ class InitCommand extends BaseCommand
                   $basedir->string($ctx['namespace']),
               ));
               $ext->builders['info'] = new Info($basedir->string('info.xml'));
+              
+              $ext->builders['module'] = new Module($this->getContainer()->get('templateEngine'));
               break;
           case 'payment':
           case 'report':

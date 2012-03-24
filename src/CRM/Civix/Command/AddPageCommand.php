@@ -11,6 +11,7 @@ use CRM\Civix\Builder\Collection;
 use CRM\Civix\Builder\Dirs;
 use CRM\Civix\Builder\Info;
 use CRM\Civix\Builder\Menu;
+use CRM\Civix\Builder\Module;
 use CRM\Civix\Builder\Template;
 use CRM\Civix\Utils\Path;
 use Exception;
@@ -83,20 +84,8 @@ class AddPageCommand extends BaseCommand
             $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $tplFile));
         }
         
-        $module = new Template(
-            'module.php',
-            $basedir->string($ctx['mainFile'] . '.php'),
-            FALSE,
-            $this->getContainer()->get('templateEngine')
-        );
+        $module = new Module($this->getContainer()->get('templateEngine'));
+        $module->loadInit($ctx);
         $module->save($ctx, $output);
-        
-        $moduleCivix = new Template(
-            'module.civix.php',
-            $basedir->string($ctx['mainFile'] . '.civix.php'),
-            TRUE,
-            $this->getContainer()->get('templateEngine')
-        );
-        $moduleCivix->save($ctx, $output);
     }
 }
