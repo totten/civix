@@ -24,7 +24,7 @@ class Module implements Builder {
         $module = new Template(
             'module.php',
             $basedir->string($ctx['mainFile'] . '.php'),
-            FALSE,
+            'ignore',
             $this->templateEngine
         );
         $module->save($ctx, $output);

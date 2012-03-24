@@ -13,6 +13,9 @@ class Template implements Builder {
 
     protected $template, $path, $xml, $templateEngine, $enable;
 
+    /**
+     * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+     */
     function __construct($template, $path, $overwrite, $templateEngine) {
         $this->template = $template;
         $this->path = $path;
@@ -34,11 +37,13 @@ class Template implements Builder {
      * Write the xml document
      */
     function save(&$ctx, OutputInterface $output) {
-        if ($this->overwrite || !file_exists($this->path)) {
+        if (file_exists($this->path) && $this->overwrite == 'ignore') {
+            // do nothing
+        } elseif (file_exists($this->path) && !$this->overwrite) {
+            $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
+        } else {
             $output->writeln("<info>Write " . $this->path . "</info>");
             file_put_contents($this->path, $this->templateEngine->render($this->template, $ctx));
-        } else {
-            $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
         }
     }
 }
