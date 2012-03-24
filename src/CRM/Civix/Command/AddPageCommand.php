@@ -24,7 +24,7 @@ class AddPageCommand extends BaseCommand
             ->setName('add-page')
             ->setDescription('Add a basic web page')
             ->addArgument('className', InputArgument::REQUIRED, 'Page class name (eg "MyPage")')
-            ->addArgument('webPath', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page"")')
+            ->addArgument('webPath', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")')
         ;
     }
 
