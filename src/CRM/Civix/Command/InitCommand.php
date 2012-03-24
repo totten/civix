@@ -20,7 +20,7 @@ class InitCommand extends BaseCommand
         $this
             ->setName('init')
             ->setDescription('Create a new extension')
-            ->addArgument('full-name', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
+            ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')
         ;
@@ -30,7 +30,7 @@ class InitCommand extends BaseCommand
     {
         $ctx = array();
         $ctx['type'] = $input->getOption('type');
-        $ctx['fullName'] = $input->getArgument('full-name');
+        $ctx['fullName'] = $input->getArgument('fullName');
         $ctx['basedir'] = $ctx['fullName'];
         if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
             $ctx['mainFile'] = $matches[1];

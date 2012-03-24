@@ -23,7 +23,7 @@ class AddPageCommand extends BaseCommand
         $this
             ->setName('add-page')
             ->setDescription('Add a basic web page')
-            ->addArgument('finalClassName', InputArgument::REQUIRED, 'Page class name (eg "MyPage")')
+            ->addArgument('className', InputArgument::REQUIRED, 'Page class name (eg "MyPage")')
             ->addArgument('webPath', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page"")')
         ;
     }
@@ -37,7 +37,7 @@ class AddPageCommand extends BaseCommand
         $ctx = array();
         $ctx['type'] = 'module';
         $ctx['basedir'] = rtrim(getcwd(),'/');
-        $ctx['pageClassName'] = $input->getArgument('finalClassName');
+        $ctx['pageClassName'] = $input->getArgument('className');
         $basedir = new Path($ctx['basedir']);
 
         $info = new Info($basedir->string('info.xml'));
@@ -58,12 +58,12 @@ class AddPageCommand extends BaseCommand
         $menu = new Menu($basedir->string('xml', 'Menu', $ctx['mainFile'] . '.xml'));
         $menu->loadInit($ctx);
         if (!$menu->hasPath($input->getArgument('webPath'))) {
-            $menu->addItem($ctx, $input->getArgument('finalClassName'), $input->getArgument('webPath'));
+            $menu->addItem($ctx, $input->getArgument('className'), $input->getArgument('webPath'));
             $menu->save($ctx, $output);
         } else {
             $output->writeln(sprintf('<error>Failed to bind %s to class %s; %s is already bound</error>',
                 $input->getArgument('webPath'),
-                $input->getArgument('finalClassName'),
+                $input->getArgument('className'),
                 $input->getArgument('webPath')
             ));
         }
