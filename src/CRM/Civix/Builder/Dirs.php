@@ -28,7 +28,7 @@ class Dirs implements Builder {
         foreach ($this->paths as $dir) {
             $parts = explode(DIRECTORY_SEPARATOR, $dir);
             if (!is_dir($dir)) {
-                $output->writeln("<info>Create ${dir}/</info>");
+                //quiet//$output->writeln("<info>Create ${dir}/</info>");
                 mkdir($dir, self::MODE, TRUE);
             } else {
                 // $output->writeln("<comment>Found ${dir}/</comment>");
