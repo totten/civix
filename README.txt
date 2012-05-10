@@ -17,7 +17,10 @@ $ export PATH=$HOME/civix:$PATH
 
 == Example: Initialize a new extension ==
 
-$ cd <civicrm-extensions-dir>
+Configure a CiviCRM extension directory (e.g. /home/myuser/extensions) and
+then navigate to it in bash:
+
+$ cd /home/myuser/extensions
 
 For a new module-style extension or report-style extension, use:
 
