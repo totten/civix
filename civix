@@ -15,6 +15,7 @@ use Symfony\Component\Templating\Loader\FilesystemLoader;
 use CRM\Civix\Command\AddPageCommand;
 use CRM\Civix\Command\BuildCommand;
 use CRM\Civix\Command\InitCommand;
+use CRM\Civix\Command\InitReportCommand;
 
 #$input = new ArgvInput();
 #$env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
@@ -27,6 +28,7 @@ $sc->set('templateEngine', $view);
 
 $application = new Application();
 $application->add(new InitCommand($sc));
+$application->add(new InitReportCommand($sc));
 $application->add(new AddPageCommand($sc));
 $application->add(new BuildCommand($sc));
 $application->run();

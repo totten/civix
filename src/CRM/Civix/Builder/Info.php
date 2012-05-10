@@ -30,7 +30,16 @@ class Info extends XML {
         
         // store extra metadata to facilitate code manipulation
         $civix = $xml->addChild('civix');
-        $civix->addChild('namespace', $ctx['namespace']);
+        if (isset($ctx['namespace'])) {
+            $civix->addChild('namespace', $ctx['namespace']);
+        }
+        
+        if ($ctx['typeInfo']) {
+            $typeInfo = $xml->addChild('typeInfo');
+            foreach ($ctx['typeInfo'] as $key => $value) {
+                $typeInfo->addChild($key, $value);
+            }
+        }
         
         $this->set($xml);
     }
