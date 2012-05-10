@@ -18,7 +18,12 @@ $ export PATH=$HOME/civix:$PATH
 == Example: Initialize a new extension ==
 
 $ cd <civicrm-extensions-dir>
-$ civix init --type=module com.example.mymodule
+
+For a new module-style extension or report-style extension, use:
+
+$ civix init-module com.example.mymodule
+  (or)
+$ civix init-report com.example.myreport
 
 You should tweak the "com.example.mymodule/info.xml" file.
 

@@ -18,18 +18,18 @@ class InitCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('init')
-            ->setDescription('Create a new extension')
+            ->setName('init-module')
+            ->setDescription('Create a new extension of type "module"')
             ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
-            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')
+            //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $ctx = array();
-        $ctx['type'] = $input->getOption('type');
+        $ctx['type'] = 'module';
         $ctx['fullName'] = $input->getArgument('fullName');
         $ctx['basedir'] = $ctx['fullName'];
         if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
@@ -41,27 +41,16 @@ class InitCommand extends BaseCommand
         }
         $ext = new Collection();
         
-        switch($input->getOption('type')) {
-          case 'module':
-              $output->writeln("<info>Initalize module ".$ctx['fullName']."</info>");
-              $basedir = new Path($ctx['basedir']);
-              $ext->builders['dirs'] = new Dirs(array(
-                  $basedir->string('build'),
-                  $basedir->string('templates'),
-                  $basedir->string('xml'),
-                  $basedir->string($ctx['namespace']),
-              ));
-              $ext->builders['info'] = new Info($basedir->string('info.xml'));
-              
-              $ext->builders['module'] = new Module($this->getContainer()->get('templateEngine'));
-              break;
-          case 'payment':
-          case 'report':
-          case 'search':
-          default:
-              $output->writeln("<error>Unrecognized extension type: ". $input->getOption('type'). "</error>");
-              return;
-        }
+        $output->writeln("<info>Initalize module ".$ctx['fullName']."</info>");
+        $basedir = new Path($ctx['basedir']);
+        $ext->builders['dirs'] = new Dirs(array(
+            $basedir->string('build'),
+            $basedir->string('templates'),
+            $basedir->string('xml'),
+            $basedir->string($ctx['namespace']),
+        ));
+        $ext->builders['info'] = new Info($basedir->string('info.xml'));
+        $ext->builders['module'] = new Module($this->getContainer()->get('templateEngine'));
         
         $ext->init($ctx);
         $ext->save($ctx, $output);
