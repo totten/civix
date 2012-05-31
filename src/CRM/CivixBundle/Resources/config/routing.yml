@@ -1,0 +1,3 @@
+CRMCivixBundle_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: CRMCivixBundle:Default:index }

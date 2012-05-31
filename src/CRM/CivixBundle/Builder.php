@@ -1,5 +1,5 @@
 <?php
-namespace CRM\Civix;
+namespace CRM\CivixBundle;
 
 use Symfony\Component\Console\Output\OutputInterface;
 

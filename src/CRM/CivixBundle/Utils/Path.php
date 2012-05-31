@@ -1,6 +1,6 @@
 <?php
 
-namespace CRM\Civix\Utils;
+namespace CRM\CivixBundle\Utils;
 
 class Path {
     

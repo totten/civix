@@ -1,7 +1,7 @@
 <?php
-namespace CRM\Civix\Builder;
+namespace CRM\CivixBundle\Builder;
 
-use CRM\Civix\Builder;
+use CRM\CivixBundle\Builder;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**

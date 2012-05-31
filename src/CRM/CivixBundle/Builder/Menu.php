@@ -1,8 +1,8 @@
 <?php
-namespace CRM\Civix\Builder;
+namespace CRM\CivixBundle\Builder;
 
 use SimpleXMLElement;
-use CRM\Civix\Builder\XML;
+use CRM\CivixBundle\Builder\XML;
 
 /**
  * Build/update menu xml file

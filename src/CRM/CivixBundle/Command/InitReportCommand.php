@@ -1,18 +1,18 @@
 <?php
-namespace CRM\Civix\Command;
+namespace CRM\CivixBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\Civix\Command\BaseCommand;
-use CRM\Civix\Builder\Collection;
-use CRM\Civix\Builder\Dirs;
-use CRM\Civix\Builder\Info;
-use CRM\Civix\Builder\Module;
-use CRM\Civix\Builder\Template;
-use CRM\Civix\Utils\Path;
+use CRM\CivixBundle\Command\BaseCommand;
+use CRM\CivixBundle\Builder\Collection;
+use CRM\CivixBundle\Builder\Dirs;
+use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Builder\Module;
+use CRM\CivixBundle\Builder\Template;
+use CRM\CivixBundle\Utils\Path;
 
 class InitReportCommand extends BaseCommand
 {
@@ -46,7 +46,7 @@ class InitReportCommand extends BaseCommand
         if (in_array($input->getArgument('component'), $allowedComponents)) {
             $ctx['typeInfo']['component'] = $input->getArgument('component');
         } else {
-            throw new Exception("Component must be one of: " . implode(', ', $allowedComponents));
+            throw new \Exception("Component must be one of: " . implode(', ', $allowedComponents));
         }
         
         if (preg_match('/^civicrm\/report\/(.*)$/', $input->getOption('webPath'), $matches)) {
@@ -67,10 +67,10 @@ class InitReportCommand extends BaseCommand
         $ext->builders['info'] = new Info($basedir->string('info.xml'));
       
         $phpFile = $basedir->string($ctx['pageClassName'] . '.php');
-        $ext->builders['report.php'] = new Template('report.php', $phpFile, FALSE, $this->getContainer()->get('templateEngine'));
+        $ext->builders['report.php'] = new Template('CRMCivixBundle:Code:report.php.php', $phpFile, FALSE, $this->getContainer()->get('templating'));
         
         $tplFile = $basedir->string('templates', $ctx['pageClassName'] . '.tpl');
-        $ext->builders['page.tpl.php'] = new Template('report.tpl.php', $tplFile, FALSE, $this->getContainer()->get('templateEngine'));
+        $ext->builders['page.tpl.php'] = new Template('CRMCivixBundle:Code:report.tpl.php', $tplFile, FALSE, $this->getContainer()->get('templating'));
 
         $ext->init($ctx);
         $ext->save($ctx, $output);

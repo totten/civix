@@ -1,9 +1,9 @@
 <?php
-namespace CRM\Civix\Builder;
+namespace CRM\CivixBundle\Builder;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\Civix\Builder;
-use CRM\Civix\Utils\Path;
+use CRM\CivixBundle\Builder;
+use CRM\CivixBundle\Utils\Path;
 
 class Module implements Builder {
     function __construct($templateEngine) {
@@ -22,7 +22,7 @@ class Module implements Builder {
     function save(&$ctx, OutputInterface $output) {
         $basedir = new Path($ctx['basedir']);
         $module = new Template(
-            'module.php',
+            'CRMCivixBundle:Code:module.php.php',
             $basedir->string($ctx['mainFile'] . '.php'),
             'ignore',
             $this->templateEngine
@@ -30,7 +30,7 @@ class Module implements Builder {
         $module->save($ctx, $output);
         
         $moduleCivix = new Template(
-            'module.civix.php',
+            'CRMCivixBundle:Code:module.civix.php.php',
             $basedir->string($ctx['mainFile'] . '.civix.php'),
             TRUE,
             $this->templateEngine

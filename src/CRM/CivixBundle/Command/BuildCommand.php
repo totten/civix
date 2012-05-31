@@ -1,5 +1,5 @@
 <?php
-namespace CRM\Civix\Command;
+namespace CRM\CivixBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -7,13 +7,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use CRM\Civix\Command\BaseCommand;
-use CRM\Civix\Builder\Collection;
-use CRM\Civix\Builder\Dirs;
-use CRM\Civix\Builder\Info;
-use CRM\Civix\Builder\Menu;
-use CRM\Civix\Builder\Template;
-use CRM\Civix\Utils\Path;
+use CRM\CivixBundle\Command\BaseCommand;
+use CRM\CivixBundle\Builder\Collection;
+use CRM\CivixBundle\Builder\Dirs;
+use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Builder\Menu;
+use CRM\CivixBundle\Builder\Template;
+use CRM\CivixBundle\Utils\Path;
 use Exception;
 
 class BuildCommand extends BaseCommand

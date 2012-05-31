@@ -1,0 +1,7 @@
+parameters:
+#    crm_civix.example.class: CRM\CivixBundle\Example
+
+services:
+#    crm_civix.example:
+#        class: %crm_civix.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

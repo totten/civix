@@ -1,17 +1,17 @@
 <?php
-namespace CRM\Civix\Command;
+namespace CRM\CivixBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\Civix\Command\BaseCommand;
-use CRM\Civix\Builder\Collection;
-use CRM\Civix\Builder\Dirs;
-use CRM\Civix\Builder\Info;
-use CRM\Civix\Builder\Module;
-use CRM\Civix\Utils\Path;
+use CRM\CivixBundle\Command\BaseCommand;
+use CRM\CivixBundle\Builder\Collection;
+use CRM\CivixBundle\Builder\Dirs;
+use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Builder\Module;
+use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends BaseCommand
 {
@@ -50,7 +50,7 @@ class InitCommand extends BaseCommand
             $basedir->string($ctx['namespace']),
         ));
         $ext->builders['info'] = new Info($basedir->string('info.xml'));
-        $ext->builders['module'] = new Module($this->getContainer()->get('templateEngine'));
+        $ext->builders['module'] = new Module($this->getContainer()->get('templating'));
         
         $ext->init($ctx);
         $ext->save($ctx, $output);

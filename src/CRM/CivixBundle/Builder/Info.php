@@ -1,8 +1,8 @@
 <?php
-namespace CRM\Civix\Builder;
+namespace CRM\CivixBundle\Builder;
 
 use SimpleXMLElement;
-use CRM\Civix\Builder\XML;
+use CRM\CivixBundle\Builder\XML;
 
 /**
  * Build/update info.xml
@@ -34,7 +34,7 @@ class Info extends XML {
             $civix->addChild('namespace', $ctx['namespace']);
         }
         
-        if ($ctx['typeInfo']) {
+        if (isset($ctx['typeInfo'])) {
             $typeInfo = $xml->addChild('typeInfo');
             foreach ($ctx['typeInfo'] as $key => $value) {
                 $typeInfo->addChild($key, $value);
@@ -48,7 +48,9 @@ class Info extends XML {
         parent::load($ctx);
         $attrs = $this->get()->attributes();
         $ctx['fullName'] = (string) $attrs['key'];
-        $ctx['mainFile'] = (string) array_shift($this->get()->xpath('file'));
-        $ctx['namespace'] = (string) array_shift($this->get()->xpath('civix/namespace'));
+        $items = $this->get()->xpath('file');
+        $ctx['mainFile'] = (string) array_shift($items);
+        $items = $this->get()->xpath('civix/namespace');
+        $ctx['namespace'] = (string) array_shift($items);
     }
 }
