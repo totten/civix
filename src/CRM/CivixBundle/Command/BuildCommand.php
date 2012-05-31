@@ -21,8 +21,8 @@ class BuildCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('build')
-            ->setDescription('Build a zip file for this extension')
+            ->setName('build:zip')
+            ->setDescription('Build a zip file for a CiviCRM Extension')
         ;
     }
 

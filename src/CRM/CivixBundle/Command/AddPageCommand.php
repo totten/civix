@@ -21,8 +21,8 @@ class AddPageCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('add-page')
-            ->setDescription('Add a basic web page')
+            ->setName('generate:page')
+            ->setDescription('Add a basic web page to a CiviCRM Module-Extension')
             ->addArgument('className', InputArgument::REQUIRED, 'Page class name (eg "MyPage")')
             ->addArgument('webPath', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")')
         ;

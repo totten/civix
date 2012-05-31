@@ -18,8 +18,8 @@ class InitCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('init-module')
-            ->setDescription('Create a new extension of type "module"')
+            ->setName('generate:module')
+            ->setDescription('Create a new CiviCRM Module-Extension')
             ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')

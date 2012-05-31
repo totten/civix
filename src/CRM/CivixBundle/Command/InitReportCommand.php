@@ -19,8 +19,8 @@ class InitReportCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('init-report')
-            ->setDescription('Create a new extension of type "report"')
+            ->setName('generate:report')
+            ->setDescription('Create a new CiviCRM Report-Extension')
             ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
             ->addArgument('component', InputArgument::REQUIRED, 'A component (CiviGrant, CiviCase, etc)')
             ->addOption('webPath', null, InputOption::VALUE_OPTIONAL, 'The path which maps to this report (eg "civicrm/report/x")')
