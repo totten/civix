@@ -1,19 +1,18 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Command\BaseCommand;
 use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 
-class InitCommand extends BaseCommand
+class InitCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
