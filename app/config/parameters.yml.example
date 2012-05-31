@@ -1,0 +1,31 @@
+parameters:
+    # (Remote Access) The base URL of the web server (eg 'http://www.example.com/')
+    civicrm_api3_server:
+    
+    # (Remote Access) An optional path-override for the ajax handler
+    civicrm_api3_path:
+
+    # (Remote Access) The site key recorded in civicrm.settings.php
+    civicrm_api3_key:
+
+    # (Remote Access) An API key recorded for a user in civicrm_contact
+    civicrm_api3_api_key:
+
+    # (Local Access) The directory containing civicrm.settings.php
+    # NOTE: This currently does not work
+    civicrm_api3_conf_path:
+
+    database_driver:   pdo_mysql
+    database_host:     localhost
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+
+    mailer_transport:  smtp
+    mailer_host:       localhost
+    mailer_user:       ~
+    mailer_password:   ~
+
+    locale:            en
+    secret:            ThisTokenIsNotSoSecretChangeIt
