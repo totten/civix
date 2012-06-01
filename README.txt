@@ -11,6 +11,11 @@ $ curl -s http://getcomposer.org/installer | php
 
 $ php composer.phar create-project civicrm/civix
 
+3. Copy and edit the example configuration file
+
+cp app/config/parameters.yml.example app/config/parameters.yml
+vi app/config/parameters.yml
+
 4. Add the new civix folder to your shell's PATH, e.g.
 
 $ export PATH=$HOME/civix:$PATH

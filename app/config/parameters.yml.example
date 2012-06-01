@@ -1,4 +1,7 @@
 parameters:
+    ## To allow "civix" to manipulate your developmental instance
+    ## of CiviCRM, you should provide addresses and credentials.
+
     # (Remote Access) The base URL of the web server (eg 'http://www.example.com/')
     civicrm_api3_server:
     
@@ -14,6 +17,8 @@ parameters:
     # (Local Access) The directory containing civicrm.settings.php
     # NOTE: This currently does not work
     civicrm_api3_conf_path:
+
+    ## Note: The following are not currently used.
 
     database_driver:   pdo_mysql
     database_host:     localhost
