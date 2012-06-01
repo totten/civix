@@ -10,8 +10,14 @@
         {
             "package": "doctrine/common",
             "version": "dev-master",
-            "source-reference": "e9f9a27a5bf3b8d95077de475a4dff495deaf39c",
-            "commit-date": "1340963135"
+            "alias-pretty-version": "2.3.x-dev",
+            "alias-version": "2.3.9999999.9999999-dev"
+        },
+        {
+            "package": "doctrine/common",
+            "version": "dev-master",
+            "source-reference": "d2f8a36b8696b446bf25cfe2b0b3aaf03e0835e6",
+            "commit-date": "1341088911"
         },
         {
             "package": "jms/aop-bundle",
@@ -40,8 +46,8 @@
         {
             "package": "sensio/distribution-bundle",
             "version": "dev-master",
-            "source-reference": "f3515e702f9cae8e727d982557dca8de82dd12c5",
-            "commit-date": "1340790396"
+            "source-reference": "bab334833eb6cf177b97b18dd5479ebdfe6e1c26",
+            "commit-date": "1341232762"
         },
         {
             "package": "sensio/generator-bundle",
@@ -52,20 +58,44 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "627e1f7a7952e6659d7125931024a97a5482a15c",
-            "commit-date": "1340984297"
+            "alias-pretty-version": "4.2.x-dev",
+            "alias-version": "4.2.9999999.9999999-dev"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "dev-master",
+            "alias-pretty-version": "4.2.x-dev",
+            "alias-version": "4.2.9999999.9999999-dev"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "dev-master",
+            "source-reference": "05b497ee28355a33eb521dcaf7526824e0dda3b2",
+            "commit-date": "1341154877"
         },
         {
             "package": "symfony/monolog-bundle",
             "version": "dev-master",
-            "source-reference": "660a1aeaf93e8ffdc34c27b3a82dc47195ad1d8d",
-            "commit-date": "1340609637"
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
+        },
+        {
+            "package": "symfony/monolog-bundle",
+            "version": "dev-master",
+            "source-reference": "7fe7f711bb04b86ad7f45a9e11a7f8cbaf9bc1a5",
+            "commit-date": "1341078487"
         },
         {
             "package": "symfony/swiftmailer-bundle",
             "version": "dev-master",
-            "source-reference": "4140ae9813f231a4d8324f405c51041b966e190b",
-            "commit-date": "1341077900"
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
+        },
+        {
+            "package": "symfony/swiftmailer-bundle",
+            "version": "dev-master",
+            "source-reference": "8e4d1eef4edc6a6375ab003a51cb9323795b08ec",
+            "commit-date": "1341222992"
         },
         {
             "package": "symfony/symfony",
@@ -82,8 +112,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "2e356c1ab9e19aa189a55310a084aef27761806c",
-            "commit-date": "1341081856"
+            "source-reference": "736aa210a23ff845880d3b914d3c0abbf2831717",
+            "commit-date": "1341260313"
         },
         {
             "package": "twig/extensions",
