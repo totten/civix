@@ -24,9 +24,9 @@ $ cd /home/myuser/extensions
 
 For a new module-style extension or report-style extension, use:
 
-$ civix init-module com.example.mymodule
+$ civix generate:module com.example.mymodule
   (or)
-$ civix init-report com.example.myreport
+$ civix generate:report com.example.myreport CiviContribute
 
 You should tweak the "com.example.mymodule/info.xml" file.
 
@@ -39,7 +39,7 @@ where you can refresh the extension list and enable the extension.
 == Example: Add a basic web page ==
 
 $ cd com.example.mymodule
-$ civix add-page Greeter civirm/greeting
+$ civix generate:page Greeter civicrm/greeting
 $ vi CRM/Mymodule/Page/Greeter.php
 $ vi templates/CRM/Mymodule/Page/Greeter.tpl
 
@@ -53,4 +53,4 @@ Once you've implemented the extension, you can build a .zip file for
 redistribution:
 
 $ cd com.example.mymodule
-$ civix build
+$ civix build:zip
