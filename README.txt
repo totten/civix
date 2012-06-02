@@ -20,6 +20,17 @@ vi app/config/parameters.yml
 
 $ export PATH=$HOME/civix:$PATH
 
+== Upgrading ==
+
+In early July 2012, several changes were made to civix's internal layout to
+better align with Symfony Standard Edition.  Some steps which may help with
+upgrading:
+
+$ php composer.phar self-update
+$ cd civix
+$ rm -rf vendor
+$ php composer.phar install
+
 == Example: Initialize a new extension ==
 
 Configure a CiviCRM extension directory (e.g. /home/myuser/extensions) and
