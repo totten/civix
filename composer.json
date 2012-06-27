@@ -2,7 +2,7 @@
     "name": "civicrm/civix",
     "description": "CiviCRM Extension CLI",
     "homepage": "https://github.com/totten/civix",
-    "license": "AGPLv3",
+    "license": "AGPL-3.0",
     "require": {
         "symfony/class-loader": "v2.0.12",
         "symfony/console": "v2.0.12",
