@@ -70,3 +70,13 @@ redistribution:
 
 $ cd com.example.mymodule
 $ civix build:zip
+
+== Example: Add a database upgrade script ==
+
+If your module needs to perform extra modifications to the database
+during upgrades, you can add an "upgrader" class which is similar to
+Drupal's hook_update_N.
+
+$ cd com.example.mymodule
+$ civix generate:upgrader
+$ vi CRM/Mymodule/Upgrader.php
