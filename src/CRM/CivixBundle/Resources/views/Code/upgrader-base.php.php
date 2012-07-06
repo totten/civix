@@ -43,7 +43,7 @@ class <?= $_namespace ?>_Upgrader_Base {
       // FIXME auto-generate
       self::$instance = new <?= $_namespace ?>_Upgrader(
         '<?= $fullName ?>',
-        __DIR__ .'../../../'
+        __DIR__ .'/../../../'
       );
     }
     return self::$instance;
@@ -52,7 +52,8 @@ class <?= $_namespace ?>_Upgrader_Base {
   /**
    * Adapter that lets you add normal (non-static) member functions to the queue.
    *
-   * Note: If multiple task-contexts exist, then this is non-reentrant.
+   * Note: Each upgrader instance should only be associated with one
+   * task-context; otherwise, this will be non-reentrant.
    *
    * @code
    * <?= $_namespace ?>_Upgrader_Base::_queueAdapter($ctx, 'methodName', 'arg1', 'arg2');
@@ -194,12 +195,48 @@ class <?= $_namespace ?>_Upgrader_Base {
   }
 
   function getCurrentRevision() {
-    return CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
+    // return CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
+    $key = $this->extensionName . ':version';
+    return CRM_Core_BAO_Setting::getItem('Extension', $key);
   }
 
   function setCurrentRevision($revision) {
-    CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
+    // We call this during hook_civicrm_install, but the underlying SQL
+    // UPDATE fails because the extension record hasn't been INSERTed yet.
+    // Instead, track revisions in our own namespace.
+    // CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
+
+    $key = $this->extensionName . ':version';
+    CRM_Core_BAO_Setting::setItem($revision, 'Extension', $key);
     return TRUE;
   }
 
+  // ******** Hook delegates ********
+
+  function onInstall() {
+    foreach (glob($this->extensionDir . '/sql/*_install.sql') as $file) {
+      CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    }
+    $revisions = $this->getRevisions();
+    if (!empty($revisions)) {
+      $this->setCurrentRevision(max($revisions));
+    }
+  }
+
+  function onUninstall() {
+    foreach (glob($this->extensionDir . '/sql/*_uninstall.sql') as $file) {
+      CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    }
+    $this->setCurrentRevision(NULL);
+  }
+
+  function onUpgrade($op, CRM_Queue_Queue $queue = NULL) {
+    switch($op) {
+      case 'check':
+        return array($this->hasPendingRevisions());
+      case 'enqueue':
+        return $this->enqueuePendingRevisions($queue);
+      default:
+    }
+  }
 }

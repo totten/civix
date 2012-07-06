@@ -8,7 +8,11 @@ $_namespace = preg_replace(':/:','_',$namespace);
 /**
  * (Delegated) Implementation of hook_civicrm_config
  */
-function _<?= $mainFile ?>_civix_civicrm_config(&$config) {
+function _<?= $mainFile ?>_civix_civicrm_config(&$config = NULL) {
+  static $configured = FALSE;
+  if ($configured) return;
+  $configured = TRUE;
+
   $template =& CRM_Core_Smarty::singleton();
 
   $extRoot = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
@@ -36,6 +40,26 @@ function _<?= $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
 }
 
 /**
+ * Implementation of hook_civicrm_install
+ */
+function _<?= $mainFile ?>_civix_civicrm_install() {
+  _foo_civix_civicrm_config();
+  if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
+    return $upgrader->onInstall();
+  }
+}
+
+/**
+ * Implementation of hook_civicrm_uninstall
+ */
+function _<?= $mainFile ?>_civix_civicrm_uninstall() {
+  _foo_civix_civicrm_config();
+  if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
+    return $upgrader->onUninstall();
+  }
+}
+
+/**
  * (Delegated) Implementation of hook_civicrm_upgrade
  *
  * @param $op string, the type of operation being performed; 'check' or 'enqueue'
@@ -45,16 +69,15 @@ function _<?= $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
  *                for 'enqueue', returns void
  */
 function _<?= $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  if (!file_exists(__DIR__.'/<?= $namespace ?>/Upgrader.php')) {
-    return;
+  if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
+    return $upgrader->onUpgrade($op, $queue);
   }
+}
 
-  $instance = <?= $_namespace ?>_Upgrader_Base::instance();
-  switch($op) {
-    case 'check':
-      return array($instance->hasPendingRevisions());
-    case 'enqueue':
-      return $instance->enqueuePendingRevisions($queue);
-    default:
+function _<?= $mainFile ?>_civix_upgrader() {
+  if (!file_exists(__DIR__.'/<?= $namespace ?>/Upgrader.php')) {
+    return NULL;
+  } else {
+    return <?= $_namespace ?>_Upgrader_Base::instance();
   }
 }

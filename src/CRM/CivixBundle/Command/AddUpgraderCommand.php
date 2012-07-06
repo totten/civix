@@ -43,6 +43,7 @@ class AddUpgraderCommand extends ContainerAwareCommand
         }
 
         $dirs = new Dirs(array(
+            $basedir->string('sql'),
             $basedir->string($ctx['namespace']),
             $basedir->string($ctx['namespace'],'Upgrader'),
         ));

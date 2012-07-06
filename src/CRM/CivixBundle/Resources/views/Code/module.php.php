@@ -21,6 +21,20 @@ function <?= $mainFile ?>_civicrm_xmlMenu(&$files) {
 }
 
 /**
+ * Implementation of hook_civicrm_install
+ */
+function <?= $mainFile ?>_civicrm_install() {
+  return _<?= $mainFile ?>_civix_civicrm_install();
+}
+
+/**
+ * Implementation of hook_civicrm_uninstall
+ */
+function <?= $mainFile ?>_civicrm_uninstall() {
+  return _<?= $mainFile ?>_civix_civicrm_uninstall();
+}
+
+/**
  * Implementation of hook_civicrm_upgrade
  *
  * @param $op string, the type of operation being performed; 'check' or 'enqueue'

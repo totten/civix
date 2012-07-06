@@ -33,7 +33,7 @@ class <?= $_namespace ?>_Upgrader extends <?= $_namespace ?>_Upgrader_Base {
   function upgrade_4201() {
     $this->ctx->log->info('Applying update 4201');
     // this path is relative to the extension base dir
-    $this->executeSqlFile('Resources/sql/upgrade_4201.sql');
+    $this->executeSqlFile('sql/upgrade_4201.sql');
     return TRUE;
   } // */
 
