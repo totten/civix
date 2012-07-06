@@ -165,28 +165,28 @@ class <?= preg_replace(':\.:','_',$fullName) ?> extends CRM_Report_Form {
 
     $this->_from = "
          FROM  civicrm_contact {$this->_aliases['civicrm_contact']} {$this->_aclFrom}
-               INNER JOIN civicrm_membership {$this->_aliases['civicrm_membership']} 
-                          ON {$this->_aliases['civicrm_contact']}.id = 
+               INNER JOIN civicrm_membership {$this->_aliases['civicrm_membership']}
+                          ON {$this->_aliases['civicrm_contact']}.id =
                              {$this->_aliases['civicrm_membership']}.contact_id AND {$this->_aliases['civicrm_membership']}.is_test = 0
                LEFT  JOIN civicrm_membership_status {$this->_aliases['civicrm_membership_status']}
-                          ON {$this->_aliases['civicrm_membership_status']}.id = 
+                          ON {$this->_aliases['civicrm_membership_status']}.id =
                              {$this->_aliases['civicrm_membership']}.status_id ";
 
 
     //used when address field is selected
     if ($this->_addressField) {
       $this->_from .= "
-             LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']} 
-                       ON {$this->_aliases['civicrm_contact']}.id = 
-                          {$this->_aliases['civicrm_address']}.contact_id AND 
+             LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']}
+                       ON {$this->_aliases['civicrm_contact']}.id =
+                          {$this->_aliases['civicrm_address']}.contact_id AND
                           {$this->_aliases['civicrm_address']}.is_primary = 1\n";
     }
     //used when email field is selected
     if ($this->_emailField) {
       $this->_from .= "
-              LEFT JOIN civicrm_email {$this->_aliases['civicrm_email']} 
-                        ON {$this->_aliases['civicrm_contact']}.id = 
-                           {$this->_aliases['civicrm_email']}.contact_id AND 
+              LEFT JOIN civicrm_email {$this->_aliases['civicrm_email']}
+                        ON {$this->_aliases['civicrm_contact']}.id =
+                           {$this->_aliases['civicrm_email']}.contact_id AND
                            {$this->_aliases['civicrm_email']}.is_primary = 1\n";
     }
   }
