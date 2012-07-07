@@ -54,9 +54,11 @@ class BuildCommand extends ContainerAwareCommand
         
         chdir($basedir->string('..'));
         $process = new Process($cmd);
-        $process->run();
+        $process->run(function ($type, $buffer) use ($output) {
+            $output->writeln($buffer);
+        });
         if (!$process->isSuccessful()) {
-            throw new RuntimeException($process->getErrorOutput());
+            throw new \RuntimeException('Failed to create zip');
         }
         print $process->getOutput();
     }
