@@ -1,82 +1,112 @@
 Civix is a command-line tool for building CiviCRM extensions.
 
-== Installation ==
+### Requirements
 
-1. If you haven't already, install the PHP tool "composer" (getcomposer.org):
+* PHP 5.3+
+* CiviCRM 4.1+ (4.2+ recommended) (http://civicrm.org)
+* Composer (http://getcomposer.org)
+* git
 
-$ cd $HOME
-$ curl -s http://getcomposer.org/installer | php
+### Installation
 
-2. Get civix source code and any dependencies:
+```bash
+cd $HOME
 
-$ php composer.phar create-project civicrm/civix
+# If you haven't already, install the PHP tool "composer"
+curl -s http://getcomposer.org/installer | php
 
-3. Copy and edit the example configuration file
-
+# Download civix and dependencies
+git clone https://github.com/totten/civix.git
+cd civix
 cp app/config/parameters.yml.dist app/config/parameters.yml
-vi app/config/parameters.yml
+php $HOME/composer.phar install
 
-4. Add the new civix folder to your shell's PATH, e.g.
+# Add civix to the PATH
+export PATH=$HOME/civix:$PATH
+```
 
-$ export PATH=$HOME/civix:$PATH
-
-== Upgrading ==
+### Upgrading
 
 In early July 2012, several changes were made to civix's internal layout to
 better align with Symfony Standard Edition.  Some steps which may help with
 upgrading:
 
-$ php composer.phar self-update
-$ cd civix
-$ rm -rf vendor
-$ php composer.phar install
+```bash
+cd $HOME
+php composer.phar self-update
+cd civix
+rm -rf vendor
+php $HOME/composer.phar install
+```
 
-== Example: Initialize a new extension ==
+### CiviCRM Extension Basics
 
-Configure a CiviCRM extension directory (e.g. /home/myuser/extensions) and
+Before developing with civix, you should understand the basics of CiviCRM extensions:
+
+* Before using any extensions, login to your development site and navigate to "**Manage Extensions**" screen ("Administer => Customize Data and Screens => Manage Extensions")
+* The first time you view the screen, it will prompt you to configure an extensions directory. Do this.
+* Remember the path to the extensions directory. In future commands, we will refer to it as $EXTDIR.
+* To install or uninstall an extension, you will return to the "Manage Extensions" screen.
+* There are four types of extensions:
+  * **Modules**: These are useful for creating new features with a mix web-pages, web-forms, database tables, etc. Civix is mostly geared towards preparing modules.
+  * **Reports**: A report plugs into CiviReports, which can export data and statistics using web-pages, PDFs, spreadsheets, emails, etc.
+  * **Payment Processors**: (TODO)
+  * **Custom Searches**: (TODO)
+
+### Example: Initialize a new extension
+
+Determine CiviCRM extension directory and
 then navigate to it in bash:
 
-$ cd /home/myuser/extensions
+```bash
+# Determine the extension directory; go there
+cd $EXTDIR
 
-For a new module-style extension or report-style extension, use:
+# Create new extension of type "module"
+civix generate:module com.example.mymodule
 
-$ civix generate:module com.example.mymodule
-  (or)
-$ civix generate:report com.example.myreport CiviContribute
+# Alternatively, create new extension of type "report"
+civix generate:report com.example.myreport CiviContribute
 
-You should tweak the "com.example.mymodule/info.xml" file.
+# Update the extension's metadata (author, license, etc)
+cd com.example.mymodule
+vi info.xml
+```
 
-To activate this new module, browse to
+To activate this new extension, browse to the "Manage Extensions" screen
+where you can refresh the extension list and click "Install".
 
-  http://mysite.example.com/civicrm/admin/extensions?reset=1&action=browse
+### Example: Add a basic web page
 
-where you can refresh the extension list and enable the extension.
-
-== Example: Add a basic web page ==
-
-$ cd com.example.mymodule
-$ civix generate:page Greeter civicrm/greeting
-$ vi CRM/Mymodule/Page/Greeter.php
-$ vi templates/CRM/Mymodule/Page/Greeter.tpl
+```bash
+cd com.example.mymodule
+civix generate:page Greeter civicrm/greeting
+vi CRM/Mymodule/Page/Greeter.php
+vi templates/CRM/Mymodule/Page/Greeter.tpl
+```
 
 Note: At time of writing, you must rebuild the menu to access this page:
 
   http://mysite.example.com/civicrm/menu/rebuild?reset=1
 
-== Example: Build a .zip file ==
+### Example: Package for distribution
 
-Once you've implemented the extension, you can build a .zip file for
-redistribution:
+Once you've implemented the extension, you can package the extension as a
+.zip file for redistribution:
 
-$ cd com.example.mymodule
-$ civix build:zip
+```bash
+cd com.example.mymodule
+civix build:zip
+```
 
-== Example: Add a database upgrade script ==
+### Example: Add a database upgrade script
 
 If your module needs to perform extra modifications to the database
 during upgrades, you can add an "upgrader" class which is similar to
 Drupal's hook_update_N.
 
-$ cd com.example.mymodule
-$ civix generate:upgrader
-$ vi CRM/Mymodule/Upgrader.php
+```bash
+cd com.example.mymodule
+civix generate:upgrader
+vi CRM/Mymodule/Upgrader.php
+```
