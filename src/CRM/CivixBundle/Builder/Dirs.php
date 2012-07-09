@@ -8,7 +8,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Build/update empty directories
  */
 class Dirs implements Builder {
-    const MODE = 0755;
+    // Mask applied to new new directory permissions.
+    // Note: Permissions will be further restricted by umask
+    const MODE = 0777;
     
     function __construct($paths) {
         $this->paths = $paths;
