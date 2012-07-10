@@ -43,7 +43,7 @@ function _<?= $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
  * Implementation of hook_civicrm_install
  */
 function _<?= $mainFile ?>_civix_civicrm_install() {
-  _foo_civix_civicrm_config();
+  _<?= $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
     return $upgrader->onInstall();
   }
@@ -53,7 +53,7 @@ function _<?= $mainFile ?>_civix_civicrm_install() {
  * Implementation of hook_civicrm_uninstall
  */
 function _<?= $mainFile ?>_civix_civicrm_uninstall() {
-  _foo_civix_civicrm_config();
+  _<?= $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
     return $upgrader->onUninstall();
   }
