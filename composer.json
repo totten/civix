@@ -5,10 +5,10 @@
     "license": "AGPL-3.0",
     "require": {
         "php": ">=5.3.3",
-        "symfony/symfony": "2.1.*",
+        "symfony/symfony": "2.1.0-BETA4",
         "twig/extensions": "dev-master",
         "symfony/swiftmailer-bundle": "dev-master",
-        "symfony/monolog-bundle": "dev-master",
+        "symfony/monolog-bundle": "2.1.0-BETA4",
         "sensio/distribution-bundle": "dev-master",
         "sensio/generator-bundle": "dev-master",
         "jms/security-extra-bundle": "1.1.*",
