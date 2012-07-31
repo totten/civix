@@ -25,88 +25,37 @@ php $HOME/composer.phar install
 export PATH=$HOME/civix:$PATH
 ```
 
-### Upgrading
+### Upgrade
 
-In early July 2012, several changes were made to civix's internal layout to
-better align with Symfony Standard Edition.  Some steps which may help with
-upgrading:
+To upgrade civix and its dependencies, one can normally do:
 
 ```bash
-cd $HOME
-php composer.phar self-update
-cd civix
+cd $HOME/civix
+git pull
+php $HOME/composer.phar install
+```
+
+On some occasions, changes in civix, in a dependency, or in composer can
+break the upgrade.  If this happens, then try deleting the dependencies and
+re-installing them:
+
+```bash
+php $HOME/composer.phar self-update
+cd $HOME/civix
+git pull
 rm -rf vendor
 php $HOME/composer.phar install
 ```
 
-### CiviCRM Extension Basics
+### Documentation
 
-Before developing with civix, you should understand the basics of CiviCRM extensions:
+The CiviCRM wiki includes tutorials for building extensions. See:
 
-* Before using any extensions, login to your development site and navigate to "**Manage Extensions**" screen ("Administer => Customize Data and Screens => Manage Extensions")
-* The first time you view the screen, it will prompt you to configure an extensions directory. Do this.
-* Remember the path to the extensions directory. In future commands, we will refer to it as $EXTDIR.
-* To install or uninstall an extension, you will return to the "Manage Extensions" screen.
-* There are four types of extensions:
-  * **Modules**: These are useful for creating new features with a mix web-pages, web-forms, database tables, etc. Civix is mostly geared towards preparing modules.
-  * **Reports**: A report plugs into CiviReports, which can export data and statistics using web-pages, PDFs, spreadsheets, emails, etc.
-  * **Payment Processors**: (TODO)
-  * **Custom Searches**: (TODO)
+http://wiki.civicrm.org/confluence/display/CRMDOC42/Creating+CiviCRM+extensions
 
-### Example: Initialize a new extension
-
-Determine CiviCRM extension directory and
-then navigate to it in bash:
+For reference documentation, civix supports a "--help" option.  For example,
+to get reference materials about the "generate:page" command, run:
 
 ```bash
-# Determine the extension directory; go there
-cd $EXTDIR
-
-# Create new extension of type "module"
-civix generate:module com.example.mymodule
-
-# Alternatively, create new extension of type "report"
-civix generate:report com.example.myreport CiviContribute
-
-# Update the extension's metadata (author, license, etc)
-cd com.example.mymodule
-vi info.xml
-```
-
-To activate this new extension, browse to the "Manage Extensions" screen
-where you can refresh the extension list and click "Install".
-
-### Example: Add a basic web page
-
-```bash
-cd com.example.mymodule
-civix generate:page Greeter civicrm/greeting
-vi CRM/Mymodule/Page/Greeter.php
-vi templates/CRM/Mymodule/Page/Greeter.tpl
-```
-
-Note: At time of writing, you must rebuild the menu to access this page:
-
-  http://mysite.example.com/civicrm/menu/rebuild?reset=1
-
-### Example: Package for distribution
-
-Once you've implemented the extension, you can package the extension as a
-.zip file for redistribution:
-
-```bash
-cd com.example.mymodule
-civix build:zip
-```
-
-### Example: Add a database upgrade script
-
-If your module needs to perform extra modifications to the database
-during upgrades, you can add an "upgrader" class which is similar to
-Drupal's hook_update_N.
-
-```bash
-cd com.example.mymodule
-civix generate:upgrader
-vi CRM/Mymodule/Upgrader.php
+php $HOME/composer.phar generate:page --help
 ```
