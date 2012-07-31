@@ -57,5 +57,5 @@ For reference documentation, civix supports a "--help" option.  For example,
 to get reference materials about the "generate:page" command, run:
 
 ```bash
-php $HOME/composer.phar generate:page --help
+civix generate:page --help
 ```
