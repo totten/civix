@@ -13,7 +13,7 @@ class Info extends XML {
         $xml = new SimpleXMLElement('<extension></extension>');
         $xml->addAttribute('key', $ctx['fullName']);
         $xml->addAttribute('type', $ctx['type']);
-        $xml->addChild('downloadUrl', 'http://FIXME/' . $ctx['fullName'] . '.zip');
+        // $xml->addChild('downloadUrl', 'http://FIXME/' . $ctx['fullName'] . '.zip');
         $xml->addChild('file', $ctx['mainFile']);
         $xml->addChild('name', 'FIXME');
         $xml->addChild('description', 'FIXME');
