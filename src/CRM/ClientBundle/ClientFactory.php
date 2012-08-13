@@ -22,7 +22,7 @@ class ClientFactory {
             }
         }
         if (empty($config['server']) && empty($config['conf_path'])) {
-            throw new \Exception('Cannot instantiate API client -- connection options have not been set');
+            throw new \Exception('Cannot instantiate API client -- please set connection options in parameters.yml');
         }
         return new \civicrm_api3($config);
     }
