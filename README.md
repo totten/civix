@@ -3,7 +3,7 @@ Civix is a command-line tool for building CiviCRM extensions.
 ### Requirements
 
 * PHP 5.3+
-* CiviCRM 4.1+ (4.2+ recommended) (http://civicrm.org)
+* CiviCRM 4.1+ (4.2+ strongly recommended) (http://civicrm.org)
 * Composer (http://getcomposer.org)
 * git
 
@@ -51,7 +51,7 @@ php $HOME/composer.phar install
 
 The CiviCRM wiki includes tutorials for building extensions. See:
 
-http://wiki.civicrm.org/confluence/display/CRMDOC42/Creating+CiviCRM+extensions
+http://wiki.civicrm.org/confluence/display/CRMDOC42/Create+an+Extension
 
 For reference documentation, civix supports a "--help" option.  For example,
 to get reference materials about the "generate:page" command, run:
