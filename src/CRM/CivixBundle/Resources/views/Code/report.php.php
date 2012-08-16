@@ -4,7 +4,7 @@ echo "<?php\n";
 
 require_once 'CRM/Report/Form.php';
 
-class <?= preg_replace(':\.:','_',$fullName) ?> extends CRM_Report_Form {
+class <?= $reportClassName ?> extends CRM_Report_Form {
 
   protected $_addressField = FALSE;
 
