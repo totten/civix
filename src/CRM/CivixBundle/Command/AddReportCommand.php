@@ -87,7 +87,7 @@ class AddReportCommand extends ContainerAwareCommand
                   'description' => sprintf("%s (%s)", $input->getArgument('className'), $ctx['fullName']),
                   'class_name' => $ctx['reportClassName'],
                   'report_url' => $ctx['reportUrl'],
-                  'component' => $input->getArgument('component'),
+                  'component' => $input->getArgument('component') == 'null' ? '' : $input->getArgument('component'),
                 ),
               ),
             );
@@ -134,7 +134,7 @@ class AddReportCommand extends ContainerAwareCommand
             'CiviMail',
             'CiviMember',
             'CiviPledge',
-            'Contact',
+            'null',
         );
     }
 }
