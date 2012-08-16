@@ -20,7 +20,7 @@ class InitReportCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('generate:report')
+            ->setName('generate:report-ext')
             ->setDescription('Create a new CiviCRM Report-Extension')
             ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
             ->addArgument('component', InputArgument::REQUIRED, 'A component (CiviGrant, CiviCase, etc)')
