@@ -94,7 +94,6 @@ function _<?= $mainFile ?>_civix_find_files($dir, $pattern) {
   $result = array();
   while (!empty($todos)) {
     $subdir = array_shift($todos);
-    printf("examine [$subdir/$pattern]\n");
     foreach (glob("$subdir/$pattern") as $match) {
       if (!is_dir($match)) {
         $result[] = $match;
