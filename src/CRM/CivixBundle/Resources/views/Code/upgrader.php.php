@@ -12,6 +12,20 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).
 
   /**
+   * Example: Run an external SQL script when the module is installed
+   *
+  function install() {
+    $this->executeSqlFile('sql/myinstall.sql');
+  }
+
+  /**
+   * Example: Run an external SQL script when the module is uninstalled
+   *
+  function uninstall() {
+   $this->executeSqlFile('sql/myuninstall.sql');
+  }
+
+  /**
    * Example: Run a couple simple queries
    *
    * @return TRUE on success

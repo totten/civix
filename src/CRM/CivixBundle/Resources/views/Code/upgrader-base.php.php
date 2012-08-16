@@ -217,6 +217,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     foreach (glob($this->extensionDir . '/sql/*_install.sql') as $file) {
       CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
     }
+    if (is_callable(array($this, 'install'))) {
+      $this->install();
+    }
     $revisions = $this->getRevisions();
     if (!empty($revisions)) {
       $this->setCurrentRevision(max($revisions));
@@ -224,6 +227,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   function onUninstall() {
+    if (is_callable(array($this, 'uninstall'))) {
+      $this->uninstall();
+    }
     foreach (glob($this->extensionDir . '/sql/*_uninstall.sql') as $file) {
       CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
     }
