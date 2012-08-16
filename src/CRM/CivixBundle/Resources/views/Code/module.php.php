@@ -2,13 +2,13 @@
 echo "<?php\n";
 ?>
 
-require_once '<?= $mainFile ?>.civix.php';
+require_once '<?php echo $mainFile ?>.civix.php';
 
 /**
  * Implementation of hook_civicrm_config
  */
-function <?= $mainFile ?>_civicrm_config(&$config) {
-  _<?= $mainFile ?>_civix_civicrm_config($config);
+function <?php echo $mainFile ?>_civicrm_config(&$config) {
+  _<?php echo $mainFile ?>_civix_civicrm_config($config);
 }
 
 /**
@@ -16,22 +16,22 @@ function <?= $mainFile ?>_civicrm_config(&$config) {
  *
  * @param $files array(string)
  */
-function <?= $mainFile ?>_civicrm_xmlMenu(&$files) {
-  _<?= $mainFile ?>_civix_civicrm_xmlMenu($files);
+function <?php echo $mainFile ?>_civicrm_xmlMenu(&$files) {
+  _<?php echo $mainFile ?>_civix_civicrm_xmlMenu($files);
 }
 
 /**
  * Implementation of hook_civicrm_install
  */
-function <?= $mainFile ?>_civicrm_install() {
-  return _<?= $mainFile ?>_civix_civicrm_install();
+function <?php echo $mainFile ?>_civicrm_install() {
+  return _<?php echo $mainFile ?>_civix_civicrm_install();
 }
 
 /**
  * Implementation of hook_civicrm_uninstall
  */
-function <?= $mainFile ?>_civicrm_uninstall() {
-  return _<?= $mainFile ?>_civix_civicrm_uninstall();
+function <?php echo $mainFile ?>_civicrm_uninstall() {
+  return _<?php echo $mainFile ?>_civix_civicrm_uninstall();
 }
 
 /**
@@ -43,8 +43,8 @@ function <?= $mainFile ?>_civicrm_uninstall() {
  * @return mixed  based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
  *                for 'enqueue', returns void
  */
-function <?= $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _<?= $mainFile ?>_civix_civicrm_upgrade($op, $queue);
+function <?php echo $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+  return _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -53,6 +53,6 @@ function <?= $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  * Generate a list of entities to create/deactivate/delete when this module
  * is installed, disabled, uninstalled.
  */
-function <?= $mainFile ?>_civicrm_managed(&$entities) {
-  return _<?= $mainFile ?>_civix_civicrm_managed($entities);
+function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
+  return _<?php echo $mainFile ?>_civix_civicrm_managed($entities);
 }

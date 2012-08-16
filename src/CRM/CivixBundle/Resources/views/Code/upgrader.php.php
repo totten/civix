@@ -6,7 +6,7 @@ $_namespace = preg_replace(':/:','_',$namespace);
 /**
  * Collection of upgrade steps
  */
-class <?= $_namespace ?>_Upgrader extends <?= $_namespace ?>_Upgrader_Base {
+class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgrader_Base {
 
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).

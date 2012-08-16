@@ -8,7 +8,7 @@ $_namespace = preg_replace(':/:','_',$namespace);
 /**
  * Base class which provides helpers to execute upgrade logic
  */
-class <?= $_namespace ?>_Upgrader_Base {
+class <?php echo $_namespace ?>_Upgrader_Base {
 
   /**
    * @var varies, subclass of htis
@@ -41,8 +41,8 @@ class <?= $_namespace ?>_Upgrader_Base {
   static function instance() {
     if (! self::$instance) {
       // FIXME auto-generate
-      self::$instance = new <?= $_namespace ?>_Upgrader(
-        '<?= $fullName ?>',
+      self::$instance = new <?php echo $_namespace ?>_Upgrader(
+        '<?php echo $fullName ?>',
         __DIR__ .'/../../../'
       );
     }
@@ -56,7 +56,7 @@ class <?= $_namespace ?>_Upgrader_Base {
    * task-context; otherwise, this will be non-reentrant.
    *
    * @code
-   * <?= $_namespace ?>_Upgrader_Base::_queueAdapter($ctx, 'methodName', 'arg1', 'arg2');
+   * <?php echo $_namespace ?>_Upgrader_Base::_queueAdapter($ctx, 'methodName', 'arg1', 'arg2');
    * @endcode
    */
   static function _queueAdapter() {

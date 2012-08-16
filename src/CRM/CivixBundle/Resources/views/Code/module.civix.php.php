@@ -8,7 +8,7 @@ $_namespace = preg_replace(':/:','_',$namespace);
 /**
  * (Delegated) Implementation of hook_civicrm_config
  */
-function _<?= $mainFile ?>_civix_civicrm_config(&$config = NULL) {
+function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
   static $configured = FALSE;
   if ($configured) return;
   $configured = TRUE;
@@ -33,7 +33,7 @@ function _<?= $mainFile ?>_civix_civicrm_config(&$config = NULL) {
  *
  * @param $files array(string)
  */
-function _<?= $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
+function _<?php echo $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
   foreach (glob(__DIR__ . '/xml/Menu/*.xml') as $file) {
     $files[] = $file;
   }
@@ -42,9 +42,9 @@ function _<?= $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
 /**
  * Implementation of hook_civicrm_install
  */
-function _<?= $mainFile ?>_civix_civicrm_install() {
-  _<?= $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
+function _<?php echo $mainFile ?>_civix_civicrm_install() {
+  _<?php echo $mainFile ?>_civix_civicrm_config();
+  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     return $upgrader->onInstall();
   }
 }
@@ -52,9 +52,9 @@ function _<?= $mainFile ?>_civix_civicrm_install() {
 /**
  * Implementation of hook_civicrm_uninstall
  */
-function _<?= $mainFile ?>_civix_civicrm_uninstall() {
-  _<?= $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
+function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
+  _<?php echo $mainFile ?>_civix_civicrm_config();
+  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     return $upgrader->onUninstall();
   }
 }
@@ -68,17 +68,17 @@ function _<?= $mainFile ?>_civix_civicrm_uninstall() {
  * @return mixed  based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
  *                for 'enqueue', returns void
  */
-function _<?= $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  if ($upgrader = _<?= $mainFile ?>_civix_upgrader()) {
+function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     return $upgrader->onUpgrade($op, $queue);
   }
 }
 
-function _<?= $mainFile ?>_civix_upgrader() {
-  if (!file_exists(__DIR__.'/<?= $namespace ?>/Upgrader.php')) {
+function _<?php echo $mainFile ?>_civix_upgrader() {
+  if (!file_exists(__DIR__.'/<?php echo $namespace ?>/Upgrader.php')) {
     return NULL;
   } else {
-    return <?= $_namespace ?>_Upgrader_Base::instance();
+    return <?php echo $_namespace ?>_Upgrader_Base::instance();
   }
 }
 
@@ -89,7 +89,7 @@ function _<?= $mainFile ?>_civix_upgrader() {
  * @param $pattern string, glob pattern, eg "*.txt"
  * @return array(string)
  */
-function _<?= $mainFile ?>_civix_find_files($dir, $pattern) {
+function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
   $todos = array($dir);
   $result = array();
   while (!empty($todos)) {
@@ -117,13 +117,13 @@ function _<?= $mainFile ?>_civix_find_files($dir, $pattern) {
  *
  * Find any *.mgd.php files, merge their content, and return.
  */
-function _<?= $mainFile ?>_civix_civicrm_managed(&$entities) {
-  $mgdFiles = _<?= $mainFile ?>_civix_find_files(__DIR__, '*.mgd.php');
+function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
+  $mgdFiles = _<?php echo $mainFile ?>_civix_find_files(__DIR__, '*.mgd.php');
   foreach ($mgdFiles as $file) {
     $es = include $file;
     foreach ($es as $e) {
       if (empty($e['module'])) {
-        $e['module'] = '<?= $fullName ?>';
+        $e['module'] = '<?php echo $fullName ?>';
       }
       $entities[] = $e;
     }
