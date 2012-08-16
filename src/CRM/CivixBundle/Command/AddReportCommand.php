@@ -67,7 +67,7 @@ class AddReportCommand extends ContainerAwareCommand
         }
 
         //// Construct files ////
-        $output->writeln("<info>Initalize report ".$ctx['reportClassName']."</info>");
+        $output->writeln("<info>Initialize report ".$ctx['reportClassName']."</info>");
 
         $ext = new Collection();
         $ext->builders['dirs'] = new Dirs(array(

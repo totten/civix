@@ -58,7 +58,7 @@ class InitReportCommand extends ContainerAwareCommand
 
         $ext = new Collection();
 
-        $output->writeln("<info>Initalize report ".$ctx['fullName']."</info>");
+        $output->writeln("<info>Initialize report ".$ctx['fullName']."</info>");
         $basedir = new Path($ctx['basedir']);
         $ext->builders['dirs'] = new Dirs(array(
             $basedir->string('build'),
