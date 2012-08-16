@@ -46,3 +46,13 @@ function <?= $mainFile ?>_civicrm_uninstall() {
 function <?= $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
   return _<?= $mainFile ?>_civix_civicrm_upgrade($op, $queue);
 }
+
+/**
+ * Implementation of hook_civicrm_managed
+ *
+ * Generate a list of entities to create/deactivate/delete when this module
+ * is installed, disabled, uninstalled.
+ */
+function <?= $mainFile ?>_civicrm_managed(&$entities) {
+  return _<?= $mainFile ?>_civix_civicrm_managed($entities);
+}

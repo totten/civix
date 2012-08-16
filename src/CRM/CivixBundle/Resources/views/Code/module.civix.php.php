@@ -81,3 +81,52 @@ function _<?= $mainFile ?>_civix_upgrader() {
     return <?= $_namespace ?>_Upgrader_Base::instance();
   }
 }
+
+/**
+ * Search directory tree for files which match a glob pattern
+ *
+ * @param $dir string, base dir
+ * @param $pattern string, glob pattern, eg "*.txt"
+ * @return array(string)
+ */
+function _<?= $mainFile ?>_civix_find_files($dir, $pattern) {
+  $todos = array($dir);
+  $result = array();
+  while (!empty($todos)) {
+    $subdir = array_shift($todos);
+    printf("examine [$subdir/$pattern]\n");
+    foreach (glob("$subdir/$pattern") as $match) {
+      if (!is_dir($match)) {
+        $result[] = $match;
+      }
+    }
+    if ($dh = opendir($subdir)) {
+      while (FALSE !== ($entry = readdir($dh))) {
+        $path = $subdir . DIRECTORY_SEPARATOR . $entry;
+        if ($entry == '.' || $entry == '..') {
+        } elseif (is_dir($path)) {
+          $todos[] = $path;
+        }
+      }
+      closedir($dh);
+    }
+  }
+  return $result;
+}
+/**
+ * (Delegated) Implementation of hook_civicrm_managed
+ *
+ * Find any *.mgd.php files, merge their content, and return.
+ */
+function _<?= $mainFile ?>_civix_civicrm_managed(&$entities) {
+  $mgdFiles = _<?= $mainFile ?>_civix_find_files(__DIR__, '*.mgd.php');
+  foreach ($mgdFiles as $file) {
+    $es = include $file;
+    foreach ($es as $e) {
+      if (empty($e['module'])) {
+        $e['module'] = '<?= $fullName ?>';
+      }
+      $entities[] = $e;
+    }
+  }
+}
