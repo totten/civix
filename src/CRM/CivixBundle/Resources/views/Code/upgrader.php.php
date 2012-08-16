@@ -14,14 +14,14 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   /**
    * Example: Run an external SQL script when the module is installed
    *
-  function install() {
+  public function install() {
     $this->executeSqlFile('sql/myinstall.sql');
   }
 
   /**
    * Example: Run an external SQL script when the module is uninstalled
    *
-  function uninstall() {
+  public function uninstall() {
    $this->executeSqlFile('sql/myuninstall.sql');
   }
 
@@ -31,7 +31,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * @return TRUE on success
    * @throws Exception
    *
-  function upgrade_4200() {
+  public function upgrade_4200() {
     $this->ctx->log->info('Applying update 4200');
     CRM_Core_DAO::executeQuery('UPDATE foo SET bar = "whiz"');
     CRM_Core_DAO::executeQuery('DELETE FROM bang WHERE willy = wonka(2)');
@@ -44,7 +44,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    *
    * @return TRUE on success
    * @throws Exception
-  function upgrade_4201() {
+  public function upgrade_4201() {
     $this->ctx->log->info('Applying update 4201');
     // this path is relative to the extension base dir
     $this->executeSqlFile('sql/upgrade_4201.sql');
@@ -57,7 +57,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    *
    * @return TRUE on success
    * @throws Exception
-  function upgrade_4202() {
+  public function upgrade_4202() {
     $this->ctx->log->info('Planning update 4202'); // PEAR Log interface
 
     $this->addTask(ts('Process first step'), 'processPart1', $arg1, $arg2);
@@ -65,9 +65,9 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
     $this->addTask(ts('Process second step'), 'processPart3', $arg5);
     return TRUE;
   }
-  function processPart1($arg1, $arg2) { sleep(10); return TRUE; }
-  function processPart2($arg3, $arg4) { sleep(10); return TRUE; }
-  function processPart3($arg5) { sleep(10); return TRUE; }
+  public function processPart1($arg1, $arg2) { sleep(10); return TRUE; }
+  public function processPart2($arg3, $arg4) { sleep(10); return TRUE; }
+  public function processPart3($arg5) { sleep(10); return TRUE; }
   // */
 
 
@@ -77,7 +77,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    *
    * @return TRUE on success
    * @throws Exception
-  function upgrade_4203() {
+  public function upgrade_4203() {
     $this->ctx->log->info('Planning update 4203'); // PEAR Log interface
 
     $minId = CRM_Core_DAO::singleValueQuery('SELECT coalesce(min(id),0) FROM civicrm_contribution');
