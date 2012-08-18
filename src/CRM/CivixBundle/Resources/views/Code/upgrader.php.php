@@ -26,6 +26,20 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   }
 
   /**
+   * Example: Run a simple query when a module is enabled
+   *
+  public function enable() {
+    CRM_Core_DAO::executeQuery('UPDATE foo SET is_active = 1 WHERE bar = "whiz"');
+  }
+
+  /**
+   * Example: Run a simple query when a module is disabled
+   *
+  public function disable() {
+    CRM_Core_DAO::executeQuery('UPDATE foo SET is_active = 0 WHERE bar = "whiz"');
+  }
+
+  /**
    * Example: Run a couple simple queries
    *
    * @return TRUE on success

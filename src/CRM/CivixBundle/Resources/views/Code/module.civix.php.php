@@ -60,6 +60,30 @@ function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
 }
 
 /**
+ * (Delegated) Implementation of hook_civicrm_enable
+ */
+function _<?php echo $mainFile ?>_civix_civicrm_enable() {
+  _<?php echo $mainFile ?>_civix_civicrm_config();
+  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
+    if (is_callable(array($upgrader, 'onEnable'))) {
+      return $upgrader->onEnable();
+    }
+  }
+}
+
+/**
+ * (Delegated) Implementation of hook_civicrm_disable
+ */
+function _<?php echo $mainFile ?>_civix_civicrm_disable() {
+  _<?php echo $mainFile ?>_civix_civicrm_config();
+  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
+    if (is_callable(array($upgrader, 'onDisable'))) {
+      return $upgrader->onDisable();
+    }
+  }
+}
+
+/**
  * (Delegated) Implementation of hook_civicrm_upgrade
  *
  * @param $op string, the type of operation being performed; 'check' or 'enqueue'

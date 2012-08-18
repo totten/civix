@@ -35,6 +35,20 @@ function <?php echo $mainFile ?>_civicrm_uninstall() {
 }
 
 /**
+ * Implementation of hook_civicrm_enable
+ */
+function <?php echo $mainFile ?>_civicrm_enable() {
+  return _<?php echo $mainFile ?>_civix_civicrm_enable();
+}
+
+/**
+ * Implementation of hook_civicrm_disable
+ */
+function <?php echo $mainFile ?>_civicrm_disable() {
+  return _<?php echo $mainFile ?>_civix_civicrm_disable();
+}
+
+/**
  * Implementation of hook_civicrm_upgrade
  *
  * @param $op string, the type of operation being performed; 'check' or 'enqueue'

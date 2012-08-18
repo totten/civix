@@ -236,6 +236,20 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     $this->setCurrentRevision(NULL);
   }
 
+  public function onEnable() {
+    // stub for possible future use
+    if (is_callable(array($this, 'enable'))) {
+      $this->enable();
+    }
+  }
+
+  public function onDisable() {
+    // stub for possible future use
+    if (is_callable(array($this, 'disable'))) {
+      $this->disable();
+    }
+  }
+
   public function onUpgrade($op, CRM_Queue_Queue $queue = NULL) {
     switch($op) {
       case 'check':
