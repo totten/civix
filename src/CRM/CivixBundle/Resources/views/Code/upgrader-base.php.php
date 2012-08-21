@@ -3,7 +3,7 @@ echo "<?php\n";
 $_namespace = preg_replace(':/:','_',$namespace);
 ?>
 
-// AUTO-GENERATED FILE -- This may be overwritten!
+// AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
 
 /**
  * Base class which provides helpers to execute upgrade logic

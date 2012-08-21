@@ -3,7 +3,7 @@ echo "<?php\n";
 $_namespace = preg_replace(':/:','_',$namespace);
 ?>
 
-// AUTO-GENERATED FILE -- This may be overwritten!
+// AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
 
 /**
  * (Delegated) Implementation of hook_civicrm_config
