@@ -31,6 +31,31 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+        if (file_exists(__DIR__.'/config/parameters.yml')) {
+            $loader->load(__DIR__.'/config/parameters.yml');
+        } else {
+            $loader->load(__DIR__.'/config/parameters.dist.yml');
+        }
+        if (file_exists($this->getHomeDataDir() . '/civix.ini')) {
+            $loader->load($this->getHomeDataDir() . '/civix.ini');
+        }
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
+
+    /* Uncomment to move generated data from "app/*" to "~/.civix"; can help with PHAR packaging
+    public function getLogDir()
+    {
+        return $this->getHomeDataDir() . '/logs';
+    }
+
+    public function getCacheDir()
+    {
+        return $this->getHomeDataDir() . '/cache';
+    }
+    */
+
+    public function getHomeDataDir() {
+        return getenv('HOME') . '/.civix';
+    }
+
 }

@@ -18,11 +18,15 @@ curl -s http://getcomposer.org/installer | php
 # Download civix and dependencies
 git clone git://github.com/totten/civix.git
 cd civix
-cp app/config/parameters.dist.yml app/config/parameters.yml
 php $HOME/composer.phar install
 
 # Add civix to the PATH
 export PATH=$HOME/civix:$PATH
+
+# (Recommended) Link civix with a developmental CiviCRM site.
+# This requires knowing the directory which contains civicrm.settings.php 
+# For example:
+civix config:set civicrm_api3_conf_path /var/www/drupal/sites/default/
 ```
 
 ### Upgrade
