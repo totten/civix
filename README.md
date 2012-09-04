@@ -16,7 +16,7 @@ cd $HOME
 curl -s http://getcomposer.org/installer | php
 
 # Download civix and dependencies
-git clone https://github.com/totten/civix.git
+git clone git://github.com/totten/civix.git
 cd civix
 cp app/config/parameters.yml.dist app/config/parameters.yml
 php $HOME/composer.phar install
