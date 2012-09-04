@@ -1,10 +1,13 @@
 parameters:
     ## To allow "civix" to manipulate your developmental instance
-    ## of CiviCRM, you should provide addresses and credentials.
+    ## of CiviCRM, you should configure local or remote API access.
+
+    # (Local Access) The directory containing civicrm.settings.php
+    civicrm_api3_conf_path:
 
     # (Remote Access) The base URL of the web server (eg 'http://www.example.com/')
     civicrm_api3_server:
-    
+
     # (Remote Access) An optional path-override for the ajax handler
     civicrm_api3_path:
 
@@ -13,10 +16,6 @@ parameters:
 
     # (Remote Access) An API key recorded for a user in civicrm_contact
     civicrm_api3_api_key:
-
-    # (Local Access) The directory containing civicrm.settings.php
-    # NOTE: This currently does not work
-    civicrm_api3_conf_path:
 
     ## Note: The following are not currently used.
 
