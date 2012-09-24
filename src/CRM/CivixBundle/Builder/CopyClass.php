@@ -20,16 +20,18 @@ class CopyClass implements Builder {
     protected $tgtFile;
     protected $xml;
     protected $enable;
+    protected $filter;
 
     /**
      * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
      */
-    function __construct($srcClassName, $tgtClassName, $tgtFile, $overwrite) {
+    function __construct($srcClassName, $tgtClassName, $tgtFile, $overwrite, $filter = FALSE) {
         $this->srcClassName = $srcClassName;
         $this->tgtClassName = $tgtClassName;
         $this->tgtFile = $tgtFile;
         $this->overwrite = $overwrite;
         $this->enable = FALSE;
+        $this->filter = $filter;
     }
 
     function loadInit(&$ctx) {
@@ -59,6 +61,9 @@ class CopyClass implements Builder {
             $content = strtr($content, array(
                 $this->srcClassName => $this->tgtClassName,
             ));
+            if (is_callable($this->filter)) {
+                $content = call_user_func($this->filter, $content);
+            }
             file_put_contents($this->tgtFile, $content);
         }
     }

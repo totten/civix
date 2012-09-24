@@ -18,6 +18,8 @@ use CRM\CivixBundle\Utils\Path;
 
 class AddSearchCommand extends ContainerAwareCommand
 {
+    const GENERIC_SEARCH_TEMPLATE = 'CRM/Contact/Form/Search/Custom.tpl';
+
     protected function configure()
     {
         $this
@@ -47,7 +49,8 @@ class AddSearchCommand extends ContainerAwareCommand
         $ctx['searchClassName'] = strtr($ctx['namespace'], '/', '_') . '_Search_Custom_' . $input->getArgument('className');
         $ctx['searchClassFile'] = $basedir->string(strtr($ctx['searchClassName'], '_', '/') . '.php');
         $ctx['searchMgdFile'] = $basedir->string(strtr($ctx['searchClassName'], '_', '/') . '.mgd.php');
-//tpl        $ctx['searchTplFile'] = $basedir->string('templates', strtr($ctx['searchClassName'], '_', '/') . '.tpl');
+        $ctx['searchTplRelFile'] = strtr($ctx['searchClassName'], '_', '/') . '.tpl';
+        $ctx['searchTplFile'] = $basedir->string('templates', $ctx['searchTplRelFile']);
 
         //// Construct files ////
         $output->writeln("<info>Initialize search ".$ctx['searchClassName']."</info>");
@@ -56,21 +59,20 @@ class AddSearchCommand extends ContainerAwareCommand
         $ext->builders['dirs'] = new Dirs(array(
             dirname($ctx['searchClassFile']),
             dirname($ctx['searchMgdFile']),
-//tpl            dirname($ctx['searchTplFile']),
-        ));
+        ));;
 
         if (!file_exists($ctx['searchMgdFile'])) {
             $mgdEntities = array(
-              array(
-                'name' => $ctx['searchClassName'],
-                'entity' => 'CustomSearch',
-                'params' => array(
-                  'version' => 3,
-                  'label' => $input->getArgument('className'),
-                  'description' => sprintf("%s (%s)", $input->getArgument('className'), $ctx['fullName']),
-                  'class_name' => $ctx['searchClassName'],
+                array(
+                    'name' => $ctx['searchClassName'],
+                    'entity' => 'CustomSearch',
+                    'params' => array(
+                        'version' => 3,
+                        'label' => $input->getArgument('className'),
+                        'description' => sprintf("%s (%s)", $input->getArgument('className'), $ctx['fullName']),
+                        'class_name' => $ctx['searchClassName'],
+                    ),
                 ),
-              ),
             );
             $header = "// This file declares a managed database record of type \"CustomSearch\".\n"
                 . "// The record will be automatically inserted, updated, or deleted from the\n"
@@ -84,20 +86,46 @@ class AddSearchCommand extends ContainerAwareCommand
             // we need bootstrap to set up include path to locate file -- but that's it
             $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
             if (!$civicrm_api3 || !$civicrm_api3->local) {
-              $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-              return;
+                $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
+                return;
             }
 
-//tpl            $origTplFile = 'templates/' . preg_replace('/_/','/', $srcClassName) . '.tpl';
-            $ext->builders['search.php'] = new CopyClass($srcClassName, $ctx['searchClassName'], $ctx['searchClassFile'], FALSE);
-//tpl            $ext->builders['page.tpl.php'] = new CopyFile($origTplFile, $ctx['searchTplFile'], FALSE);
+            if (self::findTpl($srcClassName) == self::GENERIC_SEARCH_TEMPLATE) {
+                $ext->builders['search.php'] = new CopyClass($srcClassName, $ctx['searchClassName'], $ctx['searchClassFile'], FALSE);
+            } else {
+                $ext->builders['dirs']->paths[] = dirname($ctx['searchTplFile']);
+                $origTplFile = self::findTpl($srcClassName);
+                $ext->builders['search.php'] = new CopyClass($srcClassName, $ctx['searchClassName'], $ctx['searchClassFile'], FALSE,
+                  function($phpSrc) use ($origTplFile, $ctx) {
+                    // i could wile away the hours
+                    // conferring with the flowers
+                    // consulting with the rain
+                    // if i only had a parser
+                    return strtr($phpSrc, array(
+                      $origTplFile => $ctx['searchTplRelFile'],
+                    ));
+                  }
+                );
+                $ext->builders['page.tpl.php'] = new CopyFile('templates/' . $origTplFile, $ctx['searchTplFile'], FALSE);
+            }
         } else {
             $ext->builders['search.php'] = new Template('CRMCivixBundle:Code:search.php.php', $ctx['searchClassFile'], FALSE, $this->getContainer()->get('templating'));
-//tpl            $ext->builders['page.tpl.php'] = new Template('CRMCivixBundle:Code:search.tpl.php', $ctx['searchTplFile'], FALSE, $this->getContainer()->get('templating'));
+            // $ext->builders['page.tpl.php'] = new Template('CRMCivixBundle:Code:search.tpl.php', $ctx['searchTplFile'], FALSE, $this->getContainer()->get('templating'));
         }
 
         $ext->init($ctx);
         $ext->save($ctx, $output);
     }
 
+    /**
+     * Determine which template file correlates to the given controller
+     *
+     * @param string $srcClassName
+     * @return string
+     */
+    protected static function findTpl($srcClassName) {
+        $formValues = array();
+        $search = new $srcClassName($formValues);
+        return $search->templateFile();
+    }
 }
