@@ -31,6 +31,7 @@ class TestRunCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Find the main phpunit
         $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
         if (!$civicrm_api3 || !$civicrm_api3->local) {
             $output->writeln("<error>'test' requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
@@ -38,7 +39,7 @@ class TestRunCommand extends ContainerAwareCommand
         }
         global $civicrm_root;
         if (empty($civicrm_root) || !is_dir($civicrm_root)) {
-            $output->writeln("<error>Failed to determine CiviCRM root path</error>");
+            $output->writeln("<error>Failed to locate CiviCRM root path: $civicrm_root</error>");
             return;
         }
         $test_settings_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.php";
@@ -54,16 +55,17 @@ class TestRunCommand extends ContainerAwareCommand
             return;
         }
 
+        // Run phpunit with our "tests" directory
         $tests_dir = implode(DIRECTORY_SEPARATOR, array(getcwd(), 'tests', 'phpunit'));
         chdir("$civicrm_root/tools");
         $process = new Process(
             self::createPhpShellCommand($phpunit_bin, '--include-path', $tests_dir, $input->getArgument('testClass')),
             null, null, null, self::TIMEOUT
         );
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
+        $process->run(function ($type, $buffer) use ($output) {
+            $output->write($buffer);
         });
-        echo "\n";
+        $output->write("\n");
     }
 
     /**
@@ -78,7 +80,6 @@ class TestRunCommand extends ContainerAwareCommand
         $args = func_get_args(); // get $script and any others
         $escArgs = array_map('escapeshellarg', $args);
         $cmd = $php.' '.implode(' ', $escArgs);
-        printf("cmd [%s]\n", $cmd);
         return $cmd;
     }
 
