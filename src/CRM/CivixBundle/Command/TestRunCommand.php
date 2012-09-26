@@ -54,6 +54,17 @@ class TestRunCommand extends ContainerAwareCommand
             $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
             return;
         }
+        if (! self::checkExtensionSettings($test_settings_path)) {
+            $output->writeln("<error>Missing extension settings in $test_settings_path</error>");
+            $output->writeln("<error>Please add statements like:</error>");
+            $output->writeln('// BEGIN: EXTENSION SETTINGS FOR TEST ENVIRONMENT');
+            $output->writeln('global $civicrm_setting;');
+            $output->writeln('$civicrm_setting[\'Extension Preferences\'][\'ext_repo_url\'] = FALSE;');
+            $output->writeln('$civicrm_setting[\'Directory Preferences\'][\'extensionsDir\'] = \'/var/www/path/to/extensions\';');
+            $output->writeln('$civicrm_setting[\'URL Preferences\'][\'extensionsURL\'] = \'http://url/to/extensions\';');
+            $output->writeln('// END: EXTENSION SETTINGS FOR TEST ENVIRONMENT');
+            return;
+        }
 
         // Run phpunit with our "tests" directory
         $tests_dir = implode(DIRECTORY_SEPARATOR, array(getcwd(), 'tests', 'phpunit'));
@@ -90,5 +101,38 @@ class TestRunCommand extends ContainerAwareCommand
             throw new \RuntimeException('The php executable could not be found, add it to your PATH environment variable and try again');
         }
         return $phpPath;
+    }
+
+    protected static function checkExtensionSettings($file) {
+        /*
+        // this doesn't work because $file includes statements which require preconditions
+        $code = '
+                require_once "'.$file.'";
+                if (!$GLOBALS["Extension Preferences"]["ext_repo_url"] !== FALSE) {
+                    print "ext_repo_url\n";
+                }
+              ';
+        printf("[$code]\n");
+        $process = new Process(
+            self::createPhpShellCommand('-r', $code), null, null, null, self::TIMEOUT
+        );
+        $result = TRUE;
+        $process->run(function ($type, $buffer) use ($output, &$result) {
+            $output->write($buffer);
+            $result = FALSE;
+        });
+        return $result;
+        */
+        $content = file_get_contents($file);
+        if (!preg_match('/civicrm_setting..Extension Preferences....ext_repo_url../', $content)) {
+            return FALSE;
+        }
+        if (!preg_match('/civicrm_setting..Directory Preferences....extensionsDir../', $content)) {
+            return FALSE;
+        }
+        if (!preg_match('/civicrm_setting..URL Preferences....extensionsURL../', $content)) {
+            return FALSE;
+        }
+        return TRUE;
     }
 }
