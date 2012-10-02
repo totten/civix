@@ -1,6 +1,8 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Utils\Path;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +22,13 @@ use Symfony\Component\Process\Process;
 class TestRunCommand extends ContainerAwareCommand
 {
     const TIMEOUT = 1000;
+
+    /**
+     * The maximum number of seconds to allow the PHPUnit bootstrap file to persist
+     */
+    //const BOOTSTRAP_TTL = 10*60;
+    const BOOTSTRAP_TTL = 0; // FIXME
+
     protected function configure()
     {
         $this
@@ -31,6 +40,16 @@ class TestRunCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $basedir = new Path(getcwd());
+
+        // Find extension metadata
+        $info = new Info($basedir->string('info.xml'));
+        $info->load($ctx);
+        if ($info->getType() != 'module') {
+            $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</errror>');
+            return;
+        }
+
         // Find the main phpunit
         $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
         if (!$civicrm_api3 || !$civicrm_api3->local) {
@@ -54,6 +73,8 @@ class TestRunCommand extends ContainerAwareCommand
             $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
             return;
         }
+        /*
+        // FIXME: invert
         if (! self::checkExtensionSettings($test_settings_path)) {
             $output->writeln("<error>Missing extension settings in $test_settings_path</error>");
             $output->writeln("<error>Please add statements like:</error>");
@@ -64,13 +85,18 @@ class TestRunCommand extends ContainerAwareCommand
             $output->writeln('$civicrm_setting[\'URL Preferences\'][\'extensionsURL\'] = \'http://url/to/extensions\';');
             $output->writeln('// END: EXTENSION SETTINGS FOR TEST ENVIRONMENT');
             return;
+        }*/
+        $phpunit_boot = $this->getBootstrapFile($info->getKey());
+        if (empty($phpunit_boot) || ! file_exists($phpunit_boot)) {
+            $output->writeln("<error>Failed to create PHPUnit bootstrap file</error>");
+            return;
         }
 
         // Run phpunit with our "tests" directory
         $tests_dir = implode(DIRECTORY_SEPARATOR, array(getcwd(), 'tests', 'phpunit'));
         chdir("$civicrm_root/tools");
         $process = new Process(
-            self::createPhpShellCommand($phpunit_bin, '--include-path', $tests_dir, $input->getArgument('testClass')),
+            self::createPhpShellCommand($phpunit_bin, '--include-path', $tests_dir, '--bootstrap', $phpunit_boot, $input->getArgument('testClass')),
             null, null, null, self::TIMEOUT
         );
         $process->run(function ($type, $buffer) use ($output) {
@@ -134,5 +160,28 @@ class TestRunCommand extends ContainerAwareCommand
             return FALSE;
         }
         return TRUE;
+    }
+
+    /**
+     * Find (or auto-create) a PHP file with information for bootstrapping the test environment
+     *
+     * @param string $key the extension for which tests will be run
+     * @return string temp file path
+     */
+    protected function getBootstrapFile($key) {
+        $file = $this->getContainer()->get('kernel')->getCacheDir() . "/civix-phpunit.{$key}.php";
+        if (!file_exists($file) || filemtime($file) < time()-self::BOOTSTRAP_TTL) {
+            $template_vars = array();
+            $template_vars['civicrm_setting'] = array();
+            // disable extension searching
+            $template_vars['civicrm_setting']['Extension Preferences']['ext_repo_url'] = FALSE;
+            // use the same source tree for linked Civi runtime and test Civi runtime
+            $template_vars['civicrm_setting']['Directory Preferences']['extensionsDir'] = \CRM_Core_BAO_Setting::getItem('Directory Preferences', 'extensionsDir');
+            // extensionsURL of linked Civi runtime may differ from ideal value for test Civi runtime, but that's OK because extensionsURL defines *static* resources
+            $template_vars['civicrm_setting']['URL Preferences']['extensionsURL'] = \CRM_Core_BAO_Setting::getItem('URL Preferences', 'extensionsURL');
+
+            file_put_contents($file, $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:phpunit-boot.php.php', $template_vars));
+        }
+        return $file;
     }
 }
