@@ -26,8 +26,7 @@ class TestRunCommand extends ContainerAwareCommand
     /**
      * The maximum number of seconds to allow the PHPUnit bootstrap file to persist
      */
-    //const BOOTSTRAP_TTL = 10*60;
-    const BOOTSTRAP_TTL = 0; // FIXME
+    const BOOTSTRAP_TTL = 600;
 
     protected function configure()
     {
@@ -35,6 +34,7 @@ class TestRunCommand extends ContainerAwareCommand
             ->setName('test')
             ->setDescription('Run a unit test')
             ->addArgument('testClass', InputArgument::REQUIRED, 'Test class name')
+            ->addOption('clear', null, InputOption::VALUE_NONE, 'Clear the cached PHPUnit bootstrap data')
         ;
     }
 
@@ -86,7 +86,7 @@ class TestRunCommand extends ContainerAwareCommand
             $output->writeln('// END: EXTENSION SETTINGS FOR TEST ENVIRONMENT');
             return;
         }*/
-        $phpunit_boot = $this->getBootstrapFile($info->getKey());
+        $phpunit_boot = $this->getBootstrapFile($info->getKey(), $input->getOption('clear'));
         if (empty($phpunit_boot) || ! file_exists($phpunit_boot)) {
             $output->writeln("<error>Failed to create PHPUnit bootstrap file</error>");
             return;
@@ -168,9 +168,9 @@ class TestRunCommand extends ContainerAwareCommand
      * @param string $key the extension for which tests will be run
      * @return string temp file path
      */
-    protected function getBootstrapFile($key) {
+    protected function getBootstrapFile($key, $clear = FALSE) {
         $file = $this->getContainer()->get('kernel')->getCacheDir() . "/civix-phpunit.{$key}.php";
-        if (!file_exists($file) || filemtime($file) < time()-self::BOOTSTRAP_TTL) {
+        if ($clear || !file_exists($file) || filemtime($file) < time()-self::BOOTSTRAP_TTL) {
             $template_vars = array();
             $template_vars['civicrm_setting'] = array();
             // disable extension searching
