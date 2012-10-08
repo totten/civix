@@ -179,6 +179,7 @@ class TestRunCommand extends ContainerAwareCommand
             $template_vars['civicrm_setting']['Directory Preferences']['extensionsDir'] = \CRM_Core_BAO_Setting::getItem('Directory Preferences', 'extensionsDir');
             // extensionsURL of linked Civi runtime may differ from ideal value for test Civi runtime, but that's OK because extensionsURL defines *static* resources
             $template_vars['civicrm_setting']['URL Preferences']['extensionsURL'] = \CRM_Core_BAO_Setting::getItem('URL Preferences', 'extensionsURL');
+            $template_vars['civicrm_setting']['Test']['test_extensions'] = array_keys(\CRM_Core_PseudoConstant::getExtensions());
 
             file_put_contents($file, $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:phpunit-boot.php.php', $template_vars));
         }
