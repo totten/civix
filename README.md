@@ -3,7 +3,7 @@ Civix is a command-line tool for building CiviCRM extensions.
 ### Requirements
 
 * PHP 5.3+
-* CiviCRM 4.1+ (4.2+ strongly recommended) (http://civicrm.org)
+* CiviCRM 4.2+ (installed from SVN with r42790+ -- http://svn.civicrm.org/civicrm)
 * Composer (http://getcomposer.org)
 * git
 
@@ -23,8 +23,8 @@ php $HOME/composer.phar install
 # Add civix to the PATH
 export PATH=$HOME/civix:$PATH
 
-# (Recommended) Link civix with a developmental CiviCRM site.
-# This requires knowing the directory which contains civicrm.settings.php 
+# Link civix with a developmental CiviCRM site/source-tree.
+# This requires knowing the directory which contains civicrm.settings.php
 # For example:
 civix config:set civicrm_api3_conf_path /var/www/drupal/sites/default/
 ```
