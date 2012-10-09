@@ -99,7 +99,11 @@ class TestRunCommand extends ContainerAwareCommand
     /**
      * Generate the shell statement for invoking a PHP script
      *
-     * @param $script
+     * @code
+     * $shellCommand = createPhpShellCommand('/path/to/my-script.php', 'argument 1', 'argument 2', ...);
+     * @endCode
+     *
+     * @param string $script
      * @return string a valid shell command
      */
     protected static function createPhpShellCommand($script)
