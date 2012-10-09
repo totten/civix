@@ -9,16 +9,16 @@ class Module implements Builder {
     function __construct($templateEngine) {
         $this->templateEngine = $templateEngine;
     }
-    
+
     function loadInit(&$ctx) {
     }
-    
+
     function init(&$ctx) {
     }
-    
+
     function load(&$ctx) {
     }
-    
+
     function save(&$ctx, OutputInterface $output) {
         $basedir = new Path($ctx['basedir']);
         $module = new Template(
@@ -28,7 +28,7 @@ class Module implements Builder {
             $this->templateEngine
         );
         $module->save($ctx, $output);
-        
+
         $moduleCivix = new Template(
             'CRMCivixBundle:Code:module.civix.php.php',
             $basedir->string($ctx['mainFile'] . '.civix.php'),

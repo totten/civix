@@ -32,7 +32,7 @@ class AddPageCommand extends ContainerAwareCommand
         if (!preg_match('/^civicrm\//', $input->getArgument('webPath'))) {
             throw new Exception("Web page path must begin with 'civicrm/'");
         }
-    
+
         $ctx = array();
         $ctx['type'] = 'module';
         $ctx['basedir'] = rtrim(getcwd(),'/');
@@ -46,14 +46,14 @@ class AddPageCommand extends ContainerAwareCommand
             $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</errror>');
             return;
         }
-        
+
         $dirs = new Dirs(array(
             $basedir->string('xml','Menu'),
             $basedir->string($ctx['namespace'],'Page'),
             $basedir->string('templates', $ctx['namespace'],'Page'),
         ));
         $dirs->save($ctx, $output);
-        
+
         $menu = new Menu($basedir->string('xml', 'Menu', $ctx['mainFile'] . '.xml'));
         $menu->loadInit($ctx);
         if (!$menu->hasPath($input->getArgument('webPath'))) {
@@ -66,7 +66,7 @@ class AddPageCommand extends ContainerAwareCommand
                 $input->getArgument('webPath')
             ));
         }
-        
+
         $phpFile = $basedir->string($ctx['namespace'], 'Page', $ctx['pageClassName'] . '.php');
         if (!file_exists($phpFile)) {
             $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
@@ -74,7 +74,7 @@ class AddPageCommand extends ContainerAwareCommand
         } else {
             $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $phpFile));
         }
-        
+
         $tplFile = $basedir->string('templates', $ctx['namespace'], 'Page', $ctx['pageClassName'] . '.tpl');
         if (!file_exists($tplFile)) {
             $output->writeln(sprintf('<info>Write %s</info>', $tplFile));
@@ -82,7 +82,7 @@ class AddPageCommand extends ContainerAwareCommand
         } else {
             $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $tplFile));
         }
-        
+
         $module = new Module($this->getContainer()->get('templating'));
         $module->loadInit($ctx);
         $module->save($ctx, $output);

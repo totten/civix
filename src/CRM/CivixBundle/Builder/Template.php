@@ -23,16 +23,16 @@ class Template implements Builder {
         $this->templateEngine = $templateEngine;
         $this->enable = FALSE;
     }
-    
+
     function loadInit(&$ctx) {
     }
-    
+
     function init(&$ctx) {
     }
-    
+
     function load(&$ctx) {
     }
-    
+
     /**
      * Write the xml document
      */

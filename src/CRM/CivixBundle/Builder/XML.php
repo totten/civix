@@ -16,7 +16,7 @@ class XML implements Builder {
     function __construct($path) {
         $this->path = $path;
     }
-    
+
     /**
      * Get the xml document
      *
@@ -25,11 +25,11 @@ class XML implements Builder {
     function get() {
         return $this->xml;
     }
-    
+
     function set($xml) {
         $this->xml = $xml;
     }
-    
+
     function loadInit(&$ctx) {
         if (file_exists($this->path)) {
             $this->load($ctx);
@@ -37,13 +37,13 @@ class XML implements Builder {
             $this->init($ctx);
         }
     }
-    
+
     /**
      * Initialize a new XML document
      */
     function init(&$ctx) {
     }
-    
+
     /**
      * Read from file
      */
@@ -53,13 +53,13 @@ class XML implements Builder {
         $dom->xinclude( );
         $this->xml = simplexml_import_dom( $dom );
     }
-    
+
     /**
      * Write the xml document
      */
     function save(&$ctx, OutputInterface $output) {
         $output->writeln("<info>Write " . $this->path . "</info>");
-        
+
         // force pretty printing with encode/decode cycle
         $outXML = $this->get()->saveXML();
         $xml = new DOMDocument();

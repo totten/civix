@@ -39,7 +39,7 @@ class BuildCommand extends ContainerAwareCommand
             $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</errror>');
             return;
         }
-        
+
         $ctx['zipFile'] = $basedir->string('build', $ctx['fullName'] . '.zip');
         $cmdArgs = array(
             '-r',
@@ -51,7 +51,7 @@ class BuildCommand extends ContainerAwareCommand
             '*.bak'
         );
         $cmd = 'zip ' . implode(' ', array_map('escapeshellarg', $cmdArgs));
-        
+
         chdir($basedir->string('..'));
         $process = new Process($cmd);
         $process->run(function ($type, $buffer) use ($output) {

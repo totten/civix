@@ -39,7 +39,7 @@ class InitCommand extends ContainerAwareCommand
             return;
         }
         $ext = new Collection();
-        
+
         $output->writeln("<info>Initalize module ".$ctx['fullName']."</info>");
         $basedir = new Path($ctx['basedir']);
         $ext->builders['dirs'] = new Dirs(array(
@@ -50,7 +50,7 @@ class InitCommand extends ContainerAwareCommand
         ));
         $ext->builders['info'] = new Info($basedir->string('info.xml'));
         $ext->builders['module'] = new Module($this->getContainer()->get('templating'));
-        
+
         $ext->init($ctx);
         $ext->save($ctx, $output);
     }
