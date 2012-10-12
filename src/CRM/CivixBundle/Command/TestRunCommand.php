@@ -33,7 +33,7 @@ class TestRunCommand extends ContainerAwareCommand
         $this
             ->setName('test')
             ->setDescription('Run a unit test')
-            ->addArgument('testClass', InputArgument::REQUIRED, 'Test class name')
+            ->addArgument('testClass', InputArgument::REQUIRED, 'Test class name (eg "CRM_Myextension_MyTest")')
             ->addOption('clear', null, InputOption::VALUE_NONE, 'Clear the cached PHPUnit bootstrap data')
         ;
     }
