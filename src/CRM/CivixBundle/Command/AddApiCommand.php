@@ -58,8 +58,8 @@ class AddApiCommand extends ContainerAwareCommand
             throw new Exception("Action name must be alphanumeric camel-case");
         }
 
-        $ctx['entityNameCamel'] = $input->getArgument('entityName');
-        $ctx['actionNameCamel'] = $input->getArgument('actionName');
+        $ctx['entityNameCamel'] = ucfirst($input->getArgument('entityName'));
+        $ctx['actionNameCamel'] = ucfirst($input->getArgument('actionName'));
         $ctx['apiFunction'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], $ctx['actionNameCamel'], self::API_VERSION));
         $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
 
