@@ -22,7 +22,7 @@ class AddPageCommand extends ContainerAwareCommand
         $this
             ->setName('generate:page')
             ->setDescription('Add a basic web page to a CiviCRM Module-Extension')
-            ->addArgument('className', InputArgument::REQUIRED, 'Page class name (eg "MyPage")')
+            ->addArgument('className', InputArgument::REQUIRED, 'Base name of the page class name (eg "MyPage")')
             ->addArgument('webPath', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")')
         ;
     }
@@ -31,6 +31,9 @@ class AddPageCommand extends ContainerAwareCommand
     {
         if (!preg_match('/^civicrm\//', $input->getArgument('webPath'))) {
             throw new Exception("Web page path must begin with 'civicrm/'");
+        }
+        if (!preg_match('/^[A-Z][A-Za-z0-9_]*$/', $input->getArgument('className'))) {
+            throw new Exception("Class name should be valid (alphanumeric beginning with uppercase)");
         }
 
         $ctx = array();
@@ -45,6 +48,11 @@ class AddPageCommand extends ContainerAwareCommand
         if ($attrs['type'] != 'module') {
             $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</errror>');
             return;
+        }
+
+        if (preg_match('/^CRM_/', $input->getArgument('className')) || preg_match('/_Page_/', $input->getArgument('className'))) {
+            $prefix = strtr($ctx['namespace'], '/', '_') . '_Page_';
+            throw new Exception("Class name looks suspicious. Please note the final class will be automatically prefixed with \"{$prefix}\"");
         }
 
         $dirs = new Dirs(array(
