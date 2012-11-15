@@ -23,7 +23,7 @@ class AddReportCommand extends ContainerAwareCommand
         $this
             ->setName('generate:report')
             ->setDescription('Add a report to a module-extension')
-            ->addArgument('className', InputArgument::REQUIRED, 'Report class name (eg "MyReport")')
+            ->addArgument('className', InputArgument::REQUIRED, 'Base name of the report class (eg "MyReport")')
             ->addArgument('component', InputArgument::REQUIRED, 'CiviCRM Component (' . implode(', ', $this->getReportComponents()) . ')')
             ->addOption('webPath', null, InputOption::VALUE_OPTIONAL, 'Path which maps to this report (eg "civicrm/report/my-report")')
             ->addOption('copy', null, InputOption::VALUE_OPTIONAL, 'Full class name of an existing report which should be copied (eg "CRM_Report_Form_Activity")')
@@ -32,7 +32,7 @@ class AddReportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //// Figure out template data ////
+        //// Figure out template data and put it in $ctx ////
         $ctx = array();
         $ctx['type'] = 'module';
         $ctx['basedir'] = rtrim(getcwd(),'/');
@@ -76,6 +76,7 @@ class AddReportCommand extends ContainerAwareCommand
             dirname($ctx['reportTplFile']),
         ));
 
+        // Register the report in the DB using api/v3/ReportTemplate and hook_civicrm_managed
         if (!file_exists($ctx['reportMgdFile'])) {
             $mgdEntities = array(
               array(
@@ -99,8 +100,9 @@ class AddReportCommand extends ContainerAwareCommand
             $ext->builders['mgd.php']->set($mgdEntities);
         }
 
+        // Create .php & .tpl by either copying from core source tree or using a civix template
         if ($srcClassName = $input->getOption('copy')) {
-            // we need bootstrap to set up include path to locate file -- but that's it
+            // To locate the original file, we need to bootstrap Civi and search the include path
             $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
             if (!$civicrm_api3 || !$civicrm_api3->local) {
               $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
