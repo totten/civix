@@ -25,8 +25,12 @@ export PATH=$HOME/civix:$PATH
 
 # Link civix with a developmental CiviCRM site/source-tree.
 # This requires knowing the directory which contains civicrm.settings.php
-# For example:
+# For example, using a default installation of Drupal-CiviCRM with Debian/Ubuntu,
+# the path might be "/var/www/drupal/sites/default/".
 civix config:set civicrm_api3_conf_path /var/www/drupal/sites/default/
+
+# To validate that the link is working, run:
+civix civicrm:ping
 ```
 
 ### Upgrade
