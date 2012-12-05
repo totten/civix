@@ -8,7 +8,7 @@ Civix is a command-line tool for building CiviCRM extensions.
 * git
 * (MAMP, WAMP, XAMPP, etc) PHP command-line configuration (http://wiki.civicrm.org/confluence/display/CRMDOC42/Setup+Command-Line+PHP)
 
-### Installation
+### Unix/Mac Installation
 
 ```bash
 cd $HOME
@@ -23,7 +23,49 @@ php $HOME/composer.phar install
 
 # Add civix to the PATH
 export PATH=$HOME/civix:$PATH
+```
 
+### Windows Installation
+
+```bash
+# Install composer
+In a browser, visit http://getcomposer.org
+Click on the download button.
+Scroll down to Windows Installer and click on Composer-Setup.exe.
+Choose Run when prompted.
+
+# Install git
+If you don't already have git, then in a browser visit http://git-scm.com/download/win.
+Choose Run when prompted.
+Leave all the defaults.
+
+# Download civix
+Decide where you want to install civix. You might want to put it in C:\Program Files, but you might get hassled about admin rights, in which case you can pick somewhere else, like C:\users\<your name>.
+From the start menu choose All Programs -> Git -> Git Bash.
+In the window that appears, type:
+  cd "/c/users/<your name>"
+  (note the forward slashes)
+git clone git://github.com/totten/civix.git
+exit
+
+# Download dependencies
+In windows explorer, navigate to C:\users\<your name> (or whereever you installed civix).
+Shift-right-click on the civix folder.
+Choose open command window here.
+In the window that appears, type:
+  composer install
+
+# Add civix to the PATH
+Either temporarily add it:
+set PATH=%PATH%;C:\users\<your name>\civix
+
+OR permanently:
+Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
+```
+
+### Post-install Configuration, all operating systems
+
+```bash
 # Link civix with a developmental CiviCRM site/source-tree.
 # This requires knowing the directory which contains civicrm.settings.php
 # For example, using a default installation of Drupal-CiviCRM with Debian/Ubuntu,
