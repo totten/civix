@@ -11,6 +11,7 @@ use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Menu;
 use CRM\CivixBundle\Builder\Module;
+use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
@@ -19,6 +20,10 @@ class AddApiCommand extends ContainerAwareCommand
 {
     const API_VERSION = 3;
 
+    public static function getSchedules() {
+        return array('Daily','Hourly','Always');
+    }
+
     protected function configure()
     {
         $this
@@ -26,6 +31,7 @@ class AddApiCommand extends ContainerAwareCommand
             ->setDescription('Add a new API function to a CiviCRM Module-Extension')
             ->addArgument('entityName', InputArgument::REQUIRED, 'The entity against which the action runs (eg "Contact", "MyEntity")')
             ->addArgument('actionName', InputArgument::REQUIRED, 'The action which will be created (eg "Create", "MyAction")')
+            ->addOption('schedule', null, InputOption::VALUE_OPTIONAL, 'Schedule this action as a recurring cron job ('.implode(', ', self::getSchedules()).') [For CiviCRM 4.3+]')
         ;
     }
 
@@ -57,11 +63,15 @@ class AddApiCommand extends ContainerAwareCommand
         if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('actionName'))) {
             throw new Exception("Action name must be alphanumeric camel-case");
         }
+        if ($input->getOption('schedule') && !in_array($input->getOption('schedule'), self::getSchedules())) {
+            throw new Exception("Schedule must be one of: " . implode(', ', self::getSchedules()));
+        }
 
         $ctx['entityNameCamel'] = ucfirst($input->getArgument('entityName'));
         $ctx['actionNameCamel'] = ucfirst($input->getArgument('actionName'));
         $ctx['apiFunction'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], $ctx['actionNameCamel'], self::API_VERSION));
         $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
+        $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
 
         $dirs = new Dirs(array(
             dirname($ctx['apiFile'])
@@ -73,6 +83,35 @@ class AddApiCommand extends ContainerAwareCommand
             file_put_contents($ctx['apiFile'], $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:api.php.php', $ctx));
         } else {
             $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiFile']));
+        }
+
+        if ($input->getOption('schedule')) {
+            if (!file_exists($ctx['apiCronFile'])) {
+                $mgdEntities = array(
+                  array(
+                    'name' => 'Cron:' . $ctx['entityNameCamel'] . '.' . $ctx['actionNameCamel'],
+                    'entity' => 'Job',
+                    'params' => array(
+                      'version' => 3,
+                      'name' => sprintf('Call %s.%s API', $ctx['entityNameCamel'], $ctx['actionNameCamel']),
+                      'description' => sprintf('Call %s.%s API', $ctx['entityNameCamel'], $ctx['actionNameCamel']),
+                      'run_frequency' => $input->getOption('schedule'),
+                      'api_entity' => $ctx['entityNameCamel'],
+                      'api_action' => $ctx['actionNameCamel'],
+                      'parameters' => '',
+                    ),
+                  ),
+                );
+                $header = "// This file declares a managed database record of type \"Job\".\n"
+                    . "// The record will be automatically inserted, updated, or deleted from the\n"
+                    . "// database as appropriate. For more details, see \"hook_civicrm_managed\" at:\n"
+                    . "// http://wiki.civicrm.org/confluence/display/CRMDOC42/Hook+Reference";
+                $mgdBuilder = new PhpData($ctx['apiCronFile'], $header);
+                $mgdBuilder->set($mgdEntities);
+                $mgdBuilder->save($ctx, $output);
+            } else {
+                $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiCronFile']));
+            }
         }
 
         $module = new Module($this->getContainer()->get('templating'));
