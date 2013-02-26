@@ -51,7 +51,7 @@ class InitCommand extends ContainerAwareCommand
         $ext->builders['info'] = new Info($basedir->string('info.xml'));
         $ext->builders['module'] = new Module($this->getContainer()->get('templating'));
 
-        $ext->init($ctx);
+        $ext->loadInit($ctx);
         $ext->save($ctx, $output);
     }
 }

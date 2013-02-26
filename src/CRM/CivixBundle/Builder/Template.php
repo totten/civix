@@ -37,7 +37,7 @@ class Template implements Builder {
      * Write the xml document
      */
     function save(&$ctx, OutputInterface $output) {
-        if (file_exists($this->path) && $this->overwrite == 'ignore') {
+        if (file_exists($this->path) && $this->overwrite === 'ignore') {
             // do nothing
         } elseif (file_exists($this->path) && !$this->overwrite) {
             $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
