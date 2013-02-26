@@ -3,7 +3,19 @@ echo "<?php\n";
 ?>
 
 /**
- * An example API call
+ * <?php echo $entityNameCamel ?>.<?php echo $actionNameCamel ?> API specification (optional)
+ * This is used for documentation and validation.
+ *
+ * @param array $spec description of fields supported by this API call
+ * @return void
+ * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
+ */
+function _<?php echo $apiFunction ?>_spec(&$spec) {
+  $spec['magicword']['api.required'] = 1;
+}
+
+/**
+ * <?php echo $entityNameCamel ?>.<?php echo $actionNameCamel ?> API
  *
  * @param array $params
  * @return array API result descriptor
