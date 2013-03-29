@@ -23,8 +23,8 @@ class AddReportCommand extends ContainerAwareCommand
         $this
             ->setName('generate:report')
             ->setDescription('Add a report to a module-extension')
-            ->addArgument('className', InputArgument::REQUIRED, 'Base name of the report class (eg "MyReport")')
-            ->addArgument('component', InputArgument::REQUIRED, 'CiviCRM Component (' . implode(', ', $this->getReportComponents()) . ')')
+            ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Base name of the report class (eg "MyReport")')
+            ->addArgument('<CiviComponent>', InputArgument::REQUIRED, 'CiviCRM Component (' . implode(', ', $this->getReportComponents()) . ')')
             ->addOption('webPath', null, InputOption::VALUE_OPTIONAL, 'Path which maps to this report (eg "civicrm/report/my-report")')
             ->addOption('copy', null, InputOption::VALUE_OPTIONAL, 'Full class name of an existing report which should be copied (eg "CRM_Report_Form_Activity")')
         ;
@@ -46,11 +46,11 @@ class AddReportCommand extends ContainerAwareCommand
             return;
         }
 
-        if (!in_array($input->getArgument('component'), $this->getReportComponents())) {
+        if (!in_array($input->getArgument('<CiviComponent>'), $this->getReportComponents())) {
             throw new \Exception("Component must be one of: " . implode(', ', $this->getReportComponents()));
         }
 
-        $ctx['reportClassName'] = strtr($ctx['namespace'], '/', '_') . '_Form_Report_' . $input->getArgument('className');
+        $ctx['reportClassName'] = strtr($ctx['namespace'], '/', '_') . '_Form_Report_' . $input->getArgument('<ClassName>');
         $ctx['reportClassFile'] = $basedir->string(strtr($ctx['reportClassName'], '_', '/') . '.php');
         $ctx['reportMgdFile'] = $basedir->string(strtr($ctx['reportClassName'], '_', '/') . '.mgd.php');
         $ctx['reportTplFile'] = $basedir->string('templates', strtr($ctx['reportClassName'], '_', '/') . '.tpl');
@@ -63,7 +63,7 @@ class AddReportCommand extends ContainerAwareCommand
                 throw new \Exception("webPath must begin with \"civicrm/report/\"");
             }
         } else {
-            $ctx['reportUrl'] = strtolower($ctx['fullName'] . '/' . $input->getArgument('className'));
+            $ctx['reportUrl'] = strtolower($ctx['fullName'] . '/' . $input->getArgument('<ClassName>'));
         }
 
         //// Construct files ////
@@ -84,11 +84,11 @@ class AddReportCommand extends ContainerAwareCommand
                 'entity' => 'ReportTemplate',
                 'params' => array(
                   'version' => 3,
-                  'label' => $input->getArgument('className'),
-                  'description' => sprintf("%s (%s)", $input->getArgument('className'), $ctx['fullName']),
+                  'label' => $input->getArgument('<ClassName>'),
+                  'description' => sprintf("%s (%s)", $input->getArgument('<ClassName>'), $ctx['fullName']),
                   'class_name' => $ctx['reportClassName'],
                   'report_url' => $ctx['reportUrl'],
-                  'component' => $input->getArgument('component') == 'null' ? '' : $input->getArgument('component'),
+                  'component' => $input->getArgument('<CiviComponent>') == 'null' ? '' : $input->getArgument('<CiviComponent>'),
                 ),
               ),
             );
