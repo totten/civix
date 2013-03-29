@@ -25,7 +25,7 @@ class AddSearchCommand extends ContainerAwareCommand
         $this
             ->setName('generate:search')
             ->setDescription('Add a custom search to a module-extension')
-            ->addArgument('className', InputArgument::REQUIRED, 'Search class name (eg "MySearch")')
+            ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Search class name (eg "MySearch")')
             ->addOption('copy', null, InputOption::VALUE_OPTIONAL, 'Full class name of an existing search which should be copied (eg "CRM_Contact_Form_Search_Custom_ZipCodeRange")')
         ;
     }
@@ -46,7 +46,7 @@ class AddSearchCommand extends ContainerAwareCommand
             return;
         }
 
-        $ctx['searchClassName'] = strtr($ctx['namespace'], '/', '_') . '_Form_Search_' . $input->getArgument('className');
+        $ctx['searchClassName'] = strtr($ctx['namespace'], '/', '_') . '_Form_Search_' . $input->getArgument('<ClassName>');
         $ctx['searchClassFile'] = $basedir->string(strtr($ctx['searchClassName'], '_', '/') . '.php');
         $ctx['searchMgdFile'] = $basedir->string(strtr($ctx['searchClassName'], '_', '/') . '.mgd.php');
         $ctx['searchTplRelFile'] = strtr($ctx['searchClassName'], '_', '/') . '.tpl';
@@ -68,8 +68,8 @@ class AddSearchCommand extends ContainerAwareCommand
                     'entity' => 'CustomSearch',
                     'params' => array(
                         'version' => 3,
-                        'label' => $input->getArgument('className'),
-                        'description' => sprintf("%s (%s)", $input->getArgument('className'), $ctx['fullName']),
+                        'label' => $input->getArgument('<ClassName>'),
+                        'description' => sprintf("%s (%s)", $input->getArgument('<ClassName>'), $ctx['fullName']),
                         'class_name' => $ctx['searchClassName'],
                     ),
                 ),
