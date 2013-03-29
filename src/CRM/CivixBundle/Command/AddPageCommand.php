@@ -22,24 +22,24 @@ class AddPageCommand extends ContainerAwareCommand
         $this
             ->setName('generate:page')
             ->setDescription('Add a basic web page to a CiviCRM Module-Extension')
-            ->addArgument('className', InputArgument::REQUIRED, 'Base name of the page class name (eg "MyPage")')
-            ->addArgument('webPath', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")')
+            ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Base name of the page class name (eg "MyPage")')
+            ->addArgument('<web/path>', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!preg_match('/^civicrm\//', $input->getArgument('webPath'))) {
+        if (!preg_match('/^civicrm\//', $input->getArgument('<web/path>'))) {
             throw new Exception("Web page path must begin with 'civicrm/'");
         }
-        if (!preg_match('/^[A-Z][A-Za-z0-9_]*$/', $input->getArgument('className'))) {
+        if (!preg_match('/^[A-Z][A-Za-z0-9_]*$/', $input->getArgument('<ClassName>'))) {
             throw new Exception("Class name should be valid (alphanumeric beginning with uppercase)");
         }
 
         $ctx = array();
         $ctx['type'] = 'module';
         $ctx['basedir'] = rtrim(getcwd(),'/');
-        $ctx['pageClassName'] = $input->getArgument('className');
+        $ctx['pageClassName'] = $input->getArgument('<ClassName>');
         $basedir = new Path($ctx['basedir']);
 
         $info = new Info($basedir->string('info.xml'));
@@ -50,7 +50,7 @@ class AddPageCommand extends ContainerAwareCommand
             return;
         }
 
-        if (preg_match('/^CRM_/', $input->getArgument('className')) || preg_match('/_Page_/', $input->getArgument('className'))) {
+        if (preg_match('/^CRM_/', $input->getArgument('<ClassName>')) || preg_match('/_Page_/', $input->getArgument('<ClassName>'))) {
             $prefix = strtr($ctx['namespace'], '/', '_') . '_Page_';
             throw new Exception("Class name looks suspicious. Please note the final class will be automatically prefixed with \"{$prefix}\"");
         }
@@ -64,14 +64,14 @@ class AddPageCommand extends ContainerAwareCommand
 
         $menu = new Menu($basedir->string('xml', 'Menu', $ctx['mainFile'] . '.xml'));
         $menu->loadInit($ctx);
-        if (!$menu->hasPath($input->getArgument('webPath'))) {
-            $menu->addItem($ctx, $input->getArgument('className'), $input->getArgument('webPath'));
+        if (!$menu->hasPath($input->getArgument('<web/path>'))) {
+            $menu->addItem($ctx, $input->getArgument('<ClassName>'), $input->getArgument('<web/path>'));
             $menu->save($ctx, $output);
         } else {
             $output->writeln(sprintf('<error>Failed to bind %s to class %s; %s is already bound</error>',
-                $input->getArgument('webPath'),
-                $input->getArgument('className'),
-                $input->getArgument('webPath')
+                $input->getArgument('<web/path>'),
+                $input->getArgument('<ClassName>'),
+                $input->getArgument('<web/path>')
             ));
         }
 
