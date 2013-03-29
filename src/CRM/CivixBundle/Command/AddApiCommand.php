@@ -29,8 +29,8 @@ class AddApiCommand extends ContainerAwareCommand
         $this
             ->setName('generate:api')
             ->setDescription('Add a new API function to a CiviCRM Module-Extension')
-            ->addArgument('entityName', InputArgument::REQUIRED, 'The entity against which the action runs (eg "Contact", "MyEntity")')
-            ->addArgument('actionName', InputArgument::REQUIRED, 'The action which will be created (eg "Create", "MyAction")')
+            ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The entity against which the action runs (eg "Contact", "MyEntity")')
+            ->addArgument('<ActionName>', InputArgument::REQUIRED, 'The action which will be created (eg "Create", "MyAction")')
             ->addOption('schedule', null, InputOption::VALUE_OPTIONAL, 'Schedule this action as a recurring cron job ('.implode(', ', self::getSchedules()).') [For CiviCRM 4.3+]')
         ;
     }
@@ -57,18 +57,18 @@ class AddApiCommand extends ContainerAwareCommand
             return;
         }
 
-        if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('entityName'))) {
+        if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<EntityName>'))) {
             throw new Exception("Entity name must be alphanumeric camel-case");
         }
-        if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('actionName'))) {
+        if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<ActionName>'))) {
             throw new Exception("Action name must be alphanumeric camel-case");
         }
         if ($input->getOption('schedule') && !in_array($input->getOption('schedule'), self::getSchedules())) {
             throw new Exception("Schedule must be one of: " . implode(', ', self::getSchedules()));
         }
 
-        $ctx['entityNameCamel'] = ucfirst($input->getArgument('entityName'));
-        $ctx['actionNameCamel'] = ucfirst($input->getArgument('actionName'));
+        $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
+        $ctx['actionNameCamel'] = ucfirst($input->getArgument('<ActionName>'));
         $ctx['apiFunction'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], $ctx['actionNameCamel'], self::API_VERSION));
         $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
         $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
