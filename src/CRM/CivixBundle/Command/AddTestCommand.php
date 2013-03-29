@@ -22,7 +22,7 @@ class AddTestCommand extends ContainerAwareCommand
         $this
             ->setName('generate:test')
             ->setDescription('Add a new unit-test class to CiviCRM Extension')
-            ->addArgument('className', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyTest")')
+            ->addArgument('<CRM_Full_ClassName>', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyTest")')
         ;
     }
 
@@ -41,14 +41,14 @@ class AddTestCommand extends ContainerAwareCommand
             return;
         }
 
-        if (!preg_match('/^[A-Za-z0-9_]+$/', $input->getArgument('className'))) {
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $input->getArgument('<CRM_Full_ClassName>'))) {
             throw new Exception("Class name must be alphanumeric (with underscores)");
         }
-        if (!preg_match('/Test$/', $input->getArgument('className'))) {
+        if (!preg_match('/Test$/', $input->getArgument('<CRM_Full_ClassName>'))) {
             throw new Exception("Class name must end with the word \"Test\"");
         }
 
-        $ctx['testClass'] = $input->getArgument('className');
+        $ctx['testClass'] = $input->getArgument('<CRM_Full_ClassName>');
         $ctx['testFile'] = strtr($ctx['testClass'], '_', '/') . '.php';
         $ctx['testPath'] = $basedir->string('tests', 'phpunit', $ctx['testFile']);
 
