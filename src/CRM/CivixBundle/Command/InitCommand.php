@@ -19,7 +19,7 @@ class InitCommand extends ContainerAwareCommand
         $this
             ->setName('generate:module')
             ->setDescription('Create a new CiviCRM Module-Extension')
-            ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
+            ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Fully qualified extension name (e.g. "com.example.myextension")')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')
         ;
@@ -29,7 +29,7 @@ class InitCommand extends ContainerAwareCommand
     {
         $ctx = array();
         $ctx['type'] = 'module';
-        $ctx['fullName'] = $input->getArgument('fullName');
+        $ctx['fullName'] = $input->getArgument('<full.ext.name>');
         $ctx['basedir'] = $ctx['fullName'];
         if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
             $ctx['mainFile'] = $matches[1];
