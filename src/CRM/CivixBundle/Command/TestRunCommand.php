@@ -33,7 +33,7 @@ class TestRunCommand extends ContainerAwareCommand
         $this
             ->setName('test')
             ->setDescription('Run a unit test')
-            ->addArgument('testClass', InputArgument::REQUIRED, 'Test class name (eg "CRM_Myextension_MyTest")')
+            ->addArgument('<TestClass>', InputArgument::REQUIRED, 'Test class name (eg "CRM_Myextension_MyTest")')
             ->addOption('clear', null, InputOption::VALUE_NONE, 'Clear the cached PHPUnit bootstrap data')
         ;
     }
@@ -87,7 +87,7 @@ class TestRunCommand extends ContainerAwareCommand
         $tests_dir = implode(DIRECTORY_SEPARATOR, array(getcwd(), 'tests', 'phpunit'));
         chdir("$civicrm_root/tools");
         $process = new Process(
-            self::createPhpShellCommand($phpunit_bin, '--include-path', $tests_dir, '--bootstrap', $phpunit_boot, $input->getArgument('testClass')),
+            self::createPhpShellCommand($phpunit_bin, '--include-path', $tests_dir, '--bootstrap', $phpunit_boot, $input->getArgument('<TestClass>')),
             null, null, null, self::TIMEOUT
         );
         $process->run(function ($type, $buffer) use ($output) {
