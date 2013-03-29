@@ -94,11 +94,20 @@ class civicrm_api3 {
       require_once 'CRM/Core/Config.php';
       require_once 'api/api.php';
       require_once "api/v3/utils.php";
+      $this->conf_path = $config['conf_path'];
       $this->cfg = CRM_Core_Config::singleton();
       $this->init();
     }
     else {
       $this->cfg = CRM_Core_Config::singleton();
+    }
+  }
+
+  public function getSiteName() {
+    if ($this->local) {
+      return "LOCAL:$this->conf_path";
+    } else {
+      return "REMOTE:$this->uri";
     }
   }
 

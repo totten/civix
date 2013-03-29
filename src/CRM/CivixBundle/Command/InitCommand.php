@@ -12,7 +12,7 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 
-class InitCommand extends ContainerAwareCommand
+class InitCommand extends AbstractCommand
 {
     protected function configure()
     {
@@ -23,6 +23,7 @@ class InitCommand extends ContainerAwareCommand
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')
         ;
+        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -53,5 +54,42 @@ class InitCommand extends ContainerAwareCommand
 
         $ext->loadInit($ctx);
         $ext->save($ctx, $output);
+
+        $this->tryEnable($input, $output, $ctx['fullName']);
+    }
+
+    /**
+     * Attempt to enable the extension on the linked CiviCRM site
+     *
+     * @return bool TRUE on success; FALSE if there's no site or if there's an error
+     */
+    protected function tryEnable(InputInterface $input, OutputInterface $output, $key)
+    {
+        $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
+        if ($civicrm_api3 && $civicrm_api3->local) {
+            $siteName = $civicrm_api3->getSiteName();
+            /*
+            The commented code doesn't work because installation requires a fully-bootstrapped
+            system, but civicrm_api3 doesn't bootstrap the CMS.
+
+            if ($this->confirm($input, $output, "Enable extension ($key) in $siteName? [Y/n] ")) {
+                if (version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
+                    if (! $civicrm_api3->Extension->refresh(array())) {
+                        $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
+                        return FALSE;
+                    }
+                }
+
+                if (! $civicrm_api3->Extension->install(array('key' => $key))) {
+                        $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
+                }
+            }
+            return TRUE;
+            */
+        }
+
+        // fallback
+        $output->writeln("NOTE: This might be a good time to refresh the extension list and install \"$key\".");
+        return FALSE;
     }
 }
