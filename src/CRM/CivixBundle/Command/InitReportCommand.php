@@ -22,8 +22,8 @@ class InitReportCommand extends ContainerAwareCommand
         $this
             ->setName('generate:report-ext')
             ->setDescription('Create a new CiviCRM Report-Extension')
-            ->addArgument('fullName', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
-            ->addArgument('component', InputArgument::REQUIRED, 'A component (CiviGrant, CiviCase, etc)')
+            ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Qualified extension name (e.g. "com.example.myextension")')
+            ->addArgument('<CiviComponent>', InputArgument::REQUIRED, 'A component (CiviGrant, CiviCase, etc)')
             ->addOption('webPath', null, InputOption::VALUE_OPTIONAL, 'The path which maps to this report (eg "civicrm/report/x")')
             ->addOption('copy', null, InputOption::VALUE_OPTIONAL, 'The class name of an existing report which should be copied')
         ;
@@ -34,7 +34,7 @@ class InitReportCommand extends ContainerAwareCommand
         $ctx = array();
         $ctx['type'] = 'report';
         $ctx['typeInfo'] = array();
-        $ctx['fullName'] = $input->getArgument('fullName');
+        $ctx['fullName'] = $input->getArgument('<full.ext.name>');
         $ctx['basedir'] = $ctx['fullName'];
         $ctx['reportClassName'] = preg_replace(':\.:','_',$ctx['fullName']);
         if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
@@ -44,8 +44,8 @@ class InitReportCommand extends ContainerAwareCommand
             return;
         }
 
-        if (in_array($input->getArgument('component'), $this->getReportComponents())) {
-            $ctx['typeInfo']['component'] = $input->getArgument('component');
+        if (in_array($input->getArgument('<CiviComponent>'), $this->getReportComponents())) {
+            $ctx['typeInfo']['component'] = $input->getArgument('<CiviComponent>');
         } else {
             throw new \Exception("Component must be one of: " . implode(', ', $this->getReportComponents()));
         }
