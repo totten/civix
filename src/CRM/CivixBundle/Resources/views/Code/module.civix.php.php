@@ -170,3 +170,42 @@ function _<?php echo $mainFile ?>_civix_glob($pattern) {
   $result = glob($pattern);
   return is_array($result) ? $result : array();
 }
+
+/**
+ * Inserts a navigation menu item at a given place in the hierarchy
+ *
+ * $menu - menu hierarchy
+ * $path - path where insertion should happen (ie. Administer/System Settings)
+ * $item - menu you need to insert (parent/child attributes will be filled for you)
+ * $parentId - used internally to recurse in the menu structure
+ */
+function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$config = NULL) {
+  static $navId;
+
+  // If we are done going down the path, insert menu
+  if (empty($path)) {
+    if (!$navId) $navId = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_navigation");
+    $navId ++;
+    $menu[$navId] = array (
+      'attributes' => array_merge($item, array(
+        'label'      => CRM_Utils_Array::value('name', $item),
+        'active'     => 1,
+        'parentID'   => $parentId,
+        'navID'      => $navId,
+      ))
+    );
+    return true;
+  } else {
+    // Find an recurse into the next level down
+    $found = false;
+    $path = explode('/', $path);
+    $first = array_shift($path);
+    foreach ($menu as $key => &$entry) {
+      if ($entry['attributes']['name'] == $first) {
+        if (!$entry['child']) $entry['child'] = array();
+        $found = _<?php echo $mainFile ?>_civix_insert_navigation_menu($entry['child'], implode('/', $path), $item, $key);
+      }
+    }
+    return $found;
+  }
+}
