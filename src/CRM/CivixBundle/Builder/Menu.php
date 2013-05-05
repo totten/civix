@@ -19,13 +19,11 @@ class Menu extends XML {
         return !empty($items);
     }
 
-    function addItem($ctx, $className, $path) {
-        $fullClass = implode('_', array($ctx['namespace'], 'Page', $className));
-        $fullClass = preg_replace(':/:', '_', $fullClass);
+    function addItem($ctx, $title, $fullClass, $path) {
         $item = $this->get()->addChild('item');
         $item->addChild('path', $path);
         $item->addChild('page_callback', $fullClass);
-        $item->addChild('title', $className);
+        $item->addChild('title', $title);
         $item->addChild('access_arguments', 'access CiviCRM');
     }
 }

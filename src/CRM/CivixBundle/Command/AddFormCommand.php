@@ -15,22 +15,22 @@ use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddPageCommand extends ContainerAwareCommand
+class AddFormCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('generate:page')
-            ->setDescription('Add a basic web page to a CiviCRM Module-Extension')
-            ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Base name of the page class name (eg "MyPage")')
-            ->addArgument('<web/path>', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")')
+            ->setName('generate:form')
+            ->setDescription('Add a basic web form to a CiviCRM Module-Extension')
+            ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Base name of the form class name (eg "MyForm")')
+            ->addArgument('<web/path>', InputArgument::REQUIRED, 'The path which maps to this form (eg "civicrm/my-form")')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!preg_match('/^civicrm\//', $input->getArgument('<web/path>'))) {
-            throw new Exception("Web page path must begin with 'civicrm/'");
+            throw new Exception("Web form path must begin with 'civicrm/'");
         }
         if (!preg_match('/^[A-Z][A-Za-z0-9_]*$/', $input->getArgument('<ClassName>'))) {
             throw new Exception("Class name should be valid (alphanumeric beginning with uppercase)");
@@ -39,7 +39,7 @@ class AddPageCommand extends ContainerAwareCommand
         $ctx = array();
         $ctx['type'] = 'module';
         $ctx['basedir'] = rtrim(getcwd(),'/');
-        $ctx['pageClassName'] = $input->getArgument('<ClassName>');
+        $ctx['formClassName'] = $input->getArgument('<ClassName>');
         $basedir = new Path($ctx['basedir']);
 
         $info = new Info($basedir->string('info.xml'));
@@ -50,22 +50,22 @@ class AddPageCommand extends ContainerAwareCommand
             return;
         }
 
-        if (preg_match('/^CRM_/', $input->getArgument('<ClassName>')) || preg_match('/_Page_/', $input->getArgument('<ClassName>'))) {
-            $prefix = strtr($ctx['namespace'], '/', '_') . '_Page_';
+        if (preg_match('/^CRM_/', $input->getArgument('<ClassName>')) || preg_match('/_Form_/', $input->getArgument('<ClassName>'))) {
+            $prefix = strtr($ctx['namespace'], '/', '_') . '_Form_';
             throw new Exception("Class name looks suspicious. Please note the final class will be automatically prefixed with \"{$prefix}\"");
         }
 
         $dirs = new Dirs(array(
             $basedir->string('xml','Menu'),
-            $basedir->string($ctx['namespace'],'Page'),
-            $basedir->string('templates', $ctx['namespace'],'Page'),
+            $basedir->string($ctx['namespace'],'Form'),
+            $basedir->string('templates', $ctx['namespace'],'Form'),
         ));
         $dirs->save($ctx, $output);
 
         $menu = new Menu($basedir->string('xml', 'Menu', $ctx['mainFile'] . '.xml'));
         $menu->loadInit($ctx);
         if (!$menu->hasPath($input->getArgument('<web/path>'))) {
-            $fullClass = implode('_', array($ctx['namespace'], 'Page', $ctx['pageClassName']));
+            $fullClass = implode('_', array($ctx['namespace'], 'Form', $input->getArgument('<ClassName>')));
             $fullClass = preg_replace(':/:', '_', $fullClass);
             $menu->addItem($ctx, $input->getArgument('<ClassName>'), $fullClass, $input->getArgument('<web/path>'));
             $menu->save($ctx, $output);
@@ -77,18 +77,18 @@ class AddPageCommand extends ContainerAwareCommand
             ));
         }
 
-        $phpFile = $basedir->string($ctx['namespace'], 'Page', $ctx['pageClassName'] . '.php');
+        $phpFile = $basedir->string($ctx['namespace'], 'Form', $ctx['formClassName'] . '.php');
         if (!file_exists($phpFile)) {
             $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
-            file_put_contents($phpFile, $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:page.php.php', $ctx));
+            file_put_contents($phpFile, $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:form.php.php', $ctx));
         } else {
             $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $phpFile));
         }
 
-        $tplFile = $basedir->string('templates', $ctx['namespace'], 'Page', $ctx['pageClassName'] . '.tpl');
+        $tplFile = $basedir->string('templates', $ctx['namespace'], 'Form', $ctx['formClassName'] . '.tpl');
         if (!file_exists($tplFile)) {
             $output->writeln(sprintf('<info>Write %s</info>', $tplFile));
-            file_put_contents($tplFile, $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:page.tpl.php', $ctx));
+            file_put_contents($tplFile, $this->getContainer()->get('templating')->render('CRMCivixBundle:Code:form.tpl.php', $ctx));
         } else {
             $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $tplFile));
         }
