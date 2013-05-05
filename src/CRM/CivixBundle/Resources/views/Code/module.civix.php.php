@@ -179,7 +179,7 @@ function _<?php echo $mainFile ?>_civix_glob($pattern) {
  * $item - menu you need to insert (parent/child attributes will be filled for you)
  * $parentId - used internally to recurse in the menu structure
  */
-function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$config = NULL) {
+function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $item, $parentId = NULL) {
   static $navId;
 
   // If we are done going down the path, insert menu
