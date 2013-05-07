@@ -61,22 +61,24 @@ class TestRunCommand extends ContainerAwareCommand
             $output->writeln("<error>Failed to locate CiviCRM root path: $civicrm_root</error>");
             return;
         }
-        $test_settings_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.php";
-        if (! file_exists($test_settings_path)) {
-            $output->writeln("<error>Failed to locate test settings:\n  $test_settings_path</error>");
-            $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
-            return;
-        }
         $phpunit_bin = "$civicrm_root/tools/scripts/phpunit";
         if (! file_exists($phpunit_bin)) {
             $output->writeln("<error>Failed to locate PHPUnit:\n  $phpunit_bin</error>");
             $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
             return;
         }
-        if (self::checkLegacyExtensionSettings($test_settings_path)) {
+        $test_settings_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.php";
+        $test_settings_dist_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.dist.php";
+        if (! file_exists($test_settings_path) && !file_exists($test_settings_dist_path)) {
+            $output->writeln("<error>Failed to locate test settings:\n  $test_settings_path</error>");
+            $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
+            return;
+        }
+        if (file_exists($test_settings_path) && self::checkLegacyExtensionSettings($test_settings_path)) {
             $output->writeln("<comment>Warning: Possible conflicts in $test_settings_path</comment>");
             $output->writeln("<comment>The following options may conflict with civix-based testing: 'ext_repo_url', 'extensionsDir', and/or 'extensionsURL'.</comment>");
         }
+
         $phpunit_boot = $this->getBootstrapFile($info->getKey(), $input->getOption('clear'));
         if (empty($phpunit_boot) || ! file_exists($phpunit_boot)) {
             $output->writeln("<error>Failed to create PHPUnit bootstrap file</error>");
