@@ -43,7 +43,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
       // FIXME auto-generate
       self::$instance = new <?php echo $_namespace ?>_Upgrader(
         '<?php echo $fullName ?>',
-        __DIR__ .'/../../../'
+        realpath(__DIR__ .'/../../../')
       );
     }
     return self::$instance;
@@ -76,7 +76,24 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   // ******** Task helpers ********
 
   /**
+   * Run a CustomData file
+   *
+   * @param string $relativePath the CustomData XML file path (relative to this extension's dir)
+   * @return bool
+   */
+  public function executeCustomDataFile($relativePath) {
+    $xml_file = $this->extensionDir . '/' . $relativePath;
+    require_once 'CRM/Utils/Migrate/Import.php';
+    $import = new CRM_Utils_Migrate_Import();
+    $import->run($xml_file);
+    return TRUE;
+  }
+
+  /**
    * Run a SQL file
+   *
+   * @param string $relativePath the SQL file path (relative to this extension's dir)
+   * @return bool
    */
   public function executeSqlFile($relativePath) {
     CRM_Utils_File::sourceSQLFile(
