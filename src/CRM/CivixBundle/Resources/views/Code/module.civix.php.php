@@ -109,11 +109,18 @@ function _<?php echo $mainFile ?>_civix_upgrader() {
 /**
  * Search directory tree for files which match a glob pattern
  *
+ * Note: Dot-directories (like "..", ".git", or ".svn") will be ignored.
+ * Note: In Civi 4.3+, delegate to CRM_Utils_File::findFiles()
+ *
  * @param $dir string, base dir
  * @param $pattern string, glob pattern, eg "*.txt"
  * @return array(string)
  */
 function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
+  if (is_callable(array('CRM_Utils_File', 'findFiles'))) {
+    return CRM_Utils_File::findFiles($dir, $pattern);
+  }
+
   $todos = array($dir);
   $result = array();
   while (!empty($todos)) {
@@ -126,7 +133,7 @@ function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
     if ($dh = opendir($subdir)) {
       while (FALSE !== ($entry = readdir($dh))) {
         $path = $subdir . DIRECTORY_SEPARATOR . $entry;
-        if ($entry == '.' || $entry == '..') {
+        if ($entry{0} == '.') {
         } elseif (is_dir($path)) {
           $todos[] = $path;
         }
