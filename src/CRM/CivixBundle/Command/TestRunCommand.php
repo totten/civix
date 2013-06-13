@@ -46,7 +46,7 @@ class TestRunCommand extends ContainerAwareCommand
         $info = new Info($basedir->string('info.xml'));
         $info->load($ctx);
         if ($info->getType() != 'module') {
-            $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</errror>');
+            $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</error>');
             return;
         }
 

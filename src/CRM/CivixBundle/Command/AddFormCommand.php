@@ -46,7 +46,7 @@ class AddFormCommand extends ContainerAwareCommand
         $info->load($ctx);
         $attrs = $info->get()->attributes();
         if ($attrs['type'] != 'module') {
-            $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</errror>');
+            $output->writeln('<error>Wrong extension type: '. $attrs['type'] . '</error>');
             return;
         }
 
