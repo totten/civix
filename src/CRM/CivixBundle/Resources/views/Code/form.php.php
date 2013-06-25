@@ -29,7 +29,7 @@ class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClas
     ));
 
     // export form elements
-    $this->assign('elementNames', $this->getElementNames());
+    $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
   }
 
@@ -61,7 +61,18 @@ class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClas
    *
    * @return array (string)
    */
-  function getElementNames() {
-    return array_keys($this->_elementIndex);
+  function getRenderableElementNames() {
+    // The _elements list includes some items which should not be
+    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
+    // items don't have labels.  We'll identify renderable by filtering on
+    // the 'label'.
+    $elementNames = array();
+    foreach ($this->_elements as $element) {
+      $label = $element->getLabel();
+      if (!empty($label)) {
+        $elementNames[] = $element->getName();
+      }
+    }
+    return $elementNames;
   }
 }
