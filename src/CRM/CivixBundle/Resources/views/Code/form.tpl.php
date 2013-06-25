@@ -12,11 +12,11 @@
 
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT)
 
-{foreach from=$fields item=field}
-  {if $field.label}
+{foreach from=$elementNames item=elementName}
+  {if $form.$elementName.label}
     <div class="crm-section">
-      <div class="label">{$field.label}</div>
-      <div class="content">{$field.html}</div>
+      <div class="label">{$form.$elementName.label}</div>
+      <div class="content">{$form.$elementName.html}</div>
       <div class="clear"></div>
     </div>
   {/if}

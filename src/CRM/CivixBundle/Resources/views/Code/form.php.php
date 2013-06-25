@@ -29,8 +29,7 @@ class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClas
     ));
 
     // export form elements
-    $fields=$this->toArray();
-    $this->assign("fields",$fields["elements"]);
+    $this->assign('elementNames', $this->getElementNames());
     parent::buildQuickForm();
   }
 
@@ -55,5 +54,14 @@ class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClas
       $options["#{$f}{$f}{$f}"] = ts('Grey (%1)', array(1 => $f));
     }
     return $options;
+  }
+
+  /**
+   * Get the fields/elements defined in this form.
+   *
+   * @return array (string)
+   */
+  function getElementNames() {
+    return array_keys($this->_elementIndex);
   }
 }
