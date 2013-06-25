@@ -11,6 +11,8 @@ require_once 'CRM/Core/Form.php';
  */
 class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClassName ?> extends CRM_Core_Form {
   function buildQuickForm() {
+
+    // add form elements
     $this->add(
       'select', // field type
       'favorite_color', // field name
@@ -18,7 +20,6 @@ class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClas
       $this->getColorOptions(), // list of options
       true // is required
     );
-
     $this->addButtons(array(
       array(
         'type' => 'submit',
@@ -27,6 +28,9 @@ class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClas
       ),
     ));
 
+    // export form elements
+    $fields=$this->toArray();
+    $this->assign("fields",$fields["elements"]);
     parent::buildQuickForm();
   }
 
