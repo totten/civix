@@ -40,16 +40,26 @@ class BuildCommand extends ContainerAwareCommand
             return;
         }
 
+        $zipArgsExclude = array(
+          'build/*',
+          '*~',
+          '*.bak');
+
+        // Look for the Zip exclude file
+        $zipExcludeFilePath = $basedir->string('build', 'zip_exclude.conf');
+        if (is_readable($zipExcludeFilePath)) {
+          $zipArgsExclude = array('@' . $zipExcludeFilePath);
+        }
+
         $ctx['zipFile'] = $basedir->string('build', $ctx['fullName'] . '.zip');
         $cmdArgs = array(
             '-r',
             $ctx['zipFile'],
             $ctx['fullName'],
             '--exclude',
-            'build/*',
-            '*~',
-            '*.bak'
         );
+        $cmdArgs = array_merge($cmdArgs, $zipArgsExclude);
+
         $cmd = 'zip ' . implode(' ', array_map('escapeshellarg', $cmdArgs));
 
         chdir($basedir->string('..'));
