@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CustomDataXML implements Builder {
 
-    protected $customGroupIds, $path, $overwrite;
+    protected $customGroupIds, $ufGroupIds, $path, $overwrite;
 
     /**
      * @var \CRM_Utils_Migrate_Export
@@ -21,12 +21,14 @@ class CustomDataXML implements Builder {
     /**
      * @param boolean|string $overwrite ; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
      */
-    function __construct($customGroupIds, $path, $overwrite) {
+    function __construct($customGroupIds, $ufGroupIds, $path, $overwrite) {
         $this->customGroupIds = $customGroupIds;
+        $this->ufGroupIds = $ufGroupIds;
         $this->path = $path;
         $this->overwrite = $overwrite;
         $this->export = new \CRM_Utils_Migrate_Export();
         $this->export->buildCustomGroups($this->customGroupIds);
+        $this->export->buildUFGroups($this->ufGroupIds);
     }
 
     function loadInit(&$ctx) {

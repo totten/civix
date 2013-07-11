@@ -18,10 +18,11 @@ class AddCustomDataCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('generate:custom-data')
-            ->setDescription('Export custom data to an XML file')
-            ->addArgument('<CustomGroupIds>', InputArgument::REQUIRED, 'Comma-separated list of custom group IDs (from linked dev site)')
+            ->setName('generate:custom-xml')
+            ->setDescription('Export custom data and profiles to an XML file')
             ->addArgument('<CustomDataFile.xml>', InputArgument::OPTIONAL, 'The path to write custom data to (default: xml/auto_install.xml)')
+            ->addOption('data', NULL, InputOption::VALUE_REQUIRED, 'Comma-separated list of custom data group IDs (from linked dev site)')
+            ->addOption('uf', NULL, InputOption::VALUE_REQUIRED, 'Comma-separated list of profile group IDs (from linked dev site)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Overwrite existing files')
         ;
     }
@@ -31,7 +32,7 @@ class AddCustomDataCommand extends ContainerAwareCommand
         // load Civi to get access to civicrm_api_get_function_name
         $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
         if (!$civicrm_api3 || !$civicrm_api3->local) {
-            $output->writeln("<error>generate:custom-data requires access to local CiviCRM instance. Configure civicrm_api3_conf_path.</error>");
+            $output->writeln("<error>generate:custom-xml requires access to local CiviCRM instance. Configure civicrm_api3_conf_path.</error>");
             return;
         }
 
@@ -58,11 +59,20 @@ class AddCustomDataCommand extends ContainerAwareCommand
         } else {
             $customDataXMLFile = $basedir->string('xml', 'auto_install.xml');
         }
-        $customDataXML = new CustomDataXML(explode(',', $input->getArgument('<CustomGroupIds>')), $customDataXMLFile, $input->getOption('force'));
+        if (!$input->getOption('data') && !$input->getOption('uf')) {
+          $output->writeln("<error>generate:custom-xml requires --data and/or --uf</error>");
+          return;
+        }
+        $customDataXML = new CustomDataXML(
+          $input->getOption('data') ? explode(',', $input->getOption('data')) : array(),
+          $input->getOption('uf') ? explode(',', $input->getOption('uf')) : array(),
+          $customDataXMLFile,
+          $input->getOption('force')
+        );
         $customDataXML->save($ctx, $output);
 
         if (preg_match('/\/xml\/.*_install.xml$/', $customDataXMLFile)) {
-            $output->writeln(" * NOTE: This filename ends with \"_install.xml\". If you would like to load it automatically on new sites, then make sure there is an install/upgrade class (i.e. run \"civix generate:upgrader\"");
+            $output->writeln(" * NOTE: This filename ends with \"_install.xml\". If you would like to load it automatically on new sites, then make sure there is an install/upgrade class (i.e. run \"civix generate:upgrader\")");
         } else {
             $output->writeln(" * NOTE: By default, this file will not be loaded automatically -- you must define installation or upgrade logic to load the file.");
         }
