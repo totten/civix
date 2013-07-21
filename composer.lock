@@ -44,7 +44,7 @@
                     "homepage": "http://www.jwage.com/"
                 },
                 {
-                    "name": "Christoph Dorn",
+                    "name": "Guilherme Blanco",
                     "email": "guilhermeblanco@gmail.com",
                     "homepage": "http://www.instaclick.com"
                 },
@@ -57,9 +57,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -99,6 +99,7 @@
                     "JMS\\AopBundle": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
@@ -115,7 +116,7 @@
                 "annotations",
                 "aop"
             ],
-            "time": "2012-01-03 16:50:26"
+            "time": "2012-01-02 12:50:26"
         },
         {
             "name": "jms/cg",
@@ -140,6 +141,7 @@
                     "CG\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
@@ -155,7 +157,7 @@
             "keywords": [
                 "code generation"
             ],
-            "time": "2012-01-03 16:40:52"
+            "time": "2012-01-02 12:40:52"
         },
         {
             "name": "jms/di-extra-bundle",
@@ -168,7 +170,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/schmittjoh/JMSDiExtraBundle/zipball/1.0.1",
+                "url": "https://github.com/schmittjoh/JMSDiExtraBundle/archive/1.0.1.zip",
                 "reference": "1.0.1",
                 "shasum": ""
             },
@@ -182,6 +184,7 @@
                     "JMS\\DiExtraBundle": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
@@ -198,7 +201,7 @@
                 "annotations",
                 "dependency injection"
             ],
-            "time": "2012-02-29 01:01:54"
+            "time": "2012-02-27 21:01:54"
         },
         {
             "name": "jms/metadata",
@@ -223,6 +226,7 @@
                     "Metadata\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
@@ -241,7 +245,7 @@
                 "xml",
                 "yaml"
             ],
-            "time": "2012-01-03 17:32:49"
+            "time": "2012-01-02 13:32:49"
         },
         {
             "name": "jms/security-extra-bundle",
@@ -269,6 +273,7 @@
                     "JMS\\SecurityExtraBundle": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
@@ -285,7 +290,7 @@
                 "annotations",
                 "authorization"
             ],
-            "time": "2012-01-03 17:38:12"
+            "time": "2012-01-02 13:38:12"
         },
         {
             "name": "monolog/monolog",
@@ -349,12 +354,12 @@
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sensio/SensioDistributionBundle",
+                "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
                 "reference": "v2.1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sensio/SensioDistributionBundle/archive/v2.1.7.zip",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/v2.1.7",
                 "reference": "v2.1.7",
                 "shasum": ""
             },
@@ -605,12 +610,12 @@
             "version": "v2.1.7",
             "source": {
                 "type": "git",
-                "url": "git://github.com/symfony/symfony.git",
+                "url": "https://github.com/symfony/symfony.git",
                 "reference": "v2.1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/archive/v2.1.7.zip",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.1.7",
                 "reference": "v2.1.7",
                 "shasum": ""
             },
@@ -737,16 +742,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.12.2",
+            "version": "v1.13.1",
             "source": {
                 "type": "git",
-                "url": "git://github.com/fabpot/Twig.git",
-                "reference": "v1.12.2"
+                "url": "https://github.com/fabpot/Twig.git",
+                "reference": "v1.13.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.12.2",
-                "reference": "v1.12.2",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.13.1",
+                "reference": "v1.13.1",
                 "shasum": ""
             },
             "require": {
@@ -755,7 +760,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.12-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -782,7 +787,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-02-09 18:21:53"
+            "time": "2013-06-06 06:06:01"
         }
     ],
     "packages-dev": [
