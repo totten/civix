@@ -241,11 +241,17 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   // ******** Hook delegates ********
 
   public function onInstall() {
-    foreach (glob($this->extensionDir . '/sql/*_install.sql') as $file) {
-      CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    $files = glob($this->extensionDir . '/sql/*_install.sql');
+    if (is_array()$files)) {
+      foreach ($files as $file) {
+        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+      }
     }
-    foreach (glob($this->extensionDir . '/xml/*_install.xml') as $file) {
-      $this->executeCustomDataFileByAbsPath($file);
+    $files = glob($this->extensionDir . '/xml/*_install.xml');
+    if (is_array()$files)) {
+      foreach ($files as $file) {
+        $this->executeCustomDataFileByAbsPath($file);
+      }
     }
     if (is_callable(array($this, 'install'))) {
       $this->install();
@@ -260,8 +266,11 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     if (is_callable(array($this, 'uninstall'))) {
       $this->uninstall();
     }
-    foreach (glob($this->extensionDir . '/sql/*_uninstall.sql') as $file) {
-      CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    $files = glob($this->extensionDir . '/sql/*_uninstall.sql');
+    if (is_array()$files)) {
+      foreach ($files as $file) {
+        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+      }
     }
     $this->setCurrentRevision(NULL);
   }
