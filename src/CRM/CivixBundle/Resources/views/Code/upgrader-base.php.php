@@ -242,13 +242,13 @@ class <?php echo $_namespace ?>_Upgrader_Base {
 
   public function onInstall() {
     $files = glob($this->extensionDir . '/sql/*_install.sql');
-    if (is_array()$files)) {
+    if (is_array($files)) {
       foreach ($files as $file) {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
       }
     }
     $files = glob($this->extensionDir . '/xml/*_install.xml');
-    if (is_array()$files)) {
+    if (is_array($files)) {
       foreach ($files as $file) {
         $this->executeCustomDataFileByAbsPath($file);
       }
@@ -267,7 +267,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
       $this->uninstall();
     }
     $files = glob($this->extensionDir . '/sql/*_uninstall.sql');
-    if (is_array()$files)) {
+    if (is_array($files)) {
       foreach ($files as $file) {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
       }
