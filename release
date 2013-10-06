@@ -5,6 +5,7 @@ CALLEDPATH=$(dirname $0)
 GITURL="$1"
 VERSION="$2"
 BUILDDIR="$CALLEDPATH/build/civix-$VERSION"
+TAG="v${VERSION}"
 
 if [ -z "$1" -o -z "$VERSION" ]; then
   echo "usage: $0 <git-url> <version-number>"
@@ -16,8 +17,8 @@ fi
 #####################################################
 ## Make a git tag
 pushd "$CALLEDPATH" >> /dev/null
-  git tag $VERSION
-  git push origin $VERSION
+  git tag $TAG
+  git push origin $TAG
 popd >> /dev/null
 
 #####################################################
