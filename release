@@ -1,0 +1,50 @@
+#!/bin/bash
+## Tag the code, create a clean checkout with dependencies, and build a tarball
+set -e
+CALLEDPATH=$(dirname $0)
+GITURL="$1"
+VERSION="$2"
+BUILDDIR="$CALLEDPATH/build/civix-$VERSION"
+
+if [ -z "$1" -o -z "$VERSION" ]; then
+  echo "usage: $0 <git-url> <version-number>"
+  echo "example: $0 git@github.com:totten/civix.git 13.10.2"
+  exit 2
+fi
+
+
+#####################################################
+## Make a git tag
+pushd "$CALLEDPATH" >> /dev/null
+  git tag $VERSION
+  git push origin $VERSION
+popd >> /dev/null
+
+#####################################################
+## Make a tarball
+[ -d "$BUILDDIR" ] && rm -rf "$BUILDDIR"
+mkdir -p "$BUILDDIR"
+git clone -b "$VERSION" "$GITURL" "$BUILDDIR"
+
+pushd "$BUILDDIR" >> /dev/null
+  composer install
+
+  rm -rf .git
+  find vendor -type d -a -name Test -delete
+  find vendor -type d -a -name Tests -delete
+  find app/cache app/logs -mindepth 1 -delete
+  find vendor/swiftmailer/swiftmailer/test-suite -mindepth 1 -delete
+  find vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/data -mindepth 1 -delete
+popd >> /dev/null
+
+pushd $(dirname "$BUILDDIR") >> /dev/null
+  NAME=$(basename "$BUILDDIR")
+  TARBALL="$NAME.tar.bz2"
+
+  if [ -f "$TARBALL" ]; then
+    echo "$TARBALL already exists"
+    exit 3
+  fi
+
+  tar cvjf $TARBALL $NAME
+popd >> /dev/null
