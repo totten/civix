@@ -42,10 +42,6 @@ pushd $(dirname "$BUILDDIR") >> /dev/null
   NAME=$(basename "$BUILDDIR")
   TARBALL="$NAME.tar.bz2"
 
-  if [ -f "$TARBALL" ]; then
-    echo "$TARBALL already exists"
-    exit 3
-  fi
-
+  [ -f "$TARBALL" ] && rm -f "$TARBALL"
   tar cvjf $TARBALL $NAME
 popd >> /dev/null
