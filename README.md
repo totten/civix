@@ -6,10 +6,24 @@ Civix is a command-line tool for building CiviCRM extensions.
 * CiviCRM 4.2+ (installed from SVN with r42790+ -- http://svn.civicrm.org/civicrm)
 * Composer (http://getcomposer.org)
 * git
-* (For MAMP, WAMP, XAMPP, etc) PHP command-line configuration (http://wiki.civicrm.org/confluence/display/CRMDOC42/Setup+Command-Line+PHP)
+* (For MAMP, WAMP, XAMPP, etc) PHP command-line configuration (http://wiki.civicrm.org/confluence/display/CRMDOC/Setup+Command-Line+PHP)
 * (For CentOS/RHEL) Compatible version of libxml2 (https://github.com/totten/civix/issues/19)
 
-### Unix/Mac Installation
+### Unix/Mac Installation (Tarball)
+
+Navigate to https://sourceforge.net/projects/civix/files/ and download a tarball (e.g. civix-X.Y.Z.tar.bz2).
+
+```bash
+cd $HOME
+
+tar xvjf civix-X.Y.Z.tar.bz2
+mv civix-X.Y.Z civix
+
+# Add civix to the PATH; consider updating ~/.bashrc or ~/.profile
+export PATH=$HOME/civix:$PATH
+```
+
+### Unix/Mac Installation (Git/Composer)
 
 ```bash
 cd $HOME
@@ -22,7 +36,7 @@ git clone git://github.com/totten/civix.git
 cd civix
 php $HOME/composer.phar install
 
-# Add civix to the PATH
+# Add civix to the PATH; consider updating ~/.bashrc or ~/.profile
 export PATH=$HOME/civix:$PATH
 ```
 
@@ -103,7 +117,7 @@ php $HOME/composer.phar install
 
 The CiviCRM wiki includes tutorials for building extensions. See:
 
-http://wiki.civicrm.org/confluence/display/CRMDOC42/Create+an+Extension
+http://wiki.civicrm.org/confluence/display/CRMDOC/Create+an+Extension
 
 For reference documentation, civix supports a "--help" option.  For example,
 to get reference materials about the "generate:page" command, run:
