@@ -32,6 +32,9 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets"
         ]
     },
+    "bin": [
+        "civix"
+    ],
     "config": {
         "bin-dir": "bin"
     },
