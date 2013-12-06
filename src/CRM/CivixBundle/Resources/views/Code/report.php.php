@@ -2,8 +2,6 @@
 echo "<?php\n";
 ?>
 
-require_once 'CRM/Report/Form.php';
-
 class <?php echo $reportClassName ?> extends CRM_Report_Form {
 
   protected $_addressField = FALSE;
