@@ -70,3 +70,14 @@ function <?php echo $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = N
 function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
   return _<?php echo $mainFile ?>_civix_civicrm_managed($entities);
 }
+
+/**
+ * Implementation of hook_civicrm_caseTypes
+ *
+ * Generate a list of case-types
+ *
+ * Note: This hook only runs in CiviCRM 4.4+.
+ */
+function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
+  _<?php echo $mainFile ?>_civix_civicrm_caseTypes($caseTypes);
+}
