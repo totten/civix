@@ -53,7 +53,10 @@ class InitCommand extends AbstractCommand
             return;
         }
         $ctx['license'] = $input->getOption('license');
-        if (! $licenses->get($ctx['license'])) {
+        if ($licenses->get($ctx['license'])) {
+            $output->writeln(sprintf('<comment>License set to %s (authored by %s \<%s>)</comment>', $ctx['license'], $ctx['author'], $ctx['email']));
+            $output->writeln('<comment>If this is in error, please correct info.xml and LICENSE.txt</comment>');
+        } else {
             $output->writeln('<error>Unrecognized license (' . $ctx['license'] . ')</error>');
             return;
         }
