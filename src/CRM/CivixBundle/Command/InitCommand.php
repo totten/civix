@@ -20,8 +20,8 @@ class InitCommand extends AbstractCommand {
       ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Fully qualified extension name (e.g. "com.example.myextension")')
     //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', 'AGPL-3.0')
-      ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getGitConfig('user.name'))
-      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getGitConfig('user.email'));
+      ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getGitConfig('user.name', 'FIXME'))
+      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getGitConfig('user.email', 'FIXME'));
     parent::configure();
   }
 
@@ -117,7 +117,14 @@ class InitCommand extends AbstractCommand {
     return array_keys($licenses->getAll());
   }
 
-  protected function getGitConfig($key) {
-    return trim(system("git config --get $key"));
+  protected function getGitConfig($key, $default) {
+    $result = NULL;
+    if (\CRM\CivixBundle\Utils\Commands::findExecutable('git')) {
+      $result = trim(`git config --get $key`);
+    }
+    if (empty($result)) {
+      $result = $default;
+    }
+    return $result;
   }
 }
