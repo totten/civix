@@ -37,9 +37,11 @@ class License implements Builder {
   function save(&$ctx, OutputInterface $output) {
     if (file_exists($this->path) && $this->overwrite === 'ignore') {
       // do nothing
-    } elseif (file_exists($this->path) && !$this->overwrite) {
+    }
+    elseif (file_exists($this->path) && !$this->overwrite) {
       $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
-    } else {
+    }
+    else {
       $output->writeln("<info>Write " . $this->path . "</info>");
       $text = strtr($this->license->getText(), array(
         '<YEAR>' => date('Y'),

@@ -4,6 +4,5 @@ namespace CRM\ClientBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class CRMClientBundle extends Bundle
-{
+class CRMClientBundle extends Bundle {
 }
