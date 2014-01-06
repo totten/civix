@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Builder\License;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 
@@ -21,13 +22,17 @@ class InitCommand extends AbstractCommand
             ->setDescription('Create a new CiviCRM Module-Extension')
             ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Fully qualified extension name (e.g. "com.example.myextension")')
             //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
-            //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension', 'module')
+            ->addOption('license', null, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) .')', 'AGPL-3.0')
+            ->addOption('author', null, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getGitConfig('user.name'))
+            ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getGitConfig('user.email'))
         ;
         parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $licenses = new \LicenseData\Repository();
+
         $ctx = array();
         $ctx['type'] = 'module';
         $ctx['fullName'] = $input->getArgument('<full.ext.name>');
@@ -37,6 +42,22 @@ class InitCommand extends AbstractCommand
             $ctx['namespace'] = 'CRM/' . strtoupper($ctx['mainFile']{0}) . substr($ctx['mainFile'], 1);
         } else {
             $output->writeln('<error>Malformed package name</error>');
+            return;
+        }
+        if ($input->getOption('author') && $input->getOption('email')) {
+            $ctx['author'] = $input->getOption('author');
+            $ctx['email'] = $input->getOption('email');
+        } else {
+            $output->writeln("<error>Missing author name or email address</error>");
+            $output->writeln("<error>Please pass --author and --email, or set defaults in ~/.gitconfig</error>");
+            return;
+        }
+        $ctx['license'] = $input->getOption('license');
+        if ($licenses->get($ctx['license'])) {
+            $output->writeln(sprintf('<comment>License set to %s (authored by %s \<%s>)</comment>', $ctx['license'], $ctx['author'], $ctx['email']));
+            $output->writeln('<comment>If this is in error, please correct info.xml and LICENSE.txt</comment>');
+        } else {
+            $output->writeln('<error>Unrecognized license (' . $ctx['license'] . ')</error>');
             return;
         }
         $ext = new Collection();
@@ -51,6 +72,7 @@ class InitCommand extends AbstractCommand
         ));
         $ext->builders['info'] = new Info($basedir->string('info.xml'));
         $ext->builders['module'] = new Module($this->getContainer()->get('templating'));
+        $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
 
         $ext->loadInit($ctx);
         $ext->save($ctx, $output);
@@ -91,5 +113,14 @@ class InitCommand extends AbstractCommand
         // fallback
         $output->writeln("NOTE: This might be a good time to refresh the extension list and install \"$key\".");
         return FALSE;
+    }
+
+    protected function getLicenses() {
+        $licenses = new \LicenseData\Repository();
+        return array_keys($licenses->getAll());
+    }
+
+    protected function getGitConfig($key) {
+      return trim(system("git config --get $key"));
     }
 }

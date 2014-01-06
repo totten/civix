@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f4f852571c341ee38a817582f764e684",
+    "hash": "3a12e3d4e270b7dfdc23dd4fc8ed1618",
     "packages": [
         {
             "name": "doctrine/common",
@@ -694,6 +694,39 @@
             "time": "2013-01-17 21:21:51"
         },
         {
+            "name": "totten/license-data",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/totten/license-data.git",
+                "reference": "a9549281ad69b38ebd57b42b2fe6c84e3fc68dc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/totten/license-data/zipball/a9549281ad69b38ebd57b42b2fe6c84e3fc68dc2",
+                "reference": "a9549281ad69b38ebd57b42b2fe6c84e3fc68dc2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "LicenseData": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Tim Otten",
+                    "email": "totten@civicrm.org"
+                }
+            ],
+            "description": "Dataset with open-source licenses",
+            "support": {
+                "source": "https://github.com/totten/license-data/tree/master",
+                "issues": "https://github.com/totten/license-data/issues"
+            },
+            "time": "2013-12-08 23:37:42"
+        },
+        {
             "name": "twig/extensions",
             "version": "v1.0.0",
             "source": {
@@ -797,9 +830,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "totten/license-data": 20
+    },
     "platform": {
         "php": ">=5.3.3"
     },

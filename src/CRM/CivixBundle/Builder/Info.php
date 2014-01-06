@@ -18,10 +18,10 @@ class Info extends XML {
         $xml->addChild('name', 'FIXME');
         $xml->addChild('description', 'FIXME');
         // urls
-        $xml->addChild('license', 'FIXME');
+        $xml->addChild('license', isset($ctx['license']) ? $ctx['license'] : 'FIXME' );
         $maint = $xml->addChild('maintainer');
-        $maint->addChild('author', 'FIXME');
-        $maint->addChild('email', 'FIXME@example.com');
+        $maint->addChild('author', isset($ctx['author']) ? $ctx['author'] : 'FIXME');
+        $maint->addChild('email', isset($ctx['email']) ? $ctx['email'] : 'FIXME@example.com');
         $xml->addChild('releaseDate', date('Y-m-d'));
         $xml->addChild('version', '1.0');
         $xml->addChild('develStage', 'alpha');
