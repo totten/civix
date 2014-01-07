@@ -42,9 +42,9 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
       return;
     }
 
-    $ctx['fullClassName'] = $this->createClassName($ctx);
+    $ctx['fullClassName'] = $this->createClassName($input, $ctx);
     $phpFile = $basedir->string(str_replace('_', '/', $ctx['fullClassName']) . '.php');
-    $tplFile = $basedir->string('templates', $this->createTplName($ctx));
+    $tplFile = $basedir->string('templates', $this->createTplName($input, $ctx));
 
     if (preg_match('/^CRM_/', $input->getArgument('<ClassName>'))) {
       throw new Exception("Class name looks suspicious. Please note the final class would be \"{$ctx['fullClassName']}\"");
@@ -74,7 +74,7 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
     if (!file_exists($phpFile)) {
       $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
       file_put_contents($phpFile, $this->getContainer()->get('templating')
-        ->render($this->getPhpTemplate(), $ctx));
+        ->render($this->getPhpTemplate($input), $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $phpFile));
@@ -83,7 +83,7 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
     if (!file_exists($tplFile)) {
       $output->writeln(sprintf('<info>Write %s</info>', $tplFile));
       file_put_contents($tplFile, $this->getContainer()->get('templating')
-        ->render($this->getTplTemplate(), $ctx));
+        ->render($this->getTplTemplate($input), $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $tplFile));
@@ -94,11 +94,11 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
     $module->save($ctx, $output);
   }
 
-  abstract protected function getPhpTemplate();
+  abstract protected function getPhpTemplate(InputInterface $input);
 
-  abstract protected function getTplTemplate();
+  abstract protected function getTplTemplate(InputInterface $input);
 
-  abstract protected function createClassName($ctx);
+  abstract protected function createClassName(InputInterface $input, $ctx);
 
-  abstract protected function createTplName($ctx);
+  abstract protected function createTplName(InputInterface $input, $ctx);
 }

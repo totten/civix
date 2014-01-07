@@ -1,5 +1,6 @@
 <?php
 namespace CRM\CivixBundle\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 class AddFormCommand extends AbstractAddPageCommand {
   protected function configure() {
@@ -9,20 +10,20 @@ class AddFormCommand extends AbstractAddPageCommand {
       ->setDescription('Add a basic web form to a CiviCRM Module-Extension');
   }
 
-  protected function getPhpTemplate() {
+  protected function getPhpTemplate(InputInterface $input) {
     return 'CRMCivixBundle:Code:form.php.php';
   }
 
-  protected function getTplTemplate() {
+  protected function getTplTemplate(InputInterface $input) {
     return 'CRMCivixBundle:Code:form.tpl.php';
   }
 
-  protected function createClassName($ctx) {
+  protected function createClassName(InputInterface $input, $ctx) {
     $namespace = str_replace('/', '_', $ctx['namespace']);
     return $namespace . '_Form_' . $ctx['shortClassName'];
   }
 
-  protected function createTplName($ctx) {
+  protected function createTplName(InputInterface $input, $ctx) {
     return $ctx['namespace'] . '/Form/' . $ctx['shortClassName'] . '.tpl';
   }
 }
