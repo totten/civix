@@ -9,7 +9,7 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class <?php echo preg_replace(':/:','_',$namespace) ?>_Form_<?php echo $formClassName ?> extends CRM_Core_Form {
+class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form {
   function buildQuickForm() {
 
     // add form elements
