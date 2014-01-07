@@ -1,12 +1,6 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Dirs;
-
 class AddPageCommand extends AbstractAddPageCommand {
   protected function configure() {
     parent::configure();
@@ -23,12 +17,12 @@ class AddPageCommand extends AbstractAddPageCommand {
     return 'CRMCivixBundle:Code:page.tpl.php';
   }
 
-  protected function createClassName($ctx, $input) {
+  protected function createClassName($ctx) {
     $namespace = str_replace('/', '_', $ctx['namespace']);
-    return $namespace . '_Page_' . $input->getArgument('<ClassName>');
+    return $namespace . '_Page_' . $ctx['shortClassName'];
   }
 
   protected function createTplName($ctx) {
-    return $ctx['namespace'] . '/Page/' . $ctx['pageClassName'] . '.tpl';
+    return $ctx['namespace'] . '/Page/' . $ctx['shortClassName'] . '.tpl';
   }
 }

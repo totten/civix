@@ -31,7 +31,7 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
     $ctx = array();
     $ctx['type'] = 'module';
     $ctx['basedir'] = rtrim(getcwd(), '/');
-    $ctx['pageClassName'] = $input->getArgument('<ClassName>');
+    $ctx['shortClassName'] = $input->getArgument('<ClassName>');
     $basedir = new Path($ctx['basedir']);
 
     $info = new Info($basedir->string('info.xml'));
@@ -42,7 +42,7 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
       return;
     }
 
-    $ctx['fullClassName'] = $this->createClassName($ctx, $input);
+    $ctx['fullClassName'] = $this->createClassName($ctx);
     $phpFile = $basedir->string(str_replace('_', '/', $ctx['fullClassName']) . '.php');
     $tplFile = $basedir->string('templates', $this->createTplName($ctx));
 
@@ -98,7 +98,7 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
 
   abstract protected function getTplTemplate();
 
-  abstract protected function createClassName($ctx, $input);
+  abstract protected function createClassName($ctx);
 
   abstract protected function createTplName($ctx);
 }
