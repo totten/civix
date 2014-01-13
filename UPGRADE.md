@@ -7,10 +7,10 @@ this procedure:
 1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
 2. In the shell, navigate to the extension base directory. (If the extension is "org.example.myext" and it lives in
    "/var/www/extensions/org.example.myext", then navigate to "/var/www/extensions".)
-3. Re-run the "civix generate:module" ocmmand (e.g. "civix generate:module org.example.myext"). This will regenerate
+3. Re-run the "civix generate:module" command (e.g. "civix generate:module org.example.myext"). This will regenerate
    the *.civix.php file (e.g. "/var/www/extensions/org.example.myext/myext.civix.php").
-4. Compare the new code with the old code. (e.g. "git diff" or "svn diff")
-5. Look for additional, version-specific upgrade steps (below)
+4. Compare the new code with the old code (e.g. "git diff" or "svn diff").
+5. Look for additional, version-specific upgrade steps (below).
 
 ### Upgrade: v13.10 to v14.01
 
