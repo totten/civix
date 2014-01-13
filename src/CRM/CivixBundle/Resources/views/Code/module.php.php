@@ -83,8 +83,8 @@ function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
 }
 
 /**
-* (Delegated) Implementation of hook_civicrm_alterSettingsMetaData
-*/
+ * Implementation of hook_civicrm_alterSettingsMetaData
+ */
 function <?php echo $mainFile ?>_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
