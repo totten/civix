@@ -18,7 +18,7 @@ Beginning with v14.01, civix includes implementations of these hooks:
 
  * hook_civicrm_caseTypes: Civix will scan for any CiviCase XML files in 
    "xml/case/*.xml" and automatically register these.
- * hook_alterSettingsFolders: Civix will scan for any settings files in
+ * hook_civicrm_alterSettingsFolders: Civix will scan for any settings files in
    "settings/*.setting.php" and automatically register these.
 
 For existing extensions, you should update the main PHP file -- eg if the
@@ -32,13 +32,17 @@ main PHP file for the extension is
  * Generate a list of case-types
  *
  * Note: This hook only runs in CiviCRM 4.4+.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
 function myext_civicrm_caseTypes(&$caseTypes) {
   _myext_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
- * Implementation of hook_civicrm_alterSettingsMetaData
+ * Implementation of hook_civicrm_alterSettingsFolders
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
 function myext_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _myext_civix_civicrm_alterSettingsFolders($metaDataFolders);

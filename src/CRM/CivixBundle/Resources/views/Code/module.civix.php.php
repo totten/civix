@@ -7,6 +7,8 @@ $_namespace = preg_replace(':/:','_',$namespace);
 
 /**
  * (Delegated) Implementation of hook_civicrm_config
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
 function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
   static $configured = FALSE;
@@ -32,6 +34,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
  * (Delegated) Implementation of hook_civicrm_xmlMenu
  *
  * @param $files array(string)
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
 function _<?php echo $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
   foreach (_<?php echo $mainFile ?>_civix_glob(__DIR__ . '/xml/Menu/*.xml') as $file) {
@@ -41,6 +44,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
 
 /**
  * Implementation of hook_civicrm_install
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function _<?php echo $mainFile ?>_civix_civicrm_install() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
@@ -51,6 +56,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_install() {
 
 /**
  * Implementation of hook_civicrm_uninstall
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
 function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
@@ -61,6 +68,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
 
 /**
  * (Delegated) Implementation of hook_civicrm_enable
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function _<?php echo $mainFile ?>_civix_civicrm_enable() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
@@ -73,6 +82,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
 
 /**
  * (Delegated) Implementation of hook_civicrm_disable
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function _<?php echo $mainFile ?>_civix_civicrm_disable() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
@@ -91,6 +102,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_disable() {
  *
  * @return mixed  based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
  *                for 'enqueue', returns void
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
 function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
@@ -98,6 +111,9 @@ function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $qu
   }
 }
 
+/**
+ * @return <?php echo $_namespace ?>_Upgrader
+ */
 function _<?php echo $mainFile ?>_civix_upgrader() {
   if (!file_exists(__DIR__.'/<?php echo $namespace ?>/Upgrader.php')) {
     return NULL;
@@ -147,6 +163,8 @@ function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
  * (Delegated) Implementation of hook_civicrm_managed
  *
  * Find any *.mgd.php files, merge their content, and return.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
 function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
   $mgdFiles = _<?php echo $mainFile ?>_civix_find_files(__DIR__, '*.mgd.php');
@@ -167,6 +185,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
  * Find any and return any files matching "xml/case/*.xml"
  *
  * Note: This hook only runs in CiviCRM 4.4+.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
 function _<?php echo $mainFile ?>_civix_civicrm_caseTypes(&$caseTypes) {
   if (!is_dir(__DIR__ . '/xml/case')) {
@@ -196,7 +216,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_caseTypes(&$caseTypes) {
  * result for an empty match is sometimes array() and sometimes FALSE.
  * This wrapper provides consistency.
  *
- * @see http://php.net/glob
+ * @link http://php.net/glob
  * @param string $pattern
  * @return array, possibly empty
  */
@@ -245,7 +265,9 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
 }
 
 /**
- * (Delegated) Implementation of hook_civicrm_alterSettingsMetaData
+ * (Delegated) Implementation of hook_civicrm_alterSettingsFolders
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
 function _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   static $configured = FALSE;
