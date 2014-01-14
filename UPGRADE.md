@@ -14,16 +14,17 @@ this procedure:
 
 ### Upgrade: v13.10 to v14.01
 
-Beginning with v14.01, civix includes implementations of these hooks:
+Beginning with v14.01, civix includes new implementations of these hooks:
 
  * hook_civicrm_caseTypes: Civix will scan for any CiviCase XML files in 
    "xml/case/*.xml" and automatically register these.
  * hook_civicrm_alterSettingsFolders: Civix will scan for any settings files in
    "settings/*.setting.php" and automatically register these.
 
-For existing extensions, you should update the main PHP file -- eg if the
-main PHP file for the extension is
-"/var/www/extensions/org.example.myext/myext.php", then add:
+These hooks aren't mandatory. However, in civix documentation and online support,
+we will assume that they have been properly configured, so it's recommended
+that you update your extension's main PHP file. For example, if the main PHP file
+for the extension is "/var/www/extensions/org.example.myext/myext.php", then add:
 
 ```php
 /**
