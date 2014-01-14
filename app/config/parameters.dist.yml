@@ -1,4 +1,9 @@
 parameters:
+    ## Default values for generated extensions
+    author:
+    email:
+    license:
+
     ## To allow "civix" to manipulate your developmental instance
     ## of CiviCRM, you should configure local or remote API access.
 
