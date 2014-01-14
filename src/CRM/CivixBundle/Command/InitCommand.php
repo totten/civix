@@ -1,10 +1,12 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
@@ -19,9 +21,9 @@ class InitCommand extends AbstractCommand {
       ->setDescription('Create a new CiviCRM Module-Extension')
       ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Fully qualified extension name (e.g. "com.example.myextension")')
     //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
-      ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', 'AGPL-3.0')
-      ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getGitConfig('user.name', 'FIXME'))
-      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getGitConfig('user.email', 'FIXME'));
+      ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')')
+      ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author')
+      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author');
     parent::configure();
   }
 
@@ -110,6 +112,40 @@ class InitCommand extends AbstractCommand {
     // fallback
     $output->writeln("NOTE: This might be a good time to refresh the extension list and install \"$key\".");
     return FALSE;
+  }
+
+  public function setApplication(Application $application = NULL) {
+    parent::setApplication($application);
+
+    // It would be preferable to set these when configure() calls addOption(), but the
+    // application/kernel/container aren't available when running configure().
+    $this->getDefinition()->getOption('author')->setDefault($this->getDefaultAuthor());
+    $this->getDefinition()->getOption('email')->setDefault($this->getDefaultEmail());
+    $this->getDefinition()->getOption('license')->setDefault($this->getDefaultLicense());
+  }
+
+  protected function getDefaultLicense() {
+    $license = NULL;
+    if ($this->getContainer()->hasParameter('license')) {
+      $license = $this->getContainer()->getParameter('license');
+    }
+    return empty($license) ? 'AGPL-3.0' : $license;
+  }
+
+  protected function getDefaultEmail() {
+    $value = NULL;
+    if ($this->getContainer()->hasParameter('email')) {
+      $value = $this->getContainer()->getParameter('email');
+    }
+    return empty($value) ? $this->getGitConfig('user.email', 'FIXME') : $value;
+  }
+
+  protected function getDefaultAuthor() {
+    $value = NULL;
+    if ($this->getContainer()->hasParameter('author')) {
+      $value = $this->getContainer()->getParameter('author');
+    }
+    return empty($value) ? $this->getGitConfig('user.name', 'FIXME') : $value;
   }
 
   protected function getLicenses() {

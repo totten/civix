@@ -24,6 +24,9 @@ class ConfigGetCommand extends ContainerAwareCommand {
 
   protected function getInterestingParameters() {
     return array(
+      'author',
+      'email',
+      'license',
       'civicrm_api3_conf_path',
       'civicrm_api3_server',
       'civicrm_api3_path',
