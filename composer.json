@@ -3,12 +3,6 @@
     "description": "CiviCRM Extension CLI",
     "homepage": "https://github.com/totten/civix",
     "license": "AGPL-3.0",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/totten/license-data"
-        }
-    ],
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.1.7",
