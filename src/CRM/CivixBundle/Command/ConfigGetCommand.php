@@ -27,11 +27,6 @@ class ConfigGetCommand extends ContainerAwareCommand {
       'author',
       'email',
       'license',
-      'civicrm_api3_conf_path',
-      'civicrm_api3_server',
-      'civicrm_api3_path',
-      'civicrm_api3_key',
-      'civicrm_api3_api_key',
     );
   }
 }

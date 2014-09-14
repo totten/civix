@@ -12,16 +12,10 @@ $container->setDefinition(
   'civicrm_api3',
   new Definition(
     'Ignore',
-    array(
-      new Parameter('civicrm_api3_server'),
-      new Parameter('civicrm_api3_path'),
-      new Parameter('civicrm_api3_api_key'),
-      new Parameter('civicrm_api3_key'),
-      new Parameter('civicrm_api3_conf_path'),
-    )
+    array()
   )
 )->setFactoryService(
-  'civicrm_api3_factory'
-)->setFactoryMethod(
-  'get'
-);
+    'civicrm_api3_factory'
+  )->setFactoryMethod(
+    'get'
+  );
