@@ -88,7 +88,6 @@ class InitCommand extends AbstractCommand {
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
     $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
     if ($civicrm_api3 && $civicrm_api3->local) {
-      $siteName = $civicrm_api3->getSiteName();
       /*
       The commented code doesn't work because installation requires a fully-bootstrapped
       system, but civicrm_api3 doesn't bootstrap the CMS.
