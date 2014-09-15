@@ -87,26 +87,22 @@ class InitCommand extends AbstractCommand {
    */
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
     $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
-    if ($civicrm_api3 && $civicrm_api3->local) {
-      $siteName = $civicrm_api3->getSiteName();
-      /*
-      The commented code doesn't work because installation requires a fully-bootstrapped
-      system, but civicrm_api3 doesn't bootstrap the CMS.
+    if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
+      $siteName = \CRM_Utils_System::baseURL(); // \CRM_Core_Config::singleton()->userSystem->cmsRootPath();
 
-      if ($this->confirm($input, $output, "Enable extension ($key) in $siteName? [Y/n] ")) {
-          if (version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
-              if (! $civicrm_api3->Extension->refresh(array())) {
-                  $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
-                  return FALSE;
-              }
-          }
+      $output->writeln("<info>Refresh extension list for \"$siteName\"</info>");
+      if (!$civicrm_api3->Extension->refresh(array())) {
+        $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
+        return FALSE;
+      }
 
-          if (! $civicrm_api3->Extension->install(array('key' => $key))) {
-                  $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
-          }
+      if ($this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
+        $output->writeln("<info>Enable extension ($key) in \"$siteName\"</info>");
+        if (!$civicrm_api3->Extension->install(array('key' => $key))) {
+          $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
+        }
       }
       return TRUE;
-      */
     }
 
     // fallback

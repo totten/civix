@@ -11,19 +11,87 @@ class ClientFactory {
   /**
    * Instantiate a configured API connection
    *
-   * @return civicrm_api3
+   * @return \civicrm_api3
    */
-  public function get($server, $path, $api_key, $key, $conf_path) {
+  public function get() {
+    list ($cmsRoot, $civicrm_config_php) = $this->findCivicrmConfigPhp(getcwd());
+    if (!is_dir($cmsRoot)) {
+      throw new \Exception('Failed to locate CMS. Please call civix from somewhere under the CMS root.');
+    }
+    if (!file_exists($civicrm_config_php)) {
+      throw new \Exception('Failed to locate civicrm.config.php. Please call civix from somewhere under the CMS root.');
+    }
+    $this->bootstrap($cmsRoot, $civicrm_config_php);
+
     require_once __DIR__ . '/class.api.php';
     $config = array();
-    foreach (array('server', 'path', 'api_key', 'key', 'conf_path') as $var) {
-      if (!empty($$var)) {
-        $config[$var] = $$var;
-      }
-    }
-    if (empty($config['server']) && empty($config['conf_path'])) {
-      throw new \Exception('Cannot instantiate API client -- please set connection options in parameters.yml');
-    }
     return new \civicrm_api3($config);
   }
+
+  /**
+   * @param string $startDir the directory in which to start the start
+   * @return null|array (0 => $cmsRoot, 1 => $civicrmConfigPhpPath)
+   */
+  private function findCivicrmConfigPhp($startDir) {
+    $parts = explode('/', str_replace('\\', '/', $startDir));
+    while (!empty($parts)) {
+      $basePath = implode('/', $parts);
+      $relPaths = array(
+        'wp-content/plugins/civicrm/civicrm/civicrm.config.php',
+        'administrator/components/com_civicrm/civicrm/civicrm.config.php',
+        'sites/default/modules/civicrm/civicrm.config.php', // check 'default' first
+        'sites/default/modules/*/civicrm/civicrm.config.php', // check 'default' first
+        'sites/*/modules/civicrm/civicrm.config.php',
+        'sites/*/modules/*/civicrm/civicrm.config.php',
+      );
+      foreach ($relPaths as $relPath) {
+        $matches = glob("$basePath/$relPath");
+        if (!empty($matches)) {
+          return array($basePath, $matches[0]);
+        }
+      }
+      array_pop($parts);
+    }
+    return NULL;
+  }
+
+  private function bootstrap($cmsRoot, $civicrm_config_path) {
+    define('CIVICRM_CMSDIR', $cmsRoot);
+    require_once $civicrm_config_path;
+
+    // so the configuration works with php-cli
+    $_SERVER['PHP_SELF'] = "/index.php";
+    $_SERVER['HTTP_HOST'] = 'localhost'; // $this->_site;
+    $_SERVER['REMOTE_ADDR'] = "127.0.0.1";
+    $_SERVER['SERVER_SOFTWARE'] = NULL;
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+
+    // SCRIPT_FILENAME needed by CRM_Utils_System::cmsRootPath
+    $_SERVER['SCRIPT_FILENAME'] = __FILE__;
+
+    // CRM-8917 - check if script name starts with /, if not - prepend it.
+    if (ord($_SERVER['SCRIPT_NAME']) != 47) {
+      $_SERVER['SCRIPT_NAME'] = '/' . $_SERVER['SCRIPT_NAME'];
+    }
+
+    $config = \CRM_Core_Config::singleton();
+
+    // HTTP_HOST will be 'localhost' unless overwritten with the -s argument.
+    // Now we have a Config object, we can set it from the Base URL.
+    if ($_SERVER['HTTP_HOST'] == 'localhost') {
+      $_SERVER['HTTP_HOST'] = preg_replace(
+        '!^https?://([^/]+)/$!i',
+        '$1',
+        $config->userFrameworkBaseURL);
+    }
+
+    global $civicrm_root;
+    if (!\CRM_Utils_System::loadBootstrap(array(), FALSE, FALSE, $civicrm_root)) {
+      throw new \Exception("Failed to bootstrap CMS");
+      // return FALSE;
+    }
+
+    return TRUE;
+  }
+
 }
