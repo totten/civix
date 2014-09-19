@@ -1,4 +1,4 @@
-### v14.01.00
+### v14.01.0
 
  * **generate:case-type** - Add command to generate CiviCase XML files
  * **generate:module** - Add support for generating license metadata by passing parameters "--license", "--author", and "--email".
@@ -8,8 +8,9 @@
  * Add documentation links for hooks (using "@link")
  * Reformat civix source code based on CiviCRM's coding conventions
 
-### v14.??
+### v14.09.0
 
- * Removed options **civicrm_api3_conf_path**, **civicrm_api3_server**, **civicrm_api3_path**, **civicrm_api3_key**, and **civicrm_api3_api_key**
- * **civix** will scan the directory tree to locate and bootstrap the CMS.
+ * Add options **author**, **email**, **license** for setting defaults on new extensions
+ * Remove options **civicrm_api3_conf_path**, **civicrm_api3_server**, **civicrm_api3_path**, **civicrm_api3_key**, and **civicrm_api3_api_key**
+ * **civix** will scan the directory tree to locate and bootstrap the CMS. This requires that extensions be stored in a subdirectory somewhere under the CMS root.
  * **civix generate:module** - Automatically refresh extension list. Prompt for installation.
