@@ -14,18 +14,23 @@ class ClientFactory {
    * @return \civicrm_api3
    */
   public function get() {
-    list ($cmsRoot, $civicrm_config_php) = $this->findCivicrmConfigPhp(getcwd());
+    $origDir = getcwd();
+
+    list ($cmsRoot, $civicrmConfigPhp) = $this->findCivicrmConfigPhp(getcwd());
     if (!is_dir($cmsRoot)) {
       throw new \Exception('Failed to locate CMS. Please call civix from somewhere under the CMS root.');
     }
-    if (!file_exists($civicrm_config_php)) {
+    if (!file_exists($civicrmConfigPhp)) {
       throw new \Exception('Failed to locate civicrm.config.php. Please call civix from somewhere under the CMS root.');
     }
-    $this->bootstrap($cmsRoot, $civicrm_config_php);
+    $this->bootstrap($cmsRoot, $civicrmConfigPhp);
 
     require_once __DIR__ . '/class.api.php';
     $config = array();
-    return new \civicrm_api3($config);
+    $result = new \civicrm_api3($config);
+
+    chdir($origDir);
+    return $result;
   }
 
   /**
