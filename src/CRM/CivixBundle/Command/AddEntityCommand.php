@@ -51,7 +51,13 @@ class AddEntityCommand extends ContainerAwareCommand {
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
     $ctx['tableName'] = 'civicrm_' . strtolower($input->getArgument('<EntityName>'));
-    $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '' /*$ctx['actionNameCamel']*/, self::API_VERSION));
+    if (function_exists('civicrm_api_get_function_name')) {
+      $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '', self::API_VERSION));
+    } elseif (function_exists('_civicrm_api_get_entity_name_from_camel')) {
+      $ctx['apiFunctionPrefix'] =  'civicrm_api' . self::API_VERSION . '_' . _civicrm_api_get_entity_name_from_camel($ctx['entityNameCamel']) . '_' . $ctx['actionNameCamel'];
+    } else {
+      throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
+    }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'] . '.php');
     $ctx['daoClassName'] = strtr($ctx['namespace'], '/', '_') . '_DAO_' . $input->getArgument('<EntityName>');
     $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
