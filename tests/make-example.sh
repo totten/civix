@@ -23,12 +23,12 @@ pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
     rm -rf "$EXMODULE"
   fi
   
-  civix generate:module $EXMODULE
+  echo n | civix generate:module $EXMODULE
   pushd $EXMODULE
     civix generate:api MyEntity MyAction
     civix generate:case-type MyLabel MyName
     # civix generate:custom-xml -f --data="FIXME" --uf="FIXME"
-    # civix generate:entity 
+    civix generate:entity MyEntity
     civix generate:form MyForm civicrm/my-form
     civix generate:page MyPage civicrm/my-page
     civix generate:report MyReport CiviContribute
