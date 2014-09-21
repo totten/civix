@@ -17,22 +17,27 @@ fi
 #####################################################
 ## Make a git tag
 pushd "$CALLEDPATH" >> /dev/null
-  git tag $TAG
-  git push origin $TAG
+  if git tag |grep ^${TAG}\$ -q ; then
+    echo "Tag $TAG found"
+  else
+    git tag $TAG
+    git push origin $TAG
+  fi
 popd >> /dev/null
 
 #####################################################
 ## Make a tarball
 [ -d "$BUILDDIR" ] && rm -rf "$BUILDDIR"
 mkdir -p "$BUILDDIR"
-git clone -b "$VERSION" "$GITURL" "$BUILDDIR"
+git clone -b "$TAG" "$GITURL" "$BUILDDIR"
 
 pushd "$BUILDDIR" >> /dev/null
   composer install
 
   rm -rf .git
-  find vendor -type d -a -name Test -delete
-  find vendor -type d -a -name Tests -delete
+  find vendor -type d -a -name Test | grep ^vendor/ | while read dir ; do rm -rf "$dir" ; done
+  find vendor -type d -a -name Tests | grep ^vendor/ | while read dir ; do rm -rf "$dir" ; done
+  find vendor -type d -a -name tests | grep ^vendor/ | while read dir ; do rm -rf "$dir" ; done
   find app/cache app/logs -mindepth 1 -delete
   find vendor/swiftmailer/swiftmailer/test-suite -mindepth 1 -delete
   find vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/data -mindepth 1 -delete
