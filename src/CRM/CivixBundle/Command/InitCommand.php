@@ -91,7 +91,7 @@ class InitCommand extends AbstractCommand {
       $siteName = \CRM_Utils_System::baseURL(); // \CRM_Core_Config::singleton()->userSystem->cmsRootPath();
 
       $output->writeln("<info>Refresh extension list for \"$siteName\"</info>");
-      if (!$civicrm_api3->Extension->refresh(array())) {
+      if (!$civicrm_api3->Extension->refresh(array('local' => TRUE, 'remote' => FALSE))) {
         $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
         return FALSE;
       }
