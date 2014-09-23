@@ -50,7 +50,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
 function _<?php echo $mainFile ?>_civix_civicrm_install() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    return $upgrader->onInstall();
+    $upgrader->onInstall();
   }
 }
 
@@ -62,7 +62,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_install() {
 function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    return $upgrader->onUninstall();
+    $upgrader->onUninstall();
   }
 }
 
@@ -75,7 +75,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     if (is_callable(array($upgrader, 'onEnable'))) {
-      return $upgrader->onEnable();
+      $upgrader->onEnable();
     }
   }
 }
@@ -84,12 +84,13 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
  * (Delegated) Implementation of hook_civicrm_disable
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
+ * @return mixed
  */
 function _<?php echo $mainFile ?>_civix_civicrm_disable() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     if (is_callable(array($upgrader, 'onDisable'))) {
-      return $upgrader->onDisable();
+      $upgrader->onDisable();
     }
   }
 }

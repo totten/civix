@@ -30,7 +30,7 @@ function <?php echo $mainFile ?>_civicrm_xmlMenu(&$files) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function <?php echo $mainFile ?>_civicrm_install() {
-  return _<?php echo $mainFile ?>_civix_civicrm_install();
+  _<?php echo $mainFile ?>_civix_civicrm_install();
 }
 
 /**
@@ -39,7 +39,7 @@ function <?php echo $mainFile ?>_civicrm_install() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
 function <?php echo $mainFile ?>_civicrm_uninstall() {
-  return _<?php echo $mainFile ?>_civix_civicrm_uninstall();
+  _<?php echo $mainFile ?>_civix_civicrm_uninstall();
 }
 
 /**
@@ -48,7 +48,7 @@ function <?php echo $mainFile ?>_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function <?php echo $mainFile ?>_civicrm_enable() {
-  return _<?php echo $mainFile ?>_civix_civicrm_enable();
+  _<?php echo $mainFile ?>_civix_civicrm_enable();
 }
 
 /**
@@ -57,7 +57,7 @@ function <?php echo $mainFile ?>_civicrm_enable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function <?php echo $mainFile ?>_civicrm_disable() {
-  return _<?php echo $mainFile ?>_civix_civicrm_disable();
+  _<?php echo $mainFile ?>_civix_civicrm_disable();
 }
 
 /**
@@ -84,7 +84,7 @@ function <?php echo $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = N
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
 function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
-  return _<?php echo $mainFile ?>_civix_civicrm_managed($entities);
+  _<?php echo $mainFile ?>_civix_civicrm_managed($entities);
 }
 
 /**
