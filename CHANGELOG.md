@@ -14,3 +14,10 @@
  * Remove options **civicrm_api3_conf_path**, **civicrm_api3_server**, **civicrm_api3_path**, **civicrm_api3_key**, and **civicrm_api3_api_key**
  * **civix** will scan the directory tree to locate and bootstrap the CMS. This requires that extensions be stored in a subdirectory somewhere under the CMS root.
  * **civix generate:module** - Automatically refresh extension list. Prompt for installation.
+ * **civix generate:api** - Fix for v4.5
+
+### v14.09.1
+
+ * **civix generate:module** - Initialize URL tags in info.xml
+ * **civix generate:entity** - Fix for v4.5
+ * Fixes for misc PHPStorm warnings
