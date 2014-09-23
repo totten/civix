@@ -22,6 +22,19 @@ class Info extends XML {
     $maint = $xml->addChild('maintainer');
     $maint->addChild('author', isset($ctx['author']) ? $ctx['author'] : 'FIXME');
     $maint->addChild('email', isset($ctx['email']) ? $ctx['email'] : 'FIXME@example.com');
+
+    $urls = $xml->addChild('urls');
+    $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Main Extension Page');
+    $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Documentation');
+    $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Support');
+
+    $licenses = new \LicenseData\Repository();
+    if (isset($ctx['license']) && $license = $licenses->get($ctx['license'])) {
+      $urls->addChild('url', $license->getUrl())->addAttribute('desc', 'Licensing');
+    } else {
+      $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Licensing');
+    }
+
     $xml->addChild('releaseDate', date('Y-m-d'));
     $xml->addChild('version', '1.0');
     $xml->addChild('develStage', 'alpha');
