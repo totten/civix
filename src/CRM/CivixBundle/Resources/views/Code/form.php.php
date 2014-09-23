@@ -68,6 +68,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
     // the 'label'.
     $elementNames = array();
     foreach ($this->_elements as $element) {
+      /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();
       if (!empty($label)) {
         $elementNames[] = $element->getName();
