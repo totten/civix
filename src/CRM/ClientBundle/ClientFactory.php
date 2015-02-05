@@ -16,7 +16,7 @@ class ClientFactory {
   public function get() {
     $origDir = getcwd();
 
-    list ($cmsRoot, $civicrmConfigPhp) = $this->findCivicrmConfigPhp(getcwd());
+    list ($cmsRoot, $civicrmConfigPhp) = $this->findCivicrmConfigPhp(exec("pwd"));
     if (!is_dir($cmsRoot)) {
       throw new \Exception('Failed to locate CMS. Please call civix from somewhere under the CMS root.');
     }
