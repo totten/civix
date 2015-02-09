@@ -11,7 +11,7 @@ $_namespace = preg_replace(':/:','_',$namespace);
 class <?php echo $_namespace ?>_Upgrader_Base {
 
   /**
-   * @var varies, subclass of htis
+   * @var varies, subclass of ttis
    */
   static $instance;
 
@@ -36,7 +36,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   private $revisions;
 
   /**
-   * Obtain a refernece to the active upgrade handler
+   * Obtain a reference to the active upgrade handler.
    */
   static public function instance() {
     if (! self::$instance) {
@@ -76,7 +76,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   // ******** Task helpers ********
 
   /**
-   * Run a CustomData file
+   * Run a CustomData file.
    *
    * @param string $relativePath the CustomData XML file path (relative to this extension's dir)
    * @return bool
@@ -90,6 +90,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * Run a CustomData file
    *
    * @param string $xml_file  the CustomData XML file path (absolute path)
+   *
    * @return bool
    */
   protected static function executeCustomDataFileByAbsPath($xml_file) {
@@ -100,9 +101,10 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * Run a SQL file
+   * Run a SQL file.
    *
    * @param string $relativePath the SQL file path (relative to this extension's dir)
+   *
    * @return bool
    */
   public function executeSqlFile($relativePath) {
@@ -114,7 +116,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * Run one SQL query
+   * Run one SQL query.
    *
    * This is just a wrapper for CRM_Core_DAO::executeSql, but it
    * provides syntatic sugar for queueing several tasks that
@@ -127,8 +129,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * Syntatic sugar for enqueuing a task which calls a function
-   * in this class. The task is weighted so that it is processed
+   * Syntatic sugar for enqueuing a task which calls a function in this class. 
+   *
+   * The task is weighted so that it is processed
    * as part of the currently-pending revision.
    *
    * After passing the $funcName, you can also pass parameters that will go to
@@ -148,7 +151,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   // ******** Revision-tracking helpers ********
 
   /**
-   * Determine if there are any pending revisions
+   * Determine if there are any pending revisions.
    *
    * @return bool
    */
@@ -167,7 +170,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * Add any pending revisions to the queue
+   * Add any pending revisions to the queue.
    */
   public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
     $this->queue = $queue;
@@ -200,7 +203,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * Get a list of revisions
+   * Get a list of revisions.
    *
    * @return array(revisionNumbers) sorted numerically
    */
@@ -290,11 +293,13 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   public function onUpgrade($op, CRM_Queue_Queue $queue = NULL) {
-    switch($op) {
+    switch ($op) {
       case 'check':
         return array($this->hasPendingRevisions());
+
       case 'enqueue':
         return $this->enqueuePendingRevisions($queue);
+
       default:
     }
   }
