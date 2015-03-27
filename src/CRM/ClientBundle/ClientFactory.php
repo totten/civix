@@ -85,7 +85,7 @@ class ClientFactory {
     // Now we have a Config object, we can set it from the Base URL.
     if ($_SERVER['HTTP_HOST'] == 'localhost') {
       $_SERVER['HTTP_HOST'] = preg_replace(
-        '!^https?://([^/]+)/$!i',
+        '!^https?://([^/]+)/.*$!i',
         '$1',
         $config->userFrameworkBaseURL);
     }
