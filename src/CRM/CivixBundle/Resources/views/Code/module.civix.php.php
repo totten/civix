@@ -12,28 +12,32 @@ $_namespace = preg_replace(':/:','_',$namespace);
  */
 function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
   static $configured = FALSE;
-  if ($configured) return;
+  if ($configured) {
+    return;
+  }  
   $configured = TRUE;
 
   $template =& CRM_Core_Smarty::singleton();
 
-  $extRoot = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
+  $extRoot = dirname(__FILE__) . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
 
   if ( is_array( $template->template_dir ) ) {
       array_unshift( $template->template_dir, $extDir );
-  } else {
+  } 
+  else {
       $template->template_dir = array( $extDir, $template->template_dir );
   }
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path( );
-  set_include_path( $include_path );
+  set_include_path($include_path);
 }
 
 /**
  * (Delegated) Implements hook_civicrm_xmlMenu().
  *
  * @param $files array(string)
+ *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
 function _<?php echo $mainFile ?>_civix_civicrm_xmlMenu(&$files) {
@@ -118,7 +122,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $qu
 function _<?php echo $mainFile ?>_civix_upgrader() {
   if (!file_exists(__DIR__.'/<?php echo $namespace ?>/Upgrader.php')) {
     return NULL;
-  } else {
+  } 
+  else {
     return <?php echo $_namespace ?>_Upgrader_Base::instance();
   }
 }
@@ -227,12 +232,12 @@ function _<?php echo $mainFile ?>_civix_glob($pattern) {
 }
 
 /**
- * Inserts a navigation menu item at a given place in the hierarchy
+ * Inserts a navigation menu item at a given place in the hierarchy.
  *
- * $menu - menu hierarchy
- * $path - path where insertion should happen (ie. Administer/System Settings)
- * $item - menu you need to insert (parent/child attributes will be filled for you)
- * $parentId - used internally to recurse in the menu structure
+ * @param array $menu - menu hierarchy
+ * @param string $path - path where insertion should happen (ie. Administer/System Settings)
+ * @param array $item - menu you need to insert (parent/child attributes will be filled for you)
+ * @param int $parentId - used internally to recurse in the menu structure
  */
 function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $item, $parentId = NULL) {
   static $navId;
@@ -250,7 +255,8 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
       ))
     );
     return true;
-  } else {
+  } 
+  else {
     // Find an recurse into the next level down
     $found = false;
     $path = explode('/', $path);
@@ -272,7 +278,9 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
  */
 function _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   static $configured = FALSE;
-  if ($configured) return;
+  if ($configured) {
+    return;
+  }
   $configured = TRUE;
 
   $settingsDir = __DIR__ . DIRECTORY_SEPARATOR . 'settings';
