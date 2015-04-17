@@ -14,7 +14,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
   static $configured = FALSE;
   if ($configured) {
     return;
-  }  
+  }
   $configured = TRUE;
 
   $template =& CRM_Core_Smarty::singleton();
@@ -24,7 +24,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
 
   if ( is_array( $template->template_dir ) ) {
       array_unshift( $template->template_dir, $extDir );
-  } 
+  }
   else {
       $template->template_dir = array( $extDir, $template->template_dir );
   }
@@ -122,7 +122,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $qu
 function _<?php echo $mainFile ?>_civix_upgrader() {
   if (!file_exists(__DIR__.'/<?php echo $namespace ?>/Upgrader.php')) {
     return NULL;
-  } 
+  }
   else {
     return <?php echo $_namespace ?>_Upgrader_Base::instance();
   }
@@ -255,7 +255,7 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
       ))
     );
     return true;
-  } 
+  }
   else {
     // Find an recurse into the next level down
     $found = false;

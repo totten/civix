@@ -129,7 +129,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * Syntatic sugar for enqueuing a task which calls a function in this class. 
+   * Syntatic sugar for enqueuing a task which calls a function in this class.
    *
    * The task is weighted so that it is processed
    * as part of the currently-pending revision.
