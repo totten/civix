@@ -31,9 +31,11 @@ class TestRunCommand extends ContainerAwareCommand {
     $this
       ->setName('test')
       ->setDescription('Run a unit test')
-      ->addArgument('<TestClass>', InputArgument::REQUIRED, 'Test class name (eg "CRM_Myextension_MyTest")')
+      ->addArgument('<TestClass>', InputArgument::OPTIONAL, 'Test class name (eg "CRM_Myextension_MyTest")')
       ->addOption('clear', NULL, InputOption::VALUE_NONE, 'Clear the cached PHPUnit bootstrap data')
-      ->addOption('filter', NULL, InputOption::VALUE_REQUIRED, 'Restrict tests by name (regex)');
+      ->addOption('filter', NULL, InputOption::VALUE_REQUIRED, 'Restrict tests by name (regex)')
+      ->addOption('configuration', 'c', InputOption::VALUE_NONE, 'Run all the tests as configured in the phpunit.xml in the root directory of your extension.')
+      ->addOption('debug', NULL, InputOption::VALUE_NONE, 'Run PHPUnit in debug mode.');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
@@ -91,9 +93,17 @@ class TestRunCommand extends ContainerAwareCommand {
     $command[] = $tests_dir;
     $command[] = '--bootstrap';
     $command[] = $phpunit_boot;
+    $command[] = '--colors';
     if ($input->getOption('filter')) {
       $command[] = '--filter';
       $command[] = $input->getOption('filter');
+    }
+    if ($input->getOption('configuration')) {
+      $command[] = '--configuration';
+      $command[] = $basedir->string('phpunit.xml');
+    }
+    if ($input->getOption('debug')) {
+      $command[] = '--debug';
     }
     $command[] = $input->getArgument('<TestClass>');
 
