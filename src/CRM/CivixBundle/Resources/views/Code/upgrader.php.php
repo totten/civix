@@ -4,7 +4,7 @@ $_namespace = preg_replace(':/:','_',$namespace);
 ?>
 
 /**
- * Collection of upgrade steps
+ * Collection of upgrade steps.
  */
 class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgrader_Base {
 
@@ -12,35 +12,35 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).
 
   /**
-   * Example: Run an external SQL script when the module is installed
+   * Example: Run an external SQL script when the module is installed.
    *
   public function install() {
     $this->executeSqlFile('sql/myinstall.sql');
   }
 
   /**
-   * Example: Run an external SQL script when the module is uninstalled
+   * Example: Run an external SQL script when the module is uninstalled.
    *
   public function uninstall() {
    $this->executeSqlFile('sql/myuninstall.sql');
   }
 
   /**
-   * Example: Run a simple query when a module is enabled
+   * Example: Run a simple query when a module is enabled.
    *
   public function enable() {
     CRM_Core_DAO::executeQuery('UPDATE foo SET is_active = 1 WHERE bar = "whiz"');
   }
 
   /**
-   * Example: Run a simple query when a module is disabled
+   * Example: Run a simple query when a module is disabled.
    *
   public function disable() {
     CRM_Core_DAO::executeQuery('UPDATE foo SET is_active = 0 WHERE bar = "whiz"');
   }
 
   /**
-   * Example: Run a couple simple queries
+   * Example: Run a couple simple queries.
    *
    * @return TRUE on success
    * @throws Exception
@@ -54,7 +54,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
 
 
   /**
-   * Example: Run an external SQL script
+   * Example: Run an external SQL script.
    *
    * @return TRUE on success
    * @throws Exception
@@ -67,7 +67,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
 
 
   /**
-   * Example: Run a slow upgrade process by breaking it up into smaller chunk
+   * Example: Run a slow upgrade process by breaking it up into smaller chunk.
    *
    * @return TRUE on success
    * @throws Exception
