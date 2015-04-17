@@ -109,3 +109,18 @@ function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
 function <?php echo $mainFile ?>_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
+
+/**
+ * Functions below this ship commented out. Uncomment as required.
+ *
+
+/**
+ * Implements hook_civicrm_preProcess().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
+ *
+function <?php echo $mainFile ?>_civicrm_preProcess($formName, &$form) {
+
+}
+
+*/
