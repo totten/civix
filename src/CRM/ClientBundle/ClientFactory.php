@@ -14,9 +14,9 @@ class ClientFactory {
    * @return \civicrm_api3
    */
   public function get() {
-    $origDir = getcwd();
+    $origDir = $this->getPwd();
 
-    list ($cmsRoot, $civicrmConfigPhp) = $this->findCivicrmConfigPhp(exec("pwd"));
+    list ($cmsRoot, $civicrmConfigPhp) = $this->findCivicrmConfigPhp($origDir);
     if (!is_dir($cmsRoot)) {
       throw new \Exception('Failed to locate CMS. Please call civix from somewhere under the CMS root.');
     }
@@ -97,6 +97,16 @@ class ClientFactory {
     }
 
     return TRUE;
+  }
+
+  private function getPwd() {
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      return getcwd();
+    }
+    else {
+      exec('pwd', $output);
+      return trim(implode("\n", $output));
+    }
   }
 
 }
