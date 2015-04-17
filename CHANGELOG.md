@@ -21,3 +21,10 @@
  * **civix generate:module** - Initialize URL tags in info.xml
  * **civix generate:entity** - Fix for v4.5
  * Fixes for misc PHPStorm warnings
+
+## v15.04.0
+
+ * Bootstrap - Update civicrm.settings.php search algorithm
+ * Bootstrap - Fix for Drupal sites in subdirectories (below webroot)
+ * **civix test** - Add options
+ * Style cleanup on generated PHP (per Drupal phpcs)
