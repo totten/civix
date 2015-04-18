@@ -49,7 +49,7 @@ class ClientFactory {
         'sites/*/modules/civicrm/civicrm.config.php',
         'sites/*/modules/*/civicrm/civicrm.config.php',
         'profiles/*/modules/civicrm/civicrm.config.php',
-        'profiles/*/modules/civicrm/*/civicrm.config.php',
+        'profiles/*/modules/*/civicrm/civicrm.config.php',
       );
       foreach ($relPaths as $relPath) {
         $matches = glob("$basePath/$relPath");
