@@ -48,6 +48,8 @@ class ClientFactory {
         'sites/default/modules/*/civicrm/civicrm.config.php', // check 'default' first
         'sites/*/modules/civicrm/civicrm.config.php',
         'sites/*/modules/*/civicrm/civicrm.config.php',
+        'profiles/*/modules/civicrm/civicrm.config.php',
+        'profiles/*/modules/civicrm/*/civicrm.config.php',
       );
       foreach ($relPaths as $relPath) {
         $matches = glob("$basePath/$relPath");
