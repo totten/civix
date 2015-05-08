@@ -108,7 +108,6 @@ class TestRunCommand extends ContainerAwareCommand {
     $command[] = $input->getArgument('<TestClass>');
 
     // Run phpunit with our "tests" directory
-    chdir("$civicrm_root/tools");
     $process = new Process(
       call_user_func_array(array('\CRM\CivixBundle\Command\TestRunCommand', 'createPhpShellCommand'), $command),
       NULL, NULL, NULL, self::TIMEOUT
