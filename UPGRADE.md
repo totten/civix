@@ -1,4 +1,4 @@
-### Upgrade: General
+## Upgrade: General
 
 From time-to-time, the templates in civix may change. If you want to update
 your module to match the newer templates, then use this procedure:
@@ -11,19 +11,40 @@ your module to match the newer templates, then use this procedure:
 4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
 5. Look for additional, version-specific upgrade steps (below).
 
-### Upgrade: v13.10 to v14.01
+## Upgrade: Hook Stubs
 
-Beginning with v14.01, civix includes new implementations of these hooks:
+Sometimes new versions introduce new hook stubs. These generally are not
+mandatory.  However, in civix documentation and online support, we will
+assume that they have been properly configured, so it's recommended that you
+update your extension's main PHP file.  For example, if the main PHP file
+for the extension is "/var/www/extensions/org.example.myext/myext.php", the
+snippets mentioned below (adjusting `myext` to match your extension).
 
- * **hook_civicrm_caseTypes**: Civix will scan for any CiviCase XML files in 
-   "xml/case/*.xml" and automatically register these.
- * **hook_civicrm_alterSettingsFolders**: Civix will scan for any settings files in
-   "settings/*.setting.php" and automatically register these.
+### Upgrade to v15.04+: hook_civicrm_angularModules
 
-These hooks aren't mandatory. However, in civix documentation and online support,
-we will assume that they have been properly configured, so it's recommended
-that you update your extension's main PHP file. For example, if the main PHP file
-for the extension is "/var/www/extensions/org.example.myext/myext.php", then add:
+Civix-based modules should scan for Angular modules names in `ang/*.ang.php`
+and auto-register them with the Civi-Angular base app (`civicrm/a/#`).
+
+```php
+/**
+ * Implements hook_civicrm_angularModules().
+ *
+ * Generate a list of Angular modules.
+ *
+ * Note: This hook only runs in CiviCRM 4.5+. It may
+ * use features only available in v4.6+.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
+ */
+function myext_civicrm_angularModules(&$angularModules) {
+  _myext_civix_civicrm_angularModules($angularModules);
+}
+```
+
+### Upgrade to v14.01+: hook_civicrm_caseTypes
+
+Civix-based modules should scan for any CiviCase XML files in
+`xml/case/*.xml` and automatically register these.
 
 ```php
 /**
@@ -38,7 +59,14 @@ for the extension is "/var/www/extensions/org.example.myext/myext.php", then add
 function myext_civicrm_caseTypes(&$caseTypes) {
   _myext_civix_civicrm_caseTypes($caseTypes);
 }
+```
 
+### Upgrade to v14.01+: hook_civicrm_alterSettingsFolders
+
+Civix-based modules should scan for any settings files in
+`settings/*.setting.php` and automatically register these.
+
+```php
 /**
  * Implementation of hook_civicrm_alterSettingsFolders
  *
