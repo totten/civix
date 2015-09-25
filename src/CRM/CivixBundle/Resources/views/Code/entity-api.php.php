@@ -8,7 +8,7 @@ echo "<?php\n";
  *
  * @param array $spec description of fields supported by this API call
  * @return void
- * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
+ * @see http://wiki.civicrm.org/confluence/display/CRMDOC/API+Architecture+Standards
  */
 function _<?php echo $apiFunctionPrefix ?>create_spec(&$spec) {
   // $spec['some_parameter']['api.required'] = 1;
