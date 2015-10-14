@@ -20,6 +20,36 @@ update your extension's main PHP file.  For example, if the main PHP file
 for the extension is "/var/www/extensions/org.example.myext/myext.php", the
 snippets mentioned below (adjusting `myext` to match your extension).
 
+### Upgrade to v15.10+: hook_civicrm_navigationMenu
+
+Prior to v4.7, the hook for manipulating the navigation menu required that the
+extension author compute a `navID` and `parentID` for each new menu entry, but the
+common examples for doing this were error-prone. In v4.7, the `navID` and `parentID`
+may be omitted and computed automatically.
+
+For backward compatibility, `civix` provides an adapter -- simply declare the menu
+item (without `navID` or `parentID`; as you would in v4.7) and then delegate to
+the helper function for `navigationMenu`.
+
+```php
+/**
+ * Implements hook_civicrm_navigationMenu().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
+ */
+function myext_civicrm_navigationMenu(&$menu) {
+  _myext_civix_insert_navigation_menu($menu, NULL, array(
+    'label' => ts('The Page', array('domain' => 'org.example.myext')),
+    'name' => 'the_page',
+    'url' => 'civicrm/the-page',
+    'permission' => 'access CiviReport,access CiviContribute',
+    'operator' => 'OR',
+    'separator' => 0,
+  ));
+  _myext_civix_navigationMenu($menu);
+}
+```
+
 ### Upgrade to v15.04+: hook_civicrm_angularModules
 
 Civix-based modules should scan for Angular modules names in `ang/*.ang.php`
