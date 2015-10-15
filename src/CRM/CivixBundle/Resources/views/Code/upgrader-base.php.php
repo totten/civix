@@ -124,7 +124,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    */
   public function executeSql($query, $params = array()) {
     // FIXME verify that we raise an exception on error
-    CRM_Core_DAO::executeSql($query, $params);
+    CRM_Core_DAO::executeQuery($query, $params);
     return TRUE;
   }
 
