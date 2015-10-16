@@ -272,7 +272,7 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
         'active'     => 1,
       ), $item),
     );
-    return true;
+    return TRUE;
   }
   else {
     // Find an recurse into the next level down

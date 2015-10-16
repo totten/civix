@@ -10,7 +10,7 @@ require_once 'CRM/Core/Form.php';
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
 class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form {
-  function buildQuickForm() {
+  public function buildQuickForm() {
 
     // add form elements
     $this->add(
@@ -18,7 +18,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
       'favorite_color', // field name
       'Favorite Color', // field label
       $this->getColorOptions(), // list of options
-      true // is required
+      TRUE // is required
     );
     $this->addButtons(array(
       array(
@@ -33,7 +33,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
     parent::buildQuickForm();
   }
 
-  function postProcess() {
+  public function postProcess() {
     $values = $this->exportValues();
     $options = $this->getColorOptions();
     CRM_Core_Session::setStatus(ts('You picked color "%1"', array(
@@ -42,7 +42,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
     parent::postProcess();
   }
 
-  function getColorOptions() {
+  public function getColorOptions() {
     $options = array(
       '' => ts('- select -'),
       '#f00' => ts('Red'),
@@ -61,7 +61,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
    *
    * @return array (string)
    */
-  function getRenderableElementNames() {
+  public function getRenderableElementNames() {
     // The _elements list includes some items which should not be
     // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
     // items don't have labels.  We'll identify renderable by filtering on
