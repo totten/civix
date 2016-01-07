@@ -16,7 +16,7 @@ function <?php echo $mainFile ?>_civicrm_config(&$config) {
 /**
  * Implements hook_civicrm_xmlMenu().
  *
- * @param $files array(string)
+ * @param array $files
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
@@ -91,7 +91,9 @@ function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
 /**
  * Implements hook_civicrm_caseTypes().
  *
- * Generate a list of case-types
+ * Generate a list of case-types.
+ *
+ * @param array $caseTypes
  *
  * Note: This hook only runs in CiviCRM 4.4+.
  *
