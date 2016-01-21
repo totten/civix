@@ -31,7 +31,7 @@ class TestRunCommand extends ContainerAwareCommand {
     $this
       ->setName('test')
       ->setDescription('Run a unit test')
-      ->addArgument('<TestClass>', InputArgument::OPTIONAL, 'Test class name (eg "CRM_Myextension_MyTest")')
+      ->addArgument('<TestClass>', InputArgument::OPTIONAL, 'Test class name (eg "CRM_Myextension_MyTest"), or directory with test classes', 'tests/phpunit')
       ->addOption('clear', NULL, InputOption::VALUE_NONE, 'Clear the cached PHPUnit bootstrap data')
       ->addOption('filter', NULL, InputOption::VALUE_REQUIRED, 'Restrict tests by name (regex)')
       ->addOption('configuration', 'c', InputOption::VALUE_NONE, 'Run all the tests as configured in the phpunit.xml in the root directory of your extension.')
@@ -108,7 +108,6 @@ class TestRunCommand extends ContainerAwareCommand {
     $command[] = $input->getArgument('<TestClass>');
 
     // Run phpunit with our "tests" directory
-    chdir("$civicrm_root/tools");
     $process = new Process(
       call_user_func_array(array('\CRM\CivixBundle\Command\TestRunCommand', 'createPhpShellCommand'), $command),
       NULL, NULL, NULL, self::TIMEOUT
