@@ -1,0 +1,40 @@
+#!/bin/bash
+set -ex
+## Create a clean checkout with dependencies and build a tarball
+
+## Determine the absolute path of the directory with the file
+## absdirname <file-path>
+pushd $(dirname $0) >> /dev/null
+  pushd ..
+    REPOPATH=$(pwd)
+  popd
+popd >> /dev/null
+
+GITURL="file://$REPOPATH"
+BUILDDIR="$REPOPATH/build/civix"
+
+#####################################################
+## Make a tarball
+[ -d "$BUILDDIR" ] && rm -rf "$BUILDDIR"
+mkdir -p "$BUILDDIR"
+git clone "$GITURL" "$BUILDDIR"
+
+pushd "$BUILDDIR" >> /dev/null
+  composer install
+
+  rm -rf .git
+  find vendor -type d -a -name Test | grep ^vendor/ | while read dir ; do rm -rf "$dir" ; done
+  find vendor -type d -a -name Tests | grep ^vendor/ | while read dir ; do rm -rf "$dir" ; done
+  find vendor -type d -a -name tests | grep ^vendor/ | while read dir ; do rm -rf "$dir" ; done
+  find app/cache app/logs -mindepth 1 -delete
+  find vendor/swiftmailer/swiftmailer/test-suite -mindepth 1 -delete
+  find vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/data -mindepth 1 -delete
+popd >> /dev/null
+
+pushd $(dirname "$BUILDDIR") >> /dev/null
+  NAME=$(basename "$BUILDDIR")
+  TARBALL="$NAME.tar.bz2"
+
+  [ -f "$TARBALL" ] && rm -f "$TARBALL"
+  tar cvjf $TARBALL $NAME
+popd >> /dev/null
