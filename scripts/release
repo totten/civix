@@ -2,9 +2,10 @@
 ## Tag the code, create a clean checkout with dependencies, and build a tarball
 set -e
 CALLEDPATH=$(dirname $0)
+REPOPATH=$(dirname "$CALLEDPATH")
 GITURL="$1"
 VERSION="$2"
-BUILDDIR="$CALLEDPATH/build/civix-$VERSION"
+BUILDDIR="$REPOPATH/build/civix-$VERSION"
 TAG="v${VERSION}"
 
 if [ -z "$1" -o -z "$VERSION" ]; then
@@ -16,7 +17,7 @@ fi
 
 #####################################################
 ## Make a git tag
-pushd "$CALLEDPATH" >> /dev/null
+pushd "$REPOPATH" >> /dev/null
   if git tag |grep ^${TAG}\$ -q ; then
     echo "Tag $TAG found"
   else
