@@ -1,18 +1,15 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Ini;
 use CRM\CivixBundle\Utils\Path;
 
-class ConfigSetCommand extends ContainerAwareCommand {
+class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('config:set')

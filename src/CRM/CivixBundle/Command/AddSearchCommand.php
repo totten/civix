@@ -2,7 +2,6 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,7 +15,7 @@ use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddSearchCommand extends ContainerAwareCommand {
+class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
   const GENERIC_SEARCH_TEMPLATE = 'CRM/Contact/Form/Search/Custom.tpl';
 
   protected function configure() {

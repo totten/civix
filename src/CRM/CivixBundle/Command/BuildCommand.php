@@ -1,18 +1,14 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class BuildCommand extends ContainerAwareCommand {
+class BuildCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('build:zip')

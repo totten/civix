@@ -2,10 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
@@ -13,7 +10,7 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddUpgraderCommand extends ContainerAwareCommand {
+class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('generate:upgrader')

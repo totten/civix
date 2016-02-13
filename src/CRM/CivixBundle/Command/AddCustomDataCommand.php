@@ -2,7 +2,6 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,7 +11,7 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\CustomDataXML;
 use CRM\CivixBundle\Utils\Path;
 
-class AddCustomDataCommand extends ContainerAwareCommand {
+class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('generate:custom-xml')

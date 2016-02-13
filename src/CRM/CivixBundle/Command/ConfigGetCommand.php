@@ -2,12 +2,11 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConfigGetCommand extends ContainerAwareCommand {
+class ConfigGetCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('config:get')

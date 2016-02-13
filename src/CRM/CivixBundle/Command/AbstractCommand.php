@@ -1,13 +1,13 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractCommand extends ContainerAwareCommand {
+abstract class AbstractCommand extends Command {
   protected function configure() {
     $this->addOption('yes', NULL, InputOption::VALUE_NONE, 'Answer yes to any questions');
   }

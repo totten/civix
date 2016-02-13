@@ -2,7 +2,6 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,7 +14,7 @@ use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddEntityCommand extends ContainerAwareCommand {
+class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
   const API_VERSION = 3;
 
   protected function configure() {

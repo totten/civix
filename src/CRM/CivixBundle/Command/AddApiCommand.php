@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,7 +14,7 @@ use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddApiCommand extends ContainerAwareCommand {
+class AddApiCommand extends Command {
   const API_VERSION = 3;
 
   public static function getSchedules() {

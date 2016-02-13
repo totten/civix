@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,7 +14,7 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-abstract class AbstractAddPageCommand extends ContainerAwareCommand {
+abstract class AbstractAddPageCommand extends Command {
   protected function configure() {
     $this
       ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Base name of the controller class name (eg "MyPage")')

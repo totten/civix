@@ -4,7 +4,7 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Path;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +20,7 @@ use Symfony\Component\Process\Process;
  *  - Locate the extensions test directory
  *  - Call CiviCRM's copy of PHPUnit while adding the test directory to the include path
  */
-class TestRunCommand extends ContainerAwareCommand {
+class TestRunCommand extends Command {
   const TIMEOUT = 1000;
 
   /**
