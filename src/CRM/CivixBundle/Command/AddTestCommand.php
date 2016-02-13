@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,8 +52,8 @@ class AddTestCommand extends ContainerAwareCommand {
 
     if (!file_exists($ctx['testPath'])) {
       $output->writeln(sprintf('<info>Write %s</info>', $ctx['testPath']));
-      file_put_contents($ctx['testPath'], $this->getContainer()->get('templating')
-        ->render('CRMCivixBundle:Code:test.php.php', $ctx));
+      file_put_contents($ctx['testPath'], Services::templating()
+        ->render('test.php.php', $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['testPath']));

@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +17,7 @@ use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
   protected function configure() {
+    Services::templating();
     $this
       ->setName('generate:module')
       ->setDescription('Create a new CiviCRM Module-Extension')
@@ -28,6 +30,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+
     $licenses = new \LicenseData\Repository();
 
     $ctx = array();
@@ -71,7 +74,7 @@ class InitCommand extends AbstractCommand {
       $basedir->string($ctx['namespace']),
     ));
     $ext->builders['info'] = new Info($basedir->string('info.xml'));
-    $ext->builders['module'] = new Module($this->getContainer()->get('templating'));
+    $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
 
     $ext->loadInit($ctx);

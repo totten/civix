@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -72,12 +73,9 @@ For more, see https://docs.angularjs.org/guide');
       dirname($ctx['hlpPath']),
     ));;
 
-    $ext->builders['ctrl.js'] = new Template('CRMCivixBundle:Code:angular-page.js.php', $ctx['jsPath'], FALSE, $this
-      ->getContainer()->get('templating'));
-    $ext->builders['html'] = new Template('CRMCivixBundle:Code:angular-page.html.php', $ctx['htmlPath'], FALSE, $this
-      ->getContainer()->get('templating'));
-    $ext->builders['hlp'] = new Template('CRMCivixBundle:Code:angular-page.hlp.php', $ctx['hlpPath'], FALSE, $this
-      ->getContainer()->get('templating'));
+    $ext->builders['ctrl.js'] = new Template('angular-page.js.php', $ctx['jsPath'], FALSE, Services::templating());
+    $ext->builders['html'] = new Template('angular-page.html.php', $ctx['htmlPath'], FALSE, Services::templating());
+    $ext->builders['hlp'] = new Template('angular-page.hlp.php', $ctx['hlpPath'], FALSE, Services::templating());
 
     $ext->init($ctx);
     $ext->save($ctx, $output);

@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -64,14 +65,14 @@ class AddCaseTypeCommand extends ContainerAwareCommand {
     $xmlFile = $basedir->string('xml', 'case', $ctx['caseTypeName'] . '.xml');
     if (!file_exists($xmlFile)) {
       $output->writeln(sprintf('<info>Write %s</info>', $xmlFile));
-      file_put_contents($xmlFile, $this->getContainer()->get('templating')
-        ->render('CRMCivixBundle:Code:case-type.xml.php', $ctx));
+      file_put_contents($xmlFile, Services::templating()
+        ->render('case-type.xml.php', $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $xmlFile));
     }
 
-    $module = new Module($this->getContainer()->get('templating'));
+    $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
   }

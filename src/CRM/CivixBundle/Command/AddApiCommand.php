@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -79,8 +80,8 @@ class AddApiCommand extends ContainerAwareCommand {
 
     if (!file_exists($ctx['apiFile'])) {
       $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiFile']));
-      file_put_contents($ctx['apiFile'], $this->getContainer()->get('templating')
-        ->render('CRMCivixBundle:Code:api.php.php', $ctx));
+      file_put_contents($ctx['apiFile'], Services::templating()
+        ->render('api.php.php', $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiFile']));
@@ -116,7 +117,7 @@ class AddApiCommand extends ContainerAwareCommand {
       }
     }
 
-    $module = new Module($this->getContainer()->get('templating'));
+    $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
   }

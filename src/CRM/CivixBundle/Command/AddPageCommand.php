@@ -11,11 +11,11 @@ class AddPageCommand extends AbstractAddPageCommand {
   }
 
   protected function getPhpTemplate(InputInterface $input) {
-    return 'CRMCivixBundle:Code:page.php.php';
+    return 'page.php.php';
   }
 
   protected function getTplTemplate(InputInterface $input) {
-    return 'CRMCivixBundle:Code:page.tpl.php';
+    return 'page.tpl.php';
   }
 
   protected function createClassName(InputInterface $input, $ctx) {

@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -184,8 +185,8 @@ class TestRunCommand extends ContainerAwareCommand {
       $template_vars['civicrm_setting']['URL Preferences']['extensionsURL'] = \CRM_Core_BAO_Setting::getItem('URL Preferences', 'extensionsURL');
       $template_vars['civicrm_setting']['Test']['test_extensions'] = array_keys(\CRM_Core_PseudoConstant::getExtensions());
 
-      file_put_contents($file, $this->getContainer()->get('templating')
-        ->render('CRMCivixBundle:Code:phpunit-boot.php.php', $template_vars));
+      file_put_contents($file, Services::templating()
+        ->render('phpunit-boot.php.php', $template_vars));
     }
     return $file;
   }

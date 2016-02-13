@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,10 +67,8 @@ For more, see https://docs.angularjs.org/guide/directive');
       dirname($ctx['htmlPath']),
     ));;
 
-    $ext->builders['js'] = new Template('CRMCivixBundle:Code:angular-dir.js.php', $ctx['jsPath'], FALSE, $this
-      ->getContainer()->get('templating'));
-    $ext->builders['html'] = new Template('CRMCivixBundle:Code:angular-dir.html.php', $ctx['htmlPath'], FALSE, $this
-      ->getContainer()->get('templating'));
+    $ext->builders['js'] = new Template('angular-dir.js.php', $ctx['jsPath'], FALSE, Services::templating());
+    $ext->builders['html'] = new Template('angular-dir.html.php', $ctx['htmlPath'], FALSE, Services::templating());
 
     $ext->init($ctx);
     $ext->save($ctx, $output);

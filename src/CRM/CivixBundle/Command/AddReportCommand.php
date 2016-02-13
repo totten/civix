@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -111,10 +112,8 @@ class AddReportCommand extends ContainerAwareCommand {
       $ext->builders['page.tpl.php'] = new CopyFile($origTplFile, $ctx['reportTplFile'], FALSE);
     }
     else {
-      $ext->builders['report.php'] = new Template('CRMCivixBundle:Code:report.php.php', $ctx['reportClassFile'], FALSE, $this
-        ->getContainer()->get('templating'));
-      $ext->builders['page.tpl.php'] = new Template('CRMCivixBundle:Code:report.tpl.php', $ctx['reportTplFile'], FALSE, $this
-        ->getContainer()->get('templating'));
+      $ext->builders['report.php'] = new Template('report.php.php', $ctx['reportClassFile'], FALSE, Services::templating());
+      $ext->builders['page.tpl.php'] = new Template('report.tpl.php', $ctx['reportTplFile'], FALSE, Services::templating());
     }
 
     $ext->init($ctx);

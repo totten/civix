@@ -22,7 +22,7 @@ class Module implements Builder {
   function save(&$ctx, OutputInterface $output) {
     $basedir = new Path($ctx['basedir']);
     $module = new Template(
-      'CRMCivixBundle:Code:module.php.php',
+      'module.php.php',
       $basedir->string($ctx['mainFile'] . '.php'),
       'ignore',
       $this->templateEngine
@@ -30,7 +30,7 @@ class Module implements Builder {
     $module->save($ctx, $output);
 
     $moduleCivix = new Template(
-      'CRMCivixBundle:Code:module.civix.php.php',
+      'module.civix.php.php',
       $basedir->string($ctx['mainFile'] . '.civix.php'),
       TRUE,
       $this->templateEngine

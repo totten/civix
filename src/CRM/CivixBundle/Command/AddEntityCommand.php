@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,12 +76,9 @@ class AddEntityCommand extends ContainerAwareCommand {
     ));
     $ext->builders['dirs']->save($ctx, $output);
 
-    $ext->builders['api.php'] = new Template('CRMCivixBundle:Code:entity-api.php.php', $ctx['apiFile'], FALSE, $this
-      ->getContainer()->get('templating'));
-    $ext->builders['bao.php'] = new Template('CRMCivixBundle:Code:entity-bao.php.php', $ctx['baoClassFile'], FALSE, $this
-      ->getContainer()->get('templating'));
-    $ext->builders['entity.xml'] = new Template('CRMCivixBundle:Code:entity-schema.xml.php', $ctx['schemaFile'], FALSE, $this
-      ->getContainer()->get('templating'));
+    $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
+    $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Services::templating());
+    $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Services::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
       $mgdEntities = array(

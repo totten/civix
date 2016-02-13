@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,10 +76,8 @@ class AddAngularModuleCommand extends ContainerAwareCommand {
       $ext->builders['mgd.php']->set($angModMeta);
     }
 
-    $ext->builders['js'] = new Template('CRMCivixBundle:Code:angular-module.js.php', $ctx['angularModuleJs'], FALSE, $this
-      ->getContainer()->get('templating'));
-    $ext->builders['css'] = new Template('CRMCivixBundle:Code:angular-module.css.php', $ctx['angularModuleCss'], FALSE, $this
-      ->getContainer()->get('templating'));
+    $ext->builders['js'] = new Template('angular-module.js.php', $ctx['angularModuleJs'], FALSE, Services::templating());
+    $ext->builders['css'] = new Template('angular-module.css.php', $ctx['angularModuleCss'], FALSE, Services::templating());
 
     $ext->init($ctx);
     $ext->save($ctx, $output);

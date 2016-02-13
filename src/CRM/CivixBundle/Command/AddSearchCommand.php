@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -107,9 +108,8 @@ class AddSearchCommand extends ContainerAwareCommand {
       }
     }
     else {
-      $ext->builders['search.php'] = new Template('CRMCivixBundle:Code:search.php.php', $ctx['searchClassFile'], FALSE, $this
-        ->getContainer()->get('templating'));
-      // $ext->builders['page.tpl.php'] = new Template('CRMCivixBundle:Code:search.tpl.php', $ctx['searchTplFile'], FALSE, $this->getContainer()->get('templating'));
+      $ext->builders['search.php'] = new Template('search.php.php', $ctx['searchClassFile'], FALSE, Services::templating());
+      // $ext->builders['page.tpl.php'] = new Template('search.tpl.php', $ctx['searchTplFile'], FALSE, Services::templating());
     }
 
     $ext->init($ctx);

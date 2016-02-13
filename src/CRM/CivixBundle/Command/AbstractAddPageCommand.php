@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,7 +74,7 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
 
     if (!file_exists($phpFile)) {
       $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
-      file_put_contents($phpFile, $this->getContainer()->get('templating')
+      file_put_contents($phpFile, Services::templating()
         ->render($this->getPhpTemplate($input), $ctx));
     }
     else {
@@ -82,14 +83,14 @@ abstract class AbstractAddPageCommand extends ContainerAwareCommand {
 
     if (!file_exists($tplFile)) {
       $output->writeln(sprintf('<info>Write %s</info>', $tplFile));
-      file_put_contents($tplFile, $this->getContainer()->get('templating')
+      file_put_contents($tplFile, Services::templating()
         ->render($this->getTplTemplate($input), $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $tplFile));
     }
 
-    $module = new Module($this->getContainer()->get('templating'));
+    $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
   }

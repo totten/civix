@@ -11,11 +11,11 @@ class AddFormCommand extends AbstractAddPageCommand {
   }
 
   protected function getPhpTemplate(InputInterface $input) {
-    return 'CRMCivixBundle:Code:form.php.php';
+    return 'form.php.php';
   }
 
   protected function getTplTemplate(InputInterface $input) {
-    return 'CRMCivixBundle:Code:form.tpl.php';
+    return 'form.tpl.php';
   }
 
   protected function createClassName(InputInterface $input, $ctx) {
