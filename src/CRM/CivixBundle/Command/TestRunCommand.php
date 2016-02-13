@@ -173,7 +173,7 @@ class TestRunCommand extends ContainerAwareCommand {
    * @return string temp file path
    */
   protected function getBootstrapFile($key, $clear = FALSE) {
-    $file = $this->getContainer()->get('kernel')->getCacheDir() . "/civix-phpunit.{$key}.php";
+    $file = Services::cacheDir() . "/civix-phpunit.{$key}.php";
     if ($clear || !file_exists($file) || filemtime($file) < time() - self::BOOTSTRAP_TTL) {
       $template_vars = array();
       $template_vars['civicrm_setting'] = array();

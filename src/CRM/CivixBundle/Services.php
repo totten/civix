@@ -65,4 +65,23 @@ class Services {
     return self::$cache['config'];
   }
 
+  /**
+   * @return string
+   */
+  public static function cacheDir() {
+    if (!isset(self::$cache['cacheDir'])) {
+      self::$cache['cacheDir'] = getenv('HOME') . '/.civix/cache';
+      $dirs = array(
+        dirname(self::$cache['cacheDir']),
+        self::$cache['cacheDir'],
+      );
+      foreach ($dirs as $dir) {
+        if (!is_dir($dir)) {
+          mkdir($dir);
+        }
+      }
+    }
+    return self::$cache['cacheDir'];
+  }
+
 }
