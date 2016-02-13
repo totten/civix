@@ -22,9 +22,9 @@ class InitCommand extends AbstractCommand {
       ->setDescription('Create a new CiviCRM Module-Extension')
       ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Fully qualified extension name (e.g. "com.example.myextension")')
     //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
-      ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')')
-      ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author')
-      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author');
+      ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
+      ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
+      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail());
     parent::configure();
   }
 
@@ -110,16 +110,6 @@ class InitCommand extends AbstractCommand {
     // fallback
     $output->writeln("NOTE: This might be a good time to refresh the extension list and install \"$key\".");
     return FALSE;
-  }
-
-  public function setApplication(Application $application = NULL) {
-    parent::setApplication($application);
-
-    // It would be preferable to set these when configure() calls addOption(), but the
-    // application/kernel/container aren't available when running configure().
-    $this->getDefinition()->getOption('author')->setDefault($this->getDefaultAuthor());
-    $this->getDefinition()->getOption('email')->setDefault($this->getDefaultEmail());
-    $this->getDefinition()->getOption('license')->setDefault($this->getDefaultLicense());
   }
 
   protected function getDefaultLicense() {
