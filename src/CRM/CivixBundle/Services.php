@@ -21,4 +21,23 @@ class Services {
     }
     return self::$cache['templating'];
   }
+
+  /**
+   * Read any config data (~/.civix/civix.ini).
+   *
+   * @return array
+   */
+  public static function config() {
+    if (!isset(self::$cache['config'])) {
+      $file = getenv('HOME') . '/.civix/civix.ini';
+      if (file_exists($file)) {
+        self::$cache['config'] = parse_ini_file($file, TRUE);
+      }
+      else {
+        self::$cache['config'] = array();
+      }
+    }
+    return self::$cache['config'];
+  }
+
 }

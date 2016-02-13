@@ -1,12 +1,11 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Dirs;
 
 class ConfigGetCommand extends ContainerAwareCommand {
   protected function configure() {
@@ -17,8 +16,9 @@ class ConfigGetCommand extends ContainerAwareCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $config = Services::config();
     foreach ($this->getInterestingParameters() as $key) {
-      printf("%-40s \"%s\"\n", $key, $this->getContainer()->getParameter($key));
+      printf("%-40s \"%s\"\n", $key, @$config['parameters'][$key]);
     }
   }
 

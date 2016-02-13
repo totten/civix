@@ -124,25 +124,28 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function getDefaultLicense() {
+    $config = Services::config();
     $license = NULL;
-    if ($this->getContainer()->hasParameter('license')) {
-      $license = $this->getContainer()->getParameter('license');
+    if (!empty($config['parameters']['license'])) {
+      $license = $config['parameters']['license'];
     }
     return empty($license) ? 'AGPL-3.0' : $license;
   }
 
   protected function getDefaultEmail() {
+    $config = Services::config();
     $value = NULL;
-    if ($this->getContainer()->hasParameter('email')) {
-      $value = $this->getContainer()->getParameter('email');
+    if (!empty($config['parameters']['email'])) {
+      $value = $config['parameters']['email'];
     }
     return empty($value) ? $this->getGitConfig('user.email', 'FIXME') : $value;
   }
 
   protected function getDefaultAuthor() {
+    $config = Services::config();
     $value = NULL;
-    if ($this->getContainer()->hasParameter('author')) {
-      $value = $this->getContainer()->getParameter('author');
+    if (!empty($config['parameters']['author'])) {
+      $value = $config['parameters']['author'];
     }
     return empty($value) ? $this->getGitConfig('user.name', 'FIXME') : $value;
   }
