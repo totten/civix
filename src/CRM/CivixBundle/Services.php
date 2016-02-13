@@ -11,6 +11,31 @@ class Services {
 
   protected static $cache;
 
+  public static function boot() {
+    if (!isset(self::$cache['boot'])) {
+      // TODO: Copy in Civi\Bootstrap() class.
+      $cwd = getcwd();
+      eval(Cv::call('php:boot --level=full', 'phpcode'));
+      chdir($cwd);
+      self::$cache['boot'] = 1;
+    }
+  }
+
+  /**
+   * @return \civicrm_api3
+   */
+  public static function api3() {
+    if (!isset(self::$cache['civicrm_api3'])) {
+      self::boot();
+      if (!stream_resolve_include_path('api/class.api.php')) {
+        throw new \RuntimeException("Booted CiviCRM, but failed to find 'api/class.api.php'");
+      }
+      require_once 'api/class.api.php';
+      self::$cache['civicrm_api3'] = new \civicrm_api3();
+    }
+    return self::$cache['civicrm_api3'];
+  }
+
   /**
    * @return EngineInterface
    */

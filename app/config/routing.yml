@@ -1,7 +1,3 @@
-CRMClientBundle:
-    resource: "@CRMClientBundle/Resources/config/routing.php"
-    prefix:   /
-
 CRMCivixBundle:
     resource: "@CRMCivixBundle/Resources/config/routing.yml"
     prefix:   /

@@ -101,7 +101,7 @@ class AddReportCommand extends ContainerAwareCommand {
     // Create .php & .tpl by either copying from core source tree or using a civix template
     if ($srcClassName = $input->getOption('copy')) {
       // To locate the original file, we need to bootstrap Civi and search the include path
-      $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
+      $civicrm_api3 = Services::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
         return;

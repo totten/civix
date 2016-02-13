@@ -51,7 +51,7 @@ class TestRunCommand extends ContainerAwareCommand {
     }
 
     // Find the main phpunit
-    $civicrm_api3 = $this->getContainer()->get('civicrm_api3');
+    $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>'test' requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return;
