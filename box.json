@@ -1,0 +1,25 @@
+{
+    "chmod": "0755",
+    "directories": [
+        "src"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["phpunit", "Tests", "Test", "tests", "test"],
+            "in": "vendor"
+        },
+        {
+            "name": "*.csv",
+            "in": "vendor/totten/license-data"
+        },
+        {
+            "name": "*.txt",
+            "in": "vendor/totten/license-data/licenses"
+        }
+    ],
+    "git-version": "package_version",
+    "main": "bin/civix",
+    "output": "bin/civix.phar",
+    "stub": true
+}
