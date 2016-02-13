@@ -16,27 +16,36 @@ if [ ! -d "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions
 fi
 
 set -ex
+if [ ! -f "box.json" ]; then
+  echo "Must call from civix root dir"
+  exit 1
+fi
+php -dphar.readonly=0 `which box` build
+CIVIX=$PWD/bin/civix.phar
+
 pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
   civibuild restore $BUILDNAME
 
   if [ -d "$EXMODULE" ]; then
     rm -rf "$EXMODULE"
   fi
-  
-  echo n | civix generate:module $EXMODULE
+
+  echo n | $CIVIX -v generate:module $EXMODULE
   pushd $EXMODULE
-    civix generate:api MyEntity MyAction
-    civix generate:case-type MyLabel MyName
-    # civix generate:custom-xml -f --data="FIXME" --uf="FIXME"
-    civix generate:entity MyEntity
-    civix generate:form MyForm civicrm/my-form
-    civix generate:page MyPage civicrm/my-page
-    civix generate:report MyReport CiviContribute
-    # civix generate:report-ext 
-    civix generate:search MySearch
-    civix generate:test CRM_Foo_MyTest
-    civix generate:upgrader 
+    $CIVIX -v generate:api MyEntity MyAction
+    $CIVIX -v generate:case-type MyLabel MyName
+    # $CIVIX -v generate:custom-xml -f --data="FIXME" --uf="FIXME"
+    $CIVIX -v generate:entity MyEntity
+    $CIVIX -v generate:form MyForm civicrm/my-form
+    $CIVIX -v generate:page MyPage civicrm/my-page
+    $CIVIX -v generate:report MyReport CiviContribute
+    $CIVIX -v generate:search MySearch
+    $CIVIX -v generate:test CRM_Foo_MyTest
+    $CIVIX -v generate:upgrader
+    $CIVIX -v generate:angular-module
+    $CIVIX -v generate:angular-page FooCtrl foo
+    $CIVIX -v generate:angular-directive foo-bar
   popd
 
-  drush cvapi extension.install key=$EXMODULE
+  cv api extension.install key=$EXMODULE
 popd
