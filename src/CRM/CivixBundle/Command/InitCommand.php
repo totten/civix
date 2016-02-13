@@ -154,4 +154,5 @@ class InitCommand extends AbstractCommand {
     }
     return $result;
   }
+
 }

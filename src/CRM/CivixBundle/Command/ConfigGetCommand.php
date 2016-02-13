@@ -28,4 +28,5 @@ class ConfigGetCommand extends \Symfony\Component\Console\Command\Command {
       'license',
     );
   }
+
 }

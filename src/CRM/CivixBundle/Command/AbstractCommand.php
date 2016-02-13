@@ -20,4 +20,5 @@ abstract class AbstractCommand extends Command {
     $dialog = $this->getHelperSet()->get('dialog');
     return $dialog->askConfirmation($output, $message, $default);
   }
+
 }

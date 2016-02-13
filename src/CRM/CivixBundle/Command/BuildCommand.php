@@ -37,7 +37,7 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command {
       '--exclude',
       'build/*',
       '*~',
-      '*.bak'
+      '*.bak',
     );
     $cmd = 'zip ' . implode(' ', array_map('escapeshellarg', $cmdArgs));
 
@@ -51,4 +51,5 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command {
     }
     print $process->getOutput();
   }
+
 }

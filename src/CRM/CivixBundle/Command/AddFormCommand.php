@@ -26,4 +26,5 @@ class AddFormCommand extends AbstractAddPageCommand {
   protected function createTplName(InputInterface $input, $ctx) {
     return $ctx['namespace'] . '/Form/' . $ctx['shortClassName'] . '.tpl';
   }
+
 }

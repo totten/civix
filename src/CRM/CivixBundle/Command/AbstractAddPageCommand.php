@@ -102,4 +102,5 @@ abstract class AbstractAddPageCommand extends Command {
   abstract protected function createClassName(InputInterface $input, $ctx);
 
   abstract protected function createTplName(InputInterface $input, $ctx);
+
 }

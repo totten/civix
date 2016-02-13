@@ -45,7 +45,7 @@ class AddTestCommand extends \Symfony\Component\Console\Command\Command {
     $ctx['testPath'] = $basedir->string('tests', 'phpunit', $ctx['testFile']);
 
     $dirs = new Dirs(array(
-      dirname($ctx['testPath'])
+      dirname($ctx['testPath']),
     ));
     $dirs->save($ctx, $output);
 
@@ -58,4 +58,5 @@ class AddTestCommand extends \Symfony\Component\Console\Command\Command {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['testPath']));
     }
   }
+
 }

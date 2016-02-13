@@ -26,4 +26,5 @@ class PingCommand extends \Symfony\Component\Console\Command\Command {
       $output->writeln('<error>Ping failed: API Error: ' . $civicrm_api3->errorMsg() . '</error>');
     }
   }
+
 }

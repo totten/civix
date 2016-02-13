@@ -26,4 +26,5 @@ class AddPageCommand extends AbstractAddPageCommand {
   protected function createTplName(InputInterface $input, $ctx) {
     return $ctx['namespace'] . '/Page/' . $ctx['shortClassName'] . '.tpl';
   }
+
 }

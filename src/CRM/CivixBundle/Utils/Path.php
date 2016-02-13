@@ -4,7 +4,7 @@ namespace CRM\CivixBundle\Utils;
 
 class Path {
 
-  function __construct($basedir) {
+  public function __construct($basedir) {
     $this->basedir = $basedir;
   }
 
@@ -16,7 +16,7 @@ class Path {
    *
    * @return string
    */
-  function string() {
+  public function string() {
     $args = func_get_args();
     array_unshift($args, $this->basedir);
     return implode(DIRECTORY_SEPARATOR, $args);
@@ -25,7 +25,7 @@ class Path {
   /**
    * @return CRM_Civix_Utils_Path
    */
-  function path() {
+  public function path() {
     $args = func_get_args();
     array_unshift($args, $this->basedir);
     return new Path(implode(DIRECTORY_SEPARATOR, $args));

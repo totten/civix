@@ -59,4 +59,5 @@ class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
     $module->loadInit($ctx);
     $module->save($ctx, $output);
   }
+
 }

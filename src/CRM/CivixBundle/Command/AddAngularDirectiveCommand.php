@@ -49,13 +49,13 @@ For more, see https://docs.angularjs.org/guide/directive');
     $ctx['tsDomain'] = $ctx['mainFile'];
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
     $ctx['dirNameCamel'] = $this->toCamel($input->getArgument('<directive-name>'));
-    $ctx['dirNameHyp'] =$this->toHyphen($input->getArgument('<directive-name>'));
+    $ctx['dirNameHyp'] = $this->toHyphen($input->getArgument('<directive-name>'));
     $ctx['jsPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['dirNameCamel'] . '.js');
     $ctx['htmlName'] = implode('/', array('~', $ctx['angularModuleName'], $ctx['dirNameCamel'] . '.html'));
     $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['dirNameCamel'] . '.html');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular directive \"" . $ctx['dirNameHyp'] . "\" (aka \"" . $ctx['dirNameCamel'] ."\")</info>");
+    $output->writeln("<info>Initialize Angular directive \"" . $ctx['dirNameHyp'] . "\" (aka \"" . $ctx['dirNameCamel'] . "\")</info>");
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs(array(

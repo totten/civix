@@ -137,4 +137,5 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
       'null',
     );
   }
+
 }

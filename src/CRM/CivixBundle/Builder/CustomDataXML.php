@@ -17,9 +17,9 @@ class CustomDataXML implements Builder {
   protected $export;
 
   /**
-   * @param boolean|string $overwrite ; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+   * @param bool|string $overwrite ; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
-  function __construct($customGroupIds, $ufGroupIds, $path, $overwrite) {
+  public function __construct($customGroupIds, $ufGroupIds, $path, $overwrite) {
     $this->customGroupIds = $customGroupIds;
     $this->ufGroupIds = $ufGroupIds;
     $this->path = $path;
@@ -29,19 +29,19 @@ class CustomDataXML implements Builder {
     $this->export->buildUFGroups($this->ufGroupIds);
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     if (file_exists($this->path) && $this->overwrite === 'ignore') {
       // do nothing
     }
@@ -53,4 +53,5 @@ class CustomDataXML implements Builder {
       file_put_contents($this->path, $this->export->toXML());
     }
   }
+
 }

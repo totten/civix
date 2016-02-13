@@ -24,7 +24,7 @@ class PhpData implements Builder {
    */
   protected $header;
 
-  function __construct($path, $header = NULL) {
+  public function __construct($path, $header = NULL) {
     $this->path = $path;
     $this->header = $header;
   }
@@ -34,15 +34,15 @@ class PhpData implements Builder {
    *
    * @return array
    */
-  function get() {
+  public function get() {
     return $this->data;
   }
 
-  function set($data) {
+  public function set($data) {
     $this->data = $data;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
     if (file_exists($this->path)) {
       $this->load($ctx);
     }
@@ -54,20 +54,20 @@ class PhpData implements Builder {
   /**
    * Initialize a new var_export() document
    */
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
   /**
    * Read from file
    */
-  function load(&$ctx) {
+  public function load(&$ctx) {
     $this->data = include $this->path;
   }
 
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     $output->writeln("<info>Write " . $this->path . "</info>");
 
     $content = "<?php\n";
@@ -79,4 +79,5 @@ class PhpData implements Builder {
     $content .= ";";
     file_put_contents($this->path, $content);
   }
+
 }

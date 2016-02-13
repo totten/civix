@@ -17,26 +17,26 @@ class CopyFile implements Builder {
   /**
    * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
-  function __construct($from, $to, $overwrite) {
+  public function __construct($from, $to, $overwrite) {
     $this->from = $from;
     $this->to = $to;
     $this->overwrite = $overwrite;
     $this->enable = FALSE;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     if (file_exists($this->to) && $this->overwrite == 'ignore') {
       // do nothing
     }
@@ -49,4 +49,5 @@ class CopyFile implements Builder {
       file_put_contents($this->to, $content);
     }
   }
+
 }

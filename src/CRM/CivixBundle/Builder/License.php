@@ -16,25 +16,25 @@ class License implements Builder {
   /**
    * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
-  function __construct(\LicenseData\License $license, $path, $overwrite) {
+  public function __construct(\LicenseData\License $license, $path, $overwrite) {
     $this->license = $license;
     $this->path = $path;
     $this->overwrite = $overwrite;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     if (file_exists($this->path) && $this->overwrite === 'ignore') {
       // do nothing
     }
@@ -51,4 +51,5 @@ class License implements Builder {
       file_put_contents($this->path, $text);
     }
   }
+
 }

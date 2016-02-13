@@ -23,7 +23,7 @@ class CopyClass implements Builder {
   /**
    * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
-  function __construct($srcClassName, $tgtClassName, $tgtFile, $overwrite, $filter = FALSE) {
+  public function __construct($srcClassName, $tgtClassName, $tgtFile, $overwrite, $filter = FALSE) {
     $this->srcClassName = $srcClassName;
     $this->tgtClassName = $tgtClassName;
     $this->tgtFile = $tgtFile;
@@ -32,19 +32,19 @@ class CopyClass implements Builder {
     $this->filter = $filter;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     // NOTE: assume classloaders, etal, are already setup
     $clazz = new \ReflectionClass($this->srcClassName);
 
@@ -67,4 +67,5 @@ class CopyClass implements Builder {
       file_put_contents($this->tgtFile, $content);
     }
   }
+
 }

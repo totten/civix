@@ -51,7 +51,7 @@ For more, see https://docs.angularjs.org/guide');
     $ctx['tsDomain'] = $ctx['mainFile'];
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
     $ctx['ctrlSuffix'] = $input->getArgument('<Ctrl>');
-    $ctx['ctrlRelPath'] =$input->getArgument('<RelPath>');
+    $ctx['ctrlRelPath'] = $input->getArgument('<RelPath>');
     $ctx['ctrlName'] = ucwords($ctx['angularModuleName']) . $ctx['ctrlSuffix'];
     $ctx['jsPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['ctrlSuffix'] . '.js');
     $ctx['htmlName'] = implode('/', array('~', $ctx['angularModuleName'], $ctx['ctrlSuffix'] . '.html'));
@@ -60,7 +60,7 @@ For more, see https://docs.angularjs.org/guide');
     $ctx['hlpPath'] = $basedir->string('templates', $ctx['hlpName'] . '.hlp');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular page \"" . $ctx['ctrlName'] . "\" (civicrm/a/#/" . $ctx['ctrlRelPath'] .")</info>");
+    $output->writeln("<info>Initialize Angular page \"" . $ctx['ctrlName'] . "\" (civicrm/a/#/" . $ctx['ctrlRelPath'] . ")</info>");
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs(array(

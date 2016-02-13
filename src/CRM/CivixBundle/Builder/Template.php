@@ -16,7 +16,7 @@ class Template implements Builder {
   /**
    * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
-  function __construct($template, $path, $overwrite, $templateEngine) {
+  public function __construct($template, $path, $overwrite, $templateEngine) {
     $this->template = $template;
     $this->path = $path;
     $this->overwrite = $overwrite;
@@ -24,19 +24,19 @@ class Template implements Builder {
     $this->enable = FALSE;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     if (file_exists($this->path) && $this->overwrite === 'ignore') {
       // do nothing
     }
@@ -48,4 +48,5 @@ class Template implements Builder {
       file_put_contents($this->path, $this->templateEngine->render($this->template, $ctx));
     }
   }
+
 }

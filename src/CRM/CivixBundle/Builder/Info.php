@@ -9,7 +9,7 @@ use CRM\CivixBundle\Builder\XML;
  */
 class Info extends XML {
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
     $xml = new SimpleXMLElement('<extension></extension>');
     $xml->addAttribute('key', $ctx['fullName']);
     $xml->addAttribute('type', $ctx['type']);
@@ -31,7 +31,8 @@ class Info extends XML {
     $licenses = new \LicenseData\Repository();
     if (isset($ctx['license']) && $license = $licenses->get($ctx['license'])) {
       $urls->addChild('url', $license->getUrl())->addAttribute('desc', 'Licensing');
-    } else {
+    }
+    else {
       $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Licensing');
     }
 
@@ -57,7 +58,7 @@ class Info extends XML {
     $this->set($xml);
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
     parent::load($ctx);
     $attrs = $this->get()->attributes();
     $ctx['fullName'] = (string) $attrs['key'];
@@ -72,7 +73,7 @@ class Info extends XML {
    *
    * @return string (e.g. "com.example.myextension)
    */
-  function getKey() {
+  public function getKey() {
     $attrs = $this->get()->attributes();
     return (string) $attrs['key'];
   }
@@ -82,8 +83,9 @@ class Info extends XML {
    *
    * @return string (e.g. "module", "report")
    */
-  function getType() {
+  public function getType() {
     $attrs = $this->get()->attributes();
     return (string) $attrs['type'];
   }
+
 }

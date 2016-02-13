@@ -13,7 +13,7 @@ class XML implements Builder {
 
   protected $path, $xml;
 
-  function __construct($path) {
+  public function __construct($path) {
     $this->path = $path;
   }
 
@@ -22,15 +22,15 @@ class XML implements Builder {
    *
    * @return SimpleXMLElement
    */
-  function get() {
+  public function get() {
     return $this->xml;
   }
 
-  function set($xml) {
+  public function set($xml) {
     $this->xml = $xml;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
     if (file_exists($this->path)) {
       $this->load($ctx);
     }
@@ -42,13 +42,13 @@ class XML implements Builder {
   /**
    * Initialize a new XML document
    */
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
   /**
    * Read from file
    */
-  function load(&$ctx) {
+  public function load(&$ctx) {
     $dom = new DomDocument();
     $dom->load($this->path);
     $dom->xinclude();
@@ -58,7 +58,7 @@ class XML implements Builder {
   /**
    * Write the xml document
    */
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     $output->writeln("<info>Write " . $this->path . "</info>");
 
     // force pretty printing with encode/decode cycle
@@ -70,4 +70,5 @@ class XML implements Builder {
     $xml->loadXML($outXML);
     file_put_contents($this->path, $xml->saveXML());
   }
+
 }

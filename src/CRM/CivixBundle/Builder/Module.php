@@ -6,20 +6,20 @@ use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Utils\Path;
 
 class Module implements Builder {
-  function __construct($templateEngine) {
+  public function __construct($templateEngine) {
     $this->templateEngine = $templateEngine;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     $basedir = new Path($ctx['basedir']);
     $module = new Template(
       'module.php.php',
@@ -37,4 +37,5 @@ class Module implements Builder {
     );
     $moduleCivix->save($ctx, $output);
   }
+
 }

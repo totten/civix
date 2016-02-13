@@ -41,8 +41,7 @@ class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
     \CRM\CivixBundle\Utils\Commands::createProcess('cache:clear --no-warmup')
       ->run(function ($type, $buffer) {
         echo $buffer;
-      }
-    );
+      });
   }
 
 }

@@ -73,4 +73,5 @@ class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
       $output->writeln(" * NOTE: By default, this file will not be loaded automatically -- you must define installation or upgrade logic to load the file.");
     }
   }
+
 }

@@ -12,20 +12,20 @@ class Dirs implements Builder {
   // Note: Permissions will be further restricted by umask
   const MODE = 0777;
 
-  function __construct($paths) {
+  public function __construct($paths) {
     $this->paths = $paths;
   }
 
-  function loadInit(&$ctx) {
+  public function loadInit(&$ctx) {
   }
 
-  function init(&$ctx) {
+  public function init(&$ctx) {
   }
 
-  function load(&$ctx) {
+  public function load(&$ctx) {
   }
 
-  function save(&$ctx, OutputInterface $output) {
+  public function save(&$ctx, OutputInterface $output) {
     sort($this->paths);
     foreach ($this->paths as $dir) {
       $parts = explode(DIRECTORY_SEPARATOR, $dir);
@@ -38,4 +38,5 @@ class Dirs implements Builder {
       }
     }
   }
+
 }

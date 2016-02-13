@@ -126,4 +126,5 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
     $search = new $srcClassName($formValues);
     return $search->templateFile();
   }
+
 }

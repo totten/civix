@@ -65,16 +65,18 @@ class AddApiCommand extends Command {
     $ctx['actionNameCamel'] = ucfirst($input->getArgument('<ActionName>'));
     if (function_exists('civicrm_api_get_function_name')) {
       $ctx['apiFunction'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], $ctx['actionNameCamel'], self::API_VERSION));
-    } elseif (function_exists('_civicrm_api_get_entity_name_from_camel')) {
-      $ctx['apiFunction'] =  'civicrm_api' . self::API_VERSION . '_' . _civicrm_api_get_entity_name_from_camel($ctx['entityNameCamel']) . '_' . $ctx['actionNameCamel'];
-    } else {
+    }
+    elseif (function_exists('_civicrm_api_get_entity_name_from_camel')) {
+      $ctx['apiFunction'] = 'civicrm_api' . self::API_VERSION . '_' . _civicrm_api_get_entity_name_from_camel($ctx['entityNameCamel']) . '_' . $ctx['actionNameCamel'];
+    }
+    else {
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
     $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
 
     $dirs = new Dirs(array(
-      dirname($ctx['apiFile'])
+      dirname($ctx['apiFile']),
     ));
     $dirs->save($ctx, $output);
 
@@ -121,4 +123,5 @@ class AddApiCommand extends Command {
     $module->loadInit($ctx);
     $module->save($ctx, $output);
   }
+
 }
