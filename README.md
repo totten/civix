@@ -35,7 +35,7 @@ civix generate:page --help
 Use `git`, [composer](https://getcomposer.org/), and [box](http://box-project.github.io/box2/):
 
 ```
-$ git clone https://github.com/civicrm/civix
+$ git clone https://github.com/totten/civix
 $ cd civix
 $ composer install
 $ php -dphar.readonly=0 `which box` build
