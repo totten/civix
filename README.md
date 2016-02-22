@@ -37,3 +37,28 @@ $ cd civix
 $ composer install
 $ php -dphar.readonly=0 `which box` build
 ```
+
+### Test
+
+There isn't a proper test-suite, but the script `tests/make-example.sh` will
+run all the code-generators (with a given build/version of CiviCRM).  It's
+not pretty, though -- it assumes you're using buildkit and Drupal
+single-site.
+
+
+```bash
+## Usage: tests/make-example.sh <BUILDKIT_ROOT> <BUILDKIT_BUILD>
+bash tests/make-example.sh ~/buildkit dmaster
+
+## Make a copy of the original output.
+cp -r ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{,-orig}
+
+## Hack the code... then rerun...
+bash tests/make-example.sh ~/buildkit dmaster
+
+## And see how the outputs changed.
+colordiff -ru ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{-orig,}
+
+## Tip: Use && to run the last two commands together
+bash tests/make-example.sh ~/buildkit dmaster && colordiff -ru ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{-orig,}
+```
