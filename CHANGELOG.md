@@ -33,7 +33,7 @@
 
  * Port from Symfony Standard Edition to thinner Symfony Components (Console)
  * Package as PHAR archive
- * Renamed `./civix` to `./bin/civix`. For git-based installations, you may need to update the `PATH`.
+ * Renamed `./civix` and `./civix.bat` to `./bin/civix`. For git-based installations, you may need to update the `PATH`.
  * Removed unused/incidental Symfony commands (e.g. `config:dump-reference` or `cache:warmup`)
  * **civix generate:report-ext** - Removed command. Specialized extensions (report/search/payment) have been deprecated for a long time
  * **civix test** - Deprecated. With [testapalooza](https://github.com/civicrm/org.civicrm.testapalooza), one can launch phpunit directly
