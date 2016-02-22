@@ -3,6 +3,9 @@ app/cache/*
 app/config/parameters.yml
 app/logs/*
 bin/civix.phar
+bin/cv
+bin/php-parse
+bin/psysh
 build/
 vendor
 composer.phar

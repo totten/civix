@@ -5,11 +5,18 @@
     "license": "AGPL-3.0",
     "require": {
         "php": ">=5.3.3",
+        "civicrm/cv": "dev-master",
         "symfony/console": "~2.3",
         "symfony/process": "~2.3",
         "symfony/templating": "~2.3",
         "totten/license-data": "dev-master"
     },
+    "repositories": [
+      {
+        "type": "git",
+        "url": "https://github.com/civicrm/cv.git"
+      }
+    ],
     "autoload": {
         "psr-0": {
             "CRM\\CivixBundle": "src/"

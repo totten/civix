@@ -6,7 +6,11 @@
     "finder": [
         {
             "name": "*.php",
-            "exclude": ["phpunit", "Tests", "Test", "tests", "test"],
+            "exclude": [
+              "phpunit",
+              "php-parser", "jakub-onderka",
+              "Tests", "Test", "tests", "test"
+            ],
             "in": "vendor"
         },
         {
