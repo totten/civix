@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle;
 
+use Civi\Cv\Bootstrap;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
@@ -13,9 +14,12 @@ class Services {
 
   public static function boot() {
     if (!isset(self::$cache['boot'])) {
-      // TODO: Copy in Civi\Bootstrap() class.
       $cwd = getcwd();
-      eval(Cv::call('php:boot --level=full', 'phpcode'));
+      Bootstrap::singleton()->boot(array(
+        'prefetch' => FALSE,
+      ));
+      \CRM_Core_Config::singleton();
+      \CRM_Utils_System::loadBootStrap(array(), FALSE);
       chdir($cwd);
       self::$cache['boot'] = 1;
     }
