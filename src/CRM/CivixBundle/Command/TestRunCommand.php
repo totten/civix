@@ -173,7 +173,8 @@ class TestRunCommand extends Command {
    * @return string temp file path
    */
   protected function getBootstrapFile($key, $clear = FALSE) {
-    $file = Services::cacheDir() . "/civix-phpunit.{$key}.php";
+    $cacheDir = Services::cacheDir();
+    $file = $cacheDir->string("civix-phpunit.{$key}.php");
     if ($clear || !file_exists($file) || filemtime($file) < time() - self::BOOTSTRAP_TTL) {
       $template_vars = array();
       $template_vars['civicrm_setting'] = array();
