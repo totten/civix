@@ -13,7 +13,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/cv.git",
-                "reference": "bd86b97b481b07a04130d1094b43a50787030a1c"
+                "reference": "815eca11255c90a02fc572afe8f48cc2583c8e92"
             },
             "require": {
                 "php": ">=5.3.3",
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "CLI tool for CiviCRM",
-            "time": "2016-02-02 18:32:34"
+            "time": "2016-02-23 00:52:12"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
