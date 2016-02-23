@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,11 +24,9 @@ class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
     $ext = new Collection();
 
     $output->writeln("<info></info>");
-    $basedir = new Path(getenv('HOME'));
-    $ext->builders['dirs'] = new Dirs(array(
-      $basedir->string('.civix'),
-    ));
-    $ext->builders['ini'] = new Ini($basedir->string('.civix', 'civix.ini'));
+    $configDir = Services::configDir();
+    $configDir->mkdir();
+    $ext->builders['ini'] = new Ini($configDir->string('civix.ini'));
 
     $ext->loadInit($ctx);
     $data = $ext->builders['ini']->get();
@@ -37,11 +36,6 @@ class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
     $data['parameters'][$input->getArgument('key')] = $input->getArgument('value');
     $ext->builders['ini']->set($data);
     $ext->save($ctx, $output);
-
-    \CRM\CivixBundle\Utils\Commands::createProcess('cache:clear --no-warmup')
-      ->run(function ($type, $buffer) {
-        echo $buffer;
-      });
   }
 
 }

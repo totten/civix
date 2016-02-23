@@ -1,6 +1,9 @@
 <?php
 namespace CRM\CivixBundle;
 
+use Civi\Cv\Bootstrap;
+use CRM\CivixBundle\Utils\Path;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
@@ -13,9 +16,12 @@ class Services {
 
   public static function boot() {
     if (!isset(self::$cache['boot'])) {
-      // TODO: Copy in Civi\Bootstrap() class.
       $cwd = getcwd();
-      eval(Cv::call('php:boot --level=full', 'phpcode'));
+      Bootstrap::singleton()->boot(array(
+        'prefetch' => FALSE,
+      ));
+      \CRM_Core_Config::singleton();
+      \CRM_Utils_System::loadBootStrap(array(), FALSE);
       chdir($cwd);
       self::$cache['boot'] = 1;
     }
@@ -54,7 +60,7 @@ class Services {
    */
   public static function config() {
     if (!isset(self::$cache['config'])) {
-      $file = getenv('HOME') . '/.civix/civix.ini';
+      $file = self::configDir()->string('civix.ini');
       if (file_exists($file)) {
         self::$cache['config'] = parse_ini_file($file, TRUE);
       }
@@ -66,20 +72,33 @@ class Services {
   }
 
   /**
-   * @return string
+   * @return Path
+   */
+  public static function configDir() {
+    if (!isset(self::$cache['configDir'])) {
+      $homes = array(
+        getenv('HOME'), // Unix
+        getenv('USERPROFILE'), // Windows
+      );
+      foreach ($homes as $home) {
+        if (!empty($home)) {
+          self::$cache['configDir'] = new Path($home . '/.civix');
+          break;
+        }
+      }
+      if (empty($home)) {
+        throw new \RuntimeException('Failed to locate home directory. Please set HOME (Unix) or USERPROFILE (Windows).');
+      }
+    }
+    return self::$cache['configDir'];
+  }
+
+  /**
+   * @return Path
    */
   public static function cacheDir() {
     if (!isset(self::$cache['cacheDir'])) {
-      self::$cache['cacheDir'] = getenv('HOME') . '/.civix/cache';
-      $dirs = array(
-        dirname(self::$cache['cacheDir']),
-        self::$cache['cacheDir'],
-      );
-      foreach ($dirs as $dir) {
-        if (!is_dir($dir)) {
-          mkdir($dir);
-        }
-      }
+      self::$cache['cacheDir'] =self::configDir()->path('cache');
     }
     return self::$cache['cacheDir'];
   }
