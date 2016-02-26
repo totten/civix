@@ -19,7 +19,7 @@ sudo chmod +x /usr/local/bin/civix
 
 To upgrade an existing installation, simply re-download the latest `civix.phar`.
 
-### Download: Git + Composer (Typical)
+### Download: Git + Composer (Linux/OS X)
 
 To download the source tree and all dependencies, use [`git`](https://git-scm.com) and [`composer`](https://getcomposer.org/), e.g.:
 
