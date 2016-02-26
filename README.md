@@ -7,11 +7,64 @@ Civix is a command-line tool for building CiviCRM extensions.
 * (For MAMP, WAMP, XAMPP, etc) PHP command-line configuration (http://wiki.civicrm.org/confluence/display/CRMDOC/Setup+Command-Line+PHP)
 * (For CentOS/RHEL) Compatible version of libxml2 (https://github.com/totten/civix/issues/19)
 
-### Download
+### Download: Single Executable
+
+Civix is distributed as a single, portable PHAR executable.  As long as you have PHP-CLI
+properly configured, it should work as a simple download, e.g.
 
 ```bash
 sudo curl -LsS https://download.civicrm.org/civix/civix.phar -o /usr/local/bin/civix
 sudo chmod +x /usr/local/bin/civix
+```
+
+To upgrade an existing installation, simply re-download the latest `civix.phar`.
+
+### Download: Git + Composer (Typical)
+
+To download the source tree and all dependencies, use [`git`](https://git-scm.com) and [`composer`](https://getcomposer.org/), e.g.:
+
+```
+$ git clone https://github.com/totten/civix
+$ cd civix
+$ composer install
+```
+
+### Download: Git + Composer (Windows)
+
+```
+# Install composer
+In a browser, visit http://getcomposer.org
+Click on the download button.
+Scroll down to Windows Installer and click on Composer-Setup.exe.
+Choose Run when prompted.
+
+# Install git
+If you don't already have git, then in a browser visit http://git-scm.com/download/win.
+Choose Run when prompted.
+Leave all the defaults.
+
+# Download civix
+Decide where you want to install civix. You might want to put it in C:\Program Files, but you might get hassled about admin rights, in which case you can pick somewhere else, like C:\users\<your name>.
+From the start menu choose All Programs -> Git -> Git Bash.
+In the window that appears, type:
+  cd "/c/users/<your name>"
+  (note the forward slashes)
+git clone git://github.com/totten/civix.git
+exit
+
+# Download dependencies
+In windows explorer, navigate to C:\users\<your name> (or whereever you installed civix).
+Shift-right-click on the civix folder.
+Choose open command window here.
+In the window that appears, type:
+  composer install
+
+# Add civix to the PATH
+Either temporarily add it:
+set PATH=%PATH%;C:\users\<your name>\civix\bin
+
+OR permanently:
+Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
 ```
 
 ### Documentation
@@ -29,7 +82,8 @@ civix generate:page --help
 
 ### Build
 
-Use `git`, [composer](https://getcomposer.org/), and [box](http://box-project.github.io/box2/):
+To build a new copy of `civix.phar` from source, use [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and
+[`box`](http://box-project.github.io/box2/):
 
 ```
 $ git clone https://github.com/totten/civix
