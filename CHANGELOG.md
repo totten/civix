@@ -39,3 +39,11 @@
  * **civix test** - Deprecated. With [testapalooza](https://github.com/civicrm/org.civicrm.testapalooza), one can launch phpunit directly
  * **civix generate:module** - Add hook stub for `hook_civicrm_navigationMenu`.
  * Misc style/documentation tweaks in templates.
+
+## v16.02.1
+
+ * Embed `cv` bootstrap logic
+
+## v16.03.0
+
+ * Report better error when called from wrong directory
