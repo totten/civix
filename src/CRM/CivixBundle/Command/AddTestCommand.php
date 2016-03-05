@@ -22,7 +22,7 @@ class AddTestCommand extends \Symfony\Component\Console\Command\Command {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
     $info = new Info($basedir->string('info.xml'));

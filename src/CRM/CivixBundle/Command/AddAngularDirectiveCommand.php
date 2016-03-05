@@ -35,7 +35,7 @@ For more, see https://docs.angularjs.org/guide/directive');
     //// Figure out template data ////
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
     $info = new Info($basedir->string('info.xml'));

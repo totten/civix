@@ -30,7 +30,7 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
     //// Figure out template data and put it in $ctx ////
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
     $info = new Info($basedir->string('info.xml'));

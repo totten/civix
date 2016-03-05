@@ -42,7 +42,7 @@ class AddCaseTypeCommand extends \Symfony\Component\Console\Command\Command {
 
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $ctx['caseTypeLabel'] = $input->getArgument('<Label>');
     $ctx['caseTypeName'] = $input->getArgument('<Name>');
 

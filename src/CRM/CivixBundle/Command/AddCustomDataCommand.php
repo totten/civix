@@ -32,7 +32,7 @@ class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
 
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
     $info = new Info($basedir->string('info.xml'));

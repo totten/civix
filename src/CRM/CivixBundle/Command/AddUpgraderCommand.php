@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Application;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +23,7 @@ class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
 
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
     $info = new Info($basedir->string('info.xml'));

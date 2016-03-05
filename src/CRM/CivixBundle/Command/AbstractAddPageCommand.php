@@ -31,7 +31,7 @@ abstract class AbstractAddPageCommand extends Command {
 
     $ctx = array();
     $ctx['type'] = 'module';
-    $ctx['basedir'] = rtrim(getcwd(), '/');
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $ctx['shortClassName'] = $input->getArgument('<ClassName>');
     $basedir = new Path($ctx['basedir']);
 

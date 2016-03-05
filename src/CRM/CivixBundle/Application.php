@@ -66,4 +66,20 @@ class Application extends \Symfony\Component\Console\Application {
     return $commands;
   }
 
+  /**
+   * Find the base path of the current extension
+   *
+   * @return string
+   *   Ex: "/var/www/extension/org.example.foobar".
+   */
+  public static function findExtDir() {
+    $cwd = rtrim(getcwd(), '/');
+    if (file_exists("$cwd/info.xml")) {
+      return $cwd;
+    }
+    else {
+      throw new \RuntimeException("Failed to find \"info.xml\" ($cwd/). Are you running in the right directory?");
+    }
+  }
+
 }
