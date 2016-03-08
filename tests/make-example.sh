@@ -41,6 +41,7 @@ pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
     $CIVIX -v generate:report MyReport CiviContribute
     $CIVIX -v generate:search MySearch
     $CIVIX -v generate:test CRM_Civiexample_FooTest
+    $CIVIX -v generate:test --template=legacy CRM_Civiexample_LegacyTest
     $CIVIX -v generate:test --template=headless 'Civi\Civiexample\BarTest'
     $CIVIX -v generate:test --template=e2e 'Civi\Civiexample\EndTest'
     $CIVIX -v generate:upgrader
@@ -54,6 +55,7 @@ pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
   ## Make sure the unit tests are runnable.
   pushd $EXMODULE
     phpunit4 ./tests/phpunit/CRM/Civiexample/FooTest.php
+    phpunit4 ./tests/phpunit/CRM/Civiexample/LegacyTest.php
     phpunit4 ./tests/phpunit/Civi/Civiexample/BarTest.php
     phpunit4 ./tests/phpunit/Civi/Civiexample/EndTest.php
     phpunit4 --group headless

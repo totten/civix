@@ -29,8 +29,10 @@ In creating a test, you may specify a type:
             This provides a more thorough simulation, and you may spawn
             requests to Civi using HTTP or cv(). However, spawning separate
             requests will be slower, and data-cleanup may take more effort.
+  legacy:   A variation of `headless` based on CiviUnitTestCase.
+            It is provided primarily for testing purposes.
 ')
-      ->addOption('template', NULL, InputOption::VALUE_REQUIRED, 'The template of test to generate (headless, e2e)', 'headless')
+      ->addOption('template', NULL, InputOption::VALUE_REQUIRED, 'The template of test to generate (headless, e2e, legacy)', 'headless')
       ->addArgument('<CRM_Full_ClassName>', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyTest" or "Civi\Myextension\MyTest")');
   }
 
@@ -89,6 +91,7 @@ In creating a test, you may specify a type:
     $templates = array(
       'e2e' => 'test-e2e.php.php',
       'headless' => 'test-headless.php.php',
+      'legacy' => 'test-legacy.php.php',
     );
     if (isset($templates[$type])) {
       return $templates[$type];
