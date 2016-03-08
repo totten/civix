@@ -30,7 +30,7 @@ In creating a test, you may specify a type:
             requests to Civi using HTTP or cv(). However, spawning separate
             requests will be slower, and data-cleanup may take more effort.
 ')
-      ->addOption('type', NULL, InputOption::VALUE_REQUIRED, 'The type of test to generate (headless, e2e)', 'headless')
+      ->addOption('template', NULL, InputOption::VALUE_REQUIRED, 'The template of test to generate (headless, e2e)', 'headless')
       ->addArgument('<CRM_Full_ClassName>', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyTest" or "Civi\Myextension\MyTest")');
   }
 
@@ -50,7 +50,7 @@ In creating a test, you may specify a type:
     $this->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
     $this->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
     $this->initTestClass(
-      $input->getArgument('<CRM_Full_ClassName>'), $this->getTestTemplate($input->getOption('type')), $basedir, $ctx, $output);
+      $input->getArgument('<CRM_Full_ClassName>'), $this->getTestTemplate($input->getOption('template')), $basedir, $ctx, $output);
   }
 
   /**
@@ -94,7 +94,7 @@ In creating a test, you may specify a type:
       return $templates[$type];
     }
     else {
-      throw new \Exception("Invalid test type");
+      throw new \Exception("Invalid test template");
     }
   }
 

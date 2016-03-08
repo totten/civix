@@ -41,8 +41,8 @@ pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
     $CIVIX -v generate:report MyReport CiviContribute
     $CIVIX -v generate:search MySearch
     $CIVIX -v generate:test CRM_Civiexample_FooTest
-    $CIVIX -v generate:test --type=headless 'Civi\Civiexample\BarTest'
-    $CIVIX -v generate:test --type=e2e 'Civi\Civiexample\EndTest'
+    $CIVIX -v generate:test --template=headless 'Civi\Civiexample\BarTest'
+    $CIVIX -v generate:test --template=e2e 'Civi\Civiexample\EndTest'
     $CIVIX -v generate:upgrader
     $CIVIX -v generate:angular-module
     $CIVIX -v generate:angular-page FooCtrl foo
