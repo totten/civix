@@ -40,7 +40,9 @@ pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
     $CIVIX -v generate:page MyPage civicrm/my-page
     $CIVIX -v generate:report MyReport CiviContribute
     $CIVIX -v generate:search MySearch
-    $CIVIX -v generate:test CRM_Foo_MyTest
+    $CIVIX -v generate:test CRM_Civiexample_FooTest
+    $CIVIX -v generate:test --type=headless 'Civi\Civiexample\BarTest'
+    $CIVIX -v generate:test --type=e2e 'Civi\Civiexample\EndTest'
     $CIVIX -v generate:upgrader
     $CIVIX -v generate:angular-module
     $CIVIX -v generate:angular-page FooCtrl foo
@@ -48,4 +50,13 @@ pushd "$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
   popd
 
   cv api extension.install key=$EXMODULE
+
+  ## Make sure the unit tests are runnable.
+  pushd $EXMODULE
+    phpunit4 ./tests/phpunit/CRM/Civiexample/FooTest.php
+    phpunit4 ./tests/phpunit/Civi/Civiexample/BarTest.php
+    phpunit4 ./tests/phpunit/Civi/Civiexample/EndTest.php
+    phpunit4 --group headless
+    phpunit4 --group e2e
+   popd
 popd
