@@ -47,3 +47,11 @@
 ## v16.03.0
 
  * Report better error when called from wrong directory
+
+## v16.03.1
+
+ * **civix generate:test** - Generate templates based on testapalooze (`phpunit.xml.dist`, `tests/phpunit/bootstrap.php`, `CiviTestListener`)
+
+## v16.03.2
+
+ * **civix generate:test** - Rename `--type` to `--template`. Add `legacy` template. More in-app help.
