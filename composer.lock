@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bda667334246a00bf43f4b3ec24e55ba",
-    "content-hash": "e03159eaeff9546f08c60f025d9bff57",
+    "hash": "736280a2c5806cc80ee1211d72b5c9fd",
+    "content-hash": "c688fc8ab045af3a3b6130fc282afb4d",
     "packages": [
         {
             "name": "civicrm/cv",
@@ -14,6 +14,12 @@
                 "type": "git",
                 "url": "https://github.com/civicrm/cv.git",
                 "reference": "815eca11255c90a02fc572afe8f48cc2583c8e92"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/civicrm/cv/zipball/815eca11255c90a02fc572afe8f48cc2583c8e92",
+                "reference": "815eca11255c90a02fc572afe8f48cc2583c8e92",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
@@ -35,6 +41,7 @@
                     "Civi\\Cv\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],

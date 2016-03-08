@@ -12,12 +12,6 @@
         "symfony/var-dumper": "~2.7.0",
         "totten/license-data": "dev-master"
     },
-    "repositories": [
-      {
-        "type": "git",
-        "url": "https://github.com/civicrm/cv.git"
-      }
-    ],
     "autoload": {
         "psr-0": {
             "CRM\\CivixBundle": "src/"
