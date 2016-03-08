@@ -20,17 +20,29 @@ class AddTestCommand extends \Symfony\Component\Console\Command\Command {
       ->setHelp('
 Add a new PHPUnit test to a CiviCRM Module-Extension
 
-In creating a test, you may specify a type:
-  headless: The test boots CiviCRM once with a headless database, and all
-            work can be executed in-process. These are faster and support
+In creating a test, you may specify a template:
+  headless: A headless test boots CiviCRM once with a headless database, and
+            all work can be executed in-process. These are faster and support
             automatic cleanup, but they provide a less thorough simulation
             of real-world systems.
-  e2e:      The test boots the live installation of CiviCRM and the real CMS.
-            This provides a more thorough simulation, and you may spawn
-            requests to Civi using HTTP or cv(). However, spawning separate
-            requests will be slower, and data-cleanup may take more effort.
+  e2e:      An end-to-end test boots the live installation of CiviCRM and
+            the real CMS This provides a more thorough simulation, and you
+            may spawn  requests to Civi using HTTP or cv(). However, spawning
+            separate requests will be slower, and data-cleanup may take more
+            effort.
   legacy:   A variation of `headless` based on CiviUnitTestCase.
             It is provided primarily for testing purposes.
+
+To execute tests, call phpunit 4.x directly, e.g.
+
+  phpunit4 tests/phpunit/CRM/Myextension/MyTest.php
+
+Note: The design of headless and E2E tests prevent them from running
+concurrently. If you have a mix of tests, you can execute them
+as separate groups:
+
+  phpunit4 --group headless
+  phpunit4 --group e2e
 ')
       ->addOption('template', NULL, InputOption::VALUE_REQUIRED, 'The template of test to generate (headless, e2e, legacy)', 'headless')
       ->addArgument('<CRM_Full_ClassName>', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyTest" or "Civi\Myextension\MyTest")');
