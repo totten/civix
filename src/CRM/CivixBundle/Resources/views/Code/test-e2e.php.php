@@ -13,8 +13,15 @@ use Civi\Test\EndToEndInterface;
  *
  * Tips:
  *  - The global variable $_CV has some properties which may be useful, such as:
- *    ADMIN_USER, ADMIN_PASS, ADMIN_EMAIL, DEMO_USER, DEMO_PASS, DEMO_EMAIL.
- *  - To spawn a separate thread and execute some Civi logic, use the cv() helper.
+ *    CMS_URL, ADMIN_USER, ADMIN_PASS, ADMIN_EMAIL, DEMO_USER, DEMO_PASS, DEMO_EMAIL.
+ *  - To spawn a new CiviCRM thread and execute an API call or PHP code, use cv(), e.g.
+ *      cv('api system.flush');
+ *      $data = cv('eval "return Civi::settings()->get(\'foobar\')"');
+ *      $dashboardUrl = cv('url civicrm/dashboard');
+ *  - This template uses the most generic base-class, but you may want to use a more
+ *    powerful base class, such as \PHPUnit_Extensions_SeleniumTestCase or
+ *    \PHPUnit_Extensions_Selenium2TestCase.
+ *    See also: https://phpunit.de/manual/4.8/en/selenium.html
  *
  * @group e2e
  * @see cv
