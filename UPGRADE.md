@@ -22,7 +22,7 @@ comply with the [Testapalooza PHPUnit Template](https://github.com/civicrm/org.c
    This should enable better support for IDEs and other tools.
  * The code-generator creates two additional files, `phpunit.xml.dist` and `tests/phpunit/bootstrap.php`.
    These are requirements for using standalone `phpunit`.
- * Tests use `PHPUnit_Framework_TestCase` with `Civi\Test` instead of `CiviUnitTestCase`. This gives you more control over the
+ * Tests use `PHPUnit_Framework_TestCase` with [`Civi\Test`](https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md) instead of `CiviUnitTestCase`. This gives you more control over the
    test environment.
  * You must have [`cv`](https://github.com/civicrm/cv) installed when running tests.
 
@@ -39,7 +39,7 @@ here are some expectations:
    * You should update the existing tests to implement the `HeadlessInterface`, to define function `setupHeadless()`, and to
      declare `@group headless`. This will ensure that the headless system boots correctly when running your test.
    * Try creating a new test using the `legacy` template, e.g. `civix generate:test --template=legacy CRM_Myextension_DummyTest`.
-     This will generate `phpunit.xml.dist` and `tests/phpunit/bootstrap.php` and will create an example of using `CiviUnitTestCase`.
+     This will generate `phpunit.xml.dist` and `tests/phpunit/bootstrap.php`, *and* it will create an example of using `CiviUnitTestCase`.
    * Note: Legacy tests executed this way may reset key variables (e.g. `CRM_Core_Config::singleton()`) extra times.
      However, the pool of existing extension tests is fairly small, so we don't expect this to have a big real-world impact.
 
