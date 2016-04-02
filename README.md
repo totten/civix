@@ -80,9 +80,10 @@ to get reference materials about the "generate:page" command, run:
 civix generate:page --help
 ```
 
-### Build
+### Development: Custom Build
 
-To build a new copy of `civix.phar` from source, you  must have [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and
+If you are developing new changes to `civix` and want to create custom build of
+`civix.phar` from source, you must have [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and
 [`box`](http://box-project.github.io/box2/) installed. Then run:
 
 ```
@@ -96,7 +97,7 @@ $ which box
 $ php -dphar.readonly=0 /usr/local/bin/box build
 ```
 
-### Test
+### Development: Testing
 
 There isn't a proper test-suite, but the script `tests/make-example.sh` will
 run all the code-generators (with a given build/version of CiviCRM).  It's
