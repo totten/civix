@@ -82,14 +82,18 @@ civix generate:page --help
 
 ### Build
 
-To build a new copy of `civix.phar` from source, use [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and
-[`box`](http://box-project.github.io/box2/):
+To build a new copy of `civix.phar` from source, you  must have [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and
+[`box`](http://box-project.github.io/box2/) installed. Then run:
 
 ```
 $ git clone https://github.com/totten/civix
+...
 $ cd civix
 $ composer install
-$ php -dphar.readonly=0 `which box` build
+...
+$ which box
+/usr/local/bin/box
+$ php -dphar.readonly=0 /usr/local/bin/box build
 ```
 
 ### Test
