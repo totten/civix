@@ -71,6 +71,8 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   public function __construct($extensionName, $extensionDir) {
     $this->extensionName = $extensionName;
     $this->extensionDir = $extensionDir;
+    //Assign multilingual variable to smarty
+    $upgrade = new CRM_Upgrade_Form();
   }
 
   // ******** Task helpers ********
@@ -108,11 +110,39 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * @return bool
    */
   public function executeSqlFile($relativePath) {
-    CRM_Utils_File::sourceSQLFile(
-      CIVICRM_DSN,
-      $this->extensionDir . '/' . $relativePath
-    );
+    $sqlFile = $this->extensionDir . DIRECTORY_SEPARATOR . $relativePath;
+    $tplFile = "$sqlFile.tpl";
+
+    // handle smarty block, function present in sql file e.g multilingual table
+    if (file_exists($tplFile)) {
+      $this->processLocales($tplFile);
+    }
+    else {
+      if (file_exists($sqlFile)) {
+        $this->source($sqlFile);
+      }
+    }
     return TRUE;
+  }
+
+  /**
+   * @param $tplFile
+   *
+   */
+  function processLocales($tplFile) {
+    $smarty = CRM_Core_Smarty::singleton();
+    $smarty->assign('domainID', CRM_Core_Config::domainID());
+    $this->source($smarty->fetch($tplFile), TRUE);
+  }
+
+  /**
+   * @param $fileName
+   * @param $isQueryString
+   */
+  function source($fileName, $isQueryString = FALSE) {
+    CRM_Utils_File::sourceSQLFile(
+      CIVICRM_DSN, $fileName, NULL, $isQueryString
+    );
   }
 
   /**
