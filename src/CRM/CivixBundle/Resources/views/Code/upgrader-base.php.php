@@ -258,9 +258,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
       $setting = new CRM_Core_BAO_Setting();
       $setting->name = $this->extensionName . ':version';
       $setting->delete();
-      CRM_Core_Error::debug_log_message("Deprecated: Migrated extension schema
-              revision ID for {$this->extensionName} from civicrm_setting to
-              civicrm_extension.\n");
+      CRM_Core_Error::debug_log_message("Migrated extension schema revision ID for {$this->extensionName} from civicrm_setting (deprecated) to civicrm_extension.\n");
     }
   }
 
