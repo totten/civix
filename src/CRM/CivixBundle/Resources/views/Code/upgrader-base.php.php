@@ -36,6 +36,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   private $revisions;
 
   /**
+   * @var boolean
+   *   Flag to clean up extension revision data in civicrm_setting
+   */
+  private $revisionStorageIsDeprecated = FALSE;
+
+  /**
    * Obtain a reference to the active upgrade handler.
    */
   static public function instance() {
@@ -225,14 +231,37 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   public function getCurrentRevision() {
-    // return CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
+    $revision = CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
+    if (!$revision) {
+      $revision = $this->getCurrentRevisionDeprecated();
+    }
+    return $revision;
+  }
+
+  private function getCurrentRevisionDeprecated() {
     $key = $this->extensionName . ':version';
-    return CRM_Core_BAO_Setting::getItem('Extension', $key);
+    if ($revision = CRM_Core_BAO_Setting::getItem('Extension', $key)) {
+      $this->revisionStorageIsDeprecated = TRUE;
+    }
+    return $revision;
   }
 
   public function setCurrentRevision($revision) {
     CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
+    // clean up legacy schema version store (CRM-19252)
+    $this->deleteDeprecatedRevision();
     return TRUE;
+  }
+
+  private function deleteDeprecatedRevision() {
+    if ($this->revisionStorageIsDeprecated) {
+      $setting = new CRM_Core_BAO_Setting();
+      $setting->name = $this->extensionName . ':version';
+      $setting->delete();
+      CRM_Core_Error::debug_log_message("Deprecated: Migrated extension schema
+              revision ID for {$this->extensionName} from civicrm_setting to
+              civicrm_extension.\n");
+    }
   }
 
   // ******** Hook delegates ********
