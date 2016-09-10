@@ -259,9 +259,15 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     if (is_callable(array($this, 'install'))) {
       $this->install();
     }
+  }
+
+  public function onPostInstall() {
     $revisions = $this->getRevisions();
     if (!empty($revisions)) {
       $this->setCurrentRevision(max($revisions));
+    }
+    if (is_callable(array($this, 'postInstall'))) {
+      $this->postInstall();
     }
   }
 
