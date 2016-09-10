@@ -231,13 +231,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   public function setCurrentRevision($revision) {
-    // We call this during hook_civicrm_install, but the underlying SQL
-    // UPDATE fails because the extension record hasn't been INSERTed yet.
-    // Instead, track revisions in our own namespace.
-    // CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
-
-    $key = $this->extensionName . ':version';
-    CRM_Core_BAO_Setting::setItem($revision, 'Extension', $key);
+    CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
     return TRUE;
   }
 
@@ -281,7 +275,6 @@ class <?php echo $_namespace ?>_Upgrader_Base {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
       }
     }
-    $this->setCurrentRevision(NULL);
   }
 
   public function onEnable() {
