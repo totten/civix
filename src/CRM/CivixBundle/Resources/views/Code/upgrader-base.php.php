@@ -45,11 +45,11 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * Obtain a reference to the active upgrade handler.
    */
   static public function instance() {
-    if (! self::$instance) {
+    if (!self::$instance) {
       // FIXME auto-generate
       self::$instance = new <?php echo $_namespace ?>_Upgrader(
         '<?php echo $fullName ?>',
-        realpath(__DIR__ .'/../../../')
+        realpath(__DIR__ . '/../../../')
       );
     }
     return self::$instance;
@@ -127,7 +127,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    *   Ex: "sql/mydata.mysql.tpl".
    * @return bool
    */
-  function executeSqlTemplate($relativePath) {
+  public function executeSqlTemplate($relativePath) {
     // Assign multilingual variable to Smarty.
     $upgrade = new CRM_Upgrade_Form();
 
@@ -233,7 +233,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * @return array(revisionNumbers) sorted numerically
    */
   public function getRevisions() {
-    if (! is_array($this->revisions)) {
+    if (!is_array($this->revisions)) {
       $this->revisions = array();
 
       $clazz = new ReflectionClass(get_class($this));
@@ -283,6 +283,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
 
   // ******** Hook delegates ********
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
+   */
   public function onInstall() {
     $files = glob($this->extensionDir . '/sql/*_install.sql');
     if (is_array($files)) {
@@ -301,6 +304,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+   */
   public function onPostInstall() {
     $revisions = $this->getRevisions();
     if (!empty($revisions)) {
@@ -311,6 +317,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
+   */
   public function onUninstall() {
     if (is_callable(array($this, 'uninstall'))) {
       $this->uninstall();
@@ -323,6 +332,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
+   */
   public function onEnable() {
     // stub for possible future use
     if (is_callable(array($this, 'enable'))) {
@@ -330,6 +342,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
+   */
   public function onDisable() {
     // stub for possible future use
     if (is_callable(array($this, 'disable'))) {
@@ -348,4 +363,5 @@ class <?php echo $_namespace ?>_Upgrader_Base {
       default:
     }
   }
+
 }
