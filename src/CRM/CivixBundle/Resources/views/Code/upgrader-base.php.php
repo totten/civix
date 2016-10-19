@@ -36,6 +36,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   private $revisions;
 
   /**
+   * @var boolean
+   *   Flag to clean up extension revision data in civicrm_setting
+   */
+  private $revisionStorageIsDeprecated = FALSE;
+
+  /**
    * Obtain a reference to the active upgrade handler.
    */
   static public function instance() {
@@ -225,20 +231,35 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   public function getCurrentRevision() {
-    // return CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
+    $revision = CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
+    if (!$revision) {
+      $revision = $this->getCurrentRevisionDeprecated();
+    }
+    return $revision;
+  }
+
+  private function getCurrentRevisionDeprecated() {
     $key = $this->extensionName . ':version';
-    return CRM_Core_BAO_Setting::getItem('Extension', $key);
+    if ($revision = CRM_Core_BAO_Setting::getItem('Extension', $key)) {
+      $this->revisionStorageIsDeprecated = TRUE;
+    }
+    return $revision;
   }
 
   public function setCurrentRevision($revision) {
-    // We call this during hook_civicrm_install, but the underlying SQL
-    // UPDATE fails because the extension record hasn't been INSERTed yet.
-    // Instead, track revisions in our own namespace.
-    // CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
-
-    $key = $this->extensionName . ':version';
-    CRM_Core_BAO_Setting::setItem($revision, 'Extension', $key);
+    CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
+    // clean up legacy schema version store (CRM-19252)
+    $this->deleteDeprecatedRevision();
     return TRUE;
+  }
+
+  private function deleteDeprecatedRevision() {
+    if ($this->revisionStorageIsDeprecated) {
+      $setting = new CRM_Core_BAO_Setting();
+      $setting->name = $this->extensionName . ':version';
+      $setting->delete();
+      CRM_Core_Error::debug_log_message("Migrated extension schema revision ID for {$this->extensionName} from civicrm_setting (deprecated) to civicrm_extension.\n");
+    }
   }
 
   // ******** Hook delegates ********
@@ -259,9 +280,15 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     if (is_callable(array($this, 'install'))) {
       $this->install();
     }
+  }
+
+  public function onPostInstall() {
     $revisions = $this->getRevisions();
     if (!empty($revisions)) {
       $this->setCurrentRevision(max($revisions));
+    }
+    if (is_callable(array($this, 'postInstall'))) {
+      $this->postInstall();
     }
   }
 
@@ -275,7 +302,6 @@ class <?php echo $_namespace ?>_Upgrader_Base {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
       }
     }
-    $this->setCurrentRevision(NULL);
   }
 
   public function onEnable() {

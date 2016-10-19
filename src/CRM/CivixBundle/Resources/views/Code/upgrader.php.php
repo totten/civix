@@ -19,6 +19,24 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   }
 
   /**
+   * Example: Work with entities usually not available during the install step.
+   *
+   * This method can be used for any post-install tasks. For example, if a step
+   * of your installation depends on accessing an entity that is itself
+   * created during the installation (e.g., a setting or a managed entity), do
+   * so here to avoid order of operation problems.
+   *
+  public function postInstall() {
+    $customFieldId = civicrm_api3('CustomField', 'getvalue', array(
+      'return' => array("id"),
+      'name' => "customFieldCreatedViaManagedHook",
+    ));
+    civicrm_api3('Setting', 'create', array(
+      'myWeirdFieldSetting' => array('id' => $customFieldId, 'weirdness' => 1),
+    ));
+  }
+
+  /**
    * Example: Run an external SQL script when the module is uninstalled.
    *
   public function uninstall() {

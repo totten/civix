@@ -52,6 +52,26 @@ update your extension's main PHP file.  For example, if the main PHP file
 for the extension is "/var/www/extensions/org.example.myext/myext.php", the
 snippets mentioned below (adjusting `myext` to match your extension).
 
+### Upgrade to v16.10+: hook_civicrm_postInstall
+
+Prior to v16.10.0, extension schema versions were stored in the `civicrm_settings`
+table under the namespace `org.example.myext:version`. This storage
+mechanism proved problematic for multisites utilizing more than one domain (see
+[CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
+utilizes `hook_civicrm_postInstall` and an [updated Upgrader](#upgrade-to-v1609) to
+store schema versions in the `civicrm_extension` table.
+
+```php
+/**
+* Implements hook_civicrm_postInstall().
+*
+* @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+*/
+function myext_civicrm_postInstall() {
+  _myext_civix_civicrm_postInstall();
+}
+```
+
 ### Upgrade to v15.10+: hook_civicrm_navigationMenu
 
 Prior to v4.7, the hook for manipulating the navigation menu required that the
@@ -137,4 +157,48 @@ Civix-based modules should scan for any settings files in
 function myext_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _myext_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
+```
+
+## Upgrade: Upgrader Class
+
+Sometimes new versions introduce changes to the Upgrader classes (e.g.,
+`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
+CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
+`civix` suggests a reasonable approach to doing so, and documentation and online
+support will assume this approach.
+
+The steps for upgrading the Upgrader are as follows:
+
+1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
+2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
+3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
+   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
+4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
+5. Look for additional, version-specific upgrade steps (below).
+
+### Upgrade to v16.10+
+
+In version 16.10.0, hook_civicrm_postInstall was implemented in the extension's
+main PHP file and delegated to the Upgrader base class. If you wish to run
+your own code post-install, you should copy the following snippet (or something
+like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader.php"):
+
+```php
+/**
+  * Example: Work with entities usually not available during the install step.
+  *
+  * This method can be used for any post-install tasks. For example, if a step
+  * of your installation depends on accessing an entity that is itself
+  * created during the installation (e.g., a setting or a managed entity), do
+  * so here to avoid order of operation problems.
+  */
+ public function postInstall() {
+   $customFieldId = civicrm_api3('CustomField', 'getvalue', array(
+     'return' => array("id"),
+     'name' => "customFieldCreatedViaManagedHook",
+   ));
+   civicrm_api3('Setting', 'create', array(
+     'myWeirdFieldSetting' => array('id' => $customFieldId, 'weirdness' => 1),
+   ));
+ }
 ```

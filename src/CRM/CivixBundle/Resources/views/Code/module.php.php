@@ -34,6 +34,15 @@ function <?php echo $mainFile ?>_civicrm_install() {
 }
 
 /**
+* Implements hook_civicrm_postInstall().
+*
+* @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+*/
+function <?php echo $mainFile ?>_civicrm_postInstall() {
+  _<?php echo $mainFile ?>_civix_civicrm_postInstall();
+}
+
+/**
  * Implements hook_civicrm_uninstall().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
