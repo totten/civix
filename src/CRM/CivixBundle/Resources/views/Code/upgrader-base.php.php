@@ -122,16 +122,16 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * @param string $relativePath
+   * @param string $tplFile
    *   The SQL file path (relative to this extension's dir).
    *   Ex: "sql/mydata.mysql.tpl".
    * @return bool
    */
-  public function executeSqlTemplate($relativePath) {
+  public function executeSqlTemplate($tplFile) {
     // Assign multilingual variable to Smarty.
     $upgrade = new CRM_Upgrade_Form();
 
-    $tplFile = $this->extensionDir . DIRECTORY_SEPARATOR . $relativePath;
+    $tplFile = CRM_Utils_File::isAbsolute($tplFile) ? $tplFile : $this->extensionDir . DIRECTORY_SEPARATOR . $tplFile;
     $smarty = CRM_Core_Smarty::singleton();
     $smarty->assign('domainID', CRM_Core_Config::domainID());
     CRM_Utils_File::sourceSQLFile(
@@ -293,6 +293,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
       }
     }
+    $files = glob($this->extensionDir . '/sql/*_install.mysql.tpl');
+    if (is_array($files)) {
+      foreach ($files as $file) {
+        $this->executeSqlTemplate($file);
+      }
+    }
     $files = glob($this->extensionDir . '/xml/*_install.xml');
     if (is_array($files)) {
       foreach ($files as $file) {
@@ -321,6 +327,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
    */
   public function onUninstall() {
+    $files = glob($this->extensionDir . '/sql/*_uninstall.mysql.tpl');
+    if (is_array($files)) {
+      foreach ($files as $file) {
+        $this->executeSqlTemplate($file);
+      }
+    }
     if (is_callable(array($this, 'uninstall'))) {
       $this->uninstall();
     }
