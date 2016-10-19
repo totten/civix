@@ -52,9 +52,9 @@ update your extension's main PHP file.  For example, if the main PHP file
 for the extension is "/var/www/extensions/org.example.myext/myext.php", the
 snippets mentioned below (adjusting `myext` to match your extension).
 
-### Upgrade to v16.09+: hook_civicrm_postInstall
+### Upgrade to v16.10+: hook_civicrm_postInstall
 
-Prior to v16.09.0, extension schema versions were stored in the `civicrm_settings`
+Prior to v16.10.0, extension schema versions were stored in the `civicrm_settings`
 table under the namespace `org.example.myext:version`. This storage
 mechanism proved problematic for multisites utilizing more than one domain (see
 [CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
@@ -176,9 +176,9 @@ The steps for upgrading the Upgrader are as follows:
 4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
 5. Look for additional, version-specific upgrade steps (below).
 
-### Upgrade to v16.09+
+### Upgrade to v16.10+
 
-In version 16.09.0, hook_civicrm_postInstall was implemented in the extension's
+In version 16.10.0, hook_civicrm_postInstall was implemented in the extension's
 main PHP file and delegated to the Upgrader base class. If you wish to run
 your own code post-install, you should copy the following snippet (or something
 like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader.php"):
