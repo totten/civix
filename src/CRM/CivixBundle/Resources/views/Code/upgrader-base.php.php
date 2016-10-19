@@ -45,11 +45,11 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * Obtain a reference to the active upgrade handler.
    */
   static public function instance() {
-    if (! self::$instance) {
+    if (!self::$instance) {
       // FIXME auto-generate
       self::$instance = new <?php echo $_namespace ?>_Upgrader(
         '<?php echo $fullName ?>',
-        realpath(__DIR__ .'/../../../')
+        realpath(__DIR__ . '/../../../')
       );
     }
     return self::$instance;
@@ -116,7 +116,26 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   public function executeSqlFile($relativePath) {
     CRM_Utils_File::sourceSQLFile(
       CIVICRM_DSN,
-      $this->extensionDir . '/' . $relativePath
+      $this->extensionDir . DIRECTORY_SEPARATOR . $relativePath
+    );
+    return TRUE;
+  }
+
+  /**
+   * @param string $tplFile
+   *   The SQL file path (relative to this extension's dir).
+   *   Ex: "sql/mydata.mysql.tpl".
+   * @return bool
+   */
+  public function executeSqlTemplate($tplFile) {
+    // Assign multilingual variable to Smarty.
+    $upgrade = new CRM_Upgrade_Form();
+
+    $tplFile = CRM_Utils_File::isAbsolute($tplFile) ? $tplFile : $this->extensionDir . DIRECTORY_SEPARATOR . $tplFile;
+    $smarty = CRM_Core_Smarty::singleton();
+    $smarty->assign('domainID', CRM_Core_Config::domainID());
+    CRM_Utils_File::sourceSQLFile(
+      CIVICRM_DSN, $smarty->fetch($tplFile), NULL, TRUE
     );
     return TRUE;
   }
@@ -214,7 +233,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * @return array(revisionNumbers) sorted numerically
    */
   public function getRevisions() {
-    if (! is_array($this->revisions)) {
+    if (!is_array($this->revisions)) {
       $this->revisions = array();
 
       $clazz = new ReflectionClass(get_class($this));
@@ -264,11 +283,20 @@ class <?php echo $_namespace ?>_Upgrader_Base {
 
   // ******** Hook delegates ********
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
+   */
   public function onInstall() {
     $files = glob($this->extensionDir . '/sql/*_install.sql');
     if (is_array($files)) {
       foreach ($files as $file) {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+      }
+    }
+    $files = glob($this->extensionDir . '/sql/*_install.mysql.tpl');
+    if (is_array($files)) {
+      foreach ($files as $file) {
+        $this->executeSqlTemplate($file);
       }
     }
     $files = glob($this->extensionDir . '/xml/*_install.xml');
@@ -282,6 +310,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+   */
   public function onPostInstall() {
     $revisions = $this->getRevisions();
     if (!empty($revisions)) {
@@ -292,7 +323,16 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
+   */
   public function onUninstall() {
+    $files = glob($this->extensionDir . '/sql/*_uninstall.mysql.tpl');
+    if (is_array($files)) {
+      foreach ($files as $file) {
+        $this->executeSqlTemplate($file);
+      }
+    }
     if (is_callable(array($this, 'uninstall'))) {
       $this->uninstall();
     }
@@ -304,6 +344,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
+   */
   public function onEnable() {
     // stub for possible future use
     if (is_callable(array($this, 'enable'))) {
@@ -311,6 +354,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     }
   }
 
+  /**
+   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
+   */
   public function onDisable() {
     // stub for possible future use
     if (is_callable(array($this, 'disable'))) {
@@ -329,4 +375,5 @@ class <?php echo $_namespace ?>_Upgrader_Base {
       default:
     }
   }
+
 }
