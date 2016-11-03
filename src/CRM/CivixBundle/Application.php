@@ -17,6 +17,8 @@ use CRM\CivixBundle\Command\AddUpgraderCommand;
 use CRM\CivixBundle\Command\BuildCommand;
 use CRM\CivixBundle\Command\ConfigGetCommand;
 use CRM\CivixBundle\Command\ConfigSetCommand;
+use CRM\CivixBundle\Command\InfoGetCommand;
+use CRM\CivixBundle\Command\InfoSetCommand;
 use CRM\CivixBundle\Command\InitCommand;
 use CRM\CivixBundle\Command\PingCommand;
 use CRM\CivixBundle\Command\TestRunCommand;
@@ -63,6 +65,8 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new InitCommand();
     $commands[] = new PingCommand();
     $commands[] = new TestRunCommand();
+    $commands[] = new InfoGetCommand();
+    $commands[] = new InfoSetCommand();
     return $commands;
   }
 
