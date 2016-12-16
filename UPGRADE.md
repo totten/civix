@@ -63,10 +63,10 @@ store schema versions in the `civicrm_extension` table.
 
 ```php
 /**
-* Implements hook_civicrm_postInstall().
-*
-* @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
-*/
+ * Implements hook_civicrm_postInstall().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+ */
 function myext_civicrm_postInstall() {
   _myext_civix_civicrm_postInstall();
 }
