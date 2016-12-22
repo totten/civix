@@ -12,9 +12,18 @@ Civix is a command-line tool for building CiviCRM extensions.
 Civix is distributed as a single, portable PHAR executable.  As long as you have PHP-CLI
 properly configured, it should work as a simple download, e.g.
 
+To install globally:
+
 ```bash
 sudo curl -LsS https://download.civicrm.org/civix/civix.phar -o /usr/local/bin/civix
 sudo chmod +x /usr/local/bin/civix
+```
+
+To install as a user without `sudo`:
+
+```bash
+curl -LsS https://download.civicrm.org/civix/civix.phar -o ~/bin/civix
+chmod +x ~/bin/civix
 ```
 
 To upgrade an existing installation, simply re-download the latest `civix.phar`.
@@ -66,6 +75,14 @@ set PATH=%PATH%;C:\users\<your name>\civix\bin
 OR permanently:
 Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
 ```
+
+### Environment
+
+`civix` will pick up your name and email from you git installation if it can detect this.
+
+It will also look for your `civicrm.settings.php` file. If it cannot find the file then set the path to it:
+
+`declare -x CIVICRM_SETTINGS="[[path to your sites folder]]/civicrm.settings.php"`
 
 ### Documentation
 
