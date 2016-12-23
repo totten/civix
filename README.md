@@ -78,7 +78,7 @@ Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
 
 ### Environment
 
-`civix` will pick up your name and email from you git installation if it can detect this.
+`civix` will pick up your name and email from your git installation if it can detect this.
 
 It will also look for your `civicrm.settings.php` file. If it cannot find the file then set the path to it:
 
