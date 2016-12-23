@@ -200,6 +200,24 @@ function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
 }
 
 /**
+ * (Delegated) Implements hook_civicrm_entityTypes().
+ *
+ * Find any *.entityType.php files, merge their content, and return.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
+ */
+function _<?php echo $mainFile ?>_civix_civicrm_entityTypes(&$entityTypes) {
+  $entityTypeFiles = _<?php echo $mainFile ?>_civix_find_files(__DIR__, '*.entityType.php');
+  foreach ($entityTypeFiles as $file) {
+    $ets = include $file;
+    foreach ($ets as $et) {
+      $name = $et['name'];
+      $entityTypes[$name] = $et;
+    }
+  }
+}
+
+/**
  * (Delegated) Implements hook_civicrm_caseTypes().
  *
  * Find any and return any files matching "xml/case/*.xml"
