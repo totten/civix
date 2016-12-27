@@ -9,10 +9,10 @@ EXMODULE=org.civicrm.civixexample
 # validate environment
 if [ -z "$BUILDNAME" ]; then
   echo "Usage: $0 <buildkit-dir> <build-name>"
-  echo "Note: Running this will:"
-  echo "1. rebuild civix"
-  echo "2. reset the build's database"
-  echo "3. over-write the $EXMODULE extension"
+  echo "Running this will:"
+  echo " 1. Rebuild civix"
+  echo " 2. Reset the build's database"
+  echo " 3. Over-write the $EXMODULE extension"
   exit 1
 fi
 
