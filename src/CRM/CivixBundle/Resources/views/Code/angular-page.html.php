@@ -1,5 +1,7 @@
 <div class="crm-container">
   <div crm-ui-debug="myContact"></div>
+  
+  <h1 crm-page-title>{{ts('About %1', {1: myContact.first_name + ' ' + myContact.last_name})}}</h1>
 
   <form name="myForm" crm-ui-id-scope>
 
