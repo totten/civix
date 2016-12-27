@@ -35,7 +35,7 @@ pushd $WORKINGDIR
   # restore database
   civibuild restore $BUILDNAME
 
-  # clean up any existing entension
+  # clean up any existing extension
   if [ -d "$EXMODULE" ]; then
     rm -rf "$EXMODULE"
   fi
