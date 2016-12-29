@@ -39,7 +39,7 @@ class Info extends XML {
     $xml->addChild('releaseDate', date('Y-m-d'));
     $xml->addChild('version', '1.0');
     $xml->addChild('develStage', 'alpha');
-    $xml->addChild('compatibility')->addChild('ver', '4.2');
+    $xml->addChild('compatibility')->addChild('ver', '4.7');
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
     // store extra metadata to facilitate code manipulation
