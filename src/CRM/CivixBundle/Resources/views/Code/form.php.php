@@ -35,7 +35,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
     $values = $this->exportValues();
     $options = $this->getColorOptions();
     CRM_Core_Session::setStatus(ts('You picked color "%1"', array(
-      1 => $options[$values['favorite_color']]
+      1 => $options[$values['favorite_color']],
     )));
     parent::postProcess();
   }
@@ -48,7 +48,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
       '#00f' => ts('Blue'),
       '#f0f' => ts('Purple'),
     );
-    foreach (array('1','2','3','4','5','6','7','8','9','a','b','c','d','e') as $f) {
+    foreach (array('1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e') as $f) {
       $options["#{$f}{$f}{$f}"] = ts('Grey (%1)', array(1 => $f));
     }
     return $options;
@@ -74,4 +74,5 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
     }
     return $elementNames;
   }
+
 }
