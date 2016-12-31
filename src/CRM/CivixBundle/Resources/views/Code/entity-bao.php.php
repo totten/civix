@@ -23,4 +23,5 @@ class <?php echo $baoClassName ?> extends <?php echo $daoClassName ?> {
 
     return $instance;
   } */
+
 }
