@@ -62,7 +62,8 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
             'required' => TRUE,
             'no_repeat' => TRUE,
           ),
-          'join_date' => array('title' => ts('Join Date'),
+          'join_date' => array(
+            'title' => ts('Join Date'),
             'default' => TRUE,
           ),
           'source' => array('title' => 'Source'),
@@ -320,4 +321,5 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
       }
     }
   }
+
 }
