@@ -22,14 +22,14 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
   $extRoot = dirname(__FILE__) . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
 
-  if ( is_array( $template->template_dir ) ) {
-      array_unshift( $template->template_dir, $extDir );
+  if (is_array($template->template_dir)) {
+    array_unshift($template->template_dir, $extDir);
   }
   else {
-      $template->template_dir = array( $extDir, $template->template_dir );
+    $template->template_dir = array($extDir, $template->template_dir);
   }
 
-  $include_path = $extRoot . PATH_SEPARATOR . get_include_path( );
+  $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
 }
 
@@ -134,7 +134,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $qu
  * @return <?php echo $_namespace ?>_Upgrader
  */
 function _<?php echo $mainFile ?>_civix_upgrader() {
-  if (!file_exists(__DIR__.'/<?php echo $namespace ?>/Upgrader.php')) {
+  if (!file_exists(__DIR__ . '/<?php echo $namespace ?>/Upgrader.php')) {
     return NULL;
   }
   else {
@@ -170,7 +170,8 @@ function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
       while (FALSE !== ($entry = readdir($dh))) {
         $path = $subdir . DIRECTORY_SEPARATOR . $entry;
         if ($entry{0} == '.') {
-        } elseif (is_dir($path)) {
+        }
+        elseif (is_dir($path)) {
           $todos[] = $path;
         }
       }
@@ -290,12 +291,14 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
   }
   else {
     // Find an recurse into the next level down
-    $found = false;
+    $found = FALSE;
     $path = explode('/', $path);
     $first = array_shift($path);
     foreach ($menu as $key => &$entry) {
       if ($entry['attributes']['name'] == $first) {
-        if (!$entry['child']) $entry['child'] = array();
+        if (!$entry['child']) {
+          $entry['child'] = array();
+        }
         $found = _<?php echo $mainFile ?>_civix_insert_navigation_menu($entry['child'], implode('/', $path), $item, $key);
       }
     }
@@ -322,7 +325,7 @@ function _<?php echo $mainFile ?>_civix_fixNavigationMenu(&$nodes) {
     if ($key === 'navID') {
       $maxNavID = max($maxNavID, $item);
     }
-    });
+  });
   _<?php echo $mainFile ?>_civix_fixNavigationMenuItems($nodes, $maxNavID, NULL);
 }
 
@@ -359,7 +362,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders(&$metaDataF
   $configured = TRUE;
 
   $settingsDir = __DIR__ . DIRECTORY_SEPARATOR . 'settings';
-  if(is_dir($settingsDir) && !in_array($settingsDir, $metaDataFolders)) {
+  if (is_dir($settingsDir) && !in_array($settingsDir, $metaDataFolders)) {
     $metaDataFolders[] = $settingsDir;
   }
 }
