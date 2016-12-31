@@ -76,7 +76,7 @@ class PhpData implements Builder {
     }
     $content .= "\nreturn ";
     $content .= var_export($this->data, TRUE);
-    $content .= ";";
+    $content .= ";\n";
     file_put_contents($this->path, $content);
   }
 
