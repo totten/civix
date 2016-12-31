@@ -16,7 +16,7 @@ if [ -z "$BUILDNAME" ]; then
   exit 1
 fi
 
-if [ ! -d $WORKINGDIR]; then
+if [ ! -d $WORKINGDIR ]; then
   echo "error: missing $WORKINGDIR"
   exit 1
 fi
