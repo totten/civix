@@ -80,6 +80,7 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
 
     if ($srcClassName = $input->getOption('copy')) {
       // we need bootstrap to set up include path to locate file -- but that's it
+      Services::boot(array('output' => $output));
       $civicrm_api3 = Services::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");

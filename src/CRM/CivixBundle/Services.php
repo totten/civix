@@ -14,12 +14,11 @@ class Services {
 
   protected static $cache;
 
-  public static function boot() {
+  public static function boot($options = array()) {
     if (!isset(self::$cache['boot'])) {
       $cwd = getcwd();
-      Bootstrap::singleton()->boot(array(
-        'prefetch' => FALSE,
-      ));
+      $options = array_merge(array('prefetch' => FALSE), $options);
+      Bootstrap::singleton()->boot($options);
       \CRM_Core_Config::singleton();
       \CRM_Utils_System::loadBootStrap(array(), FALSE);
       chdir($cwd);
@@ -28,11 +27,14 @@ class Services {
   }
 
   /**
+   * Get a reference to the API class.
+   *
+   * Pre-requisite: call boot() to startup CiviCRM.
+   *
    * @return \civicrm_api3
    */
   public static function api3() {
     if (!isset(self::$cache['civicrm_api3'])) {
-      self::boot();
       if (!stream_resolve_include_path('api/class.api.php')) {
         throw new \RuntimeException("Booted CiviCRM, but failed to find 'api/class.api.php'");
       }

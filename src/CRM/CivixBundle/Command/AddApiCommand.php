@@ -32,6 +32,7 @@ class AddApiCommand extends Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     // load Civi to get access to civicrm_api_get_function_name
+    Services::boot(array('output' => $output));
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");

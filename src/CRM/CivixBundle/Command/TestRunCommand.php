@@ -40,6 +40,7 @@ class TestRunCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    Services::boot(array('output' => $output));
     $basedir = new Path(getcwd());
 
     // Find extension metadata

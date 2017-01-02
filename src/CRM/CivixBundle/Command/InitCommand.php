@@ -88,6 +88,7 @@ class InitCommand extends AbstractCommand {
    * @return bool TRUE on success; FALSE if there's no site or if there's an error
    */
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
+    Services::boot(array('output' => $output));
     $civicrm_api3 = Services::api3();
     if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
       $siteName = \CRM_Utils_System::baseURL(); // \CRM_Core_Config::singleton()->userSystem->cmsRootPath();
