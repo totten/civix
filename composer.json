@@ -5,11 +5,11 @@
     "license": "AGPL-3.0",
     "require": {
         "php": ">=5.3.3",
-        "civicrm/cv": "dev-master",
-        "symfony/console": "~2.7.0",
-        "symfony/process": "~2.7.0",
-        "symfony/templating": "~2.7.0",
-        "symfony/var-dumper": "~2.7.0",
+        "civicrm/cv": "~0.1.2",
+        "symfony/console": "~2.8",
+        "symfony/process": "~2.8",
+        "symfony/templating": "~2.8",
+        "symfony/var-dumper": "~2.8",
         "totten/license-data": "dev-master"
     },
     "autoload": {
