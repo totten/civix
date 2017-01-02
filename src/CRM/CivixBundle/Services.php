@@ -98,7 +98,7 @@ class Services {
    */
   public static function cacheDir() {
     if (!isset(self::$cache['cacheDir'])) {
-      self::$cache['cacheDir'] =self::configDir()->path('cache');
+      self::$cache['cacheDir'] = self::configDir()->path('cache');
     }
     return self::$cache['cacheDir'];
   }
