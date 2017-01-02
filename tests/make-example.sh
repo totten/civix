@@ -30,6 +30,7 @@ fi
 # (re)build civix
 php -dphar.readonly=0 `which box` build
 CIVIX=$PWD/bin/civix.phar
+VERBOSITY=-v
 
 pushd $WORKINGDIR
   # restore database
@@ -41,24 +42,24 @@ pushd $WORKINGDIR
   fi
 
   # generate module and try all the generators
-  echo n | $CIVIX -v generate:module $EXMODULE
+  echo n | $CIVIX $VERBOSITY generate:module $EXMODULE
   pushd $EXMODULE
-    $CIVIX -v generate:api MyEntity MyAction
-    $CIVIX -v generate:case-type MyLabel MyName
-    # $CIVIX -v generate:custom-xml -f --data="FIXME" --uf="FIXME"
-    $CIVIX -v generate:entity MyEntity
-    $CIVIX -v generate:form MyForm civicrm/my-form
-    $CIVIX -v generate:page MyPage civicrm/my-page
-    $CIVIX -v generate:report MyReport CiviContribute
-    $CIVIX -v generate:search MySearch
-    $CIVIX -v generate:test CRM_Civiexample_FooTest
-    $CIVIX -v generate:test --template=legacy CRM_Civiexample_LegacyTest
-    $CIVIX -v generate:test --template=headless 'Civi\Civiexample\BarTest'
-    $CIVIX -v generate:test --template=e2e 'Civi\Civiexample\EndTest'
-    $CIVIX -v generate:upgrader
-    $CIVIX -v generate:angular-module
-    $CIVIX -v generate:angular-page FooCtrl foo
-    $CIVIX -v generate:angular-directive foo-bar
+    $CIVIX $VERBOSITY generate:api MyEntity MyAction
+    $CIVIX $VERBOSITY generate:case-type MyLabel MyName
+    # $CIVIX $VERBOSITY generate:custom-xml -f --data="FIXME" --uf="FIXME"
+    $CIVIX $VERBOSITY generate:entity MyEntity
+    $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
+    $CIVIX $VERBOSITY generate:page MyPage civicrm/my-page
+    $CIVIX $VERBOSITY generate:report MyReport CiviContribute
+    $CIVIX $VERBOSITY generate:search MySearch
+    $CIVIX $VERBOSITY generate:test CRM_Civiexample_FooTest
+    $CIVIX $VERBOSITY generate:test --template=legacy CRM_Civiexample_LegacyTest
+    $CIVIX $VERBOSITY generate:test --template=headless 'Civi\Civiexample\BarTest'
+    $CIVIX $VERBOSITY generate:test --template=e2e 'Civi\Civiexample\EndTest'
+    $CIVIX $VERBOSITY generate:upgrader
+    $CIVIX $VERBOSITY generate:angular-module
+    $CIVIX $VERBOSITY generate:angular-page FooCtrl foo
+    $CIVIX $VERBOSITY generate:angular-directive foo-bar
   popd
 
   cv api extension.install key=$EXMODULE
