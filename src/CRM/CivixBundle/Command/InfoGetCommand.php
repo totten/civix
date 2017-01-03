@@ -37,7 +37,7 @@ class InfoGetCommand extends Command {
     $this
       ->setName('info:get')
       ->setDescription('Read a field from the info.xml file')
-      ->addOption('xpath', 'x', InputOption::VALUE_REQUIRED, '(REQIRED) The XPath expression of the field')
+      ->addOption('xpath', 'x', InputOption::VALUE_REQUIRED, '(REQUIRED) The XPath expression of the field')
       ->setHelp("Read a single field from the info.xml file.
 
 Examples:
@@ -57,8 +57,9 @@ Common fields:\n * " . implode("\n * ", $fields) . "\n");
 
     $xpath = $input->getOption('xpath');
     if (is_null($xpath)) {
-      $help = new HelpCommand();
-      $help->setCommand($this);
+      // missing xpath value so provide help
+      $help = $this->getApplication()->get('help');
+      $help->setCommand($this); // tell help to provide specific help for this function
       return $help->run($input, $output);
     }
     foreach ($info->get()->xpath($xpath) as $node) {
