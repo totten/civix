@@ -196,6 +196,9 @@ function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
         $e['module'] = '<?php echo $fullName ?>';
       }
       $entities[] = $e;
+      if (empty($e['params']['version'])) {
+        $e['params']['version'] = '3';
+      }
     }
   }
 }
