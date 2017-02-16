@@ -299,7 +299,7 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
     $first = array_shift($path);
     foreach ($menu as $key => &$entry) {
       if ($entry['attributes']['name'] == $first) {
-        if (!$entry['child']) {
+        if (!isset($entry['child'])) {
           $entry['child'] = array();
         }
         $found = _<?php echo $mainFile ?>_civix_insert_navigation_menu($entry['child'], implode('/', $path), $item, $key);
