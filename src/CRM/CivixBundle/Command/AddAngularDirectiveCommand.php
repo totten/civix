@@ -50,9 +50,18 @@ For more, see https://docs.angularjs.org/guide/directive');
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
     $ctx['dirNameCamel'] = $this->toCamel($input->getArgument('<directive-name>'));
     $ctx['dirNameHyp'] = $this->toHyphen($input->getArgument('<directive-name>'));
-    $ctx['jsPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['dirNameCamel'] . '.js');
-    $ctx['htmlName'] = implode('/', array('~', $ctx['angularModuleName'], $ctx['dirNameCamel'] . '.html'));
-    $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['dirNameCamel'] . '.html');
+
+    if (preg_match('/^' . $ctx['angularModuleName'] . '[A-Z]/', $ctx['dirNameCamel'])) {
+      $ctx['baseFileName'] = preg_replace('/^' . $ctx['angularModuleName'] . '/', '', $ctx['dirNameCamel']);
+    }
+    else {
+      $output->writeln('<error>Warning: Directive name does not begin with module name.</error>');
+      $ctx['baseFileName'] = $ctx['dirNameCamel'];
+    }
+
+    $ctx['jsPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['baseFileName'] . '.js');
+    $ctx['htmlName'] = implode('/', array('~', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html'));
+    $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html');
 
     //// Construct files ////
     $output->writeln("<info>Initialize Angular directive \"" . $ctx['dirNameHyp'] . "\" (aka \"" . $ctx['dirNameCamel'] . "\")</info>");
