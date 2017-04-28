@@ -182,7 +182,7 @@ class TestRunCommand extends Command {
       // disable extension searching
       $template_vars['civicrm_setting']['Extension Preferences']['ext_repo_url'] = FALSE;
       // use the same source tree for linked Civi runtime and test Civi runtime
-      $template_vars['civicrm_setting']['Directory Preferences']['extensionsDir'] = \CRM_Core_BAO_Setting::getItem('Directory Preferences', 'extensionsDir');
+      $template_vars['civicrm_setting']['Directory Preferences']['extensionsDir'] = \CRM_Utils_File::absoluteDirectory(\CRM_Core_BAO_Setting::getItem('Directory Preferences', 'extensionsDir'));
       // extensionsURL of linked Civi runtime may differ from ideal value for test Civi runtime, but that's OK because extensionsURL defines *static* resources
       $template_vars['civicrm_setting']['URL Preferences']['extensionsURL'] = \CRM_Core_BAO_Setting::getItem('URL Preferences', 'extensionsURL');
       $template_vars['civicrm_setting']['Test']['test_extensions'] = array_keys(\CRM_Core_PseudoConstant::getExtensions());
