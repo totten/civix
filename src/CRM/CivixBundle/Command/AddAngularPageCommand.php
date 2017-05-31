@@ -25,6 +25,9 @@ class AddAngularPageCommand extends \Symfony\Component\Console\Command\Command {
 are loaded underneath it. For example, if a page the path
 "about/me", then the URL would be "civicrm/a/#/about/me".
 
+Before generating an angular page, you\'ll need to generate a module using:
+  civix generate:angular-module
+
 To add a new Angular-absed page, this command autogenerates three things:
  * A route (JS)
  * A controller (JS)
