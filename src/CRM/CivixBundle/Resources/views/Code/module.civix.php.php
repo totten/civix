@@ -19,7 +19,7 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    */
   public static function ts($text, $params = array()) {
     if (!array_key_exists('domain', $params)) {
-      $params['domain'] = self::LONG_NAME;
+      $params['domain'] = array(self::LONG_NAME, NULL);
     }
     return ts($text, $params);
   }
