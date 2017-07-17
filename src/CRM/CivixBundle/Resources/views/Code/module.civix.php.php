@@ -1,9 +1,39 @@
 <?php
 echo "<?php\n";
-$_namespace = preg_replace(':/:','_',$namespace);
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
 // AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
+
+/**
+ * The ExtensionUtil class provides small stubs for accessing resources of this
+ * extension.
+ */
+class <?php echo $_namespace ?>_ExtensionUtil {
+  const SHORT_NAME = "<?php echo $mainFile; ?>";
+  const LONG_NAME = "<?php echo $fullName; ?>";
+  const PATH = __DIR__;
+
+  /**
+   * Translate a string, using the extension's `domain`.
+   */
+  public static function ts($text, $params = array()) {
+    if (!array_key_exists('domain', $params)) {
+      $params['domain'] = self::LONG_NAME;
+    }
+    return ts($text, $params);
+  }
+
+  public static function url($file = NULL) {
+    return CRM_Core_Resources::singleton()->getUrl(self::LONG_NAME, $file);
+  }
+  public static function path($file = NULL) {
+    return CRM_Core_Resources::singleton()->getPath(self::LONG_NAME, $file);
+  }
+
+}
+
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * (Delegated) Implements hook_civicrm_config().
@@ -193,7 +223,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
     $es = include $file;
     foreach ($es as $e) {
       if (empty($e['module'])) {
-        $e['module'] = '<?php echo $fullName ?>';
+        $e['module'] = E::LONG_NAME;
       }
       $entities[] = $e;
       if (empty($e['params']['version'])) {
@@ -225,7 +255,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_caseTypes(&$caseTypes) {
       // throw new CRM_Core_Exception($errorMessage);
     }
     $caseTypes[$name] = array(
-      'module' => '<?php echo $fullName ?>',
+      'module' => E::LONG_NAME,
       'name' => $name,
       'file' => $file,
     );
@@ -251,7 +281,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_angularModules(&$angularModules)
     $name = preg_replace(':\.ang\.php$:', '', basename($file));
     $module = include $file;
     if (empty($module['ext'])) {
-      $module['ext'] = '<?php echo $fullName ?>';
+      $module['ext'] = E::LONG_NAME;
     }
     $angularModules[$name] = $module;
   }
