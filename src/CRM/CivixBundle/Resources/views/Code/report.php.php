@@ -1,6 +1,8 @@
 <?php
 echo "<?php\n";
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 class <?php echo $reportClassName ?> extends CRM_Report_Form {
 
@@ -17,7 +19,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
         'dao' => 'CRM_Contact_DAO_Contact',
         'fields' => array(
           'sort_name' => array(
-            'title' => ts('Contact Name'),
+            'title' => E::ts('Contact Name'),
             'required' => TRUE,
             'default' => TRUE,
             'no_repeat' => TRUE,
@@ -27,7 +29,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
             'required' => TRUE,
           ),
           'first_name' => array(
-            'title' => ts('First Name'),
+            'title' => E::ts('First Name'),
             'no_repeat' => TRUE,
           ),
           'id' => array(
@@ -35,7 +37,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
             'required' => TRUE,
           ),
           'last_name' => array(
-            'title' => ts('Last Name'),
+            'title' => E::ts('Last Name'),
             'no_repeat' => TRUE,
           ),
           'id' => array(
@@ -45,7 +47,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
         ),
         'filters' => array(
           'sort_name' => array(
-            'title' => ts('Contact Name'),
+            'title' => E::ts('Contact Name'),
             'operator' => 'like',
           ),
           'id' => array(
@@ -63,7 +65,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
             'no_repeat' => TRUE,
           ),
           'join_date' => array(
-            'title' => ts('Join Date'),
+            'title' => E::ts('Join Date'),
             'default' => TRUE,
           ),
           'source' => array('title' => 'Source'),
@@ -73,12 +75,12 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
             'operatorType' => CRM_Report_Form::OP_DATE,
           ),
           'owner_membership_id' => array(
-            'title' => ts('Membership Owner ID'),
+            'title' => E::ts('Membership Owner ID'),
             'operatorType' => CRM_Report_Form::OP_INT,
           ),
           'tid' => array(
             'name' => 'membership_type_id',
-            'title' => ts('Membership Types'),
+            'title' => E::ts('Membership Types'),
             'type' => CRM_Utils_Type::T_INT,
             'operatorType' => CRM_Report_Form::OP_MULTISELECT,
             'options' => CRM_Member_PseudoConstant::membershipType(),
@@ -91,14 +93,14 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
         'alias' => 'mem_status',
         'fields' => array(
           'name' => array(
-            'title' => ts('Status'),
+            'title' => E::ts('Status'),
             'default' => TRUE,
           ),
         ),
         'filters' => array(
           'sid' => array(
             'name' => 'id',
-            'title' => ts('Status'),
+            'title' => E::ts('Status'),
             'type' => CRM_Utils_Type::T_INT,
             'operatorType' => CRM_Report_Form::OP_MULTISELECT,
             'options' => CRM_Member_PseudoConstant::membershipStatus(NULL, NULL, 'label'),
@@ -112,8 +114,8 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
           'street_address' => NULL,
           'city' => NULL,
           'postal_code' => NULL,
-          'state_province_id' => array('title' => ts('State/Province')),
-          'country_id' => array('title' => ts('Country')),
+          'state_province_id' => array('title' => E::ts('State/Province')),
+          'country_id' => array('title' => E::ts('Country')),
         ),
         'grouping' => 'contact-fields',
       ),
@@ -129,7 +131,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
   }
 
   function preProcess() {
-    $this->assign('reportTitle', ts('Membership Detail Report'));
+    $this->assign('reportTitle', E::ts('Membership Detail Report'));
     parent::preProcess();
   }
 
@@ -312,7 +314,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
           $this->_absoluteUrl
         );
         $rows[$rowNum]['civicrm_contact_sort_name_link'] = $url;
-        $rows[$rowNum]['civicrm_contact_sort_name_hover'] = ts("View Contact Summary for this Contact.");
+        $rows[$rowNum]['civicrm_contact_sort_name_hover'] = E::ts("View Contact Summary for this Contact.");
         $entryFound = TRUE;
       }
 
