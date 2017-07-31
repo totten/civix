@@ -31,7 +31,7 @@ class TestRunCommand extends Command {
   protected function configure() {
     $this
       ->setName('test')
-      ->setDescription('Run a unit test (deprecated)')
+      ->setDescription('Run a unit test (DEPRECATED)')
       ->addArgument('<TestClass>', InputArgument::OPTIONAL, 'Test class name (eg "CRM_Myextension_MyTest")')
       ->addOption('clear', NULL, InputOption::VALUE_NONE, 'Clear the cached PHPUnit bootstrap data')
       ->addOption('filter', NULL, InputOption::VALUE_REQUIRED, 'Restrict tests by name (regex)')
@@ -42,6 +42,8 @@ class TestRunCommand extends Command {
   protected function execute(InputInterface $input, OutputInterface $output) {
     Services::boot(array('output' => $output));
     $basedir = new Path(getcwd());
+
+    $output->writeln("<comment>Warning: 'civix test' deprecated.  Run phpunit4 directly from the extension directory instead.</comment>");
 
     // Find extension metadata
     $info = new Info($basedir->string('info.xml'));
