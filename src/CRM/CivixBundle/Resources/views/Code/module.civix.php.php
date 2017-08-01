@@ -13,7 +13,6 @@ class <?php echo $_namespace ?>_ExtensionUtil {
   const SHORT_NAME = "<?php echo $mainFile; ?>";
   const LONG_NAME = "<?php echo $fullName; ?>";
   const CLASS_PREFIX = "<?php echo $_namespace; ?>";
-  const PATH = __DIR__;
 
   /**
    * Translate a string using the extension's domain.
@@ -56,7 +55,8 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    *   Ex: '/var/www/example.org/sites/default/ext/org.example.foo/css/foo.css'.
    */
   public static function path($file = NULL) {
-    return CRM_Core_Resources::singleton()->getPath(self::LONG_NAME, $file);
+    // return CRM_Core_Resources::singleton()->getPath(self::LONG_NAME, $file);
+    return __DIR__ . ($path === NULL ? '' : (DIRECTORY_SEPARATOR . $file));
   }
 
   /**
