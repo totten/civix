@@ -15,7 +15,17 @@ class <?php echo $_namespace ?>_ExtensionUtil {
   const PATH = __DIR__;
 
   /**
-   * Translate a string, using the extension's `domain`.
+   * Translate a string using the extension's domain.
+   *
+   * If the extension doesn't have a specific translation
+   * for the string, fallback to the default translations.
+   *
+   * @param string $text
+   *   Canonical message text (generally en_US).
+   * @param array $params
+   * @return string
+   *   Translated text.
+   * @see ts
    */
   public static function ts($text, $params = array()) {
     if (!array_key_exists('domain', $params)) {
