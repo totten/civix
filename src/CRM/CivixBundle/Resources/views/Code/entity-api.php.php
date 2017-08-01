@@ -1,6 +1,8 @@
 <?php
 echo "<?php\n";
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * <?php echo $entityNameCamel ?>.create API specification (optional)
