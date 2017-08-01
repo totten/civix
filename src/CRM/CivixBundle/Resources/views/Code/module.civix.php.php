@@ -12,6 +12,7 @@ $_namespace = preg_replace(':/:', '_', $namespace);
 class <?php echo $_namespace ?>_ExtensionUtil {
   const SHORT_NAME = "<?php echo $mainFile; ?>";
   const LONG_NAME = "<?php echo $fullName; ?>";
+  const CLASS_PREFIX = "<?php echo $_namespace; ?>";
   const PATH = __DIR__;
 
   /**
@@ -56,6 +57,18 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    */
   public static function path($file = NULL) {
     return CRM_Core_Resources::singleton()->getPath(self::LONG_NAME, $file);
+  }
+
+  /**
+   * Get the name of a class within this extension.
+   *
+   * @param string $suffix
+   *   Ex: 'Page_HelloWorld' or 'Page\\HelloWorld'.
+   * @return string
+   *   Ex: 'CRM_Foo_Page_HelloWorld'.
+   */
+  public static function findClass($suffix) {
+    return self::CLASS_PREFIX . '_' . str_replace('\\', '_', $suffix);
   }
 
 }
