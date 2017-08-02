@@ -1,9 +1,10 @@
 <?php
 echo "<?php\n";
-$_namespace = preg_replace(':/:','_',$namespace);
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
 // AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * Base class which provides helpers to execute upgrade logic

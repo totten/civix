@@ -4,8 +4,10 @@ echo "<?php\n";
 if ($testNamespace) {
   echo "namespace $testNamespace;\n";
 }
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 use Civi\Test\EndToEndInterface;
 
 /**

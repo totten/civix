@@ -1,7 +1,8 @@
 <?php
 echo "<?php\n";
-$_namespace = preg_replace(':/:','_',$namespace);
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * Collection of upgrade steps.
@@ -92,9 +93,9 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   public function upgrade_4202() {
     $this->ctx->log->info('Planning update 4202'); // PEAR Log interface
 
-    $this->addTask(ts('Process first step'), 'processPart1', $arg1, $arg2);
-    $this->addTask(ts('Process second step'), 'processPart2', $arg3, $arg4);
-    $this->addTask(ts('Process second step'), 'processPart3', $arg5);
+    $this->addTask(E::ts('Process first step'), 'processPart1', $arg1, $arg2);
+    $this->addTask(E::ts('Process second step'), 'processPart2', $arg3, $arg4);
+    $this->addTask(E::ts('Process second step'), 'processPart3', $arg5);
     return TRUE;
   }
   public function processPart1($arg1, $arg2) { sleep(10); return TRUE; }
@@ -116,7 +117,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
     $maxId = CRM_Core_DAO::singleValueQuery('SELECT coalesce(max(id),0) FROM civicrm_contribution');
     for ($startId = $minId; $startId <= $maxId; $startId += self::BATCH_SIZE) {
       $endId = $startId + self::BATCH_SIZE - 1;
-      $title = ts('Upgrade Batch (%1 => %2)', array(
+      $title = E::ts('Upgrade Batch (%1 => %2)', array(
         1 => $startId,
         2 => $endId,
       ));

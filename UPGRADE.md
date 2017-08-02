@@ -13,6 +13,16 @@ your module to match the newer templates, then use this procedure:
 
 ## Upgrade: Test Files
 
+### Upgrade to v17.08.1+
+
+civix v17.08.1+ introduces a new helper class. You can generate following the "General" upgrade procedure (above). No other changes are required.
+
+Optionally, if you want to *use* this helper class, then add a line like this to your other `*.php` files:
+
+```php
+use CRM_Myextension_ExtensionUtil as E;
+```
+
 ### Upgrade v16.03.2+
 
 Prior to civix v16.03, civix included the commands `civix generate:test` and `civix test`.  Beginning with v16.03, civix templates now

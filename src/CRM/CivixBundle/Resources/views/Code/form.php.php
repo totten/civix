@@ -1,13 +1,16 @@
 <?php
 echo "<?php\n";
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * Form controller class
  *
  * @see https://wiki.civicrm.org/confluence/display/CRMDOC/QuickForm+Reference
  */
-class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form {
+class <?php echo preg_replace(':/:', '_', $fullClassName) ?> extends CRM_Core_Form {
   public function buildQuickForm() {
 
     // add form elements
@@ -21,7 +24,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
     $this->addButtons(array(
       array(
         'type' => 'submit',
-        'name' => ts('Submit'),
+        'name' => E::ts('Submit'),
         'isDefault' => TRUE,
       ),
     ));
@@ -34,7 +37,7 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
   public function postProcess() {
     $values = $this->exportValues();
     $options = $this->getColorOptions();
-    CRM_Core_Session::setStatus(ts('You picked color "%1"', array(
+    CRM_Core_Session::setStatus(E::ts('You picked color "%1"', array(
       1 => $options[$values['favorite_color']],
     )));
     parent::postProcess();
@@ -42,14 +45,14 @@ class <?php echo preg_replace(':/:','_',$fullClassName) ?> extends CRM_Core_Form
 
   public function getColorOptions() {
     $options = array(
-      '' => ts('- select -'),
-      '#f00' => ts('Red'),
-      '#0f0' => ts('Green'),
-      '#00f' => ts('Blue'),
-      '#f0f' => ts('Purple'),
+      '' => E::ts('- select -'),
+      '#f00' => E::ts('Red'),
+      '#0f0' => E::ts('Green'),
+      '#00f' => E::ts('Blue'),
+      '#f0f' => E::ts('Purple'),
     );
     foreach (array('1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e') as $f) {
-      $options["#{$f}{$f}{$f}"] = ts('Grey (%1)', array(1 => $f));
+      $options["#{$f}{$f}{$f}"] = E::ts('Grey (%1)', array(1 => $f));
     }
     return $options;
   }

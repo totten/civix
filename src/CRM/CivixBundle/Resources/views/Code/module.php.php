@@ -1,8 +1,10 @@
 <?php
 echo "<?php\n";
+$_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
 require_once '<?php echo $mainFile ?>.civix.php';
+use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * Implements hook_civicrm_config().
@@ -142,7 +144,7 @@ function <?php echo $mainFile ?>_civicrm_preProcess($formName, &$form) {
  *
 function <?php echo $mainFile ?>_civicrm_navigationMenu(&$menu) {
   _<?php echo $mainFile ?>_civix_insert_navigation_menu($menu, NULL, array(
-    'label' => ts('The Page', array('domain' => '<?php echo $fullName ?>')),
+    'label' => E::ts('The Page'),
     'name' => 'the_page',
     'url' => 'civicrm/the-page',
     'permission' => 'access CiviReport,access CiviContribute',
