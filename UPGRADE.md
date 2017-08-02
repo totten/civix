@@ -13,7 +13,7 @@ your module to match the newer templates, then use this procedure:
 
 ## Upgrade: Test Files
 
-### Upgrade to v17.08.1+
+### Upgrade to v17.08.0+
 
 civix v17.08.1+ introduces a new helper class. You can generate following the "General" upgrade procedure (above). No other changes are required.
 
