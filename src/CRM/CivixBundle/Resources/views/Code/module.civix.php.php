@@ -56,7 +56,7 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    */
   public static function path($file = NULL) {
     // return CRM_Core_Resources::singleton()->getPath(self::LONG_NAME, $file);
-    return __DIR__ . ($path === NULL ? '' : (DIRECTORY_SEPARATOR . $file));
+    return __DIR__ . ($file === NULL ? '' : (DIRECTORY_SEPARATOR . $file));
   }
 
   /**
