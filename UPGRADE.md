@@ -11,17 +11,29 @@ your module to match the newer templates, then use this procedure:
 4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
 5. Look for additional, version-specific upgrade steps (below).
 
-## Upgrade: Test Files
+## Upgrade: The Big `E`
+
+### Upgrade to v17.08.1+
+
+civix v17.08.1 makes corrections to the behavior of the new helpers, `E::path()` and `E::url()`. They are now
+more consistent in that:
+
+ * `E::path()` and `E::url()` (without arguments) both return the folder *without* a trailing `/`.
+ * `E::path($file)` and `E::path($url)` (with an argument) both return the folder plus `/` plus filename.
+
+Suggestion: search your codebase for instances of `E::path` or `E::url` to ensure consistent path construction.
 
 ### Upgrade to v17.08.0+
 
-civix v17.08.1+ introduces a new helper class. You can generate following the "General" upgrade procedure (above). No other changes are required.
+civix v17.08.0+ introduces a new helper class. You can generate following the "General" upgrade procedure (above). No other changes are required.
 
 Optionally, if you want to *use* this helper class, then add a line like this to your other `*.php` files:
 
 ```php
 use CRM_Myextension_ExtensionUtil as E;
 ```
+
+## Upgrade: Test Files
 
 ### Upgrade v16.03.2+
 
