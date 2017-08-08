@@ -38,11 +38,16 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    * Get the URL of a resource file (in this extension).
    *
    * @param string|NULL $file
+   *   Ex: NULL.
    *   Ex: 'css/foo.css'.
    * @return string
+   *   Ex: 'http://example.org/sites/default/ext/org.example.foo'.
    *   Ex: 'http://example.org/sites/default/ext/org.example.foo/css/foo.css'.
    */
   public static function url($file = NULL) {
+    if ($file === NULL) {
+      return rtrim(CRM_Core_Resources::singleton()->getUrl(self::LONG_NAME), '/');
+    }
     return CRM_Core_Resources::singleton()->getUrl(self::LONG_NAME, $file);
   }
 
@@ -50,8 +55,10 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    * Get the path of a resource file (in this extension).
    *
    * @param string|NULL $file
+   *   Ex: NULL.
    *   Ex: 'css/foo.css'.
    * @return string
+   *   Ex: '/var/www/example.org/sites/default/ext/org.example.foo'.
    *   Ex: '/var/www/example.org/sites/default/ext/org.example.foo/css/foo.css'.
    */
   public static function path($file = NULL) {
