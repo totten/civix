@@ -19,8 +19,8 @@ class InitCommand extends AbstractCommand {
     Services::templating();
     $this
       ->setName('generate:module')
-      ->setDescription('Create a new CiviCRM Module-Extension')
-      ->addArgument('<full.ext.name>', InputArgument::REQUIRED, 'Fully qualified extension name (e.g. "com.example.myextension")')
+      ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)')
+      ->addArgument('<full.ext.name>', InputArgument::OPTIONAL, 'Fully qualified extension name (e.g. "com.example.myextension")')
     //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
@@ -29,11 +29,29 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $ctx = array();
+    $ctx['type'] = 'module';
+    if (!$input->getArgument('<full.ext.name>')) {
+      // Refresh existing module
+      $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
+      $basedir = new Path($ctx['basedir']);
+
+      $info = new Info($basedir->string('info.xml'));
+      $info->load($ctx);
+      $attrs = $info->get()->attributes();
+      if ($attrs['type'] != 'module') {
+        $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
+        return;
+      }
+
+      $module = new Module(Services::templating());
+      $module->loadInit($ctx);
+      $module->save($ctx, $output);
+      return;
+    }
 
     $licenses = new \LicenseData\Repository();
 
-    $ctx = array();
-    $ctx['type'] = 'module';
     $ctx['fullName'] = $input->getArgument('<full.ext.name>');
     $ctx['basedir'] = $ctx['fullName'];
     if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {

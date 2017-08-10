@@ -10,7 +10,6 @@ use CRM\CivixBundle\Command\AddCustomDataCommand;
 use CRM\CivixBundle\Command\AddEntityCommand;
 use CRM\CivixBundle\Command\AddFormCommand;
 use CRM\CivixBundle\Command\AddPageCommand;
-use CRM\CivixBundle\Command\AddRefreshCommand;
 use CRM\CivixBundle\Command\AddReportCommand;
 use CRM\CivixBundle\Command\AddSearchCommand;
 use CRM\CivixBundle\Command\AddTestCommand;
@@ -56,7 +55,6 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new AddEntityCommand();
     $commands[] = new AddFormCommand();
     $commands[] = new AddPageCommand();
-    $commands[] = new AddRefreshCommand();
     $commands[] = new AddReportCommand();
     $commands[] = new AddSearchCommand();
     $commands[] = new AddTestCommand();
