@@ -38,6 +38,7 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command {
       'build/*',
       '*~',
       '*.bak',
+      '*.git*',
     );
     $cmd = 'zip ' . implode(' ', array_map('escapeshellarg', $cmdArgs));
 
