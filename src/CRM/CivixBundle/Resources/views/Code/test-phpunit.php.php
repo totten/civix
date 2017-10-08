@@ -16,15 +16,15 @@ $loader->register();
 class <?php echo $testClass ?> extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Setup Method is executed before the test is executed
+     * Setup Method is executed before the test is executed (optional)
      */
     public function setUp() {
         parent::setUp();
     }
 
     /**
-     * Tear Down Method is executed after the test was executed
-     * This should be used for cleanup
+     * Tear Down Method is executed after the test was executed (optional)
+     * This can be used for cleanup
      */
     public function tearDown() {
         parent::tearDown();
