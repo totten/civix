@@ -75,7 +75,7 @@ class AddApiCommand extends Command {
     }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
     $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
-    $ctx['apiTestFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . 'Test.php.php');
+    $ctx['apiTestFile'] = $basedir->string('tests', 'api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . 'Test.php');
 
     $dirs = new Dirs(array(
       dirname($ctx['apiFile']),
@@ -121,10 +121,14 @@ class AddApiCommand extends Command {
       }
     }
 
+    $test_dirs = new Dirs(array(
+      dirname($ctx['apiTestFile']),
+    ));
+    $test_dirs->save($ctx, $output);
     if (!file_exists($ctx['apiTestFile'])) {
       $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiTestFile']));
       file_put_contents($ctx['apiTestFile'], Services::templating()
-        ->render('test-api.php.php', $ctx));
+        ->render('test-apiv3.php.php', $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiTestFile']));
