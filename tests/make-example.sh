@@ -74,5 +74,9 @@ pushd $WORKINGDIR
     phpunit4 ./tests/phpunit/Civi/CiviExample/PHPUnitTest.php
     phpunit4 --group headless
     phpunit4 --group e2e
-   popd
+  popd
+   
+  pushd "$EXMODULE"
+    find tests -name '*.php' | xargs civilint
+  popd
 popd
