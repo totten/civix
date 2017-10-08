@@ -9,10 +9,10 @@ $loader->add('Civi\\', __DIR__);
 $loader->register();
 
 /**
-* This is a generic test class for you extension, implementing PHPUnit test
-*
-*   TODO: Add more description/explanation in here
-*/
+ * This is a generic test class for the extension, implementing PHPUnit tests.
+ *
+ * Testing functions must begin 'test' to be included in the PhpUnit tests.
+ */
 class <?php echo $testClass ?> extends \PHPUnit_Framework_TestCase {
 
     /**
@@ -32,7 +32,8 @@ class <?php echo $testClass ?> extends \PHPUnit_Framework_TestCase {
 
     /**
      * Example test case
-     * TODO: Description
+     *  Simple test if a boolean expression is true. This is implemented to show
+     *  an example for a test function
      */
     public function testExample() {
         $myBool = True;
