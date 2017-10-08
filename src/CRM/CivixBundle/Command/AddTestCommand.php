@@ -32,6 +32,9 @@ In creating a test, you may specify a template:
             effort.
   legacy:   A variation of `headless` based on CiviUnitTestCase.
             It is provided primarily for testing purposes.
+  phpunit:  A test suite based on the PHPUnit_Framework_TestCase. Provides an 
+            interface for you extension to implement unittest for your 
+            classes/functions
 
 To execute tests, call phpunit 4.x directly, e.g.
 
@@ -104,6 +107,7 @@ as separate groups:
       'e2e' => 'test-e2e.php.php',
       'headless' => 'test-headless.php.php',
       'legacy' => 'test-legacy.php.php',
+      'phpunit' => 'test-phpunit.php.php',
     );
     if (isset($templates[$type])) {
       return $templates[$type];
