@@ -2,12 +2,6 @@
 echo "<?php\n";
 ?>
 
-// Allow autoloading of PHPUnit helper classes in this extension.
-$loader = new \Composer\Autoload\ClassLoader();
-$loader->add('CRM_', __DIR__);
-$loader->add('Civi\\', __DIR__);
-$loader->register();
-
 /**
  * This is a generic test class for the extension (implemented with PHPUnit).
  */
