@@ -35,6 +35,17 @@ use CRM_Myextension_ExtensionUtil as E;
 
 ## Upgrade: Test Files
 
+### Upgrade v17.10.0+
+
+The PHPUnit bootstrap file (`tests/phpunit/bootstrap.php`) has been updated to support autoloading of utility classes within your extensions `tests` folder. To follow this revised convention, update `bootstrap.php`. After the the call to `eval(...);`, say:
+
+```php
+$loader = new \Composer\Autoload\ClassLoader();
+$loader->add('CRM_', __DIR__);
+$loader->add('Civi\\', __DIR__);
+$loader->register();
+```
+
 ### Upgrade v16.03.2+
 
 Prior to civix v16.03, civix included the commands `civix generate:test` and `civix test`.  Beginning with v16.03, civix templates now
