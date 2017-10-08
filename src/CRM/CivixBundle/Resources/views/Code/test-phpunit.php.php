@@ -9,34 +9,32 @@ $loader->add('Civi\\', __DIR__);
 $loader->register();
 
 /**
- * This is a generic test class for the extension, implementing PHPUnit tests.
- *
- * Testing functions must begin 'test' to be included in the PhpUnit tests.
+ * This is a generic test class for the extension (implemented with PHPUnit).
  */
 class <?php echo $testClass ?> extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Setup Method is executed before the test is executed (optional)
+     * The setup() method is executed before the test is executed (optional).
      */
     public function setUp() {
         parent::setUp();
     }
 
     /**
-     * Tear Down Method is executed after the test was executed (optional)
-     * This can be used for cleanup
+     * The tearDown() method is executed after the test was executed (optional)
+     * This can be used for cleanup.
      */
     public function tearDown() {
         parent::tearDown();
     }
 
     /**
-     * Example test case
-     *  Simple test if a boolean expression is true. This is implemented to show
-     *  an example for a test function
+     * Simple example test case.
+     *
+     * Note how the function name begins with the word "test".
      */
     public function testExample() {
-        $myBool = True;
-        self::assertTrue($myBool, "The argument must be true to pass the test");
+        self::assertTrue(TRUE, "The argument must be true to pass the test");
     }
+
 }
