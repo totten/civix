@@ -56,6 +56,7 @@ pushd $WORKINGDIR
     $CIVIX $VERBOSITY generate:test --template=legacy CRM_Civiexample_LegacyTest
     $CIVIX $VERBOSITY generate:test --template=headless 'Civi\Civiexample\BarTest'
     $CIVIX $VERBOSITY generate:test --template=e2e 'Civi\Civiexample\EndTest'
+    $CIVIX $VERBOSITY generate:test --template=phpunit 'Civi\CiviExample\PHPUnitTest'
     $CIVIX $VERBOSITY generate:upgrader
     $CIVIX $VERBOSITY generate:angular-module
     $CIVIX $VERBOSITY generate:angular-page FooCtrl foo
@@ -70,7 +71,12 @@ pushd $WORKINGDIR
     phpunit4 ./tests/phpunit/CRM/Civiexample/LegacyTest.php
     phpunit4 ./tests/phpunit/Civi/Civiexample/BarTest.php
     phpunit4 ./tests/phpunit/Civi/Civiexample/EndTest.php
+    phpunit4 ./tests/phpunit/Civi/CiviExample/PHPUnitTest.php
     phpunit4 --group headless
     phpunit4 --group e2e
-   popd
+  popd
+   
+  pushd "$EXMODULE"
+    find tests -name '*.php' | xargs civilint
+  popd
 popd
