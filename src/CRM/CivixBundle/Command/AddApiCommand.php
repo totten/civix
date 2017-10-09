@@ -82,7 +82,7 @@ class AddApiCommand extends Command {
     $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
     $ctx['apiTestFile'] = $basedir->string('tests','phpunit', 'api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . 'Test.php');
 
-    $ctx['testClassName'] = "API_v3_{$ctx['entityNameCamel']}_{$ctx['actionNameCamel']}Test";
+    $ctx['testClassName'] = "api_v3_{$ctx['entityNameCamel']}_{$ctx['actionNameCamel']}Test";
 
     $dirs = new Dirs(array(
       dirname($ctx['apiFile']),
