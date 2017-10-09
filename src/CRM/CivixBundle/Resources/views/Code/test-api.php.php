@@ -19,8 +19,8 @@ class <?php echo $testClassName ?> extends \PHPUnit_Framework_TestCase implement
    */
   public function setUpHeadless() {
     return \Civi\Test::headless()
-    ->installMe(__DIR__)
-    ->apply();
+      ->installMe(__DIR__)
+      ->apply();
   }
 
   /**
@@ -47,5 +47,5 @@ class <?php echo $testClassName ?> extends \PHPUnit_Framework_TestCase implement
     $result = civicrm_api3('<?php echo $entityNameCamel ?>', '<?php echo $actionNameCamel ?>', array('magicword' => 'sesame'));
     $this->assertEquals('Twelve', $result['values'][12]['name']);
   }
-}
 
+}
