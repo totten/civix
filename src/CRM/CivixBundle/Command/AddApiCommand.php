@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
+use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
@@ -52,6 +53,10 @@ class AddApiCommand extends Command {
       return;
     }
 
+    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
+    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
+    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+
     if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<EntityName>'))) {
       throw new Exception("Entity name must be alphanumeric camel-case");
     }
@@ -75,6 +80,9 @@ class AddApiCommand extends Command {
     }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
     $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
+    $ctx['apiTestFile'] = $basedir->string('tests','phpunit', 'api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . 'Test.php');
+
+    $ctx['testClassName'] = "API_v3_{$ctx['entityNameCamel']}_{$ctx['actionNameCamel']}Test";
 
     $dirs = new Dirs(array(
       dirname($ctx['apiFile']),
@@ -118,6 +126,19 @@ class AddApiCommand extends Command {
       else {
         $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiCronFile']));
       }
+    }
+
+    $test_dirs = new Dirs(array(
+      dirname($ctx['apiTestFile']),
+    ));
+    $test_dirs->save($ctx, $output);
+    if (!file_exists($ctx['apiTestFile'])) {
+      $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiTestFile']));
+      file_put_contents($ctx['apiTestFile'], Services::templating()
+        ->render('test-api.php.php', $ctx));
+    }
+    else {
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiTestFile']));
     }
 
     $module = new Module(Services::templating());

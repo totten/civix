@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Path;
+use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use Exception;
 
 class AddTestCommand extends \Symfony\Component\Console\Command\Command {
@@ -64,42 +65,11 @@ as separate groups:
       return;
     }
 
-    $this->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
-    $this->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
+    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
+    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
     $this->initTestClass(
       $input->getArgument('<CRM_Full_ClassName>'), $this->getTestTemplate($input->getOption('template')), $basedir, $ctx, $output);
-  }
-
-  /**
-   * @param $phpunitXmlFile
-   * @param $ctx
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
-   */
-  protected function initPhpunitXml($phpunitXmlFile, &$ctx, OutputInterface $output) {
-    if (!file_exists($phpunitXmlFile)) {
-      $phpunitXml = new PhpUnitXML($phpunitXmlFile);
-      $phpunitXml->init($ctx);
-      $phpunitXml->save($ctx, $output);
-    }
-    else {
-      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $phpunitXmlFile));
-    }
-  }
-
-  protected function initPhpunitBootstrap($bootstrapFile, &$ctx, OutputInterface $output) {
-    if (!file_exists($bootstrapFile)) {
-      $dirs = new Dirs(array(
-        dirname($bootstrapFile),
-      ));
-      $dirs->save($ctx, $output);
-
-      $output->writeln(sprintf('<info>Write %s</info>', $bootstrapFile));
-      file_put_contents($bootstrapFile, Services::templating()
-        ->render('phpunit-boot-cv.php.php', $ctx));
-    }
-    else {
-      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $bootstrapFile));
-    }
   }
 
   protected function getTestTemplate($type) {
