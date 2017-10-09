@@ -53,10 +53,6 @@ class AddApiCommand extends Command {
       return;
     }
 
-    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
-    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
-    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
-
     if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<EntityName>'))) {
       throw new Exception("Entity name must be alphanumeric camel-case");
     }
@@ -144,6 +140,10 @@ class AddApiCommand extends Command {
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
+
+    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
+    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
+    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
   }
 
 }
