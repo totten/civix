@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Builder\PhpUnitXML;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,6 +53,9 @@ class AddApiCommand extends Command {
       return;
     }
 
+    $this->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
+    $this->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+
     if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<EntityName>'))) {
       throw new Exception("Entity name must be alphanumeric camel-case");
     }
@@ -75,7 +79,9 @@ class AddApiCommand extends Command {
     }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.php');
     $ctx['apiCronFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . '.mgd.php');
-    $ctx['apiTestFile'] = $basedir->string('tests', 'api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . 'Test.php');
+    $ctx['apiTestFile'] = $basedir->string('tests','phpunit', 'api', 'v3', $ctx['entityNameCamel'], $ctx['actionNameCamel'] . 'Test.php');
+
+    $ctx['testClassName'] = "API_v3_{$ctx['entityNameCamel']}_{$ctx['actionNameCamel']}_Test";
 
     $dirs = new Dirs(array(
       dirname($ctx['apiFile']),
@@ -128,7 +134,7 @@ class AddApiCommand extends Command {
     if (!file_exists($ctx['apiTestFile'])) {
       $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiTestFile']));
       file_put_contents($ctx['apiTestFile'], Services::templating()
-        ->render('test-apiv3.php.php', $ctx));
+        ->render('test-api.php.php', $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiTestFile']));
@@ -138,5 +144,43 @@ class AddApiCommand extends Command {
     $module->loadInit($ctx);
     $module->save($ctx, $output);
   }
+
+  /**
+   * @param $phpunitXmlFile
+   * @param $ctx
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   */
+  protected function initPhpunitXml($phpunitXmlFile, &$ctx, OutputInterface $output) {
+    if (!file_exists($phpunitXmlFile)) {
+      $phpunitXml = new PhpUnitXML($phpunitXmlFile);
+      $phpunitXml->init($ctx);
+      $phpunitXml->save($ctx, $output);
+    }
+    else {
+      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $phpunitXmlFile));
+    }
+  }
+
+  /**
+   * @param $bootstrapFile
+   * @param $ctx
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   */
+  protected function initPhpunitBootstrap($bootstrapFile, &$ctx, OutputInterface $output) {
+    if (!file_exists($bootstrapFile)) {
+      $dirs = new Dirs(array(
+        dirname($bootstrapFile),
+      ));
+      $dirs->save($ctx, $output);
+
+      $output->writeln(sprintf('<info>Write %s</info>', $bootstrapFile));
+      file_put_contents($bootstrapFile, Services::templating()
+        ->render('phpunit-boot-cv.php.php', $ctx));
+    }
+    else {
+      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $bootstrapFile));
+    }
+  }
+
 
 }

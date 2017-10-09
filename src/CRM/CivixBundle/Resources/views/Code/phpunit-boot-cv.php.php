@@ -10,6 +10,8 @@ eval(cv('php:boot --level=classloader', 'phpcode'));
 $loader = new \Composer\Autoload\ClassLoader();
 $loader->add('CRM_', __DIR__);
 $loader->add('Civi\\', __DIR__);
+$loader->add('api_', __DIR__);
+$loader->add('api\\', __DIR__);
 $loader->register();
 
 /**
