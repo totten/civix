@@ -18,7 +18,7 @@
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
-    use CRM_Testapalooza_CiviTraits;
+    use \Civi\Test\CiviCodeceptionTrait;
    /**
     * Define custom actions here
     */

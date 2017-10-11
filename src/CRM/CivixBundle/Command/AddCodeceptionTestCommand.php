@@ -18,7 +18,7 @@ class AddCodeceptionTestCommand extends \Symfony\Component\Console\Command\Comma
 
   protected function configure() {
     $this
-      ->setName('generate:codeception_test')
+      ->setName('generate:codeception-test')
       ->setDescription('Add a new Codeception test (end-to-end) to a CiviCRM Module-Extension')
       ->setHelp('
 Add a new Codeception test (end-to-end) to a CiviCRM Module-Extension
@@ -59,7 +59,7 @@ To execute tests, call codeception.phar (best from buildkit), e.g.
     // TODO: write/copy files for codeception here
     $fs = new Filesystem();
     $sourcePath = __DIR__ . '/../Resources/codeception';
-    $destinationPath = $basedir->string('tests', 'codeception');
+    $destinationPath = $basedir->string();
     error_log("DEBUG_Phil: {$sourcePath} --> {$destinationPath}");
     try {
       $fs->mirror($sourcePath, $destinationPath);
