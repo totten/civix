@@ -60,9 +60,9 @@ To execute tests, call codeception.phar (best from buildkit), e.g.
     $fs = new Filesystem();
     $sourcePath = __DIR__ . '/../Resources/codeception';
     $destinationPath = $basedir->string();
-    error_log("DEBUG_Phil: {$sourcePath} --> {$destinationPath}");
     try {
       $fs->mirror($sourcePath, $destinationPath);
+      $output->writeln(sprintf('<info>Writing Codeception Files to %s</info>', $destinationPath));
     } catch (IOExceptionInterface $e) {
       echo "An error occurred while creating your directory at ".$e->getPath();
     }
