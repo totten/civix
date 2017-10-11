@@ -9,16 +9,14 @@ class CreateContactCest {
    * Executed before the Test suite
    * @param \AcceptanceTester $I
    */
-  public function _before(AcceptanceTester $I)
-  {
+  public function _before(AcceptanceTester $I) {
   }
 
   /**
    * Executed after this test suite
    * @param \AcceptanceTester $I
    */
-  public function _after(AcceptanceTester $I)
-  {
+  public function _after(AcceptanceTester $I) {
   }
 
   /**
@@ -39,4 +37,5 @@ class CreateContactCest {
     $I->click('#_qf_Contact_upload_view-top');
     $I->see("Joe Tester");
   }
+
 }

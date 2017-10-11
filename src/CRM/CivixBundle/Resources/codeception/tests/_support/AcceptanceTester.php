@@ -14,13 +14,12 @@
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
-*/
-class AcceptanceTester extends \Codeception\Actor
-{
-    use _generated\AcceptanceTesterActions;
-    use \Civi\Test\CiviCodeceptionTrait;
-   /**
-    * Define custom actions here
-    */
+ */
+class AcceptanceTester extends \Codeception\Actor {
+  use _generated\AcceptanceTesterActions;
+  use \Civi\Test\CiviCodeceptionTrait;
+  /**
+  * Define custom actions here
+  */
 
 }
