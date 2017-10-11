@@ -1,6 +1,8 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\CopyFile;
+use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
@@ -88,11 +90,14 @@ class InitCommand extends AbstractCommand {
       $basedir->string('build'),
       $basedir->string('templates'),
       $basedir->string('xml'),
+      $basedir->string('images'),
       $basedir->string($ctx['namespace']),
     ));
     $ext->builders['info'] = new Info($basedir->string('info.xml'));
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
+    $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
+    $ext->builders['screenshot'] = new CopyFile(dirname(dirname(dirname(dirname(__DIR__)))) . '/images/placeholder.png', $basedir->string('images/screenshot.png'), FALSE);
 
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
