@@ -24,10 +24,11 @@ class CreateContactCest {
    * @param \AcceptanceTester $I
    */
   public function createContact(AcceptanceTester $I) {
+    global $_CV;
     $I->amGoingTo('Login to Civicrm and create a new Contact');
-    $I->login('admin', 'FJQ6sSnSoSi5');
+    $I->login($_CV['ADMIN_USER'], $_CV['ADMIN_PASS']);
     $I->wantTo('Create an example Contact');
-    $I->amOnRoute('/civicrm/contact/add?reset=1&ct=Individual');
+    $I->amOnRoute('civicrm/contact/add?reset=1&ct=Individual');
     $I->expect('The Create Individual Form');
     $I->see("New Individual");
 
