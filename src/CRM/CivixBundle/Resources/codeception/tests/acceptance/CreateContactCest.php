@@ -26,8 +26,17 @@ class CreateContactCest {
    * @param \AcceptanceTester $I
    */
   public function createContact(AcceptanceTester $I) {
-    $I->login('admin', 'admin');
-    $I->amOnRoute('/civicrm/api');
-    $I->see("CiviCRM API v3");
+    $I->amGoingTo('Login to Civicrm and create a new Contact');
+    $I->login('admin', 'FJQ6sSnSoSi5');
+    $I->wantTo('Create an example Contact');
+    $I->amOnRoute('/civicrm/contact/add?reset=1&ct=Individual');
+    $I->expect('The Create Individual Form');
+    $I->see("New Individual");
+
+    $I->fillField("#first_name", "Joe");
+    $I->fillField("#last_name", "Tester");
+    $I->fillField("#email_1_email", "tester@example.com");
+    $I->click('#_qf_Contact_upload_view-top');
+    $I->see("Joe Tester");
   }
 }

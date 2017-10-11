@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
  * @package CRM\CivixBundle\Command
  */
 class AddCodeceptionTestCommand extends \Symfony\Component\Console\Command\Command {
-  
+
   protected function configure() {
     $this
       ->setName('generate:end2end-test')
@@ -37,8 +37,7 @@ To execute tests, call codeception.phar (best from buildkit), e.g.
 
   codeception run --steps
   
-')
-      ->addArgument('<CRM_Full_ClassName>', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyCest" or "Civi\Myextension\MyCest")');
+');
   }
 
   /**
