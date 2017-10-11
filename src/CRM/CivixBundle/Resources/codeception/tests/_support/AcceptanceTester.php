@@ -1,7 +1,5 @@
 <?php
 
-include_once ("/var/www/civi_buildkit/dmaster/sites/default/files/civicrm/ext/de.sprint.test/CRM/Test/CiviTraits.php");
-
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -20,7 +18,7 @@ include_once ("/var/www/civi_buildkit/dmaster/sites/default/files/civicrm/ext/de
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
-    use CRM_Test_CiviTraits;
+    use CRM_Testapalooza_CiviTraits;
    /**
     * Define custom actions here
     */
