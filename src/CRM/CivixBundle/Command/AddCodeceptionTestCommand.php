@@ -61,7 +61,7 @@ To execute tests, call codeception.phar (best from buildkit), e.g.
     $destinationPath = $basedir->string();
     try {
       $fs->mirror($sourcePath, $destinationPath);
-      $output->writeln(sprintf('<info>Writing Codeception configuration %s/configuration.yml</info>', $destinationPath));
+      $output->writeln(sprintf('<info>Writing Codeception configuration %s/codeception.yml</info>', $destinationPath));
       $output->writeln(sprintf('<info>Writing Codeception Files to %s/tests</info>', $destinationPath));
     } catch (IOExceptionInterface $e) {
       echo "An error occurred while creating your directory at ".$e->getPath();
