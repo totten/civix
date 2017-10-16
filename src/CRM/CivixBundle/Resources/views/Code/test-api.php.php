@@ -18,9 +18,13 @@ class <?php echo $testClassName ?> extends \PHPUnit_Framework_TestCase implement
    * See: https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md
    */
   public function setUpHeadless() {
+
+    // If you muck up your schema somehow you may want to set this to true for one run.
+    $force_schema_reinstall = FALSE;
+
     return \Civi\Test::headless()
       ->installMe(__DIR__)
-      ->apply();
+      ->apply($force_schema_reinstall);
   }
 
   /**
