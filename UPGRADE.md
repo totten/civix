@@ -1,4 +1,4 @@
-## Upgrade: General
+## General Tasks
 
 From time-to-time, the templates in civix may change. If you want to update
 your module to match the newer templates, then use this procedure:
@@ -11,31 +11,37 @@ your module to match the newer templates, then use this procedure:
 4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
 5. Look for additional, version-specific upgrade steps (below).
 
-## Upgrade: The Big `E`
+### General Tasks: Hook Stubs
 
-### Upgrade to v17.08.1+
+Sometimes new versions introduce new hook stubs. These generally are not
+mandatory.  However, in civix documentation and online support, we will
+assume that they have been properly configured, so it's recommended that you
+update your extension's main PHP file.  For example, if the main PHP file
+for the extension is "/var/www/extensions/org.example.myext/myext.php", the
+snippets mentioned below (adjusting `myext` to match your extension).
 
-civix v17.08.1 makes corrections to the behavior of the new helpers, `E::path()` and `E::url()`. They are now
-more consistent in that:
+Hook stubs are documented below as special tasks.
 
- * `E::path()` and `E::url()` (without arguments) both return the folder *without* a trailing `/`.
- * `E::path($file)` and `E::path($url)` (with an argument) both return the folder plus `/` plus filename.
+### General Tasks: Upgrader Class
 
-Suggestion: search your codebase for instances of `E::path` or `E::url` to ensure consistent path construction.
+Sometimes new versions introduce changes to the `Upgrader` classes (e.g.,
+`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
+CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
+`civix` suggests a reasonable approach to doing so, and documentation and online
+support will assume this approach.
 
-### Upgrade to v17.08.0+
+The steps for upgrading the `Upgrader` are as follows:
 
-civix v17.08.0+ introduces a new helper class. You can generate following the "General" upgrade procedure (above). No other changes are required.
+1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
+2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
+3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
+   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
+4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
+5. Look for additional, version-specific upgrade steps (below).
 
-Optionally, if you want to *use* this helper class, then add a line like this to your other `*.php` files:
+## Special Tasks
 
-```php
-use CRM_Myextension_ExtensionUtil as E;
-```
-
-## Upgrade: Test Files
-
-### Upgrade v17.10.0+
+### Upgrade to v17.10.0+: Test Files
 
 The PHPUnit bootstrap file (`tests/phpunit/bootstrap.php`) has been updated to support autoloading of utility classes within your extensions `tests` folder. To follow this revised convention, update `bootstrap.php`. After the the call to `eval(...);`, say:
 
@@ -46,7 +52,76 @@ $loader->add('Civi\\', __DIR__);
 $loader->register();
 ```
 
-### Upgrade v16.03.2+
+### Upgrade to v17.08.1+: The Big `E`
+
+civix v17.08.1 makes corrections to the behavior of the new helpers, `E::path()` and `E::url()`. They are now
+more consistent in that:
+
+ * `E::path()` and `E::url()` (without arguments) both return the folder *without* a trailing `/`.
+ * `E::path($file)` and `E::path($url)` (with an argument) both return the folder plus `/` plus filename.
+
+Suggestion: search your codebase for instances of `E::path` or `E::url` to ensure consistent path construction.
+
+### Upgrade to v17.08.0+: The Big `E`
+
+civix v17.08.0+ introduces a new helper class. You can generate it by following the "General Tasks" (above). No other changes are required.
+
+Optionally, if you want to *use* this helper class, then add a line like this to your other `*.php` files:
+
+```php
+use CRM_Myextension_ExtensionUtil as E;
+```
+
+### Upgrade to v16.10+
+
+*(See also: "General Tasks: Upgrader Class")*
+
+In version 16.10.0, hook_civicrm_postInstall was implemented in the extension's
+main PHP file and delegated to the Upgrader base class. If you wish to run
+your own code post-install, you should copy the following snippet (or something
+like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader.php"):
+
+```php
+/**
+  * Example: Work with entities usually not available during the install step.
+  *
+  * This method can be used for any post-install tasks. For example, if a step
+  * of your installation depends on accessing an entity that is itself
+  * created during the installation (e.g., a setting or a managed entity), do
+  * so here to avoid order of operation problems.
+  */
+ public function postInstall() {
+   $customFieldId = civicrm_api3('CustomField', 'getvalue', array(
+     'return' => array("id"),
+     'name' => "customFieldCreatedViaManagedHook",
+   ));
+   civicrm_api3('Setting', 'create', array(
+     'myWeirdFieldSetting' => array('id' => $customFieldId, 'weirdness' => 1),
+   ));
+ }
+```
+
+### Upgrade to v16.10+: hook_civicrm_postInstall
+
+Prior to v16.10.0, extension schema versions were stored in the `civicrm_settings`
+table under the namespace `org.example.myext:version`. This storage
+mechanism proved problematic for multisites utilizing more than one domain (see
+[CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
+utilizes `hook_civicrm_postInstall` and an [updated Upgrader](#upgrade-to-v1609) to
+store schema versions in the `civicrm_extension` table.
+
+```php
+/**
+ * Implements hook_civicrm_postInstall().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+ */
+function myext_civicrm_postInstall() {
+  _myext_civix_civicrm_postInstall();
+}
+```
+
+### Upgrade v16.03.2+: Test Files
 
 Prior to civix v16.03, civix included the commands `civix generate:test` and `civix test`.  Beginning with v16.03, civix templates now
 comply with the [Testapalooza PHPUnit Template](https://github.com/civicrm/org.civicrm.testapalooza/tree/phpunit).  The key changes:
@@ -75,35 +150,6 @@ here are some expectations:
      This will generate `phpunit.xml.dist` and `tests/phpunit/bootstrap.php`, *and* it will create an example of using `CiviUnitTestCase`.
    * Note: Legacy tests executed this way may reset key variables (e.g. `CRM_Core_Config::singleton()`) extra times.
      However, the pool of existing extension tests is fairly small, so we don't expect this to have a big real-world impact.
-
-## Upgrade: Hook Stubs
-
-Sometimes new versions introduce new hook stubs. These generally are not
-mandatory.  However, in civix documentation and online support, we will
-assume that they have been properly configured, so it's recommended that you
-update your extension's main PHP file.  For example, if the main PHP file
-for the extension is "/var/www/extensions/org.example.myext/myext.php", the
-snippets mentioned below (adjusting `myext` to match your extension).
-
-### Upgrade to v16.10+: hook_civicrm_postInstall
-
-Prior to v16.10.0, extension schema versions were stored in the `civicrm_settings`
-table under the namespace `org.example.myext:version`. This storage
-mechanism proved problematic for multisites utilizing more than one domain (see
-[CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
-utilizes `hook_civicrm_postInstall` and an [updated Upgrader](#upgrade-to-v1609) to
-store schema versions in the `civicrm_extension` table.
-
-```php
-/**
- * Implements hook_civicrm_postInstall().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
- */
-function myext_civicrm_postInstall() {
-  _myext_civix_civicrm_postInstall();
-}
-```
 
 ### Upgrade to v15.10+: hook_civicrm_navigationMenu
 
@@ -190,48 +236,4 @@ Civix-based modules should scan for any settings files in
 function myext_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _myext_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
-```
-
-## Upgrade: Upgrader Class
-
-Sometimes new versions introduce changes to the Upgrader classes (e.g.,
-`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
-CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
-`civix` suggests a reasonable approach to doing so, and documentation and online
-support will assume this approach.
-
-The steps for upgrading the Upgrader are as follows:
-
-1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
-2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
-3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
-   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
-4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
-5. Look for additional, version-specific upgrade steps (below).
-
-### Upgrade to v16.10+
-
-In version 16.10.0, hook_civicrm_postInstall was implemented in the extension's
-main PHP file and delegated to the Upgrader base class. If you wish to run
-your own code post-install, you should copy the following snippet (or something
-like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader.php"):
-
-```php
-/**
-  * Example: Work with entities usually not available during the install step.
-  *
-  * This method can be used for any post-install tasks. For example, if a step
-  * of your installation depends on accessing an entity that is itself
-  * created during the installation (e.g., a setting or a managed entity), do
-  * so here to avoid order of operation problems.
-  */
- public function postInstall() {
-   $customFieldId = civicrm_api3('CustomField', 'getvalue', array(
-     'return' => array("id"),
-     'name' => "customFieldCreatedViaManagedHook",
-   ));
-   civicrm_api3('Setting', 'create', array(
-     'myWeirdFieldSetting' => array('id' => $customFieldId, 'weirdness' => 1),
-   ));
- }
 ```
