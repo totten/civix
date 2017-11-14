@@ -1,4 +1,4 @@
-## Upgrade: General
+## General Tasks
 
 From time-to-time, the templates in civix may change. If you want to update
 your module to match the newer templates, then use this procedure:
@@ -11,9 +11,37 @@ your module to match the newer templates, then use this procedure:
 4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
 5. Look for additional, version-specific upgrade steps (below).
 
-## Upgrade: The Big `E`
+### Hook Stubs
 
-### Upgrade to v17.08.1+
+Sometimes new versions introduce new hook stubs. These generally are not
+mandatory.  However, in civix documentation and online support, we will
+assume that they have been properly configured, so it's recommended that you
+update your extension's main PHP file.  For example, if the main PHP file
+for the extension is "/var/www/extensions/org.example.myext/myext.php", the
+snippets mentioned below (adjusting `myext` to match your extension).
+
+Hook stubs are documented below as special tasks.
+
+### Upgrader Class
+
+Sometimes new versions introduce changes to the `Upgrader` classes (e.g.,
+`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
+CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
+`civix` suggests a reasonable approach to doing so, and documentation and online
+support will assume this approach.
+
+The steps for upgrading the `Upgrader` are as follows:
+
+1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
+2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
+3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
+   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
+4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
+5. Look for additional, version-specific upgrade steps (below).
+
+## Special Tasks
+
+### Upgrade to v17.08.1+: The Big `E`
 
 civix v17.08.1 makes corrections to the behavior of the new helpers, `E::path()` and `E::url()`. They are now
 more consistent in that:
@@ -23,7 +51,7 @@ more consistent in that:
 
 Suggestion: search your codebase for instances of `E::path` or `E::url` to ensure consistent path construction.
 
-### Upgrade to v17.08.0+
+### Upgrade to v17.08.0+: The Big `E`
 
 civix v17.08.0+ introduces a new helper class. You can generate following the "General" upgrade procedure (above). No other changes are required.
 
@@ -33,9 +61,7 @@ Optionally, if you want to *use* this helper class, then add a line like this to
 use CRM_Myextension_ExtensionUtil as E;
 ```
 
-## Upgrade: Test Files
-
-### Upgrade v17.10.0+
+### Upgrade to v17.10.0+: Test Files
 
 The PHPUnit bootstrap file (`tests/phpunit/bootstrap.php`) has been updated to support autoloading of utility classes within your extensions `tests` folder. To follow this revised convention, update `bootstrap.php`. After the the call to `eval(...);`, say:
 
@@ -46,7 +72,7 @@ $loader->add('Civi\\', __DIR__);
 $loader->register();
 ```
 
-### Upgrade v16.03.2+
+### Upgrade v16.03.2+: Test Files
 
 Prior to civix v16.03, civix included the commands `civix generate:test` and `civix test`.  Beginning with v16.03, civix templates now
 comply with the [Testapalooza PHPUnit Template](https://github.com/civicrm/org.civicrm.testapalooza/tree/phpunit).  The key changes:
@@ -75,15 +101,6 @@ here are some expectations:
      This will generate `phpunit.xml.dist` and `tests/phpunit/bootstrap.php`, *and* it will create an example of using `CiviUnitTestCase`.
    * Note: Legacy tests executed this way may reset key variables (e.g. `CRM_Core_Config::singleton()`) extra times.
      However, the pool of existing extension tests is fairly small, so we don't expect this to have a big real-world impact.
-
-## Upgrade: Hook Stubs
-
-Sometimes new versions introduce new hook stubs. These generally are not
-mandatory.  However, in civix documentation and online support, we will
-assume that they have been properly configured, so it's recommended that you
-update your extension's main PHP file.  For example, if the main PHP file
-for the extension is "/var/www/extensions/org.example.myext/myext.php", the
-snippets mentioned below (adjusting `myext` to match your extension).
 
 ### Upgrade to v16.10+: hook_civicrm_postInstall
 
@@ -192,24 +209,9 @@ function myext_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 ```
 
-## Upgrade: Upgrader Class
-
-Sometimes new versions introduce changes to the Upgrader classes (e.g.,
-`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
-CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
-`civix` suggests a reasonable approach to doing so, and documentation and online
-support will assume this approach.
-
-The steps for upgrading the Upgrader are as follows:
-
-1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
-2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
-3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
-   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
-4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
-5. Look for additional, version-specific upgrade steps (below).
-
 ### Upgrade to v16.10+
+
+*(See also: "General Tasks: Upgrader Class")*
 
 In version 16.10.0, hook_civicrm_postInstall was implemented in the extension's
 main PHP file and delegated to the Upgrader base class. If you wish to run
