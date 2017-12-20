@@ -27,20 +27,20 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
       TRUE
     );
 
-    $stateProvince = array('' => E::ts('- any state/province -')) + CRM_Core_PseudoConstant::stateProvince();
+    $stateProvince = ['' => E::ts('- any state/province -')] + CRM_Core_PseudoConstant::stateProvince();
     $form->addElement('select', 'state_province_id', E::ts('State/Province'), $stateProvince);
 
     // Optionally define default search values
-    $form->setDefaults(array(
+    $form->setDefaults([
       'household_name' => '',
       'state_province_id' => NULL,
-    ));
+    ]);
 
     /**
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('household_name', 'state_province_id'));
+    $form->assign('elements', ['household_name', 'state_province_id']);
   }
 
   /**
@@ -65,12 +65,12 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
    */
   function &columns() {
     // return by reference
-    $columns = array(
+    $columns = [
       E::ts('Contact Id') => 'contact_id',
       E::ts('Contact Type') => 'contact_type',
       E::ts('Name') => 'sort_name',
       E::ts('State') => 'state_province',
-    );
+    ];
     return $columns;
   }
 
@@ -126,11 +126,11 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
    * @return string, sql fragment with conditional expressions
    */
   function where($includeContactIDs = FALSE) {
-    $params = array();
+    $params = [];
     $where = "contact_a.contact_type   = 'Household'";
 
     $count  = 1;
-    $clause = array();
+    $clause = [];
     $name   = CRM_Utils_Array::value('household_name',
       $this->_formValues
     );
@@ -138,7 +138,7 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
       if (strpos($name, '%') === FALSE) {
         $name = "%{$name}%";
       }
-      $params[$count] = array($name, 'String');
+      $params[$count] = [$name, 'String'];
       $clause[] = "contact_a.household_name LIKE %{$count}";
       $count++;
     }
@@ -153,7 +153,7 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
     }
 
     if ($state) {
-      $params[$count] = array($state, 'Integer');
+      $params[$count] = [$state, 'Integer'];
       $clause[] = "state_province.id = %{$count}";
     }
 

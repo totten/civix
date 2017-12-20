@@ -23,7 +23,7 @@ class AddCaseTypeCommand extends \Symfony\Component\Console\Command\Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     // load Civi to get access to civicrm_api_get_function_name
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("Requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
@@ -41,7 +41,7 @@ class AddCaseTypeCommand extends \Symfony\Component\Console\Command\Command {
       throw new Exception("Name should be valid (alphanumeric beginning with uppercase)");
     }
 
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $ctx['caseTypeLabel'] = $input->getArgument('<Label>');
@@ -57,9 +57,9 @@ class AddCaseTypeCommand extends \Symfony\Component\Console\Command\Command {
       return;
     }
 
-    $dirs = new Dirs(array(
+    $dirs = new Dirs([
       $basedir->string('xml', 'case'),
-    ));
+    ]);
     $dirs->save($ctx, $output);
 
     $xmlFile = $basedir->string('xml', 'case', $ctx['caseTypeName'] . '.xml');

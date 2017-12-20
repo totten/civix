@@ -23,7 +23,7 @@ class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     //// Figure out template data ////
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -45,26 +45,26 @@ class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command
     $output->writeln("<info>Initialize Angular module \"" . $ctx['angularModuleName'] . "\"</info>");
 
     $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       dirname($ctx['angularModulePhp']),
       dirname($ctx['angularModuleJs']),
-    ));;
+    ]);;
 
     if (!file_exists($ctx['angularModulePhp'])) {
-      $angModMeta = array(
-        'js' => array(
+      $angModMeta = [
+        'js' => [
           'ang/' . $ctx['angularModuleName'] . '.js',
           'ang/' . $ctx['angularModuleName'] . '/*.js',
           'ang/' . $ctx['angularModuleName'] . '/*/*.js',
-        ),
-        'css' => array(
+        ],
+        'css' => [
           'ang/' . $ctx['angularModuleName'] . '.css',
-        ),
-        'partials' => array(
+        ],
+        'partials' => [
           'ang/' . $ctx['angularModuleName'],
-        ),
-        'settings' => array(),
-      );
+        ],
+        'settings' => [],
+      ];
       $header = "// This file declares an Angular module which can be autoloaded\n"
         . "// in CiviCRM. See also:\n"
         . "// http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules\n";

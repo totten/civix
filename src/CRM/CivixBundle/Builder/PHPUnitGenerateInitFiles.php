@@ -13,9 +13,9 @@ class PHPUnitGenerateInitFiles {
    */
   public function initPhpunitBootstrap($bootstrapFile, &$ctx, OutputInterface $output) {
     if (!file_exists($bootstrapFile)) {
-      $dirs = new Dirs(array(
+      $dirs = new Dirs([
         dirname($bootstrapFile),
-      ));
+      ]);
       $dirs->save($ctx, $output);
 
       $output->writeln(sprintf('<info>Write %s</info>', $bootstrapFile));
@@ -42,4 +42,5 @@ class PHPUnitGenerateInitFiles {
       $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $phpunitXmlFile));
     }
   }
+
 }

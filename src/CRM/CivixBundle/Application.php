@@ -45,7 +45,7 @@ class Application extends \Symfony\Component\Console\Application {
    * @return array of Symfony Command objects
    */
   public function createCommands($context = 'default') {
-    $commands = array();
+    $commands = [];
     $commands[] = new AddAngularDirectiveCommand();
     $commands[] = new AddAngularModuleCommand();
     $commands[] = new AddAngularPageCommand();

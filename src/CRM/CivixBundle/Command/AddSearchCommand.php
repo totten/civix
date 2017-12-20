@@ -28,7 +28,7 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     //// Figure out template data ////
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -51,25 +51,25 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
     $output->writeln("<info>Initialize search " . $ctx['searchClassName'] . "</info>");
 
     $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       dirname($ctx['searchClassFile']),
       dirname($ctx['searchMgdFile']),
-    ));
+    ]);
     ;
 
     if (!file_exists($ctx['searchMgdFile'])) {
-      $mgdEntities = array(
-        array(
+      $mgdEntities = [
+        [
           'name' => $ctx['searchClassName'],
           'entity' => 'CustomSearch',
-          'params' => array(
+          'params' => [
             'version' => 3,
             'label' => $input->getArgument('<ClassName>'),
             'description' => sprintf("%s (%s)", $input->getArgument('<ClassName>'), $ctx['fullName']),
             'class_name' => $ctx['searchClassName'],
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
       $header = "// This file declares a managed database record of type \"CustomSearch\".\n"
         . "// The record will be automatically inserted, updated, or deleted from the\n"
         . "// database as appropriate. For more details, see \"hook_civicrm_managed\" at:\n"
@@ -80,7 +80,7 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
 
     if ($srcClassName = $input->getOption('copy')) {
       // we need bootstrap to set up include path to locate file -- but that's it
-      Services::boot(array('output' => $output));
+      Services::boot(['output' => $output]);
       $civicrm_api3 = Services::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
@@ -99,9 +99,9 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
             // conferring with the flowers
             // consulting with the rain
             // if i only had a parser
-            return strtr($phpSrc, array(
+            return strtr($phpSrc, [
               $origTplFile => $ctx['searchTplRelFile'],
-            ));
+            ]);
           }
         );
         $ext->builders['page.tpl.php'] = new CopyFile('templates/' . $origTplFile, $ctx['searchTplFile'], FALSE);
@@ -123,7 +123,7 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
    * @return string
    */
   protected static function findTpl($srcClassName) {
-    $formValues = array();
+    $formValues = [];
     $search = new $srcClassName($formValues);
     return $search->templateFile();
   }

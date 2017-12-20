@@ -29,7 +29,7 @@ abstract class AbstractAddPageCommand extends Command {
       throw new Exception("Class name should be valid (alphanumeric beginning with uppercase)");
     }
 
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $ctx['shortClassName'] = $input->getArgument('<ClassName>');
@@ -51,11 +51,11 @@ abstract class AbstractAddPageCommand extends Command {
       throw new Exception("Class name looks suspicious. Please note the final class would be \"{$ctx['fullClassName']}\"");
     }
 
-    $dirs = new Dirs(array(
+    $dirs = new Dirs([
       $basedir->string('xml', 'Menu'),
       dirname($phpFile),
       dirname($tplFile),
-    ));
+    ]);
     $dirs->save($ctx, $output);
 
     $menu = new Menu($basedir->string('xml', 'Menu', $ctx['mainFile'] . '.xml'));

@@ -13,9 +13,9 @@ class PingCommand extends \Symfony\Component\Console\Command\Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
-    if ($civicrm_api3->Contact->Get(array('option.limit' => 1))) {
+    if ($civicrm_api3->Contact->Get(['option.limit' => 1])) {
       if (empty($civicrm_api3->result->values[0]->contact_type)) {
         $output->writeln('<error>Ping failed: Site reported that it found no contacts</error>');
       }

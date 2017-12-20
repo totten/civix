@@ -14,13 +14,13 @@ class Services {
 
   protected static $cache;
 
-  public static function boot($options = array()) {
+  public static function boot($options = []) {
     if (!isset(self::$cache['boot'])) {
       $cwd = getcwd();
-      $options = array_merge(array('prefetch' => FALSE), $options);
+      $options = array_merge(['prefetch' => FALSE], $options);
       Bootstrap::singleton()->boot($options);
       \CRM_Core_Config::singleton();
-      \CRM_Utils_System::loadBootStrap(array(), FALSE);
+      \CRM_Utils_System::loadBootStrap([], FALSE);
       chdir($cwd);
       self::$cache['boot'] = 1;
     }
@@ -67,7 +67,7 @@ class Services {
         self::$cache['config'] = parse_ini_file($file, TRUE);
       }
       else {
-        self::$cache['config'] = array();
+        self::$cache['config'] = [];
       }
     }
     return self::$cache['config'];
@@ -78,10 +78,10 @@ class Services {
    */
   public static function configDir() {
     if (!isset(self::$cache['configDir'])) {
-      $homes = array(
+      $homes = [
         getenv('HOME'), // Unix
         getenv('USERPROFILE'), // Windows
-      );
+      ];
       foreach ($homes as $home) {
         if (!empty($home)) {
           self::$cache['configDir'] = new Path($home . '/.civix');

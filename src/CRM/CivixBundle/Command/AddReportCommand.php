@@ -28,7 +28,7 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     //// Figure out template data and put it in $ctx ////
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -67,28 +67,28 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
     $output->writeln("<info>Initialize report " . $ctx['reportClassName'] . "</info>");
 
     $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       dirname($ctx['reportClassFile']),
       dirname($ctx['reportMgdFile']),
       dirname($ctx['reportTplFile']),
-    ));
+    ]);
 
     // Register the report in the DB using api/v3/ReportTemplate and hook_civicrm_managed
     if (!file_exists($ctx['reportMgdFile'])) {
-      $mgdEntities = array(
-        array(
+      $mgdEntities = [
+        [
           'name' => $ctx['reportClassName'],
           'entity' => 'ReportTemplate',
-          'params' => array(
+          'params' => [
             'version' => 3,
             'label' => $input->getArgument('<ClassName>'),
             'description' => sprintf("%s (%s)", $input->getArgument('<ClassName>'), $ctx['fullName']),
             'class_name' => $ctx['reportClassName'],
             'report_url' => $ctx['reportUrl'],
             'component' => $input->getArgument('<CiviComponent>') == 'null' ? '' : $input->getArgument('<CiviComponent>'),
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
       $header = "// This file declares a managed database record of type \"ReportTemplate\".\n"
         . "// The record will be automatically inserted, updated, or deleted from the\n"
         . "// database as appropriate. For more details, see \"hook_civicrm_managed\" at:\n"
@@ -100,7 +100,7 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
     // Create .php & .tpl by either copying from core source tree or using a civix template
     if ($srcClassName = $input->getOption('copy')) {
       // To locate the original file, we need to bootstrap Civi and search the include path
-      Services::boot(array('output' => $output));
+      Services::boot(['output' => $output]);
       $civicrm_api3 = Services::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
@@ -126,7 +126,7 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
    * @return array(string)
    */
   protected function getReportComponents() {
-    return array(
+    return [
       'CiviCampaign',
       'CiviCase',
       'CiviContribute',
@@ -136,7 +136,7 @@ class AddReportCommand extends \Symfony\Component\Console\Command\Command {
       'CiviMember',
       'CiviPledge',
       'null',
-    );
+    ];
   }
 
 }

@@ -44,7 +44,7 @@ class <?php echo $testClassName ?> extends \PHPUnit_Framework_TestCase implement
    * Note how the function name begins with the word "test".
    */
   public function testApiExample() {
-    $result = civicrm_api3('<?php echo $entityNameCamel ?>', '<?php echo $actionNameCamel ?>', array('magicword' => 'sesame'));
+    $result = civicrm_api3('<?php echo $entityNameCamel ?>', '<?php echo $actionNameCamel ?>', ['magicword' => 'sesame']);
     $this->assertEquals('Twelve', $result['values'][12]['name']);
   }
 
