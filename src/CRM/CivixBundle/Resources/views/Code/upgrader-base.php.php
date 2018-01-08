@@ -12,7 +12,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 class <?php echo $_namespace ?>_Upgrader_Base {
 
   /**
-   * @var varies, subclass of ttis
+   * @var varies, subclass of this
    */
   static $instance;
 
