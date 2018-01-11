@@ -28,13 +28,13 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * so here to avoid order of operation problems.
    *
   public function postInstall() {
-    $customFieldId = civicrm_api3('CustomField', 'getvalue', array(
-      'return' => array("id"),
+    $customFieldId = civicrm_api3('CustomField', 'getvalue', [
+      'return' => ["id"],
       'name' => "customFieldCreatedViaManagedHook",
-    ));
-    civicrm_api3('Setting', 'create', array(
-      'myWeirdFieldSetting' => array('id' => $customFieldId, 'weirdness' => 1),
-    ));
+    ]);
+    civicrm_api3('Setting', 'create', [
+      'myWeirdFieldSetting' => ['id' => $customFieldId, 'weirdness' => 1],
+    ]);
   }
 
   /**
@@ -117,18 +117,18 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
     $maxId = CRM_Core_DAO::singleValueQuery('SELECT coalesce(max(id),0) FROM civicrm_contribution');
     for ($startId = $minId; $startId <= $maxId; $startId += self::BATCH_SIZE) {
       $endId = $startId + self::BATCH_SIZE - 1;
-      $title = E::ts('Upgrade Batch (%1 => %2)', array(
+      $title = E::ts('Upgrade Batch (%1 => %2)', [
         1 => $startId,
         2 => $endId,
-      ));
+      ]);
       $sql = '
         UPDATE civicrm_contribution SET foobar = whiz(wonky()+wanker)
         WHERE id BETWEEN %1 and %2
       ';
-      $params = array(
-        1 => array($startId, 'Integer'),
-        2 => array($endId, 'Integer'),
-      );
+      $params = [
+        1 => [$startId, 'Integer'],
+        2 => [$endId, 'Integer'],
+      ];
       $this->addTask($title, 'executeSql', $sql, $params);
     }
     return TRUE;
