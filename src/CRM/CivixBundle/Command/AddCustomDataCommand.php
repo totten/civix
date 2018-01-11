@@ -24,14 +24,14 @@ class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     // load Civi to get access to civicrm_api_get_function_name
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>generate:custom-xml requires access to local CiviCRM instance. Configure civicrm_api3_conf_path.</error>");
       return;
     }
 
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -44,9 +44,9 @@ class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
       return;
     }
 
-    $dirs = new Dirs(array(
+    $dirs = new Dirs([
       $basedir->string('xml'),
-    ));
+    ]);
     $dirs->save($ctx, $output);
 
     if ($input->getArgument('<CustomDataFile.xml>')) {
@@ -60,8 +60,8 @@ class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
       return;
     }
     $customDataXML = new CustomDataXML(
-      $input->getOption('data') ? explode(',', $input->getOption('data')) : array(),
-      $input->getOption('uf') ? explode(',', $input->getOption('uf')) : array(),
+      $input->getOption('data') ? explode(',', $input->getOption('data')) : [],
+      $input->getOption('uf') ? explode(',', $input->getOption('uf')) : [],
       $customDataXMLFile,
       $input->getOption('force')
     );
