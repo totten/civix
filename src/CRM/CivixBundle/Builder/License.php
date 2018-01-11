@@ -43,11 +43,11 @@ class License implements Builder {
     }
     else {
       $output->writeln("<info>Write " . $this->path . "</info>");
-      $text = strtr($this->license->getText(), array(
+      $text = strtr($this->license->getText(), [
         '<YEAR>' => date('Y'),
         '<OWNER>' => sprintf('%s <%s>', $ctx['author'], $ctx['email']),
         '<TITLE>' => sprintf('Package: %s', $ctx['fullName']),
-      ));
+      ]);
       file_put_contents($this->path, $text);
     }
   }

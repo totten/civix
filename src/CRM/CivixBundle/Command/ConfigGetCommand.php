@@ -22,11 +22,11 @@ class ConfigGetCommand extends \Symfony\Component\Console\Command\Command {
   }
 
   protected function getInterestingParameters() {
-    return array(
+    return [
       'author',
       'email',
       'license',
-    );
+    ];
   }
 
 }

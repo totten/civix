@@ -58,9 +58,9 @@ class CopyClass implements Builder {
       $output->writeln("<info>Write " . $this->tgtFile . "</info>");
       $content = file_get_contents($clazz->getFileName(), TRUE);
       // FIXME parser
-      $content = strtr($content, array(
+      $content = strtr($content, [
         $this->srcClassName => $this->tgtClassName,
-      ));
+      ]);
       if (is_callable($this->filter)) {
         $content = call_user_func($this->filter, $content);
       }
