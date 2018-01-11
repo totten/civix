@@ -31,7 +31,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     if (!$input->getArgument('<full.ext.name>')) {
       // Refresh existing module
@@ -86,13 +86,13 @@ class InitCommand extends AbstractCommand {
 
     $output->writeln("<info>Initalize module " . $ctx['fullName'] . "</info>");
     $basedir = new Path($ctx['basedir']);
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       $basedir->string('build'),
       $basedir->string('templates'),
       $basedir->string('xml'),
       $basedir->string('images'),
       $basedir->string($ctx['namespace']),
-    ));
+    ]);
     $ext->builders['info'] = new Info($basedir->string('info.xml'));
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
@@ -111,20 +111,20 @@ class InitCommand extends AbstractCommand {
    * @return bool TRUE on success; FALSE if there's no site or if there's an error
    */
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
     if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
       $siteName = \CRM_Utils_System::baseURL(); // \CRM_Core_Config::singleton()->userSystem->cmsRootPath();
 
       $output->writeln("<info>Refresh extension list for \"$siteName\"</info>");
-      if (!$civicrm_api3->Extension->refresh(array('local' => TRUE, 'remote' => FALSE))) {
+      if (!$civicrm_api3->Extension->refresh(['local' => TRUE, 'remote' => FALSE])) {
         $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
         return FALSE;
       }
 
       if ($this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
         $output->writeln("<info>Enable extension ($key) in \"$siteName\"</info>");
-        if (!$civicrm_api3->Extension->install(array('key' => $key))) {
+        if (!$civicrm_api3->Extension->install(['key' => $key])) {
           $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
         }
       }

@@ -23,7 +23,7 @@ class PhpUnitXML extends XML {
     $xml->addAttribute('bootstrap', 'tests/phpunit/bootstrap.php');
     $this->set($xml);
 
-    $this->addTestSuite('My Test Suite', array('./tests/phpunit'));
+    $this->addTestSuite('My Test Suite', ['./tests/phpunit']);
 
     $this->get()
       ->addChild('filter')

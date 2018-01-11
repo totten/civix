@@ -38,7 +38,7 @@ For more, see https://docs.angularjs.org/guide');
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     //// Figure out template data ////
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -57,7 +57,7 @@ For more, see https://docs.angularjs.org/guide');
     $ctx['ctrlRelPath'] = $input->getArgument('<RelPath>');
     $ctx['ctrlName'] = ucwords($ctx['angularModuleName']) . $ctx['ctrlSuffix'];
     $ctx['jsPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['ctrlSuffix'] . '.js');
-    $ctx['htmlName'] = implode('/', array('~', $ctx['angularModuleName'], $ctx['ctrlSuffix'] . '.html'));
+    $ctx['htmlName'] = implode('/', ['~', $ctx['angularModuleName'], $ctx['ctrlSuffix'] . '.html']);
     $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['ctrlSuffix'] . '.html');
     $ctx['hlpName'] = 'CRM' . '/' . $ctx['angularModuleName'] . '/' . $ctx['ctrlSuffix'];
     $ctx['hlpPath'] = $basedir->string('templates', $ctx['hlpName'] . '.hlp');
@@ -66,11 +66,11 @@ For more, see https://docs.angularjs.org/guide');
     $output->writeln("<info>Initialize Angular page \"" . $ctx['ctrlName'] . "\" (civicrm/a/#/" . $ctx['ctrlRelPath'] . ")</info>");
 
     $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       dirname($ctx['jsPath']),
       dirname($ctx['htmlPath']),
       dirname($ctx['hlpPath']),
-    ));;
+    ]);;
 
     $ext->builders['ctrl.js'] = new Template('angular-page.js.php', $ctx['jsPath'], FALSE, Services::templating());
     $ext->builders['html'] = new Template('angular-page.html.php', $ctx['htmlPath'], FALSE, Services::templating());

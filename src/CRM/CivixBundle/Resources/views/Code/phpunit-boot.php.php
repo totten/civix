@@ -25,11 +25,10 @@ function _civix_phpunit_setUp() {
   $init = TRUE;
 
   global $civicrm_setting;
-  //print_r(array('install' => $civicrm_setting['Test']['test_extensions']));
-  $apiResult = civicrm_api('Extension', 'install', array(
+  $apiResult = civicrm_api('Extension', 'install', [
     'version' => 3,
     'keys' => $civicrm_setting['Test']['test_extensions'],
-  ));
+  ]);
   register_shutdown_function('_civix_phpunit_tearDown');
   if ($apiResult['is_error'] != 0) {
     throw new Exception("Failed to pre-install extensions: " . $apiResult['error_message']);
@@ -41,17 +40,15 @@ function _civix_phpunit_setUp() {
  */
 function _civix_phpunit_tearDown() {
   global $civicrm_setting;
-  //print_r(array('disable' => $civicrm_setting['Test']['test_extensions']));
-  $result = civicrm_api('Extension', 'disable', array(
+  $result = civicrm_api('Extension', 'disable', [
     'version' => 3,
     'keys' => $civicrm_setting['Test']['test_extensions'],
-  ));
-  //print_r(array('uninstall' => $civicrm_setting['Test']['test_extensions']));
-  $result = civicrm_api('Extension', 'uninstall', array(
+  ]);
+  $result = civicrm_api('Extension', 'uninstall', [
     'version' => 3,
     'keys' => $civicrm_setting['Test']['test_extensions'],
     'removeFiles' => FALSE,
-  ));
+  ]);
 }
 
 global $civicrm_setting;

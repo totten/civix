@@ -18,7 +18,7 @@ use Exception;
 class InfoGetCommand extends Command {
 
   protected function configure() {
-    $fields = array(
+    $fields = [
       'file',
       'name',
       'description',
@@ -32,7 +32,7 @@ class InfoGetCommand extends Command {
       'civix/namespace',
       'urls/url[@desc="Documentation"]',
       'urls/url[@desc="Support"]',
-    );
+    ];
 
     $this
       ->setName('info:get')
@@ -51,7 +51,7 @@ Common fields:\n * " . implode("\n * ", $fields) . "\n");
   protected function execute(InputInterface $input, OutputInterface $output) {
     $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
     $info = new Info($basedir->string('info.xml'));
-    $ctx = array();
+    $ctx = [];
     $info->load($ctx);
     $info->get();
 
