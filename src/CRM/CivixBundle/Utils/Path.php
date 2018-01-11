@@ -44,7 +44,7 @@ class Path {
    */
   public function mkdir($mode = 0777) {
     $args = func_get_args();
-    $dir = call_user_func_array(array($this, 'string'), $args);
+    $dir = call_user_func_array([$this, 'string'], $args);
     if (!is_dir($dir)) {
       return mkdir($dir, $mode, TRUE);
     }
