@@ -33,7 +33,7 @@ For more, see https://docs.angularjs.org/guide/directive');
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     //// Figure out template data ////
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -60,17 +60,17 @@ For more, see https://docs.angularjs.org/guide/directive');
     }
 
     $ctx['jsPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['baseFileName'] . '.js');
-    $ctx['htmlName'] = implode('/', array('~', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html'));
+    $ctx['htmlName'] = implode('/', ['~', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html']);
     $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html');
 
     //// Construct files ////
     $output->writeln("<info>Initialize Angular directive \"" . $ctx['dirNameHyp'] . "\" (aka \"" . $ctx['dirNameCamel'] . "\")</info>");
 
     $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       dirname($ctx['jsPath']),
       dirname($ctx['htmlPath']),
-    ));;
+    ]);;
 
     $ext->builders['js'] = new Template('angular-dir.js.php', $ctx['jsPath'], FALSE, Services::templating());
     $ext->builders['html'] = new Template('angular-dir.html.php', $ctx['htmlPath'], FALSE, Services::templating());
