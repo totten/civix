@@ -20,7 +20,7 @@ class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $ctx = array();
+    $ctx = [];
     $ext = new Collection();
 
     $output->writeln("<info></info>");
@@ -31,7 +31,7 @@ class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
     $ext->loadInit($ctx);
     $data = $ext->builders['ini']->get();
     if (!is_array($data)) {
-      $data = array('parameters' => array());
+      $data = ['parameters' => []];
     }
     $data['parameters'][$input->getArgument('key')] = $input->getArgument('value');
     $ext->builders['ini']->set($data);
