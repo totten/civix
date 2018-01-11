@@ -19,7 +19,7 @@ class AddApiCommand extends Command {
   const API_VERSION = 3;
 
   public static function getSchedules() {
-    return array('Daily', 'Hourly', 'Always');
+    return ['Daily', 'Hourly', 'Always'];
   }
 
   protected function configure() {
@@ -33,14 +33,14 @@ class AddApiCommand extends Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     // load Civi to get access to civicrm_api_get_function_name
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return;
     }
 
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -80,9 +80,9 @@ class AddApiCommand extends Command {
 
     $ctx['testClassName'] = "api_v3_{$ctx['entityNameCamel']}_{$ctx['actionNameCamel']}Test";
 
-    $dirs = new Dirs(array(
+    $dirs = new Dirs([
       dirname($ctx['apiFile']),
-    ));
+    ]);
     $dirs->save($ctx, $output);
 
     if (!file_exists($ctx['apiFile'])) {
@@ -96,11 +96,11 @@ class AddApiCommand extends Command {
 
     if ($input->getOption('schedule')) {
       if (!file_exists($ctx['apiCronFile'])) {
-        $mgdEntities = array(
-          array(
+        $mgdEntities = [
+          [
             'name' => 'Cron:' . $ctx['entityNameCamel'] . '.' . $ctx['actionNameCamel'],
             'entity' => 'Job',
-            'params' => array(
+            'params' => [
               'version' => 3,
               'name' => sprintf('Call %s.%s API', $ctx['entityNameCamel'], $ctx['actionNameCamel']),
               'description' => sprintf('Call %s.%s API', $ctx['entityNameCamel'], $ctx['actionNameCamel']),
@@ -108,9 +108,9 @@ class AddApiCommand extends Command {
               'api_entity' => $ctx['entityNameCamel'],
               'api_action' => $ctx['actionNameCamel'],
               'parameters' => '',
-            ),
-          ),
-        );
+            ],
+          ],
+        ];
         $header = "// This file declares a managed database record of type \"Job\".\n"
           . "// The record will be automatically inserted, updated, or deleted from the\n"
           . "// database as appropriate. For more details, see \"hook_civicrm_managed\" at:\n"
@@ -124,9 +124,9 @@ class AddApiCommand extends Command {
       }
     }
 
-    $test_dirs = new Dirs(array(
+    $test_dirs = new Dirs([
       dirname($ctx['apiTestFile']),
-    ));
+    ]);
     $test_dirs->save($ctx, $output);
     if (!file_exists($ctx['apiTestFile'])) {
       $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiTestFile']));
