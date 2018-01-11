@@ -21,7 +21,7 @@ class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
   protected function execute(InputInterface $input, OutputInterface $output) {
     // TODO validate that hook_civicrm_upgrade has been implemented
 
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -34,11 +34,11 @@ class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
       return;
     }
 
-    $dirs = new Dirs(array(
+    $dirs = new Dirs([
       $basedir->string('sql'),
       $basedir->string($ctx['namespace']),
       $basedir->string($ctx['namespace'], 'Upgrader'),
-    ));
+    ]);
     $dirs->save($ctx, $output);
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
