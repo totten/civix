@@ -26,14 +26,14 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     // load Civi to get access to civicrm_api_get_function_name
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>Require access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return;
     }
 
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -70,12 +70,12 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
 
     $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs(array(
+    $ext->builders['dirs'] = new Dirs([
       dirname($ctx['apiFile']),
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
       dirname($ctx['schemaFile']),
-    ));
+    ]);
     $ext->builders['dirs']->save($ctx, $output);
 
     $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
@@ -83,13 +83,13 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Services::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
-      $mgdEntities = array(
-        array(
+      $mgdEntities = [
+        [
           'name' => $ctx['entityNameCamel'],
           'class' => $ctx['daoClassName'],
           'table' => $ctx['tableName'],
-        ),
-      );
+        ],
+      ];
       $header = "// This file declares a new entity type. For more details, see \"hook_civicrm_entityTypes\" at:\n"
         . "// http://wiki.civicrm.org/confluence/display/CRMDOC/Hook+Reference";
       $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile'], $header);
