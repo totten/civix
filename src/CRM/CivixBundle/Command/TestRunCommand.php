@@ -40,7 +40,7 @@ class TestRunCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    Services::boot(array('output' => $output));
+    Services::boot(['output' => $output]);
     $basedir = new Path(getcwd());
 
     $output->writeln("<comment>Warning: 'civix test' deprecated.  Run phpunit4 directly from the extension directory instead.</comment>");
@@ -88,10 +88,10 @@ class TestRunCommand extends Command {
       return;
     }
 
-    $tests_dir = implode(DIRECTORY_SEPARATOR, array(getcwd(), 'tests', 'phpunit'));
+    $tests_dir = implode(DIRECTORY_SEPARATOR, [getcwd(), 'tests', 'phpunit']);
 
     // Prepare the command
-    $command = array();
+    $command = [];
     $command[] = $phpunit_bin;
     $command[] = '--include-path';
     $command[] = $tests_dir;
@@ -114,7 +114,7 @@ class TestRunCommand extends Command {
     // Run phpunit with our "tests" directory
     chdir("$civicrm_root/tools");
     $process = new Process(
-      call_user_func_array(array('\CRM\CivixBundle\Command\TestRunCommand', 'createPhpShellCommand'), $command),
+      call_user_func_array(['\CRM\CivixBundle\Command\TestRunCommand', 'createPhpShellCommand'], $command),
       NULL, NULL, NULL, self::TIMEOUT
     );
     $process->run(function ($type, $buffer) use ($output) {
@@ -179,8 +179,8 @@ class TestRunCommand extends Command {
     $cacheDir = Services::cacheDir();
     $file = $cacheDir->string("civix-phpunit.{$key}.php");
     if ($clear || !file_exists($file) || filemtime($file) < time() - self::BOOTSTRAP_TTL) {
-      $template_vars = array();
-      $template_vars['civicrm_setting'] = array();
+      $template_vars = [];
+      $template_vars['civicrm_setting'] = [];
       // disable extension searching
       $template_vars['civicrm_setting']['Extension Preferences']['ext_repo_url'] = FALSE;
       // use the same source tree for linked Civi runtime and test Civi runtime
