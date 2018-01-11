@@ -16,7 +16,7 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -30,7 +30,7 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command {
     }
 
     $ctx['zipFile'] = $basedir->string('build', $ctx['fullName'] . '.zip');
-    $cmdArgs = array(
+    $cmdArgs = [
       '-r',
       $ctx['zipFile'],
       $ctx['fullName'],
@@ -39,7 +39,7 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command {
       '*~',
       '*.bak',
       '*.git*',
-    );
+    ];
     $cmd = 'zip ' . implode(' ', array_map('escapeshellarg', $cmdArgs));
 
     chdir($basedir->string('..'));
