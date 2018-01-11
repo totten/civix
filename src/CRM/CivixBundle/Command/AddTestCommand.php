@@ -53,7 +53,7 @@ as separate groups:
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $ctx = array();
+    $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
@@ -73,12 +73,12 @@ as separate groups:
   }
 
   protected function getTestTemplate($type) {
-    $templates = array(
+    $templates = [
       'e2e' => 'test-e2e.php.php',
       'headless' => 'test-headless.php.php',
       'legacy' => 'test-legacy.php.php',
       'phpunit' => 'test-phpunit.php.php',
-    );
+    ];
     if (isset($templates[$type])) {
       return $templates[$type];
     }
@@ -108,12 +108,12 @@ as separate groups:
     $parts = explode('\\', $fullClassName);
     $ctx['testClass'] = array_pop($parts);
     $ctx['testNamespace'] = implode('\\', $parts);
-    $testFile = strtr($fullClassName, array('_' => '/', '\\' => '/')) . '.php';
+    $testFile = strtr($fullClassName, ['_' => '/', '\\' => '/']) . '.php';
     $testPath = $basedir->string('tests', 'phpunit', $testFile);
 
-    $dirs = new Dirs(array(
+    $dirs = new Dirs([
       dirname($testPath),
-    ));
+    ]);
     $dirs->save($ctx, $output);
 
     if (!file_exists($testPath)) {
