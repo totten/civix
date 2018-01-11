@@ -14,6 +14,10 @@
             "in": "vendor"
         },
         {
+            "name": "*.png",
+            "in": "images"
+        },
+        {
             "name": "bootstrap.php",
             "in": "vendor/nikic/php-parser/lib"
         },
