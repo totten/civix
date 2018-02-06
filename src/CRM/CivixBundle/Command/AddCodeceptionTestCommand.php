@@ -19,23 +19,21 @@ class AddCodeceptionTestCommand extends \Symfony\Component\Console\Command\Comma
   protected function configure() {
     $this
       ->setName('generate:codeception-config')
-      ->setDescription('Add a new End-to-end Test with codeception to a CiviCRM Module-Extension')
+      ->setDescription('Add a new End-to-end Configuration for codeception to a CiviCRM Module-Extension')
       ->setHelp('
-Add a new end-to-end test with Codeception for a CiviCRM Module-Extension
+Add a new test configuration for Codeception in a CiviCRM Module-Extension
 
-This sets up a minimal codeception environment for the local Civicrm. 
-Civicrm will be bootstrapped, and in your classes or scenarios you will be 
+This sets up a minimal codeception environment for the local CiviCRM. 
+CiviCRM will be bootstrapped, and in your classes or scenarios you will be 
 logged in automatically with your credentials. 
-
-Codeception Test class-names must end with Cest.
 
 More information for building tests with codeception can be found here:
     https://codeception.com/docs/01-Introduction
 An example is created in tests/acceptance/CreateContactCest.php
 
-To execute tests, call codeception.phar (best from buildkit), e.g.
+To execute tests, call codecept.phar (best from buildkit), e.g.
 
-  codeception run --steps
+  codecept run --steps
   
 ');
   }
