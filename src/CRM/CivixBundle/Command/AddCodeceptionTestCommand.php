@@ -18,7 +18,7 @@ class AddCodeceptionTestCommand extends \Symfony\Component\Console\Command\Comma
 
   protected function configure() {
     $this
-      ->setName('generate:end2end-test')
+      ->setName('generate:codeception-config')
       ->setDescription('Add a new End-to-end Test with codeception to a CiviCRM Module-Extension')
       ->setHelp('
 Add a new end-to-end test with Codeception for a CiviCRM Module-Extension
