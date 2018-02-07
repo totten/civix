@@ -1,7 +1,6 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Builder\PhpUnitXML;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

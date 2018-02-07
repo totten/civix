@@ -12,6 +12,7 @@ use CRM\CivixBundle\Command\AddFormCommand;
 use CRM\CivixBundle\Command\AddPageCommand;
 use CRM\CivixBundle\Command\AddReportCommand;
 use CRM\CivixBundle\Command\AddSearchCommand;
+use CRM\CivixBundle\Command\AddCodeceptionConfigCommand;
 use CRM\CivixBundle\Command\AddTestCommand;
 use CRM\CivixBundle\Command\AddUpgraderCommand;
 use CRM\CivixBundle\Command\BuildCommand;
@@ -58,6 +59,7 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new AddReportCommand();
     $commands[] = new AddSearchCommand();
     $commands[] = new AddTestCommand();
+    $commands[] = new AddCodeceptionConfigCommand();
     $commands[] = new AddUpgraderCommand();
     $commands[] = new BuildCommand();
     $commands[] = new ConfigGetCommand();
