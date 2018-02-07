@@ -10,11 +10,11 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 /**
- * Class AddCodeceptionTestCommand
+ * Class AddCodeceptionConfigCommand
  *
  * @package CRM\CivixBundle\Command
  */
-class AddCodeceptionTestCommand extends \Symfony\Component\Console\Command\Command {
+class AddCodeceptionConfigCommand extends \Symfony\Component\Console\Command\Command {
 
   protected function configure() {
     $this
