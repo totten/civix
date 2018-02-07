@@ -23,13 +23,13 @@ class AddCodeceptionConfigCommand extends \Symfony\Component\Console\Command\Com
       ->setHelp('
 Add a new test configuration for Codeception in a CiviCRM Module-Extension
 
-This sets up a minimal codeception environment for the local CiviCRM. 
-CiviCRM will be bootstrapped, and in your classes or scenarios you will be 
-logged in automatically with your credentials. 
+This sets up a minimal Codeception environment for the local CiviCRM.
+CiviCRM will be bootstrapped, and your tests will have access to more
+testing utilities.
 
-More information for building tests with codeception can be found here:
-    https://codeception.com/docs/01-Introduction
-An example is created in tests/acceptance/CreateContactCest.php
+More information for building tests with Codeception can be found here:
+
+  https://codeception.com/docs/01-Introduction
 
 To execute tests, call codecept.phar (best from buildkit), e.g.
 
