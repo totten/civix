@@ -17,7 +17,7 @@
  */
 class AcceptanceTester extends \Codeception\Actor {
   use _generated\AcceptanceTesterActions;
-  use \Civi\Test\CiviCodeceptionTrait;
+  use \Civi\Codeception\CiviAcceptanceTesterTrait;
 
   /**
    * Define custom actions here
