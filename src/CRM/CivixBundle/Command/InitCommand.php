@@ -22,8 +22,7 @@ class InitCommand extends AbstractCommand {
     $this
       ->setName('generate:module')
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)')
-      ->addArgument('<full.ext.name>', InputArgument::OPTIONAL, 'Fully qualified extension name (e.g. "com.example.myextension")')
-    //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
+      ->addArgument('name', InputArgument::OPTIONAL, "Extension name (Should start with a letter and only contain lowercase alphanumerics, - and .)")
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
       ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail());
@@ -33,7 +32,7 @@ class InitCommand extends AbstractCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $ctx = array();
     $ctx['type'] = 'module';
-    if (!$input->getArgument('<full.ext.name>')) {
+    if (!$input->getArgument('name')) {
       // Refresh existing module
       $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
       $basedir = new Path($ctx['basedir']);
@@ -54,16 +53,37 @@ class InitCommand extends AbstractCommand {
 
     $licenses = new \LicenseData\Repository();
 
-    $ctx['fullName'] = $input->getArgument('<full.ext.name>');
-    $ctx['basedir'] = $ctx['fullName'];
-    if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
-      $ctx['mainFile'] = $matches[1];
-      $ctx['namespace'] = 'CRM/' . strtoupper($ctx['mainFile']{0}) . substr($ctx['mainFile'], 1);
-    }
-    else {
+    $name = $input->getArgument('name');
+
+    // Name should start with an alpha and only contain alphanumeric, - and .
+    if (!preg_match('/^[a-z][a-z0-9\.\-]*$/', $name)) {
       $output->writeln('<error>Malformed package name</error>');
       return;
     }
+
+    // If the extension name has a . in it, only use the end of the extension
+    // name for the short name
+
+    $nameParts = explode('.', $name);
+    $shortName = end($nameParts);
+
+    // If the short name starts with civicrm-, strip it
+    if(strpos($shortName, 'civicrm-') === 0){
+      $shortName = substr($shortName, 8);
+    }
+    $shortName = str_replace('-', '_', $shortName);
+    // Create a camel case version for the name space by exploding on the
+    // underscores, 'ucfirsting' and concatenating the parts
+    $camelCase = '';
+    foreach(explode('_', $shortName) as $shortNamePart){
+      $camelCase .= ucfirst($shortNamePart);
+    }
+
+    $ctx['basedir'] = $name;
+    $ctx['fullName'] = $name;
+    $ctx['mainFile'] = $shortName;
+    $ctx['namespace'] = 'CRM/' . $camelCase;
+
     if ($input->getOption('author') && $input->getOption('email')) {
       $ctx['author'] = $input->getOption('author');
       $ctx['email'] = $input->getOption('email');
@@ -98,7 +118,6 @@ class InitCommand extends AbstractCommand {
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
     $ext->builders['screenshot'] = new CopyFile(dirname(dirname(dirname(dirname(__DIR__)))) . '/images/placeholder.png', $basedir->string('images/screenshot.png'), FALSE);
-
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
 
