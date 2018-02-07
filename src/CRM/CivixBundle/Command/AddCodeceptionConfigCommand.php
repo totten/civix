@@ -30,6 +30,10 @@ testing utilities.
 More information for building tests with Codeception can be found here:
 
   https://codeception.com/docs/01-Introduction
+  
+More Information for PHP-Browser functionality can be found here:
+
+  https://codeception.com/docs/modules/PhpBrowser
 
 To execute tests, call codecept.phar (best from buildkit), e.g.
 
