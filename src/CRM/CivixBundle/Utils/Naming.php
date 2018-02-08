@@ -23,7 +23,7 @@ class Naming {
    *
    * @param string $fullName
    *   Ex: 'org.example.foo'
-   *   Ex: 'civicrm-foo-bar'
+   *   Ex: 'foo-bar'
    * @return string
    *   Ex: 'foo'
    *   Ex: 'foo_bar'
@@ -33,11 +33,6 @@ class Naming {
     // name for the short name
     $nameParts = explode('.', $fullName);
     $shortName = end($nameParts);
-
-    // If the short name starts with civicrm-, strip it
-    if (strpos($shortName, 'civicrm-') === 0) {
-      $shortName = substr($shortName, 8);
-    }
     $shortName = str_replace('-', '_', $shortName);
 
     return $shortName;
@@ -48,7 +43,7 @@ class Naming {
    *
    * @param string $fullName
    *   Ex: 'org.example.foo'
-   *   Ex: 'civicrm-foo-bar'
+   *   Ex: 'foo-bar'
    * @return string
    *   Ex: 'Foo'
    *   Ex: 'FooBar'
