@@ -4,6 +4,7 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Builder\CopyFile;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,18 +23,33 @@ class InitCommand extends AbstractCommand {
     $this
       ->setName('generate:module')
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)')
-      ->addArgument('<full.ext.name>', InputArgument::OPTIONAL, 'Fully qualified extension name (e.g. "com.example.myextension")')
-    //->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Type of extension (e.g. "module", "payment", "report", "search")', 'module')
+      ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo-bar\" or \"org.example.foo-bar\")")
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
-      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail());
+      ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail())
+      ->setHelp(
+        "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)\n" .
+        "\n" .
+        "<comment>Identification:</comment>\n" .
+        "  Keys must be lowercase alphanumeric (with dashes allowed).\n" .
+        "\n" .
+        "  Optionally, you may use a Java-style prefix (reverse domain name).\n" .
+        "\n" .
+        "  However, the prefix is mostly cosmetic. The base part of the key should be globally unique.\n" .
+        "\n" .
+        "<comment>Examples:</comment>\n" .
+        "  civix generate:module foo-bar\n" .
+        "  civix generate:module foo-bar --license=AGPL-3.0 --author=\"Alice\" --email=\"alice@example.org\"\n" .
+        "  civix generate:module org.example.foo-bar \n" .
+        "\n"
+      );
     parent::configure();
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     $ctx = [];
     $ctx['type'] = 'module';
-    if (!$input->getArgument('<full.ext.name>')) {
+    if (!$input->getArgument('key')) {
       // Refresh existing module
       $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
       $basedir = new Path($ctx['basedir']);
@@ -54,16 +70,19 @@ class InitCommand extends AbstractCommand {
 
     $licenses = new \LicenseData\Repository();
 
-    $ctx['fullName'] = $input->getArgument('<full.ext.name>');
-    $ctx['basedir'] = $ctx['fullName'];
-    if (preg_match('/^[a-z0-9\.]+\.([a-z0-9]+)$/', $ctx['fullName'], $matches)) {
-      $ctx['mainFile'] = $matches[1];
-      $ctx['namespace'] = 'CRM/' . strtoupper($ctx['mainFile']{0}) . substr($ctx['mainFile'], 1);
-    }
-    else {
+    $name = $input->getArgument('key');
+
+    // Name should start with an alpha and only contain alphanumeric, - and .
+    if (!Naming::isValidFullName($name)) {
       $output->writeln('<error>Malformed package name</error>');
       return;
     }
+
+    $ctx['basedir'] = $name;
+    $ctx['fullName'] = $name;
+    $ctx['mainFile'] = Naming::createShortName($name);
+    $ctx['namespace'] = 'CRM/' . Naming::createCamelName($name);
+
     if ($input->getOption('author') && $input->getOption('email')) {
       $ctx['author'] = $input->getOption('author');
       $ctx['email'] = $input->getOption('email');
@@ -98,7 +117,6 @@ class InitCommand extends AbstractCommand {
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
     $ext->builders['screenshot'] = new CopyFile(dirname(dirname(dirname(dirname(__DIR__)))) . '/images/placeholder.png', $basedir->string('images/screenshot.png'), FALSE);
-
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
 
