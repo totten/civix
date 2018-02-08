@@ -8,14 +8,17 @@ class NamingTest extends \PHPUnit_Framework_TestCase {
     return [
       // [$name, $expectValid, $expectShort, $expectCamel]
       ['org.example.foo', TRUE, 'foo', 'Foo'],
+      ['org.example.foo-bar-whiz', TRUE, 'foo_bar_whiz', 'FooBarWhiz'],
       ['.org.example.foo', FALSE, NULL, NULL],
       ['civicrm-foo-bar', TRUE, 'foo_bar', 'FooBar'],
       ['foo-bar', TRUE, 'foo_bar', 'FooBar'],
-      ['foo--bar',FALSE, NULL, NULL],
+      ['foo--bar', FALSE, NULL, NULL],
+      ['foo-2-foo', TRUE, 'foo_2_foo', 'Foo2Foo'],
       ['-foo', FALSE, NULL, NULL],
       ['foo-', FALSE, NULL, NULL],
       ['civicrm-foo-bar.', FALSE, NULL, NULL],
       ['org..foobar', FALSE, NULL, NULL],
+      ['org.example.foo--bar', FALSE, NULL, NULL],
     ];
   }
 
