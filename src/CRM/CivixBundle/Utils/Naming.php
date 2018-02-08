@@ -14,8 +14,8 @@ class Naming {
   public static function isValidFullName($fullName) {
     return
       preg_match('/^[a-z][a-z0-9\.\-]*$/', $fullName)
-      && strpos($fullName, '..') === FALSE
-      && !preg_match('/\.$/', $fullName);
+      && !preg_match('/[\.\-][\.\-]/', $fullName)
+      && !preg_match('/[\.\-]$/', $fullName);
   }
 
   /**

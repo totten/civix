@@ -11,7 +11,9 @@ class NamingTest extends \PHPUnit_Framework_TestCase {
       ['.org.example.foo', FALSE, NULL, NULL],
       ['civicrm-foo-bar', TRUE, 'foo_bar', 'FooBar'],
       ['foo-bar', TRUE, 'foo_bar', 'FooBar'],
+      ['foo--bar',FALSE, NULL, NULL],
       ['-foo', FALSE, NULL, NULL],
+      ['foo-', FALSE, NULL, NULL],
       ['civicrm-foo-bar.', FALSE, NULL, NULL],
       ['org..foobar', FALSE, NULL, NULL],
     ];
