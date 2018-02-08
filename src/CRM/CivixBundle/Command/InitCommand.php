@@ -23,19 +23,19 @@ class InitCommand extends AbstractCommand {
     $this
       ->setName('generate:module')
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)')
-      ->addArgument('name', InputArgument::OPTIONAL, "Extension name (Ex: \"foo-bar\", \"org.example.foo-bar\")")
+      ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo-bar\" or \"org.example.foo-bar\")")
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
       ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail())
       ->setHelp(
         "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)\n" .
         "\n" .
-        "<comment>Naming:</comment>\n" .
-        "  Names must be lowercase alphanumeric (with dashes allowed).\n" .
+        "<comment>Identification:</comment>\n" .
+        "  Keys must be lowercase alphanumeric (with dashes allowed).\n" .
         "\n" .
         "  Optionally, you may use a Java-style prefix (reverse domain name).\n" .
         "\n" .
-        "  However, the prefix is mostly cosmetic. The base part of the name should be globally unique.\n" .
+        "  However, the prefix is mostly cosmetic. The base part of the key should be globally unique.\n" .
         "\n" .
         "<comment>Examples:</comment>\n" .
         "  civix generate:module foo-bar\n" .
@@ -49,7 +49,7 @@ class InitCommand extends AbstractCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $ctx = array();
     $ctx['type'] = 'module';
-    if (!$input->getArgument('name')) {
+    if (!$input->getArgument('key')) {
       // Refresh existing module
       $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
       $basedir = new Path($ctx['basedir']);
@@ -70,7 +70,7 @@ class InitCommand extends AbstractCommand {
 
     $licenses = new \LicenseData\Repository();
 
-    $name = $input->getArgument('name');
+    $name = $input->getArgument('key');
 
     // Name should start with an alpha and only contain alphanumeric, - and .
     if (!Naming::isValidFullName($name)) {
