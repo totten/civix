@@ -4,6 +4,7 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Builder\CopyFile;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,33 +57,15 @@ class InitCommand extends AbstractCommand {
     $name = $input->getArgument('name');
 
     // Name should start with an alpha and only contain alphanumeric, - and .
-    if (!preg_match('/^[a-z][a-z0-9\.\-]*$/', $name)) {
+    if (!Naming::isValidFullName($name)) {
       $output->writeln('<error>Malformed package name</error>');
       return;
     }
 
-    // If the extension name has a . in it, only use the end of the extension
-    // name for the short name
-
-    $nameParts = explode('.', $name);
-    $shortName = end($nameParts);
-
-    // If the short name starts with civicrm-, strip it
-    if(strpos($shortName, 'civicrm-') === 0){
-      $shortName = substr($shortName, 8);
-    }
-    $shortName = str_replace('-', '_', $shortName);
-    // Create a camel case version for the name space by exploding on the
-    // underscores, 'ucfirsting' and concatenating the parts
-    $camelCase = '';
-    foreach(explode('_', $shortName) as $shortNamePart){
-      $camelCase .= ucfirst($shortNamePart);
-    }
-
     $ctx['basedir'] = $name;
     $ctx['fullName'] = $name;
-    $ctx['mainFile'] = $shortName;
-    $ctx['namespace'] = 'CRM/' . $camelCase;
+    $ctx['mainFile'] = Naming::createShortName($name);
+    $ctx['namespace'] = 'CRM/' . Naming::createCamelName($name);
 
     if ($input->getOption('author') && $input->getOption('email')) {
       $ctx['author'] = $input->getOption('author');
