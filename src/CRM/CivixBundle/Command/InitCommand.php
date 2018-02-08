@@ -31,15 +31,15 @@ class InitCommand extends AbstractCommand {
         "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)\n" .
         "\n" .
         "<comment>Naming:</comment>\n" .
-        "  Names must be lowercase alphanumeric, with dashes and dots allowed.\n" .
+        "  Names must be lowercase alphanumeric (with dashes allowed).\n" .
         "\n" .
-        "  Dots are optional. If supplied, they must signify Java-style reverse-domain names.\n" .
-        "  Note: Even if you use Java-style naming, the final part of the name should be\n" .
-        "  globally unique.\n" .
+        "  Optionally, you may use a Java-style prefix (reverse domain name).\n" .
+        "\n" .
+        "  However, the prefix is mostly cosmetic. The base part of the name should be globally unique.\n" .
         "\n" .
         "<comment>Examples:</comment>\n" .
         "  civix generate:module foo-bar\n" .
-        "  civix generate:module foo-bar --license=AGPL-3.0 --author=\"Alice Robertson\"\n" .
+        "  civix generate:module foo-bar --license=AGPL-3.0 --author=\"Alice\" --email=\"alice@example.org\"\n" .
         "  civix generate:module org.example.foo-bar \n" .
         "\n"
       );
