@@ -41,6 +41,10 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
+### Upgrade to v18.02.0+: PHPUnit (Optional)
+
+The template for `tests/phpunit/bootstrap.php` changed slightly to make `phpunit` work in symlinked directory structures. You may want to manually apply the changes from https://github.com/totten/civix/pull/121.
+
 ### Upgrade to v17.10.0+: Test Files
 
 The PHPUnit bootstrap file (`tests/phpunit/bootstrap.php`) has been updated to support autoloading of utility classes within your extensions `tests` folder. To follow this revised convention, update `bootstrap.php`. After the the call to `eval(...);`, say:
