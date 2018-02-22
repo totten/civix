@@ -20,7 +20,7 @@ class AddDaosCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('generate:daos')
-      ->setDescription('Create DAOs and mysql schema based on this extensions xml schema definition files')
+      ->setDescription('Create DAOs and mysql schema based on this extensions xml schema definition files (*EXPERIMENTAL AND INCOMPLETE*)')
       ->setHelp(
         "Create DAOs and mysql schema based on this extensions xml schema definition files\n" .
         "\n" .
