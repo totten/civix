@@ -95,6 +95,9 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $output->writeln("<info>Write {$basedir->string('sql/auto_uninstall.sql')}</info>");
     ob_end_clean(); // Don't display gencode's output
 
+    $module = new Module(Services::templating());
+    $module->loadInit($ctx);
+    $module->save($ctx, $output);
   }
 
 }

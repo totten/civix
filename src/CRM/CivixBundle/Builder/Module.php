@@ -35,7 +35,21 @@ class Module implements Builder {
       TRUE,
       $this->templateEngine
     );
+
+    $ctx['entityTypes'] = $this->generateEntityTypes("{$ctx['basedir']}/xml/schema/CRM/*/*.entityType.php");
+
     $moduleCivix->save($ctx, $output);
   }
 
+  private function generateEntityTypes($glob){
+    foreach(glob($glob) as $entityFile){
+      $entities = include $entityFile;
+      foreach ($entities as $entity) {
+        $entityTypes[$entity['class']] = $entity;
+      }
+    }
+
+    $entityTypes = var_export($entityTypes, TRUE);
+    return $entityTypes;
+  }
 }
