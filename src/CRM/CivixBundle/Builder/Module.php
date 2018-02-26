@@ -42,6 +42,7 @@ class Module implements Builder {
   }
 
   private function generateEntityTypes($glob){
+    $entityTypes =[];
     foreach(glob($glob) as $entityFile){
       $entities = include $entityFile;
       foreach ($entities as $entity) {
