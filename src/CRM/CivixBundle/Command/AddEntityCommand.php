@@ -98,6 +98,8 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
-  }
 
+    $output->writeln('<comment>You may want to run `civix generate:entity-boilerplate`, and uninstall and re-enable the extension to update your entities.</comment>');
+
+  }
 }

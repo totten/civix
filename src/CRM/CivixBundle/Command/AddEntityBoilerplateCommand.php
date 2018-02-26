@@ -98,6 +98,12 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
+
+    $upgraderClass = str_replace('/', '_', $ctx['namespace']).'_Upgrader';
+    if(!class_exists($upgraderClass)){
+      $output->writeln('<comment>You are missing an upgrader class. Your generated SQL files will not be executed on enable and uninstall. Fix this by running `civix generate:upgrader`.</comment>');
+    }
+
   }
 
 }
