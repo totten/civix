@@ -2,30 +2,26 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Collection;
-use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Builder\PhpData;
-use CRM\CivixBundle\Builder\Template;
+use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddDaosCommand extends \Symfony\Component\Console\Command\Command {
+class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Command {
   const API_VERSION = 3;
 
   protected function configure() {
     $this
-      ->setName('generate:daos')
-      ->setDescription('Create DAOs and mysql schema based on this extensions xml schema definition files (*EXPERIMENTAL AND INCOMPLETE*)')
+      ->setName('generate:entity-boilerplate')
+      ->setDescription('Generates boilerplate code for entities based on xml schema definition files (*EXPERIMENTAL AND INCOMPLETE*)')
       ->setHelp(
-        "Create DAOs and mysql schema based on this extensions xml schema definition files\n" .
+        "Creates DAOs, mysql install and uninstall instructions, and an appropriate\n" .
+        "hook_civicrm_entityTypes based on this extension's xml schema files.\n" .
         "\n" .
-        "Typically, one will have created / updated on or more xml/CRM/NameSpace/EntityName.xml files\n" .
-        "before running this command.\n"
+        "Typically you will run this command after creating or updating one or more\n" .
+        "xml/schema/CRM/NameSpace/EntityName.xml files.\n"
       );
   }
 
