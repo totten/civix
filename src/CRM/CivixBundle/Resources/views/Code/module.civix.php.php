@@ -467,5 +467,5 @@ foreach(explode("\n", $entityTypes) as $k => $l){
 $entityTypes = implode("\n", $entityTypeLines);
 ?>
 function _<?php echo $mainFile ?>_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes += <?php echo $entityTypes ?>;
+  $entityTypes = array_merge($entityTypes, <?php echo $entityTypes ?>);
 }
