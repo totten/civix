@@ -143,11 +143,11 @@ function <?php echo $mainFile ?>_civicrm_preProcess($formName, &$form) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  *
 function <?php echo $mainFile ?>_civicrm_navigationMenu(&$menu) {
-  _<?php echo $mainFile ?>_civix_insert_navigation_menu($menu, NULL, array(
-    'label' => E::ts('The Page'),
-    'name' => 'the_page',
-    'url' => 'civicrm/the-page',
-    'permission' => 'access CiviReport,access CiviContribute',
+  _<?php echo $mainFile ?>_civix_insert_navigation_menu($menu, 'Mailings', array(
+    'label' => E::ts('New subliminal message'),
+    'name' => 'mailing_subliminal_message',
+    'url' => 'civicrm/mailing/subliminal',
+    'permission' => 'access CiviMail  ',
     'operator' => 'OR',
     'separator' => 0,
   ));
