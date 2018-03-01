@@ -42,7 +42,14 @@ pushd $WORKINGDIR
   fi
 
   # generate module and try all the generators
-  echo n | $CIVIX $VERBOSITY generate:module $EXMODULE
+  $CIVIX $VERBOSITY generate:module $EXMODULE --enable=no
+
+  STATUS=$(cv ext:list -L /org.civicrm.civixexample/ --out=list --columns=status)
+  if [ "$STATUS" = "installed" ]; then
+    echo "Error: The example extension was installed prematurely"
+    exit 1
+  fi
+
   pushd $EXMODULE
     $CIVIX $VERBOSITY generate:api MyEntity MyAction
     $CIVIX $VERBOSITY generate:case-type MyLabel MyName

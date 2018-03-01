@@ -24,6 +24,7 @@ class InitCommand extends AbstractCommand {
       ->setName('generate:module')
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)')
       ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo-bar\" or \"org.example.foo-bar\")")
+      ->addOption('enable', NULL, InputOption::VALUE_REQUIRED, 'Whether to auto-enable the new module (yes/no/ask)', 'ask')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
       ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail())
@@ -131,6 +132,7 @@ class InitCommand extends AbstractCommand {
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
     Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
+
     if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
       $siteName = \CRM_Utils_System::baseURL(); // \CRM_Core_Config::singleton()->userSystem->cmsRootPath();
 
@@ -139,8 +141,11 @@ class InitCommand extends AbstractCommand {
         $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
         return FALSE;
       }
+      if ($input->getOption('enable') === 'no') {
+        return FALSE;
+      }
 
-      if ($this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
+      if ($input->getOption('enable') === 'yes' || $this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
         $output->writeln("<info>Enable extension ($key) in \"$siteName\"</info>");
         if (!$civicrm_api3->Extension->install(['key' => $key])) {
           $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
