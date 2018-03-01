@@ -147,7 +147,7 @@ function <?php echo $mainFile ?>_civicrm_navigationMenu(&$menu) {
     'label' => E::ts('New subliminal message'),
     'name' => 'mailing_subliminal_message',
     'url' => 'civicrm/mailing/subliminal',
-    'permission' => 'access CiviMail  ',
+    'permission' => 'access CiviMail',
     'operator' => 'OR',
     'separator' => 0,
   ));

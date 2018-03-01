@@ -355,11 +355,10 @@ function _<?php echo $mainFile ?>_civix_glob($pattern) {
  * Inserts a navigation menu item at a given place in the hierarchy.
  *
  * @param array $menu - menu hierarchy
- * @param string $path - path to where the item should be inserted. Made up of a
- * series of 'name' attributes concatenated with /, e.g. 'Mailing',
- * 'Administer/System Settings' or 'my_extension/submenu'
- * @param array $item - menu you need to insert (parent/child attributes will be
- * filled for you)
+ * @param string $path - path to parent of this item, e.g. 'my_extension/submenu'
+ *    'Mailing', or 'Administer/System Settings'
+ * @param array $item - the item to insert (parent/child attributes will be
+ *    filled for you)
  */
 function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $item) {
   // If we are done going down the path, insert menu
