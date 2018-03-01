@@ -446,3 +446,26 @@ function _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders(&$metaDataF
     $metaDataFolders[] = $settingsDir;
   }
 }
+
+/**
+ * (Delegated) Implements hook_civicrm_entityTypes().
+ *
+ * Find any *.entityType.php files, merge their content, and return.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
+ */
+
+<?php
+// Add appropriate indentation
+foreach(explode("\n", $entityTypes) as $k => $l){
+  if($k){
+    $entityTypeLines[$k] = '  '.$l;
+  }else{
+    $entityTypeLines[$k] = $l;
+  }
+}
+$entityTypes = implode("\n", $entityTypeLines);
+?>
+function _<?php echo $mainFile ?>_civix_civicrm_entityTypes(&$entityTypes) {
+  $entityTypes = array_merge($entityTypes, <?php echo $entityTypes ?>);
+}

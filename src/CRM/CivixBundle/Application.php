@@ -8,6 +8,7 @@ use CRM\CivixBundle\Command\AddApiCommand;
 use CRM\CivixBundle\Command\AddCaseTypeCommand;
 use CRM\CivixBundle\Command\AddCustomDataCommand;
 use CRM\CivixBundle\Command\AddEntityCommand;
+use CRM\CivixBundle\Command\AddEntityBoilerplateCommand;
 use CRM\CivixBundle\Command\AddFormCommand;
 use CRM\CivixBundle\Command\AddPageCommand;
 use CRM\CivixBundle\Command\AddReportCommand;
@@ -54,6 +55,7 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new AddCaseTypeCommand();
     $commands[] = new AddCustomDataCommand();
     $commands[] = new AddEntityCommand();
+    $commands[] = new AddEntityBoilerplateCommand();
     $commands[] = new AddFormCommand();
     $commands[] = new AddPageCommand();
     $commands[] = new AddReportCommand();
