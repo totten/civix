@@ -91,6 +91,17 @@ function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
 }
 
 /**
+ * Implements hook_civicrm_entityTypes().
+ *
+ * Declare entity types provided by this module.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
+ */
+function <?php echo $mainFile ?>_civicrm_entityTypes(&$entityTypes) {
+  _<?php echo $mainFile ?>_civix_civicrm_entityTypes($entityTypes);
+}
+
+/**
  * Implements hook_civicrm_caseTypes().
  *
  * Generate a list of case-types.
