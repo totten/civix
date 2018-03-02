@@ -12,6 +12,8 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
+use CRM\CivixBundle\Utils\Naming;
+
 use Exception;
 
 class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
@@ -51,7 +53,7 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     }
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
-    $ctx['tableName'] = 'civicrm_' . strtolower($input->getArgument('<EntityName>'));
+    $ctx['tableName'] = 'civicrm_' . Naming::camelToSnake($input->getArgument('<EntityName>'));
     if (function_exists('civicrm_api_get_function_name')) {
       $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '', self::API_VERSION));
     }

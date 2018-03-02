@@ -57,4 +57,8 @@ class Naming {
     return $camelCase;
   }
 
+  public static function camelToSnake($camel){
+    return strtolower(implode('_',array_filter(preg_split('/(?=[A-Z])/',$camel))));
+  }
+
 }
