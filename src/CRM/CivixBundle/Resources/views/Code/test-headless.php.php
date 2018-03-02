@@ -31,9 +31,13 @@ class <?php echo $testClass ?> extends \PHPUnit_Framework_TestCase implements He
   public function setUpHeadless() {
     // Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
     // See: https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md
+
+    // If you muck up your schema somehow you may want to set this to true for one run.
+    $force_schema_reinstall = FALSE;
+
     return \Civi\Test::headless()
       ->installMe(__DIR__)
-      ->apply();
+      ->apply($force_schema_reinstall);
   }
 
   public function setUp() {
