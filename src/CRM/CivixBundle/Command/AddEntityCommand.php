@@ -23,7 +23,8 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     $this
       ->setName('generate:entity')
       ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL AND INCOMPLETE*)')
-      ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")');
+      ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")')
+      ->addOption('table-name', NULL, InputOption::VALUE_OPTIONAL, 'The SQL table name. (Default: derived from entity name)');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
@@ -53,7 +54,7 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     }
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
-    $ctx['tableName'] = Naming::createTableName($input->getArgument('<EntityName>'));
+    $ctx['tableName'] = $input->getOption('table-name') ? $input->getOption('table-name') : Naming::createTableName($input->getArgument('<EntityName>'));
     if (function_exists('civicrm_api_get_function_name')) {
       $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '', self::API_VERSION));
     }
