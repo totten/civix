@@ -49,4 +49,14 @@ class NamingTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($expectCamel, Naming::createCamelName($name));
   }
 
+  /**
+   * @dataProvider getFullNameExamples
+   */
+  public function testCamelToSnake($ignore1, $ignore2, $snake, $camel) {
+    if ($camel === NULL) {
+      return;
+    }
+    $this->assertEquals($snake, Naming::camelToSnake($camel));
+  }
+
 }
