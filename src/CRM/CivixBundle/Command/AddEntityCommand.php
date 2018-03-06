@@ -53,7 +53,7 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     }
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
-    $ctx['tableName'] = 'civicrm_' . Naming::camelToSnake($input->getArgument('<EntityName>'));
+    $ctx['tableName'] = Naming::createTableName($input->getArgument('<EntityName>'));
     if (function_exists('civicrm_api_get_function_name')) {
       $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '', self::API_VERSION));
     }
