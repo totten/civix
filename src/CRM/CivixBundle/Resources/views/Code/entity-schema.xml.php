@@ -1,6 +1,6 @@
 <?php
 echo '<?xml version="1.0" encoding="iso-8859-1" ?>'."\n";
-$fixmeVersion = '4.4';
+$version = civicrm_api3('Extension', 'getvalue', ['key' => $mainFile, 'return' => 'version']);
 ?>
 
 <table>
@@ -8,7 +8,7 @@ $fixmeVersion = '4.4';
   <class><?php echo $entityNameCamel ?></class>
   <name><?php echo $tableName ?></name>
   <comment>FIXME</comment>
-  <add><?php echo $fixmeVersion ?></add>
+  <add><?php echo $version ?></add>
   <log>true</log>
 
   <field>
@@ -16,7 +16,7 @@ $fixmeVersion = '4.4';
     <type>int unsigned</type>
     <required>true</required>
     <comment>Unique <?php echo $entityNameCamel ?> ID</comment>
-    <add><?php echo $fixmeVersion ?></add>
+    <add><?php echo $version ?></add>
   </field>
   <primaryKey>
     <name>id</name>
@@ -27,13 +27,13 @@ $fixmeVersion = '4.4';
     <name>contact_id</name>
     <type>int unsigned</type>
     <comment>FK to Contact</comment>
-    <add><?php echo $fixmeVersion ?></add>
+    <add><?php echo $version ?></add>
   </field>
   <foreignKey>
     <name>contact_id</name>
     <table>civicrm_contact</table>
     <key>id</key>
-    <add><?php echo $fixmeVersion ?></add>
+    <add><?php echo $version ?></add>
     <onDelete>CASCADE</onDelete>
   </foreignKey>
 
