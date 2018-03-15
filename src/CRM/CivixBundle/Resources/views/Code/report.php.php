@@ -40,10 +40,6 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
             'title' => E::ts('Last Name'),
             'no_repeat' => TRUE,
           ),
-          'id' => array(
-            'no_display' => TRUE,
-            'required' => TRUE,
-          ),
         ),
         'filters' => array(
           'sort_name' => array(
@@ -135,31 +131,22 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
     parent::preProcess();
   }
 
-  function select() {
-    $select = $this->_columnHeaders = array();
-
-    foreach ($this->_columns as $tableName => $table) {
-      if (array_key_exists('fields', $table)) {
-        foreach ($table['fields'] as $fieldName => $field) {
-          if (CRM_Utils_Array::value('required', $field) ||
-            CRM_Utils_Array::value($fieldName, $this->_params['fields'])
-          ) {
-            if ($tableName == 'civicrm_address') {
-              $this->_addressField = TRUE;
-            }
-            elseif ($tableName == 'civicrm_email') {
-              $this->_emailField = TRUE;
-            }
-            $select[] = "{$field['dbAlias']} as {$tableName}_{$fieldName}";
-            $this->_columnHeaders["{$tableName}_{$fieldName}"]['title'] = $field['title'];
-            $this->_columnHeaders["{$tableName}_{$fieldName}"]['type'] = CRM_Utils_Array::value('type', $field);
-          }
-        }
-      }
-    }
-
-    $this->_select = "SELECT " . implode(', ', $select) . " ";
-  }
+  /**
+   * Build select clause for a single field.
+   *
+   * @param string $tableName
+   * @param string $tableKey
+   * @param string $fieldName
+   * @param string $field
+   *
+   * @return bool
+   */
+  public function selectClause(&$tableName, $tableKey, &$fieldName, &$field) {
+    // If you have a field to do special handling on then this is the best place to
+    // do it. Override the entire Select if you are doing something really weird &
+    // wonderful
+    return parent::selectClause(&$tableName, $tableKey, &$fieldName, &$field);
+  } 
 
   function from() {
     $this->_from = NULL;
