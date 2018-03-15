@@ -57,4 +57,16 @@ class Naming {
     return $camelCase;
   }
 
+  /**
+   * Generate a table name for an entity.
+   *
+   * @param string $entity
+   *   Ex: 'FooBar'
+   * @return string
+   *   Ex: 'civicrm_foo_bar'
+   */
+  public static function createTableName($entity) {
+    return 'civicrm_' . strtolower(implode('_', array_filter(preg_split('/(?=[A-Z])/', $entity))));
+  }
+
 }

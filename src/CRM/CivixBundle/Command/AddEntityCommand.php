@@ -12,6 +12,8 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
+use CRM\CivixBundle\Utils\Naming;
+
 use Exception;
 
 class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
@@ -20,8 +22,18 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
   protected function configure() {
     $this
       ->setName('generate:entity')
-      ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL AND INCOMPLETE*)')
-      ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")');
+      ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL*)')
+      ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")')
+      ->addOption('table-name', NULL, InputOption::VALUE_OPTIONAL, 'The SQL table name. (see usage)')
+      ->setHelp('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension.
+This command is experimental. Developer discretion is advised.
+
+In most cases generate:entity is able to derive a suitable snake_case table name
+from The CamelCase <EntityName>. However, in some instances (notably when the
+entity contains a number or a capitalised acronym) the table name may differ
+from your expectations. In these cases, you may wish to set the table name
+explicity.');
+
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
@@ -51,7 +63,7 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
     }
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
-    $ctx['tableName'] = 'civicrm_' . strtolower($input->getArgument('<EntityName>'));
+    $ctx['tableName'] = $input->getOption('table-name') ? $input->getOption('table-name') : Naming::createTableName($input->getArgument('<EntityName>'));
     if (function_exists('civicrm_api_get_function_name')) {
       $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '', self::API_VERSION));
     }

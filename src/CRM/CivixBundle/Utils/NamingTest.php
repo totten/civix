@@ -49,4 +49,22 @@ class NamingTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($expectCamel, Naming::createCamelName($name));
   }
 
+  public function getTableNameExamples() {
+    return [
+      // [$inputEntityName, $expectTableName]
+      ['Foo', 'civicrm_foo'],
+      ['Foobar', 'civicrm_foobar'],
+      ['FooBar', 'civicrm_foo_bar'],
+      ['FooBar2', 'civicrm_foo_bar2'],
+      ['Foo2Bar', 'civicrm_foo2_bar'],
+    ];
+  }
+
+  /**
+   * @dataProvider getTableNameExamples
+   */
+  public function testCreateTableName($inputEntityName, $expectTableName) {
+    $this->assertEquals($expectTableName, Naming::createTableName($inputEntityName));
+  }
+
 }
