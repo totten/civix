@@ -4,33 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c9558250834140a8b05a479694abee9c",
-    "content-hash": "45034298b05d646ec6c828182a2d8247",
+    "content-hash": "d625fb0027921ff57c8c646ecece402d",
     "packages": [
         {
             "name": "civicrm/cv",
-            "version": "v0.1.4",
+            "version": "v0.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/cv.git",
-                "reference": "fe3d591b283bda60a9e3dcebfe21e1820421ff9d"
+                "reference": "e391193c0d1de6183adb83578551f0b646595b7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/civicrm/cv/zipball/fe3d591b283bda60a9e3dcebfe21e1820421ff9d",
-                "reference": "fe3d591b283bda60a9e3dcebfe21e1820421ff9d",
+                "url": "https://api.github.com/repos/civicrm/cv/zipball/e391193c0d1de6183adb83578551f0b646595b7b",
+                "reference": "e391193c0d1de6183adb83578551f0b646595b7b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
+                "php": ">=5.4.0",
                 "psy/psysh": "@stable",
-                "symfony/console": "~2.8",
-                "symfony/filesystem": "~2.8",
-                "symfony/finder": "~2.8",
-                "symfony/process": "~2.8"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
+                "symfony/console": "~2.8|^3",
+                "symfony/filesystem": "~2.8|^3",
+                "symfony/process": "~2.8|^3"
             },
             "bin": [
                 "bin/cv"
@@ -52,7 +47,7 @@
                 }
             ],
             "description": "CLI tool for CiviCRM",
-            "time": "2017-01-03 01:34:53"
+            "time": "2018-03-01T01:44:50+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -85,7 +80,7 @@
                 "MIT"
             ],
             "description": "implementation of xdg base directory specification for php",
-            "time": "2014-10-24 07:27:01"
+            "time": "2014-10-24T07:27:01+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -128,7 +123,7 @@
                     "homepage": "http://www.acci.cz"
                 }
             ],
-            "time": "2014-04-08 15:00:19"
+            "time": "2014-04-08T15:00:19+00:00"
         },
         {
             "name": "jakub-onderka/php-console-highlighter",
@@ -172,7 +167,7 @@
                     "homepage": "http://www.acci.cz/"
                 }
             ],
-            "time": "2015-04-20 18:58:01"
+            "time": "2015-04-20T18:58:01+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -217,7 +212,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2015-09-19 14:15:08"
+            "time": "2015-09-19T14:15:08+00:00"
         },
         {
             "name": "psr/log",
@@ -264,7 +259,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10 12:19:37"
+            "time": "2016-10-10T12:19:37+00:00"
         },
         {
             "name": "psy/psysh",
@@ -337,7 +332,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2016-12-07 17:15:07"
+            "time": "2016-12-07T17:15:07+00:00"
         },
         {
             "name": "symfony/console",
@@ -398,7 +393,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-12-06 11:59:35"
+            "time": "2016-12-06T11:59:35+00:00"
         },
         {
             "name": "symfony/debug",
@@ -455,7 +450,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-15 12:53:17"
+            "time": "2016-11-15T12:53:17+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -504,7 +499,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2016-10-18 04:28:30"
+            "time": "2016-10-18T04:28:30+00:00"
         },
         {
             "name": "symfony/finder",
@@ -553,7 +548,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2016-12-13 09:38:12"
+            "time": "2016-12-13T09:38:12+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -612,7 +607,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/process",
@@ -661,7 +656,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-24 00:43:03"
+            "time": "2016-11-24T00:43:03+00:00"
         },
         {
             "name": "symfony/templating",
@@ -716,7 +711,7 @@
             ],
             "description": "Symfony Templating Component",
             "homepage": "https://symfony.com",
-            "time": "2016-09-06 10:55:00"
+            "time": "2016-09-06T10:55:00+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -779,7 +774,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2016-12-06 16:05:07"
+            "time": "2016-12-06T16:05:07+00:00"
         },
         {
             "name": "totten/license-data",
@@ -809,7 +804,7 @@
                 }
             ],
             "description": "Dataset with open-source licenses",
-            "time": "2015-08-18 16:41:33"
+            "time": "2015-08-18T16:41:33+00:00"
         }
     ],
     "packages-dev": [],
