@@ -272,10 +272,10 @@ function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
       if (empty($e['module'])) {
         $e['module'] = E::LONG_NAME;
       }
-      $entities[] = $e;
       if (empty($e['params']['version'])) {
         $e['params']['version'] = '3';
       }
+      $entities[] = $e;
     }
   }
 }
