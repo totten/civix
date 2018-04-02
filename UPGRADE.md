@@ -41,6 +41,25 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
+### Upgrade to v18.02.0+: hook_civicrm_entityTypes() (experimental)
+
+Civix-based modules should pass-through any custom database entities.  The
+functionality is generally experimental, but you may safely add the required
+hook stub.
+
+```php
+/**
+ * Implements hook_civicrm_entityTypes().
+ *
+ * Declare entity types provided by this module.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
+ */
+function myext_civicrm_entityTypes(&$entityTypes) {
+  _myext_civix_civicrm_entityTypes($entityTypes);
+}
+```
+
 ### Upgrade to v18.02.0+: PHPUnit (Optional)
 
 The template for `tests/phpunit/bootstrap.php` changed slightly to make `phpunit` work in symlinked directory structures. You may want to manually apply the changes from https://github.com/totten/civix/pull/121.
