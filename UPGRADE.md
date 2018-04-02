@@ -41,11 +41,14 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
-### Upgrade to v18.02.0+: hook_civicrm_entityTypes() (experimental)
+### Upgrade to v18.02.0+: hook_civicrm_entityTypes
 
-Civix-based modules should pass-through any custom database entities.  The
-functionality is generally experimental, but you may safely add the required
-hook stub.
+Civix-based modules should pass metadata about custom database entities
+through `hook_civicrm_entityTypes`.
+
+At time of writing, the functionality is flagged as *experimental*.
+Never-the-less, you may safely add the associated hook stub (regardless of
+whether you use the functionality).
 
 ```php
 /**
