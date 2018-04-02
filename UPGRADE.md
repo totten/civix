@@ -62,7 +62,7 @@ civix v17.08.1 makes corrections to the behavior of the new helpers, `E::path()`
 more consistent in that:
 
  * `E::path()` and `E::url()` (without arguments) both return the folder *without* a trailing `/`.
- * `E::path($file)` and `E::path($url)` (with an argument) both return the folder plus `/` plus filename.
+ * `E::path($file)` and `E::url($file)` (with an argument) both return the folder plus `/` plus filename.
 
 Suggestion: search your codebase for instances of `E::path` or `E::url` to ensure consistent path construction.
 
