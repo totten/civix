@@ -31,7 +31,7 @@ use Civi\Test\EndToEndInterface;
 class <?php echo $testClass ?> extends \PHPUnit_Framework_TestCase implements EndToEndInterface {
 
   public static function setUpBeforeClass() {
-    // See: https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md
+    // See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
 
     // Example: Install this extension. Don't care about anything else.
     \Civi\Test::e2e()->installMe(__DIR__)->apply();
