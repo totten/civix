@@ -31,7 +31,11 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>Require access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-      return;
+      return 1;
+    }
+    if (version_compare(\CRM_Utils_System::version(), '4.7.0', '<=')) {
+      $output->writeln("<error>This command requires CiviCRM 4.7+.</error>");
+      return 1;
     }
 
     $ctx = [];
