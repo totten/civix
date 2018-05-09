@@ -111,7 +111,7 @@ explicity.');
     $ext->init($ctx);
     $ext->save($ctx, $output);
 
-    $output->writeln('<comment>You may want to run `civix generate:entity-boilerplate`, and uninstall and re-enable the extension to update your entities.</comment>');
-
+    $output->writeln('<comment>You should now make any changes to the entity xml file and run `civix generate:entity-boilerplate` to generate necessary boilerplate.</comment>');
+    $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
   }
 }
