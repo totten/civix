@@ -266,6 +266,7 @@ function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
  */
 function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
   $mgdFiles = _<?php echo $mainFile ?>_civix_find_files(__DIR__, '*.mgd.php');
+  sort($mgdFiles);
   foreach ($mgdFiles as $file) {
     $es = include $file;
     foreach ($es as $e) {
