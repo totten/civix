@@ -12,6 +12,7 @@ use Civi\Test\TransactionalInterface;
  * @group headless
  */
 class <?php echo $testClassName ?> extends \PHPUnit_Framework_TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
+  use \Civi\Test\Api3TestTrait;
 
   /**
    * Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
