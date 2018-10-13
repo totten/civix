@@ -41,6 +41,24 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
+### Upgrade to v18.10.0+: hook_civicrm_themes
+
+Civix-based modules should implement `hook_civicrm_themes` to handle any
+theme registrations.
+
+At time of writing, the functionality is flagged as *experimental*.
+Never-the-less, you may safely add the associated hook stub (regardless of
+whether you use the functionality).
+
+```php
+/**
+ * Implements hook_civicrm_themes().
+ */
+function myext_civicrm_themes(&$themes) {
+  _myext_civix_civicrm_themes($themes);
+}
+```
+
 ### Upgrade to v18.02.0+: hook_civicrm_entityTypes
 
 Civix-based modules should pass metadata about custom database entities
