@@ -73,19 +73,21 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
       $xmlString = file_get_contents($xmlSchema);
       $dom->loadXML($xmlString);
       $xml = simplexml_import_dom($dom);
-
+      if (!$xml) {
+        $output->writeln('<error>There is an error in the XML for ' . $xmlSchema . '</error>');
+        continue;
+      }
       $specification->getTable($xml, $database, $tables);
 
       $tables[(string) $xml->name]['sourceFile'] = $xmlSchema;
       $config->tables = $tables;
-
-      $dao = new \CRM_Core_CodeGen_DAO($config, (string) $xml->name);
+      $_namespace = ' ' . preg_replace(':/:', '_', $ctx['namespace']);
+      $dao = new \CRM_Core_CodeGen_DAO($config, (string) $xml->name, "{$_namespace}_ExtensionUtil::ts");
       ob_start(); // Don't display gencode's output
       $dao->run();
       ob_end_clean(); // Don't display gencode's output
       $daoFileName = $basedir->string("{$xml->base}/DAO/{$xml->class}.php");
       $output->writeln("<info>Write $daoFileName</info>");
-
     }
 
     $schema = new \CRM_Core_CodeGen_Schema($config);
