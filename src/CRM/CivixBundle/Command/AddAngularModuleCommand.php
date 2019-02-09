@@ -63,6 +63,7 @@ class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command
         'partials' => [
           'ang/' . $ctx['angularModuleName'],
         ],
+        'requires' => ['crmUi', 'crmUtil', 'ngRoute'],
         'settings' => [],
       ];
       $header = "// This file declares an Angular module which can be autoloaded\n"
