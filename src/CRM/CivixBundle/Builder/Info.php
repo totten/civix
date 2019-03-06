@@ -88,4 +88,13 @@ class Info extends XML {
     return (string) $attrs['type'];
   }
 
+  /**
+   * Get the user-friendly name of the extension.
+   *
+   * @return string
+   */
+  public function getExtensionName() {
+    return empty($this->xml->name) ? 'FIXME' : $this->xml->name;
+  }
+
 }

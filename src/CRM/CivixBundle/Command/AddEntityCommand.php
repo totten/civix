@@ -74,16 +74,19 @@ explicity.');
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'] . '.php');
+    $ctx['api4File'] = $basedir->string('Civi', 'Api4', $ctx['entityNameCamel'] . '.php');
     $ctx['daoClassName'] = strtr($ctx['namespace'], '/', '_') . '_DAO_' . $input->getArgument('<EntityName>');
     $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
     $ctx['baoClassName'] = strtr($ctx['namespace'], '/', '_') . '_BAO_' . $input->getArgument('<EntityName>');
     $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
     $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
     $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
+    $ctx['extensionName'] = $info->getExtensionName();
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
       dirname($ctx['apiFile']),
+      dirname($ctx['api4File']),
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
       dirname($ctx['schemaFile']),
@@ -91,6 +94,7 @@ explicity.');
     $ext->builders['dirs']->save($ctx, $output);
 
     $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
+    $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Services::templating());
     $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Services::templating());
     $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Services::templating());
 
@@ -114,4 +118,5 @@ explicity.');
     $output->writeln('<comment>You should now make any changes to the entity xml file and run `civix generate:entity-boilerplate` to generate necessary boilerplate.</comment>');
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
   }
+
 }
