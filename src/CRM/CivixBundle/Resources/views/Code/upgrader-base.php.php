@@ -284,7 +284,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   // ******** Hook delegates ********
 
   /**
-   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
+   * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
    */
   public function onInstall() {
     $files = glob($this->extensionDir . '/sql/*_install.sql');
@@ -311,7 +311,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+   * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
    */
   public function onPostInstall() {
     $revisions = $this->getRevisions();
@@ -324,7 +324,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
+   * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
    */
   public function onUninstall() {
     $files = glob($this->extensionDir . '/sql/*_uninstall.mysql.tpl');
@@ -345,7 +345,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
+   * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
    */
   public function onEnable() {
     // stub for possible future use
@@ -355,7 +355,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
-   * @see https://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
+   * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
    */
   public function onDisable() {
     // stub for possible future use

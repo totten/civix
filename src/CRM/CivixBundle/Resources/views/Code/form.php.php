@@ -8,7 +8,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 /**
  * Form controller class
  *
- * @see https://wiki.civicrm.org/confluence/display/CRMDOC/QuickForm+Reference
+ * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
 class <?php echo preg_replace(':/:', '_', $fullClassName) ?> extends CRM_Core_Form {
   public function buildQuickForm() {
