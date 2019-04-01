@@ -10,7 +10,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
  *
  * @param array $spec description of fields supported by this API call
  * @return void
- * @see http://wiki.civicrm.org/confluence/display/CRMDOC/API+Architecture+Standards
+ * @see https://docs.civicrm.org/dev/en/latest/framework/api-architecture/
  */
 function _<?php echo $apiFunction ?>_spec(&$spec) {
   $spec['magicword']['api.required'] = 1;
