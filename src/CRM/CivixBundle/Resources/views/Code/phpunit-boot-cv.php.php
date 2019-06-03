@@ -34,7 +34,7 @@ function cv($cmd, $decode = 'json') {
 
   // Execute `cv` in the original folder. This is a work-around for
   // phpunit/codeception, which seem to manipulate PWD.
-  $cmd = sprintf('cd %s; %s', escapeshellarg(getenv('PWD')), $cmd);
+  $cmd = sprintf('cd %s && %s', escapeshellarg(getenv('PWD')), $cmd);
 
   $process = proc_open($cmd, $descriptorSpec, $pipes, __DIR__);
   putenv("CV_OUTPUT=$oldOutput");
