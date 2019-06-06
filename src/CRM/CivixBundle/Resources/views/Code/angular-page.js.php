@@ -3,6 +3,7 @@
   angular.module('<?php echo $angularModuleName ?>').config(function($routeProvider) {
       $routeProvider.when('/<?php echo $ctrlRelPath ?>', {
         controller: '<?php echo $ctrlName ?>',
+        controllerAs : '<?php echo $ctrlName ?>',
         templateUrl: '<?php echo $htmlName ?>',
 
         // If you need to look up data when opening the page, list it out
@@ -27,11 +28,12 @@
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('<?php echo $tsDomain ?>');
     var hs = $scope.hs = crmUiHelp({file: '<?php echo $hlpName ?>'}); // See: templates/<?php echo $hlpName ?>.hlp
+    var vm = this;
 
     // We have myContact available in JS. We also want to reference it in HTML.
-    $scope.myContact = myContact;
+    vm.myContact = myContact;
 
-    $scope.save = function save() {
+    vm.save = function save() {
       return crmStatus(
         // Status messages. For defaults, just use "{}"
         {start: ts('Saving...'), success: ts('Saved')},

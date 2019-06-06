@@ -1,7 +1,7 @@
 <div class="crm-container">
-  <div crm-ui-debug="myContact"></div>
+  <div crm-ui-debug="'<?php echo $ctrlName ?>'.myContact"></div>
 
-  <h1 crm-page-title>{{ts('About %1', {1: myContact.first_name + ' ' + myContact.last_name})}}</h1>
+  <h1 crm-page-title>{{ts('About %1', {1: '<?php echo $ctrlName ?>'.myContact.first_name + ' ' + '<?php echo $ctrlName ?>'.myContact.last_name})}}</h1>
 
   <form name="myForm" crm-ui-id-scope>
 
@@ -12,9 +12,9 @@
     </div>
 
     <div crm-ui-accordion="{title: ts('Greeting')}">
-      <p ng-show="myContact.first_name">{{ ts('Hello, %1.', {1: myContact.first_name}) }}</p>
+      <p ng-show="'<?php echo $ctrlName ?>'.myContact.first_name">{{ ts('Hello, %1.', {1: myContact.first_name}) }}</p>
 
-      <p ng-show="!myContact.first_name">{{ ts('Hello, stranger.') }}</p>
+      <p ng-show="'<?php echo $ctrlName ?>'.!myContact.first_name">{{ ts('Hello, stranger.') }}</p>
     </div>
 
     <div crm-ui-accordion="{title: ts('About Me')}">
@@ -24,14 +24,14 @@
             <input
               crm-ui-id="myForm.first_name"
               name="first_name"
-              ng-model="myContact.first_name"
+              ng-model="'<?php echo $ctrlName ?>'.myContact.first_name"
               class="crm-form-text"
               placeholder="{{ts('First')}}"
               />
             <input
               crm-ui-id="myForm.last_name"
               name="last_name"
-              ng-model="myContact.last_name"
+              ng-model="'<?php echo $ctrlName ?>'.myContact.last_name"
               class="crm-form-text"
               placeholder="{{ts('Last')}}"
               />
