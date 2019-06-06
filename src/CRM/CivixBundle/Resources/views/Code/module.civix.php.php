@@ -438,14 +438,8 @@ function _<?php echo $mainFile ?>_civix_fixNavigationMenuItems(&$nodes, &$maxNav
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
  */
 function _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  static $configured = FALSE;
-  if ($configured) {
-    return;
-  }
-  $configured = TRUE;
-
   $settingsDir = __DIR__ . DIRECTORY_SEPARATOR . 'settings';
-  if (is_dir($settingsDir) && !in_array($settingsDir, $metaDataFolders)) {
+  if (!in_array($settingsDir, $metaDataFolders) && is_dir($settingsDir)) {
     $metaDataFolders[] = $settingsDir;
   }
 }
