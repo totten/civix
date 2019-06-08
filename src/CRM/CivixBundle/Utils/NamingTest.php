@@ -2,7 +2,7 @@
 
 namespace CRM\CivixBundle\Utils;
 
-class NamingTest extends \PHPUnit_Framework_TestCase {
+class NamingTest extends \PHPUnit\Framework\TestCase {
 
   public function getFullNameExamples() {
     return [
