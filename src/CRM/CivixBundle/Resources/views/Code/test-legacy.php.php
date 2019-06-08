@@ -41,6 +41,7 @@ class <?php echo $testClass ?> extends \CiviUnitTestCase implements HeadlessInte
    * Example: Test that a version is returned.
    */
   public function testWellFormedVersion() {
+    $this->assertNotEmpty(E::SHORT_NAME);
     $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
 

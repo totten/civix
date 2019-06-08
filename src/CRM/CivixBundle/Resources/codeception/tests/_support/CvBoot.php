@@ -41,6 +41,9 @@ class CvBoot extends \Codeception\Extension {
     'dummy_url' => 'http://localhost/myapp',
   );
 
+  /**
+   * @var string|NULL
+   */
   private $startUrl = NULL;
 
   public function beforeSuite(\Codeception\Event\SuiteEvent $e) {
