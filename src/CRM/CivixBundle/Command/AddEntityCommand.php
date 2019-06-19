@@ -103,7 +103,7 @@ explicity.');
         ],
       ];
       $header = "// This file declares a new entity type. For more details, see \"hook_civicrm_entityTypes\" at:\n"
-        . "// http://wiki.civicrm.org/confluence/display/CRMDOC/Hook+Reference";
+        . "// https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes";
       $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile'], $header);
       $ext->builders['entityType.php']->set($mgdEntities);
     }

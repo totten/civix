@@ -67,14 +67,14 @@ class TestRunCommand extends Command {
     $phpunit_bin = "$civicrm_root/tools/scripts/phpunit";
     if (!file_exists($phpunit_bin)) {
       $output->writeln("<error>Failed to locate PHPUnit:\n  $phpunit_bin</error>");
-      $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
+      $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  https://docs.civicrm.org/dev/en/latest/testing/#setup</error>");
       return;
     }
     $test_settings_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.php";
     $test_settings_dist_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.dist.php";
     if (!file_exists($test_settings_path) && !file_exists($test_settings_dist_path)) {
       $output->writeln("<error>Failed to locate test settings:\n  $test_settings_path</error>");
-      $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  http://wiki.civicrm.org/confluence/display/CRM/Setting+up+your+personal+testing+sandbox+HOWTO</error>");
+      $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  https://docs.civicrm.org/dev/en/latest/testing/#setup</error>");
       return;
     }
     if (file_exists($test_settings_path) && self::checkLegacyExtensionSettings($test_settings_path)) {

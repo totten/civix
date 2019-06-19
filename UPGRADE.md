@@ -56,7 +56,7 @@ whether you use the functionality).
  *
  * Declare entity types provided by this module.
  *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
  */
 function myext_civicrm_entityTypes(&$entityTypes) {
   _myext_civix_civicrm_entityTypes($entityTypes);
@@ -140,7 +140,7 @@ store schema versions in the `civicrm_extension` table.
 /**
  * Implements hook_civicrm_postInstall().
  *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
  */
 function myext_civicrm_postInstall() {
   _myext_civix_civicrm_postInstall();
@@ -192,7 +192,7 @@ the helper function for `navigationMenu`.
 /**
  * Implements hook_civicrm_navigationMenu().
  *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
  */
 function myext_civicrm_navigationMenu(&$menu) {
   _myext_civix_insert_navigation_menu($menu, NULL, array(
@@ -221,7 +221,7 @@ and auto-register them with the Civi-Angular base app (`civicrm/a/#`).
  * Note: This hook only runs in CiviCRM 4.5+. It may
  * use features only available in v4.6+.
  *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
  */
 function myext_civicrm_angularModules(&$angularModules) {
   _myext_civix_civicrm_angularModules($angularModules);
@@ -241,7 +241,7 @@ Civix-based modules should scan for any CiviCase XML files in
  *
  * Note: This hook only runs in CiviCRM 4.4+.
  *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
  */
 function myext_civicrm_caseTypes(&$caseTypes) {
   _myext_civix_civicrm_caseTypes($caseTypes);
@@ -257,7 +257,7 @@ Civix-based modules should scan for any settings files in
 /**
  * Implementation of hook_civicrm_alterSettingsFolders
  *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
  */
 function myext_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _myext_civix_civicrm_alterSettingsFolders($metaDataFolders);

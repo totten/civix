@@ -68,7 +68,7 @@ class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command
       ];
       $header = "// This file declares an Angular module which can be autoloaded\n"
         . "// in CiviCRM. See also:\n"
-        . "// http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules\n";
+        . "// \https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules/n";
       $ext->builders['mgd.php'] = new PhpData($ctx['angularModulePhp'], $header);
       $ext->builders['mgd.php']->set($angModMeta);
     }
