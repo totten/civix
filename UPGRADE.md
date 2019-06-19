@@ -41,7 +41,7 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
-### Upgrade to v18.10.0+: hook_civicrm_themes
+### Upgrade to v19.06.2+: hook_civicrm_themes
 
 Civix-based modules should implement `hook_civicrm_themes` to handle any
 theme registrations.
