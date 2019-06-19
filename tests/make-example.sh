@@ -71,6 +71,8 @@ pushd $WORKINGDIR
     $CIVIX $VERBOSITY generate:angular-module
     $CIVIX $VERBOSITY generate:angular-page FooCtrl foo
     $CIVIX $VERBOSITY generate:angular-directive foo-bar
+    $CIVIX $VERBOSITY generate:theme
+    $CIVIX $VERBOSITY generate:theme extratheme
   popd
 
   cv api extension.install key=$EXMODULE
