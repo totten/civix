@@ -73,7 +73,7 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
       $header = "// This file declares a managed database record of type \"CustomSearch\".\n"
         . "// The record will be automatically inserted, updated, or deleted from the\n"
         . "// database as appropriate. For more details, see \"hook_civicrm_managed\" at:\n"
-        . "// http://wiki.civicrm.org/confluence/display/CRMDOC42/Hook+Reference";
+        . "// https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed";
       $ext->builders['mgd.php'] = new PhpData($ctx['searchMgdFile'], $header);
       $ext->builders['mgd.php']->set($mgdEntities);
     }
