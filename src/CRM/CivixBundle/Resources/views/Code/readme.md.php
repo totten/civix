@@ -9,7 +9,7 @@ The extension is licensed under [<?php echo $license ?>](LICENSE.txt).
 
 ## Requirements
 
-* PHP v5.6+
+* PHP v7.0+
 * CiviCRM (*FIXME: Version number*)
 
 ## Installation (Web UI)

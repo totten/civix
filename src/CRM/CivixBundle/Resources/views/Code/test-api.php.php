@@ -15,7 +15,10 @@ class <?php echo $testClassName ?> extends \PHPUnit\Framework\TestCase implement
   use \Civi\Test\Api3TestTrait;
 
   /**
+   * Set up for headless tests.
+   *
    * Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
+   *
    * See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
    */
   public function setUpHeadless() {
