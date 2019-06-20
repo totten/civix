@@ -28,6 +28,8 @@ use Civi\Test\TransactionalInterface;
  */
 class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
 
+  use \Civi\Test\Api3DocTrait;
+
   public function setUpHeadless() {
     // Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
     // See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest

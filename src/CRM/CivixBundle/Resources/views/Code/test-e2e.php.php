@@ -30,6 +30,8 @@ use Civi\Test\EndToEndInterface;
  */
 class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements EndToEndInterface {
 
+  use \Civi\Test\Api3DocTrait;
+
   public static function setUpBeforeClass() {
     // See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
 
