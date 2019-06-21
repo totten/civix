@@ -51,7 +51,7 @@ For more, see https://docs.angularjs.org/guide');
       return;
     }
 
-    $ctx['tsDomain'] = $ctx['mainFile'];
+    $ctx['tsDomain'] = (string) $attrs['key'];
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
     $ctx['ctrlSuffix'] = $input->getArgument('<Ctrl>');
     $ctx['ctrlRelPath'] = $input->getArgument('<RelPath>');

@@ -46,7 +46,7 @@ For more, see https://docs.angularjs.org/guide/directive');
       return;
     }
 
-    $ctx['tsDomain'] = $ctx['mainFile'];
+    $ctx['tsDomain'] = (string) $attrs['key'];
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
     $ctx['dirNameCamel'] = $this->toCamel($input->getArgument('<directive-name>'));
     $ctx['dirNameHyp'] = $this->toHyphen($input->getArgument('<directive-name>'));
