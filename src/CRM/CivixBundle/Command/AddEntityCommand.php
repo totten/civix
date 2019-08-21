@@ -125,7 +125,6 @@ explicity.');
     $ext->init($ctx);
     $ext->save($ctx, $output);
 
-    print_r(['$apiVersions'=>$apiVersions]);
     if (count($apiVersions) >= 2) {
       $output->writeln('<comment>Generated API skeletons for APIv3 and APIv4.</comment>');
     }
