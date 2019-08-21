@@ -25,6 +25,7 @@ class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
       ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL*)')
       ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")')
       ->addOption('table-name', NULL, InputOption::VALUE_OPTIONAL, 'The SQL table name. (see usage)')
+      ->addOption('api-version', 'A', InputOption::VALUE_REQUIRED, 'Comma-separated list of versions (3,4)', '4')
       ->setHelp('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension.
 This command is experimental. Developer discretion is advised.
 
@@ -43,6 +44,11 @@ explicity.');
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>Require access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return;
+    }
+
+    $apiVersions = explode(',', $input->getOption('api-version'));
+    if (!empty(array_diff($apiVersions, ['3', '4']))) {
+      throw new Exception("In --api-versions, found unrecognized versions. Expected: '3' and/or '4'");
     }
 
     $ctx = [];
@@ -74,23 +80,31 @@ explicity.');
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'] . '.php');
+    $ctx['api4File'] = $basedir->string('Civi', 'Api4', $ctx['entityNameCamel'] . '.php');
     $ctx['daoClassName'] = strtr($ctx['namespace'], '/', '_') . '_DAO_' . $input->getArgument('<EntityName>');
     $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
     $ctx['baoClassName'] = strtr($ctx['namespace'], '/', '_') . '_BAO_' . $input->getArgument('<EntityName>');
     $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
     $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
     $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
+    $ctx['extensionName'] = $info->getExtensionName();
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
       dirname($ctx['apiFile']),
+      dirname($ctx['api4File']),
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
       dirname($ctx['schemaFile']),
     ]);
     $ext->builders['dirs']->save($ctx, $output);
 
-    $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
+    if (in_array('3', $apiVersions)) {
+      $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
+    }
+    if (in_array('4', $apiVersions)) {
+      $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Services::templating());
+    }
     $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Services::templating());
     $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Services::templating());
 
@@ -111,7 +125,18 @@ explicity.');
     $ext->init($ctx);
     $ext->save($ctx, $output);
 
+    if (count($apiVersions) >= 2) {
+      $output->writeln('<comment>Generated API skeletons for APIv3 and APIv4.</comment>');
+    }
+    elseif ($apiVersions == ['3']) {
+      $output->writeln('<comment>Generated API skeletons for APIv3. To generate APIv4, specify <info>--api-version=4</info></comment>');
+    }
+    elseif ($apiVersions == ['4']) {
+      $output->writeln('<comment>Generated API skeletons for APIv4. To generate APIv3, specify <info>--api-version=3</info></comment>');
+    }
+
     $output->writeln('<comment>You should now make any changes to the entity xml file and run `civix generate:entity-boilerplate` to generate necessary boilerplate.</comment>');
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
   }
+
 }

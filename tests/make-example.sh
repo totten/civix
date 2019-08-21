@@ -3,7 +3,7 @@
 ## Quick hack for manually testing all commands
 BUILDDIR="$1"
 BUILDNAME="$2"
-WORKINGDIR="$BUILDDIR/build/$BUILDNAME/sites/all/modules/civicrm/tools/extensions"
+WORKINGDIR="$BUILDDIR/build/$BUILDNAME/web/sites/all/modules/civicrm/tools/extensions"
 EXMODULE=org.civicrm.civixexample
 
 # validate environment
@@ -54,7 +54,9 @@ pushd $WORKINGDIR
     $CIVIX $VERBOSITY generate:api MyEntity MyAction
     $CIVIX $VERBOSITY generate:case-type MyLabel MyName
     # $CIVIX $VERBOSITY generate:custom-xml -f --data="FIXME" --uf="FIXME"
-    $CIVIX $VERBOSITY generate:entity MyEntity
+    $CIVIX $VERBOSITY generate:entity MyEntityFour
+    $CIVIX $VERBOSITY generate:entity MyEntityThree -A3
+    $CIVIX $VERBOSITY generate:entity MyEntityThreeFour -A3,4
     $CIVIX $VERBOSITY generate:entity-boilerplate
     $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
     $CIVIX $VERBOSITY generate:form My_StuffyForm civicrm/my-stuffy-form
