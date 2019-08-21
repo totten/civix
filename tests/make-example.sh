@@ -54,7 +54,9 @@ pushd $WORKINGDIR
     $CIVIX $VERBOSITY generate:api MyEntity MyAction
     $CIVIX $VERBOSITY generate:case-type MyLabel MyName
     # $CIVIX $VERBOSITY generate:custom-xml -f --data="FIXME" --uf="FIXME"
-    $CIVIX $VERBOSITY generate:entity MyEntity
+    $CIVIX $VERBOSITY generate:entity MyEntityFour
+    $CIVIX $VERBOSITY generate:entity MyEntityThree -A3
+    $CIVIX $VERBOSITY generate:entity MyEntityThreeFour -A3,4
     $CIVIX $VERBOSITY generate:entity-boilerplate
     $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
     $CIVIX $VERBOSITY generate:form My_StuffyForm civicrm/my-stuffy-form
