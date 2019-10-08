@@ -9,8 +9,10 @@ markdown_extensions:
   - attr_list
   - admonition
   - def_list
-  - codehilite(guess_lang=false)
-  - toc(permalink=true)
+  - codehilite
+      guess_lang: false
+  - toc:
+      permalink: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.tilde
