@@ -108,6 +108,7 @@ class InitCommand extends AbstractCommand {
     $basedir = new Path($ctx['basedir']);
     $ext->builders['dirs'] = new Dirs([
       $basedir->string('build'),
+      $basedir->string('docs'),
       $basedir->string('templates'),
       $basedir->string('xml'),
       $basedir->string('images'),
@@ -117,6 +118,8 @@ class InitCommand extends AbstractCommand {
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
+    $ext->builders['mkdocs'] = new Template('mkdocs.yml.php', $basedir->string('mkdocs.yml'), FALSE, Services::templating());
+    $ext->builders['docindex'] = new Template('index.md.php', $basedir->string('docs/index.md'), FALSE, Services::templating());
     $ext->builders['screenshot'] = new CopyFile(dirname(dirname(dirname(dirname(__DIR__)))) . '/images/placeholder.png', $basedir->string('images/screenshot.png'), FALSE);
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
