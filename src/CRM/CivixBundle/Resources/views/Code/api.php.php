@@ -37,7 +37,7 @@ function <?php echo $apiFunction ?>($params) {
     // ALTERNATIVE: $returnValues = array("Some value"); // OK, return a single value
 
     // Spec: civicrm_api3_create_success($values = 1, $params = array(), $entity = NULL, $action = NULL)
-    return civicrm_api3_create_success($returnValues, $params, 'NewEntity', 'NewAction');
+    return civicrm_api3_create_success($returnValues, $params, '<?php echo $entityNameCamel; ?>', '<?php echo $actionNameCamel; ?>');
   }
   else {
     throw new API_Exception(/*errorMessage*/ 'Everyone knows that the magicword is "sesame"', /*errorCode*/ 1234);
