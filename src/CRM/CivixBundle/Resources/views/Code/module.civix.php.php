@@ -27,9 +27,9 @@ class <?php echo $_namespace ?>_ExtensionUtil {
    *   Translated text.
    * @see ts
    */
-  public static function ts($text, $params = array()) {
+  public static function ts($text, $params = []) {
     if (!array_key_exists('domain', $params)) {
-      $params['domain'] = array(self::LONG_NAME, NULL);
+      $params['domain'] = [self::LONG_NAME, NULL];
     }
     return ts($text, $params);
   }
@@ -103,7 +103,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
     array_unshift($template->template_dir, $extDir);
   }
   else {
-    $template->template_dir = array($extDir, $template->template_dir);
+    $template->template_dir = [$extDir, $template->template_dir];
   }
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
@@ -143,7 +143,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_install() {
 function _<?php echo $mainFile ?>_civix_civicrm_postInstall() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    if (is_callable(array($upgrader, 'onPostInstall'))) {
+    if (is_callable([$upgrader, 'onPostInstall'])) {
       $upgrader->onPostInstall();
     }
   }
@@ -169,7 +169,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
 function _<?php echo $mainFile ?>_civix_civicrm_enable() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    if (is_callable(array($upgrader, 'onEnable'))) {
+    if (is_callable([$upgrader, 'onEnable'])) {
       $upgrader->onEnable();
     }
   }
@@ -184,7 +184,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
 function _<?php echo $mainFile ?>_civix_civicrm_disable() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    if (is_callable(array($upgrader, 'onDisable'))) {
+    if (is_callable([$upgrader, 'onDisable'])) {
       $upgrader->onDisable();
     }
   }
@@ -220,22 +220,23 @@ function _<?php echo $mainFile ?>_civix_upgrader() {
 }
 
 /**
- * Search directory tree for files which match a glob pattern
+ * Search directory tree for files which match a glob pattern.
  *
  * Note: Dot-directories (like "..", ".git", or ".svn") will be ignored.
  * Note: In Civi 4.3+, delegate to CRM_Utils_File::findFiles()
  *
- * @param $dir string, base dir
- * @param $pattern string, glob pattern, eg "*.txt"
+ * @param string $dir base dir
+ * @param string $pattern , glob pattern, eg "*.txt"
+ *
  * @return array(string)
  */
 function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
-  if (is_callable(array('CRM_Utils_File', 'findFiles'))) {
+  if (is_callable(['CRM_Utils_File', 'findFiles'])) {
     return CRM_Utils_File::findFiles($dir, $pattern);
   }
 
-  $todos = array($dir);
-  $result = array();
+  $todos = [$dir];
+  $result = [];
   while (!empty($todos)) {
     $subdir = array_shift($todos);
     foreach (_<?php echo $mainFile ?>_civix_glob("$subdir/$pattern") as $match) {
@@ -299,14 +300,13 @@ function _<?php echo $mainFile ?>_civix_civicrm_caseTypes(&$caseTypes) {
     $name = preg_replace('/\.xml$/', '', basename($file));
     if ($name != CRM_Case_XMLProcessor::mungeCaseType($name)) {
       $errorMessage = sprintf("Case-type file name is malformed (%s vs %s)", $name, CRM_Case_XMLProcessor::mungeCaseType($name));
-      CRM_Core_Error::fatal($errorMessage);
-      // throw new CRM_Core_Exception($errorMessage);
+      throw new CRM_Core_Exception($errorMessage);
     }
-    $caseTypes[$name] = array(
+    $caseTypes[$name] = [
       'module' => E::LONG_NAME,
       'name' => $name,
       'file' => $file,
-    );
+    ];
   }
 }
 
@@ -364,11 +364,12 @@ function _<?php echo $mainFile ?>_civix_civicrm_themes(&$themes) {
  *
  * @link http://php.net/glob
  * @param string $pattern
+ *
  * @return array, possibly empty
  */
 function _<?php echo $mainFile ?>_civix_glob($pattern) {
   $result = glob($pattern);
-  return is_array($result) ? $result : array();
+  return is_array($result) ? $result : [];
 }
 
 /**
@@ -379,16 +380,18 @@ function _<?php echo $mainFile ?>_civix_glob($pattern) {
  *    'Mailing', or 'Administer/System Settings'
  * @param array $item - the item to insert (parent/child attributes will be
  *    filled for you)
+ *
+ * @return bool
  */
 function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $item) {
   // If we are done going down the path, insert menu
   if (empty($path)) {
-    $menu[] = array(
-      'attributes' => array_merge(array(
+    $menu[] = [
+      'attributes' => array_merge([
         'label'      => CRM_Utils_Array::value('name', $item),
         'active'     => 1,
-      ), $item),
-    );
+      ], $item),
+    ];
     return TRUE;
   }
   else {
@@ -399,7 +402,7 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
     foreach ($menu as $key => &$entry) {
       if ($entry['attributes']['name'] == $first) {
         if (!isset($entry['child'])) {
-          $entry['child'] = array();
+          $entry['child'] = [];
         }
         $found = _<?php echo $mainFile ?>_civix_insert_navigation_menu($entry['child'], implode('/', $path), $item, $key);
       }
@@ -412,7 +415,7 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
  * (Delegated) Implements hook_civicrm_navigationMenu().
  */
 function _<?php echo $mainFile ?>_civix_navigationMenu(&$nodes) {
-  if (!is_callable(array('CRM_Core_BAO_Navigation', 'fixNavigationMenu'))) {
+  if (!is_callable(['CRM_Core_BAO_Navigation', 'fixNavigationMenu'])) {
     _<?php echo $mainFile ?>_civix_fixNavigationMenu($nodes);
   }
 }
