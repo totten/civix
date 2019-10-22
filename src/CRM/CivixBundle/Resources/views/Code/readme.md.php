@@ -12,29 +12,9 @@ The extension is licensed under [<?php echo $license ?>](LICENSE.txt).
 * PHP v7.0+
 * CiviCRM (*FIXME: Version number*)
 
-## Installation (Web UI)
+## Installation
 
-This extension has not yet been published for installation via the web UI.
-
-## Installation (CLI, Zip)
-
-Sysadmins and developers may download the `.zip` file for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-cd <extension-dir>
-cv dl <?php echo $fullName; ?>@https://github.com/FIXME/<?php echo $fullName; ?>/archive/master.zip
-```
-
-## Installation (CLI, Git)
-
-Sysadmins and developers may clone the [Git](https://en.wikipedia.org/wiki/Git) repo for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-git clone https://github.com/FIXME/<?php echo $fullName; ?>.git
-cv en <?php echo $mainFile . "\n"; ?>
-```
+See: https://docs.civicrm.org/sysadmin/en/latest/customize/extensions/#installing-a-new-extension
 
 ## Usage
 
