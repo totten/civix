@@ -43,6 +43,6 @@ function <?php echo $apiFunction ?>($params) {
     return civicrm_api3_create_success($returnValues, $params, '<?php echo $entityNameCamel; ?>', '<?php echo $actionNameCamel; ?>');
   }
   else {
-    throw new API_Exception(/*errorMessage*/ 'Everyone knows that the magicword is "sesame"');
+    throw new API_Exception(/*error_message*/ 'Everyone knows that the magicword is "sesame"', /*error_code*/ 'magicword_incorrect');
   }
 }
