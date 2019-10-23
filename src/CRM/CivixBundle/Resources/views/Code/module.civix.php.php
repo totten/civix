@@ -401,7 +401,7 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
         if (!isset($entry['child'])) {
           $entry['child'] = array();
         }
-        $found = _<?php echo $mainFile ?>_civix_insert_navigation_menu($entry['child'], implode('/', $path), $item, $key);
+        $found = _<?php echo $mainFile ?>_civix_insert_navigation_menu($entry['child'], implode('/', $path), $item);
       }
     }
     return $found;
