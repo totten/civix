@@ -42,6 +42,14 @@ class Info extends XML {
     $xml->addChild('compatibility')->addChild('ver', '5.0');
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
+    // APIv4 will look for classes+files matching 'Civi/Api4', and
+    // classes for this ext should be 'Civi\MyExt', so this is the
+    // simplest default.
+    $classloader = $xml->addChild('classloader');
+    $classloaderRule = $classloader->addChild('psr4');
+    $classloaderRule->addAttribute('prefix', 'Civi\\');
+    $classloaderRule->addAttribute('path', 'Civi');
+
     // store extra metadata to facilitate code manipulation
     $civix = $xml->addChild('civix');
     if (isset($ctx['namespace'])) {
