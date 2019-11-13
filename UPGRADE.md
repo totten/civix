@@ -41,6 +41,18 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
+### Upgrade to v19.11.0+: APIv4 and PSR-4
+
+APIv4 looks for classes in the `Civi\Api4` namespace and `Civi/Api4` folder. 
+To support generation of APIv4 code, the `info.xml` should have a
+corresponding classloader:
+
+```xml
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi" />
+  </classloader>
+```
+
 ### Upgrade to v19.06.2+: PHPUnit (Optional; #155)
 
 The templates for PHPUnit tests have been updated to match a major
