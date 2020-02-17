@@ -105,12 +105,22 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $schema = new \CRM_Core_CodeGen_Schema($config);
     \CRM_Core_CodeGen_Util_File::createDir($config->sqlCodePath);
     ob_start(); // Don't display gencode's output
-    $schema->generateCreateSql('auto_install.sql');
+    $data = $schema->generateCreateSql('auto_install.sql');
     ob_end_clean(); // Don't display gencode's output
-    $output->writeln("<info>Write {$basedir->string('sql/auto_install.sql')}</info>");
+    if (file_put_contents($config->sqlCodePath . '/auto_install.sql', reset($data))) {
+      $output->writeln("<info>Write {$basedir->string('sql/auto_install.sql')}</info>");
+    }
+    else {
+      $output->writeln("<error>Failed to write data to {$basedir->string('sql/auto_install.sql')}</error>");
+    }
     ob_start(); // Don't display gencode's output
-    $schema->generateDropSql('auto_uninstall.sql');
-    $output->writeln("<info>Write {$basedir->string('sql/auto_uninstall.sql')}</info>");
+    $data = $schema->generateDropSql('auto_uninstall.sql');
+    if (file_put_contents($config->sqlCodePath . '/auto_uninstall.sql', reset($data))) {
+      $output->writeln("<info>Write {$basedir->string('sql/auto_uninstall.sql')}</info>");
+    }
+    else {
+      $output->writeln("<error>Failed to write data to {$basedir->string('sql/auto_uninstall.sql')}</error>");
+    }
     ob_end_clean(); // Don't display gencode's output
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
