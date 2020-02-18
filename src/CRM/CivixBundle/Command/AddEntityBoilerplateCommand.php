@@ -25,7 +25,6 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
       );
   }
 
-
   /**
    * Note: this function replicates a fair amount of the functionality of
    * CRM_Core_CodeGen_Specification (which is a bit messy and hard to interact
@@ -95,9 +94,10 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
 
     foreach ($tables as $table) {
       $dao = new \CRM_Core_CodeGen_DAO($config, (string) $table['name'], "{$_namespace}_ExtensionUtil::ts");
-      ob_start(); // Don't display gencode's output
+      // Don't display gencode's output
+      ob_start();
       $dao->run();
-      ob_end_clean(); // Don't display gencode's output
+      ob_end_clean();
       $daoFileName = $basedir->string("{$table['base']}{$table['fileName']}");
       $output->writeln("<info>Write $daoFileName</info>");
     }
