@@ -104,24 +104,36 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
 
     $schema = new \CRM_Core_CodeGen_Schema($config);
     \CRM_Core_CodeGen_Util_File::createDir($config->sqlCodePath);
-    ob_start(); // Don't display gencode's output
-    $data = $schema->generateCreateSql('auto_install.sql');
-    ob_end_clean(); // Don't display gencode's output
-    if (file_put_contents($config->sqlCodePath . '/auto_install.sql', reset($data))) {
-      $output->writeln("<info>Write {$basedir->string('sql/auto_install.sql')}</info>");
-    }
-    else {
-      $output->writeln("<error>Failed to write data to {$basedir->string('sql/auto_install.sql')}</error>");
-    }
-    ob_start(); // Don't display gencode's output
-    $data = $schema->generateDropSql('auto_uninstall.sql');
-    if (file_put_contents($config->sqlCodePath . '/auto_uninstall.sql', reset($data))) {
-      $output->writeln("<info>Write {$basedir->string('sql/auto_uninstall.sql')}</info>");
-    }
-    else {
-      $output->writeln("<error>Failed to write data to {$basedir->string('sql/auto_uninstall.sql')}</error>");
-    }
-    ob_end_clean(); // Don't display gencode's output
+
+    /**
+     * @param string $generator
+     *   The desired $schema->$generator() function which will produce the file.
+     * @param string $fileName
+     *   The desired basename of the SQL file.
+     */
+    $createSql = function($generator, $fileName) use ($output, $schema, $config) {
+      $filePath = $config->sqlCodePath . $fileName;
+      // We're poking into an internal class+function (`$schema->$generator()`) that changed in v5.23.
+      // Beginning in 5.23: $schema->$function() returns an array with file content.
+      // Before 5.23: $schema->$function($fileName) creates $fileName and returns void.
+      $output->writeln("<info>Write {$filePath}</info>");
+      if (version_compare(\CRM_Utils_System::version(), '5.23.alpha1', '>=')) {
+        $data = $schema->$generator();
+        if (!file_put_contents($filePath, reset($data))) {
+          $output->writeln("<error>Failed to write data to {$filePath}</error>");
+        }
+      }
+      else {
+        $output->writeln("<error>WARNING</error>: Support for generating entities on <5.23 is deprecated.");
+        // Don't display gencode's output
+        ob_start();
+        $schema->$generator($fileName);
+        ob_end_clean();
+      }
+    };
+    $createSql('generateCreateSql', 'auto_install.sql');
+    $createSql('generateDropSql', 'auto_uninstall.sql');
+
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
