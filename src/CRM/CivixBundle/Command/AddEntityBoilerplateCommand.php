@@ -25,7 +25,6 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
       );
   }
 
-
   /**
    * Note: this function replicates a fair amount of the functionality of
    * CRM_Core_CodeGen_Specification (which is a bit messy and hard to interact
@@ -95,23 +94,46 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
 
     foreach ($tables as $table) {
       $dao = new \CRM_Core_CodeGen_DAO($config, (string) $table['name'], "{$_namespace}_ExtensionUtil::ts");
-      ob_start(); // Don't display gencode's output
+      // Don't display gencode's output
+      ob_start();
       $dao->run();
-      ob_end_clean(); // Don't display gencode's output
+      ob_end_clean();
       $daoFileName = $basedir->string("{$table['base']}{$table['fileName']}");
       $output->writeln("<info>Write $daoFileName</info>");
     }
 
     $schema = new \CRM_Core_CodeGen_Schema($config);
     \CRM_Core_CodeGen_Util_File::createDir($config->sqlCodePath);
-    ob_start(); // Don't display gencode's output
-    $schema->generateCreateSql('auto_install.sql');
-    ob_end_clean(); // Don't display gencode's output
-    $output->writeln("<info>Write {$basedir->string('sql/auto_install.sql')}</info>");
-    ob_start(); // Don't display gencode's output
-    $schema->generateDropSql('auto_uninstall.sql');
-    $output->writeln("<info>Write {$basedir->string('sql/auto_uninstall.sql')}</info>");
-    ob_end_clean(); // Don't display gencode's output
+
+    /**
+     * @param string $generator
+     *   The desired $schema->$generator() function which will produce the file.
+     * @param string $fileName
+     *   The desired basename of the SQL file.
+     */
+    $createSql = function($generator, $fileName) use ($output, $schema, $config) {
+      $filePath = $config->sqlCodePath . $fileName;
+      // We're poking into an internal class+function (`$schema->$generator()`) that changed in v5.23.
+      // Beginning in 5.23: $schema->$function() returns an array with file content.
+      // Before 5.23: $schema->$function($fileName) creates $fileName and returns void.
+      $output->writeln("<info>Write {$filePath}</info>");
+      if (version_compare(\CRM_Utils_System::version(), '5.23.alpha1', '>=')) {
+        $data = $schema->$generator();
+        if (!file_put_contents($filePath, reset($data))) {
+          $output->writeln("<error>Failed to write data to {$filePath}</error>");
+        }
+      }
+      else {
+        $output->writeln("<error>WARNING</error>: Support for generating entities on <5.23 is deprecated.");
+        // Don't display gencode's output
+        ob_start();
+        $schema->$generator($fileName);
+        ob_end_clean();
+      }
+    };
+    $createSql('generateCreateSql', 'auto_install.sql');
+    $createSql('generateDropSql', 'auto_uninstall.sql');
+
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
