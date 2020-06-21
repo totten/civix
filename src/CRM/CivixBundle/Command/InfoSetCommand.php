@@ -62,7 +62,7 @@ Common fields:
       return 1;
     }
     foreach ($elements as $element) {
-      $element->{0} = $input->getOption('to');
+      $element[0] = $input->getOption('to');
     }
 
     $info->save($ctx, $output);
