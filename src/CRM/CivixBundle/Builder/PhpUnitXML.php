@@ -19,7 +19,6 @@ class PhpUnitXML extends XML {
     $xml->addAttribute('convertWarningsToExceptions', 'true');
     $xml->addAttribute('processIsolation', 'false');
     $xml->addAttribute('stopOnFailure', 'false');
-    $xml->addAttribute('syntaxCheck', 'false');
     $xml->addAttribute('bootstrap', 'tests/phpunit/bootstrap.php');
     $this->set($xml);
 
