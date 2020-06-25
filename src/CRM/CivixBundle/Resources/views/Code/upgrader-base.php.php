@@ -259,7 +259,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
 
   private function getCurrentRevisionDeprecated() {
     $key = $this->extensionName . ':version';
-    if ($revision = CRM_Core_BAO_Setting::getItem('Extension', $key)) {
+    if ($revision = \Civi::settings()->get($key)) {
       $this->revisionStorageIsDeprecated = TRUE;
     }
     return $revision;
