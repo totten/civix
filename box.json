@@ -36,6 +36,7 @@
     ],
     "git-version": "package_version",
     "main": "bin/civix",
+    "compactors": ["KevinGH\\Box\\Compactor\\PhpScoper"],
     "output": "bin/civix.phar",
     "stub": true
 }

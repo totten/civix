@@ -7,6 +7,7 @@ bin/cv
 bin/php-parse
 bin/psysh
 build/
+/extern/
 vendor
 composer.phar
 *~
