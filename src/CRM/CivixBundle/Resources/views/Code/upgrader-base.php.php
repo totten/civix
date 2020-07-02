@@ -12,7 +12,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 class <?php echo $_namespace ?>_Upgrader_Base {
 
   /**
-   * @var varies, subclass of this
+   * @var <?php echo $_namespace ?>_Upgrader_Base subclass of this
    */
   static $instance;
 
@@ -45,7 +45,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   /**
    * Obtain a reference to the active upgrade handler.
    */
-  static public function instance() {
+  public static function instance() {
     if (!self::$instance) {
       // FIXME auto-generate
       self::$instance = new <?php echo $_namespace ?>_Upgrader(
@@ -66,7 +66,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * <?php echo $_namespace ?>_Upgrader_Base::_queueAdapter($ctx, 'methodName', 'arg1', 'arg2');
    * @endcode
    */
-  static public function _queueAdapter() {
+  public static function _queueAdapter() {
     $instance = self::instance();
     $args = func_get_args();
     $instance->ctx = array_shift($args);
@@ -75,6 +75,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     return call_user_func_array(array($instance, $method), $args);
   }
 
+  /**
+   * <?php echo $_namespace ?>_Upgrader_Base constructor.
+   *
+   * @param $extensionName
+   * @param $extensionDir
+   */
   public function __construct($extensionName, $extensionDir) {
     $this->extensionName = $extensionName;
     $this->extensionDir = $extensionDir;
@@ -100,7 +106,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    *
    * @return bool
    */
-  protected static function executeCustomDataFileByAbsPath($xml_file) {
+  protected function executeCustomDataFileByAbsPath($xml_file) {
     $import = new CRM_Utils_Migrate_Import();
     $import->run($xml_file);
     return TRUE;
@@ -122,10 +128,14 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   }
 
   /**
+   * Run the sql commands in the specified file.
+   *
    * @param string $tplFile
    *   The SQL file path (relative to this extension's dir).
    *   Ex: "sql/mydata.mysql.tpl".
+   *
    * @return bool
+   * @throws \CRM_Core_Exception
    */
   public function executeSqlTemplate($tplFile) {
     // Assign multilingual variable to Smarty.
@@ -144,10 +154,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * Run one SQL query.
    *
    * This is just a wrapper for CRM_Core_DAO::executeSql, but it
-   * provides syntatic sugar for queueing several tasks that
+   * provides syntactic sugar for queueing several tasks that
    * run different queries
+   *
+   * @return bool
    */
-  public function executeSql($query, $params = array()) {
+  public function executeSql($query, $params = []]) {
     // FIXME verify that we raise an exception on error
     CRM_Core_DAO::executeQuery($query, $params);
     return TRUE;
@@ -166,7 +178,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     $args = func_get_args();
     $title = array_shift($args);
     $task = new CRM_Queue_Task(
-      array(get_class($this), '_queueAdapter'),
+      [get_class($this), '_queueAdapter'],
       $args,
       $title
     );
