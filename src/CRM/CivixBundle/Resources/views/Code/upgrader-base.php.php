@@ -22,12 +22,12 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   protected $ctx;
 
   /**
-   * @var string, eg 'com.example.myextension'
+   * @var string eg 'com.example.myextension'
    */
   protected $extensionName;
 
   /**
-   * @var string, full path to the extension's source tree
+   * @var string full path to the extension's source tree
    */
   protected $extensionDir;
 
@@ -72,7 +72,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     $instance->ctx = array_shift($args);
     $instance->queue = $instance->ctx->queue;
     $method = array_shift($args);
-    return call_user_func_array(array($instance, $method), $args);
+    return call_user_func_array([$instance, $method], $args);
   }
 
   /**
@@ -159,14 +159,14 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    *
    * @return bool
    */
-  public function executeSql($query, $params = []]) {
+  public function executeSql($query, $params = []) {
     // FIXME verify that we raise an exception on error
     CRM_Core_DAO::executeQuery($query, $params);
     return TRUE;
   }
 
   /**
-   * Syntatic sugar for enqueuing a task which calls a function in this class.
+   * Syntactic sugar for enqueuing a task which calls a function in this class.
    *
    * The task is weighted so that it is processed
    * as part of the currently-pending revision.
@@ -182,7 +182,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
       $args,
       $title
     );
-    return $this->queue->createItem($task, array('weight' => -1));
+    return $this->queue->createItem($task, ['weight' => -1]);
   }
 
   // ******** Revision-tracking helpers ********
@@ -215,23 +215,23 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     $currentRevision = $this->getCurrentRevision();
     foreach ($this->getRevisions() as $revision) {
       if ($revision > $currentRevision) {
-        $title = E::ts('Upgrade %1 to revision %2', array(
+        $title = E::ts('Upgrade %1 to revision %2', [
           1 => $this->extensionName,
           2 => $revision,
-        ));
+        ]);
 
         // note: don't use addTask() because it sets weight=-1
 
         $task = new CRM_Queue_Task(
-          array(get_class($this), '_queueAdapter'),
-          array('upgrade_' . $revision),
+          [get_class($this), '_queueAdapter'],
+          ['upgrade_' . $revision],
           $title
         );
         $this->queue->createItem($task);
 
         $task = new CRM_Queue_Task(
-          array(get_class($this), '_queueAdapter'),
-          array('setCurrentRevision', $revision),
+          [get_class($this), '_queueAdapter'],
+          ['setCurrentRevision', $revision],
           $title
         );
         $this->queue->createItem($task);
@@ -246,7 +246,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    */
   public function getRevisions() {
     if (!is_array($this->revisions)) {
-      $this->revisions = array();
+      $this->revisions = [];
 
       $clazz = new ReflectionClass(get_class($this));
       $methods = $clazz->getMethods();
@@ -317,7 +317,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
         $this->executeCustomDataFileByAbsPath($file);
       }
     }
-    if (is_callable(array($this, 'install'))) {
+    if (is_callable([$this, 'install'])) {
       $this->install();
     }
   }
@@ -330,7 +330,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
     if (!empty($revisions)) {
       $this->setCurrentRevision(max($revisions));
     }
-    if (is_callable(array($this, 'postInstall'))) {
+    if (is_callable([$this, 'postInstall'])) {
       $this->postInstall();
     }
   }
@@ -345,7 +345,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
         $this->executeSqlTemplate($file);
       }
     }
-    if (is_callable(array($this, 'uninstall'))) {
+    if (is_callable([$this, 'uninstall'])) {
       $this->uninstall();
     }
     $files = glob($this->extensionDir . '/sql/*_uninstall.sql');
@@ -361,7 +361,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    */
   public function onEnable() {
     // stub for possible future use
-    if (is_callable(array($this, 'enable'))) {
+    if (is_callable([$this, 'enable'])) {
       $this->enable();
     }
   }
@@ -371,7 +371,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    */
   public function onDisable() {
     // stub for possible future use
-    if (is_callable(array($this, 'disable'))) {
+    if (is_callable([$this, 'disable'])) {
       $this->disable();
     }
   }
@@ -379,7 +379,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   public function onUpgrade($op, CRM_Queue_Queue $queue = NULL) {
     switch ($op) {
       case 'check':
-        return array($this->hasPendingRevisions());
+        return [$this->hasPendingRevisions()];
 
       case 'enqueue':
         return $this->enqueuePendingRevisions($queue);
