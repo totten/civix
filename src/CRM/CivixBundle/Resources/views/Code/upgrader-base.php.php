@@ -14,7 +14,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   /**
    * @var <?php echo $_namespace ?>_Upgrader_Base subclass of this
    */
-  static $instance;
+  public static $instance;
 
   /**
    * @var CRM_Queue_TaskContext
