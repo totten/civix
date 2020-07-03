@@ -4,9 +4,9 @@ echo "<?php\n";
 
 ini_set('memory_limit', '2G');
 ini_set('safe_mode', 0);
-// phpcs:ignore
+// phpcs:disable
 eval(cv('php:boot --level=classloader', 'phpcode'));
-
+// phpcs:enable
 // Allow autoloading of PHPUnit helper classes in this extension.
 $loader = new \Composer\Autoload\ClassLoader();
 $loader->add('CRM_', __DIR__);

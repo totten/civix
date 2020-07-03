@@ -32,12 +32,13 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   protected $extensionDir;
 
   /**
-   * @var array(revisionNumber) sorted numerically
+   * @var revisionNumber[]
+   * sorted numerically
    */
   private $revisions;
 
   /**
-   * @var boolean
+   * @var bool
    *   Flag to clean up extension revision data in civicrm_setting
    */
   private $revisionStorageIsDeprecated = FALSE;
