@@ -42,15 +42,13 @@ class Module implements Builder {
   }
 
   private function generateEntityTypes($glob){
-    $entityTypes =[];
+    $entityTypes = [];
     foreach(glob($glob) as $entityFile){
       $entities = include $entityFile;
       foreach ($entities as $entity) {
         $entityTypes[$entity['class']] = $entity;
       }
     }
-
-    $entityTypes = var_export($entityTypes, TRUE);
     return $entityTypes;
   }
 }

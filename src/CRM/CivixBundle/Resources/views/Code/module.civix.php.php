@@ -476,16 +476,25 @@ function _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders(&$metaDataF
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
  */
 <?php
+$entityTypeLines = '';
+$count = count($entityTypes);
+$thisLineCount = 1;
 // Add appropriate indentation
-foreach(explode("\n", $entityTypes) as $k => $l){
-  if($k){
-    $entityTypeLines[$k] = '  '.$l;
-  }else{
-    $entityTypeLines[$k] = $l;
+foreach($entityTypes as $entityName => $entityKeys) {
+  $entityTypeLines .= "\n    '$entityName' => [\n";
+  foreach ($entityKeys as $key => $value) {
+    $entityTypeLines .= "      '$key' => '{$value}',\n";
+  }
+  if ($thisLineCount < $count) {
+    $entityTypeLines .= '    ],';
+    $thisLineCount++;
+  }
+  else {
+    $entityTypeLines .= "    ],\n  ";
   }
 }
-$entityTypes = implode("\n", $entityTypeLines);
+
 ?>
 function _<?php echo $mainFile ?>_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, <?php echo $entityTypes ?>);
+  $entityTypes = array_merge($entityTypes, [<?php echo $entityTypeLines ?>]);
 }
