@@ -4,7 +4,9 @@ $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
 require_once '<?php echo $mainFile ?>.civix.php';
+// phpcs:disable
 use <?php echo $_namespace ?>_ExtensionUtil as E;
+// phpcs:enable
 
 /**
  * Implements hook_civicrm_config().
