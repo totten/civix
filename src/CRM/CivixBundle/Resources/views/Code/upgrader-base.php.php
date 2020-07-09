@@ -12,7 +12,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 class <?php echo $_namespace ?>_Upgrader_Base {
 
   /**
-   * @var <?php echo $_namespace ?>_Upgrader_Base subclass of this
+   * @var <?php echo $_namespace ?>_Upgrader_Base
    */
   public static $instance;
 
@@ -22,18 +22,20 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   protected $ctx;
 
   /**
-   * @var string eg 'com.example.myextension'
+   * @var string
+   *   eg 'com.example.myextension'
    */
   protected $extensionName;
 
   /**
-   * @var string full path to the extension's source tree
+   * @var string
+   *   full path to the extension's source tree
    */
   protected $extensionDir;
 
   /**
    * @var revisionNumber[]
-   * sorted numerically
+   *   sorted numerically
    */
   private $revisions;
 
@@ -63,9 +65,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    * Note: Each upgrader instance should only be associated with one
    * task-context; otherwise, this will be non-reentrant.
    *
-   * @code
+   * ```
    * <?php echo $_namespace ?>_Upgrader_Base::_queueAdapter($ctx, 'methodName', 'arg1', 'arg2');
-   * @endcode
+   * ```
    */
   public static function _queueAdapter() {
     $instance = self::instance();
@@ -92,7 +94,8 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   /**
    * Run a CustomData file.
    *
-   * @param string $relativePath the CustomData XML file path (relative to this extension's dir)
+   * @param string $relativePath
+   *   the CustomData XML file path (relative to this extension's dir)
    * @return bool
    */
   public function executeCustomDataFile($relativePath) {
@@ -103,7 +106,8 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   /**
    * Run a CustomData file
    *
-   * @param string $xml_file  the CustomData XML file path (absolute path)
+   * @param string $xml_file
+   *   the CustomData XML file path (absolute path)
    *
    * @return bool
    */
@@ -116,7 +120,8 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   /**
    * Run a SQL file.
    *
-   * @param string $relativePath the SQL file path (relative to this extension's dir)
+   * @param string $relativePath
+   *   the SQL file path (relative to this extension's dir)
    *
    * @return bool
    */
@@ -209,6 +214,8 @@ class <?php echo $_namespace ?>_Upgrader_Base {
 
   /**
    * Add any pending revisions to the queue.
+   *
+   * @param CRM_Queue_Queue $queue
    */
   public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
     $this->queue = $queue;
@@ -243,7 +250,8 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   /**
    * Get a list of revisions.
    *
-   * @return array(revisionNumbers) sorted numerically
+   * @return array
+   *   revisionNumbers sorted numerically
    */
   public function getRevisions() {
     if (!is_array($this->revisions)) {
