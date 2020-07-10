@@ -76,7 +76,14 @@ class PhpData implements Builder {
       $content .= $this->header;
     }
     $content .= "\nreturn ";
-    $content .= VarExporter::export($this->data);
+    $content .= preg_replace_callback('/^ +/m',
+      // VarExporter indents with 4x spaces. Civi/Drupal code standard is 2x spaces.
+      function($m) {
+        $spaces = $m[0];
+        return substr($spaces, 0, ceil(strlen($spaces) / 2));
+      },
+      VarExporter::export($this->data)
+    );
     $content .= ";\n";
     file_put_contents($this->path, $content);
   }
