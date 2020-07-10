@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\VarExporter\VarExporter;
 
 /**
  * Read/write a serialized data file based on PHP's var_export() format
@@ -75,7 +76,14 @@ class PhpData implements Builder {
       $content .= $this->header;
     }
     $content .= "\nreturn ";
-    $content .= var_export($this->data, TRUE);
+    $content .= preg_replace_callback('/^ +/m',
+      // VarExporter indents with 4x spaces. Civi/Drupal code standard is 2x spaces.
+      function($m) {
+        $spaces = $m[0];
+        return substr($spaces, 0, ceil(strlen($spaces) / 2));
+      },
+      VarExporter::export($this->data)
+    );
     $content .= ";\n";
     file_put_contents($this->path, $content);
   }

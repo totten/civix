@@ -2,8 +2,13 @@
 <?php
 ini_set('display_errors', 1);
 if (PHP_SAPI !== 'cli') {
-  echo "civix is a command-line tool\n";
+  fwrite(STDERR, "civix is a command-line tool. It requires PHP_SAPI=cli.\n");
   exit(1);
+}
+if (version_compare(phpversion(), '7.1.3', '<')) {
+  fwrite(STDERR, "This version of civix requires PHP 7.1.3.\n");
+  fwrite(STDERR, "For PHP 7.0 or older, see civix v20.06.0 or older.\n");
+  exit(2);
 }
 $found = 0;
 $autoloaders = array(
@@ -18,6 +23,7 @@ foreach ($autoloaders as $autoloader) {
   }
 }
 if (!$found) {
-  die("Failed to find autoloader");
+  fwrite(STDERR, "Failed to find autoloader\n");
+  exit(3);
 }
 \CRM\CivixBundle\Application::main(__DIR__);
