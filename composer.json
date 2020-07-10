@@ -4,14 +4,14 @@
     "homepage": "https://github.com/totten/civix",
     "license": "AGPL-3.0",
     "require": {
-        "php": ">=5.4",
+        "php": ">=7.1.3",
         "civicrm/cv": "~0.2",
         "symfony/console": "~2.8|^3|^4",
         "symfony/process": "~2.8|^3|^4",
         "symfony/templating": "~2.8|^3|^4",
         "symfony/var-dumper": "~2.8|^3|^4",
-        "totten/license-data": "dev-master",
-        "symfony/var-exporter": "^4.4"
+        "symfony/var-exporter": "^4.4",
+        "totten/license-data": "dev-master"
     },
     "autoload": {
         "psr-0": {
@@ -22,6 +22,9 @@
         "bin/civix"
     ],
     "config": {
+        "platform": {
+          "php": "7.1.3"
+        },
         "bin-dir": "bin"
     },
     "authors": [
