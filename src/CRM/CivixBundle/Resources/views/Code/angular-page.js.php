@@ -3,6 +3,7 @@
   angular.module('<?php echo $angularModuleName ?>').config(function($routeProvider) {
       $routeProvider.when('/<?php echo $ctrlRelPath ?>', {
         controller: '<?php echo $ctrlName ?>',
+        controllerAs: '$ctrl',
         templateUrl: '<?php echo $htmlName ?>',
 
         // If you need to look up data when opening the page, list it out
@@ -27,19 +28,21 @@
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('<?php echo $tsDomain ?>');
     var hs = $scope.hs = crmUiHelp({file: '<?php echo $hlpName ?>'}); // See: templates/<?php echo $hlpName ?>.hlp
+    // Local variable for this controller (needed when inside a callback fn where `this` is not available).
+    var ctrl = this;
 
     // We have myContact available in JS. We also want to reference it in HTML.
-    $scope.myContact = myContact;
+    this.myContact = myContact;
 
-    $scope.save = function save() {
+    this.save = function() {
       return crmStatus(
         // Status messages. For defaults, just use "{}"
         {start: ts('Saving...'), success: ts('Saved')},
         // The save action. Note that crmApi() returns a promise.
         crmApi('Contact', 'create', {
-          id: myContact.id,
-          first_name: myContact.first_name,
-          last_name: myContact.last_name
+          id: ctrl.myContact.id,
+          first_name: ctrl.myContact.first_name,
+          last_name: ctrl.myContact.last_name
         })
       );
     };
