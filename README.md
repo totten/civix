@@ -69,9 +69,7 @@ Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
 
 ### Documentation
 
-The CiviCRM wiki includes tutorials for building extensions. See:
-
-http://wiki.civicrm.org/confluence/display/CRMDOC/Create+an+Extension
+The [CiviCRM Developer Guide](https://docs.civicrm.org/dev/en/latest/) includes [tutorials for building extensions](https://docs.civicrm.org/dev/en/latest/extensions/civix/)
 
 For reference documentation, civix supports a "--help" option.  For example,
 to get reference materials about the "generate:page" command, run:
