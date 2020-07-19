@@ -34,7 +34,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
   protected $extensionDir;
 
   /**
-   * @var revisionNumber[]
+   * @var array
    *   sorted numerically
    */
   private $revisions;
@@ -50,10 +50,9 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    */
   public static function instance() {
     if (!self::$instance) {
-      // FIXME auto-generate
       self::$instance = new <?php echo $_namespace ?>_Upgrader(
         '<?php echo $fullName ?>',
-        realpath(__DIR__ . '/../../../')
+        E::path()
       );
     }
     return self::$instance;
