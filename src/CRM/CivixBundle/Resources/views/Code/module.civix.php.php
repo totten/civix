@@ -10,9 +10,9 @@ $_namespace = preg_replace(':/:', '_', $namespace);
  * extension.
  */
 class <?php echo $_namespace ?>_ExtensionUtil {
-  const SHORT_NAME = "<?php echo $mainFile; ?>";
-  const LONG_NAME = "<?php echo $fullName; ?>";
-  const CLASS_PREFIX = "<?php echo $_namespace; ?>";
+  const SHORT_NAME = '<?php echo $mainFile; ?>';
+  const LONG_NAME = '<?php echo $fullName; ?>';
+  const CLASS_PREFIX = '<?php echo $_namespace; ?>';
 
   /**
    * Translate a string using the extension's domain.
