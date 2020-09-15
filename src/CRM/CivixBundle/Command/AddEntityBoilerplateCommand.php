@@ -83,7 +83,8 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
       $specification->getTable($xml, $database, $tables);
       $name = (string) $xml->name;
       $tables[$name]['name'] = $name;
-      $tables[$name]['sourceFile'] = $xmlSchema;
+      $sourcePath = strstr($xmlSchema, "/xml/schema/{$ctx['namespace']}/");
+      $tables[$name]['sourceFile'] = $ctx['fullName'] . $sourcePath;
     }
 
     $config->tables = $tables;
