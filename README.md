@@ -1,9 +1,9 @@
-Civix is a command-line tool for building CiviCRM extensions.
+Civix is a command-line tool for building CiviCRM extensions. It is distributed as part of [CiviCRM-Buildkit](https://github.com/civicrm/civicrm-buildkit).
 
 ### Requirements
 
-* PHP 5.3+
-* CiviCRM 4.2+ (installed from git http://github.com/civicrm)
+* PHP 7.1.3+
+* CiviCRM 5.0+ (installed from git http://github.com/civicrm)
 * (For MAMP, WAMP, XAMPP, etc) PHP command-line configuration (http://wiki.civicrm.org/confluence/display/CRMDOC/Setup+Command-Line+PHP)
 * (For CentOS/RHEL) Compatible version of libxml2 (https://github.com/totten/civix/issues/19)
 
