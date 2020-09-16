@@ -55,5 +55,5 @@ function <?php echo $apiFunctionPrefix ?>delete($params) {
  * @throws API_Exception
  */
 function <?php echo $apiFunctionPrefix ?>get($params) {
-  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, FALSE, <?php echo $entityNameCamel; ?>);
+  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, TRUE, <?php echo $entityNameCamel; ?>);
 }
