@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -88,6 +89,8 @@ explicity.');
     $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
     $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
     $ctx['extensionName'] = $info->getExtensionName();
+    $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
+    $ctx['testApi3ClassFile'] = $basedir->string('tests', 'phpunit', strtr($ctx['testApi3ClassName'], '_', '/') . '.php');
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
@@ -96,11 +99,13 @@ explicity.');
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
       dirname($ctx['schemaFile']),
+      dirname($ctx['testApi3ClassFile']),
     ]);
     $ext->builders['dirs']->save($ctx, $output);
 
     if (in_array('3', $apiVersions)) {
       $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
+      $ext->builders['test.php'] = new Template('entity-api3-test.php.php', $ctx['testApi3ClassFile'], FALSE, Services::templating());
     }
     if (in_array('4', $apiVersions)) {
       $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Services::templating());
@@ -121,6 +126,10 @@ explicity.');
       $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile'], $header);
       $ext->builders['entityType.php']->set($mgdEntities);
     }
+
+    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
+    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
+    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
