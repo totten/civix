@@ -51,7 +51,8 @@ pushd $WORKINGDIR
   fi
 
   pushd $EXMODULE
-    $CIVIX $VERBOSITY generate:api MyEntity MyAction
+    $CIVIX $VERBOSITY generate:api MyEntity Myaction
+    $CIVIX $VERBOSITY generate:api MyEntity myaction2
     $CIVIX $VERBOSITY generate:case-type MyLabel MyName
     # $CIVIX $VERBOSITY generate:custom-xml -f --data="FIXME" --uf="FIXME"
     $CIVIX $VERBOSITY generate:entity MyEntityFour
