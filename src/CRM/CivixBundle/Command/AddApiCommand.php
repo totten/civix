@@ -14,6 +14,7 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AddApiCommand extends Command {
   const API_VERSION = 3;
@@ -27,11 +28,29 @@ class AddApiCommand extends Command {
       ->setName('generate:api')
       ->setDescription('Add a new API function to a CiviCRM Module-Extension')
       ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The entity against which the action runs (eg "Contact", "MyEntity")')
-      ->addArgument('<ActionName>', InputArgument::REQUIRED, 'The action which will be created (eg "Create", "MyAction")')
-      ->addOption('schedule', NULL, InputOption::VALUE_OPTIONAL, 'Schedule this action as a recurring cron job (' . implode(', ', self::getSchedules()) . ') [For CiviCRM 4.3+]');
+      ->addArgument('<actionname>', InputArgument::REQUIRED, 'The action which will be created (eg "create", "myaction")')
+      ->addOption('schedule', NULL, InputOption::VALUE_OPTIONAL, 'Schedule this action as a recurring cron job (' . implode(', ', self::getSchedules()) . ') [For CiviCRM 4.3+]')
+      ->setHelp('Add a new API function to a CiviCRM Module-Extension
+
+This will generate an API entity/action with a standalone PHP file and test-class.
+
+Note: APIv3 naming conventions are somewhat conflicted. In theory, callers may use
+entity-names and action-names expressed interchangably as CamelCase or under_score_case.
+In practice:
+
+- Entity names are interchangeable, though we typically regard CamelCase as canonical.
+- Action names are tempermental -- working+non-working combinations depend on multiple
+  variables. The simplest approach believed to work consistently is to use one-word
+  actions (e.g. "Getcount"/"getcount" instead of "GetCount"/"getCount"/"get_count").
+
+In keeping, "civix generate:api" expects CamelCase entity names and singleword
+action names.
+');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $io = new SymfonyStyle($input, $output);
+
     // load Civi to get access to civicrm_api_get_function_name
     Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
@@ -56,15 +75,18 @@ class AddApiCommand extends Command {
     if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<EntityName>'))) {
       throw new Exception("Entity name must be alphanumeric camel-case");
     }
-    if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<ActionName>'))) {
-      throw new Exception("Action name must be alphanumeric camel-case");
+    if (!preg_match('/^[A-Za-z][a-z0-9]*$/', $input->getArgument('<actionname>'))) {
+      throw new Exception("Action name must be alphanumeric singleword");
     }
     if ($input->getOption('schedule') && !in_array($input->getOption('schedule'), self::getSchedules())) {
       throw new Exception("Schedule must be one of: " . implode(', ', self::getSchedules()));
     }
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
-    $ctx['actionNameCamel'] = ucfirst($input->getArgument('<ActionName>'));
+    $ctx['actionNameCamel'] = ucfirst($input->getArgument('<actionname>'));
+    $ctx['actionNameLower'] = strtolower($input->getArgument('<actionname>'));
+    // $ctx['actionNameUnderscore'] = strtolower(implode('_', array_filter(preg_split('/(?=[A-Z])/', $input->getArgument('<actionname>')))));
+
     if (function_exists('civicrm_api_get_function_name')) {
       $ctx['apiFunction'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], $ctx['actionNameCamel'], self::API_VERSION));
     }
