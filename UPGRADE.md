@@ -44,7 +44,7 @@ The steps for upgrading the `Upgrader` are as follows:
 ### Upgrade to v20.09.0+: APIv3 Entity
 
 Some versions of `generate:entity` (late 2019/early 2020) created incorrect boilerplate for APIv3.  This affected the
-file `api/v3/{MyEntity}.php` and the function `civicrm_api3_{my_entity}_get()`.  The function may look like one of these:
+file `api/v3/{MyEntity}.php` and the function `civicrm_api3_{my_entity}_get()`.  The function may look like one of these 3 revisions:
 
 ```php
 // Revision 1 - The results will conform with APIv3 standards, but this may not be robust if
@@ -52,7 +52,7 @@ file `api/v3/{MyEntity}.php` and the function `civicrm_api3_{my_entity}_get()`. 
 return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 
 // Revision 2 - This is more robust against metadata problems, but the result-format does not conform
-// with APIv3 standards. It omits the header/wrapper ("is_error", "values", etc).
+// with APIv3 standards. It omits the header/wrapper ("is_error", "values", etc) and has an unquoted string.
 return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, FALSE, MyEntity);
 
 // Revision 3 - This is conformant and robust.
@@ -60,10 +60,10 @@ return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, TRU
 ```
 
 If you currently have revision 2, then you should certainly fix the missing quotes.  However, there is a choice about
-whether to use `FALSE` or `TRUE`:
+whether to fix the boolean:
 
-* `TRUE`: The output will have standard APIv3 formatting, but any existing callers may break.
-* `FALSE`: The output will have non-conventional formatting, but existing callers will work.
+* __Switch to `TRUE`__: The output will have standard APIv3 formatting, but any existing callers may break.
+* __Leave as `FALSE`__: The output will have non-conventional formatting, but existing callers will work.
 
 ### Upgrade to v20.06.0+: PHPUnit
 
