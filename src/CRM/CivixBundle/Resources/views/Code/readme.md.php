@@ -9,12 +9,12 @@ The extension is licensed under [<?php echo $license ?>](LICENSE.txt).
 
 ## Requirements
 
-* PHP v7.0+
+* PHP v7.2+
 * CiviCRM (*FIXME: Version number*)
 
 ## Installation (Web UI)
 
-This extension has not yet been published for installation via the web UI.
+Learn more about installing CiviCRM extensions in the [CiviCRM Sysadmin Guide](https://docs.civicrm.org/sysadmin/en/latest/customize/extensions/).
 
 ## Installation (CLI, Zip)
 
@@ -36,7 +36,7 @@ git clone https://github.com/FIXME/<?php echo $fullName; ?>.git
 cv en <?php echo $mainFile . "\n"; ?>
 ```
 
-## Usage
+## Getting Started
 
 (* FIXME: Where would a new user navigate to get started? What changes would they see? *)
 
