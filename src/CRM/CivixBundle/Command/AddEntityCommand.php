@@ -90,6 +90,7 @@ explicity.');
     $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
     $ctx['extensionName'] = $info->getExtensionName();
     $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
+    $ctx['testApi4ClassName'] = 'api_v4_' . $ctx['entityNameCamel'] . 'Test';
     $ctx['testApi3ClassFile'] = $basedir->string('tests', 'phpunit', strtr($ctx['testApi3ClassName'], '_', '/') . '.php');
 
     $ext = new Collection();
