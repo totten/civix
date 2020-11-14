@@ -9,76 +9,16 @@ $_namespace = preg_replace(':/:', '_', $namespace);
  * The ExtensionUtil class provides small stubs for accessing resources of this
  * extension.
  */
-class <?php echo $_namespace ?>_ExtensionUtil {
-  const SHORT_NAME = '<?php echo $mainFile; ?>';
-  const LONG_NAME = '<?php echo $fullName; ?>';
-  const CLASS_PREFIX = '<?php echo $_namespace; ?>';
-
-  /**
-   * Translate a string using the extension's domain.
-   *
-   * If the extension doesn't have a specific translation
-   * for the string, fallback to the default translations.
-   *
-   * @param string $text
-   *   Canonical message text (generally en_US).
-   * @param array $params
-   * @return string
-   *   Translated text.
-   * @see ts
-   */
-  public static function ts($text, $params = []) {
-    if (!array_key_exists('domain', $params)) {
-      $params['domain'] = [self::LONG_NAME, NULL];
-    }
-    return ts($text, $params);
-  }
-
-  /**
-   * Get the URL of a resource file (in this extension).
-   *
-   * @param string|NULL $file
-   *   Ex: NULL.
-   *   Ex: 'css/foo.css'.
-   * @return string
-   *   Ex: 'http://example.org/sites/default/ext/org.example.foo'.
-   *   Ex: 'http://example.org/sites/default/ext/org.example.foo/css/foo.css'.
-   */
-  public static function url($file = NULL) {
-    if ($file === NULL) {
-      return rtrim(CRM_Core_Resources::singleton()->getUrl(self::LONG_NAME), '/');
-    }
-    return CRM_Core_Resources::singleton()->getUrl(self::LONG_NAME, $file);
-  }
-
-  /**
-   * Get the path of a resource file (in this extension).
-   *
-   * @param string|NULL $file
-   *   Ex: NULL.
-   *   Ex: 'css/foo.css'.
-   * @return string
-   *   Ex: '/var/www/example.org/sites/default/ext/org.example.foo'.
-   *   Ex: '/var/www/example.org/sites/default/ext/org.example.foo/css/foo.css'.
-   */
-  public static function path($file = NULL) {
-    // return CRM_Core_Resources::singleton()->getPath(self::LONG_NAME, $file);
-    return __DIR__ . ($file === NULL ? '' : (DIRECTORY_SEPARATOR . $file));
-  }
-
-  /**
-   * Get the name of a class within this extension.
-   *
-   * @param string $suffix
-   *   Ex: 'Page_HelloWorld' or 'Page\\HelloWorld'.
-   * @return string
-   *   Ex: 'CRM_Foo_Page_HelloWorld'.
-   */
-  public static function findClass($suffix) {
-    return self::CLASS_PREFIX . '_' . str_replace('\\', '_', $suffix);
-  }
-
-}
+<?php
+echo \CRM\CivixBundle\Utils\ClassBuilder::create($_namespace . '_ExtensionUtil')
+  ->setInClass('CRM_CivixBundle_Resources_Example_ExtensionUtil')
+  ->addVars([
+    '@example_short@' => $mainFile,
+    '@org.civicrm.examplelong@' => $fullName,
+    '@CRM_Example@' => $_namespace,
+  ])
+  ->toPHP();
+?>
 
 use <?php echo $_namespace ?>_ExtensionUtil as E;
 
