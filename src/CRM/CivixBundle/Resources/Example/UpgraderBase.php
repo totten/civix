@@ -117,16 +117,14 @@ class CRM_CivixBundle_Resources_Example_UpgraderBase {
   /**
    * Run a SQL file.
    *
-   * @param string $relativePath
-   *   the SQL file path (relative to this extension's dir)
+   * @param string $tplFile
+   *   The SQL file path (relative to this extension's dir, or absolute)
    *
    * @return bool
    */
-  public function executeSqlFile($relativePath) {
-    CRM_Utils_File::sourceSQLFile(
-      CIVICRM_DSN,
-      $this->extensionDir . DIRECTORY_SEPARATOR . $relativePath
-    );
+  public function executeSqlFile($tplFile) {
+    $tplFile = CRM_Utils_File::isAbsolute($tplFile) ? $tplFile : $this->extensionDir . DIRECTORY_SEPARATOR . $tplFile;
+    CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $tplFile);
     return TRUE;
   }
 
@@ -134,7 +132,7 @@ class CRM_CivixBundle_Resources_Example_UpgraderBase {
    * Run the sql commands in the specified file.
    *
    * @param string $tplFile
-   *   The SQL file path (relative to this extension's dir).
+   *   The SQL file path (relative to this extension's dir, or absolute).
    *   Ex: "sql/mydata.mysql.tpl".
    *
    * @return bool
@@ -308,7 +306,7 @@ class CRM_CivixBundle_Resources_Example_UpgraderBase {
     $files = glob($this->extensionDir . '/sql/*_install.sql');
     if (is_array($files)) {
       foreach ($files as $file) {
-        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+        $this->executeSqlFile($file);
       }
     }
     $files = glob($this->extensionDir . '/sql/*_install.mysql.tpl');
