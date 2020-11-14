@@ -7,10 +7,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
-use Exception;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Command {
   const API_VERSION = 3;
+
+  use \CRM_CivixBundle_Resources_Example_SchemaBuilderTrait;
 
   protected function configure() {
     $this
@@ -50,90 +52,39 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $basedir = new Path($ctx['basedir']);
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
-    $attrs = $info->get()->attributes();
 
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
-
-    $xmlSchemaGlob = "xml/schema/{$ctx['namespace']}/*.xml";
-    $absXmlSchemaGlob = $basedir->string($xmlSchemaGlob);
-    $xmlSchemas = glob($absXmlSchemaGlob);
-
-    if (!count($xmlSchemas)) {
-      throw new Exception("Could not find files matching '$xmlSchemaGlob'. You may want to run `civix generate:entity` before running this command.");
-    }
-
-    $specification = new \CRM_Core_CodeGen_Specification();
-    $specification->buildVersion = \CRM_Utils_System::majorVersion();
-    $config = new \stdClass();
-    $config->phpCodePath = $basedir->string('');
-    $config->sqlCodePath = $basedir->string('sql/');
-
-    foreach ($xmlSchemas as $xmlSchema) {
-      $dom = new \DomDocument();
-      $xmlString = file_get_contents($xmlSchema);
-      $dom->loadXML($xmlString);
-      $xml = simplexml_import_dom($dom);
-      if (!$xml) {
-        $output->writeln('<error>There is an error in the XML for ' . $xmlSchema . '</error>');
-        continue;
+    $deprecated = $this->findDeprecatedFiles($basedir);
+    if ($deprecated) {
+      foreach ($deprecated as $file) {
+        $output->writeln("<error>Found deprecated SQL file: $file</error>");
       }
-      $specification->getTable($xml, $database, $tables);
-      $name = (string) $xml->name;
-      $tables[$name]['name'] = $name;
-      $sourcePath = strstr($xmlSchema, "/xml/schema/{$ctx['namespace']}/");
-      $tables[$name]['sourceFile'] = $ctx['fullName'] . $sourcePath;
+      $output->writeln("To better adapt to local MySQL configurations, schema will now be generated on the fly.");
+      $output->writeln("The old static files will be removed to avoid double-installation.");
+      $output->writeln("However, there will be example files that you may inspect to preview the effective schema.");
+
+      $helper = $this->getHelper('question');
+      $question = new ConfirmationQuestion('<comment>Continue? (Y/n)</comment> ', TRUE);
+
+      if (!$helper->ask($input, $output, $question)) {
+        $output->writeln("<error>Aborting</error>");
+        return 1;
+      }
+
+      foreach ($deprecated as $file) {
+        unlink($file);
+      }
     }
 
-    $config->tables = $tables;
-    $_namespace = ' ' . preg_replace(':/:', '_', $ctx['namespace']);
-    $this->orderTables($tables);
-    $this->resolveForeignKeys($tables);
-    $config->tables = $tables;
+    $files = $this->createSchemaBuilder($ctx)
+      ->addXml("xml/schema/{$ctx['namespace']}/*.xml")
+      ->generateDaoFiles()
+      ->generateSqlFile('CREATE', $basedir->string('sql/create_example.sql'))
+      ->generateSqlFile('DROP', $basedir->string('sql/drop_example.sql'))
+      ->getFiles();
 
-    foreach ($tables as $table) {
-      $dao = new \CRM_Core_CodeGen_DAO($config, (string) $table['name'], "{$_namespace}_ExtensionUtil::ts");
-      // Don't display gencode's output
-      ob_start();
-      $dao->run();
-      ob_end_clean();
-      $daoFileName = $basedir->string("{$table['base']}{$table['fileName']}");
-      $output->writeln("<info>Write $daoFileName</info>");
+    foreach ($files as $file) {
+      $output->writeln(sprintf("<info>Write %s</info>", $file['file']));
     }
-
-    $schema = new \CRM_Core_CodeGen_Schema($config);
-    \CRM_Core_CodeGen_Util_File::createDir($config->sqlCodePath);
-
-    /**
-     * @param string $generator
-     *   The desired $schema->$generator() function which will produce the file.
-     * @param string $fileName
-     *   The desired basename of the SQL file.
-     */
-    $createSql = function($generator, $fileName) use ($output, $schema, $config) {
-      $filePath = $config->sqlCodePath . $fileName;
-      // We're poking into an internal class+function (`$schema->$generator()`) that changed in v5.23.
-      // Beginning in 5.23: $schema->$function() returns an array with file content.
-      // Before 5.23: $schema->$function($fileName) creates $fileName and returns void.
-      $output->writeln("<info>Write {$filePath}</info>");
-      if (version_compare(\CRM_Utils_System::version(), '5.23.alpha1', '>=')) {
-        $data = $schema->$generator();
-        if (!file_put_contents($filePath, reset($data))) {
-          $output->writeln("<error>Failed to write data to {$filePath}</error>");
-        }
-      }
-      else {
-        $output->writeln("<error>WARNING</error>: Support for generating entities on <5.23 is deprecated.");
-        // Don't display gencode's output
-        ob_start();
-        $schema->$generator($fileName);
-        ob_end_clean();
-      }
-    };
-    $createSql('generateCreateSql', 'auto_install.sql');
-    $createSql('generateDropSql', 'auto_uninstall.sql');
 
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
@@ -141,50 +92,33 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $upgraderClass = str_replace('/', '_', $ctx['namespace']) . '_Upgrader';
 
     if (!class_exists($upgraderClass)) {
-      $output->writeln('<comment>You are missing an upgrader class. Your generated SQL files will not be executed on enable and uninstall. Fix this by running `civix generate:upgrader`.</comment>');
+      $output->writeln('<error>You are missing an upgrader class. Your generated SQL files will not be executed on enable and uninstall. Fix this by running `civix generate:upgrader`.</error>');
     }
 
-  }
-
-  private function orderTables(&$tables) {
-
-    $ordered = [];
-
-    while (count($tables)) {
-      foreach ($tables as $k => $table) {
-        if (!isset($table['foreignKey'])) {
-          $ordered[$k] = $table;
-          unset($tables[$k]);
-        }
-        foreach ($table['foreignKey'] as $fKey) {
-          if (in_array($fKey['table'], array_keys($tables))) {
-            continue;
-          }
-          $ordered[$k] = $table;
-          unset($tables[$k]);
-        }
+    $expectMethods = ['createSchemaBuilder'];
+    $upgraderClazz = new \ReflectionClass($upgraderClass);
+    foreach ($expectMethods as $expectMethod) {
+      if (!$upgraderClazz->hasMethod($expectMethod)) {
+        $output->writeln("<error>The upgrader is missing a method ($expectMethod). Fix this by running `civix generate:upgrader`.</error>");
       }
     }
-    $tables = $ordered;
   }
 
-  private function resolveForeignKeys(&$tables) {
-    foreach ($tables as &$table) {
-      if (isset($table['foreignKey'])) {
-        foreach ($table['foreignKey'] as &$key) {
-          if (isset($tables[$key['table']])) {
-            $key['className'] = $tables[$key['table']]['className'];
-            $key['fileName'] = $tables[$key['table']]['fileName'];
-            $table['fields'][$key['name']]['FKClassName'] = $key['className'];
-          }
-          else {
-            $key['className'] = \CRM_Core_DAO_AllCoreTables::getClassForTable($key['table']);
-            $key['fileName'] = $key['className'] . '.php';
-            $table['fields'][$key['name']]['FKClassName'] = $key['className'];
-          }
-        }
+  /**
+   * @param \CRM\CivixBundle\Utils\Path $basedir
+   */
+  protected function findDeprecatedFiles(Path $basedir): array {
+    $matches = [];
+    $candidates = [
+      $basedir->string('sql/auto_install.sql'),
+      $basedir->string('sql/auto_uninstall.sql'),
+    ];
+    foreach ($candidates as $file) {
+      if (file_exists($file)) {
+        $matches[] = $file;
       }
     }
+    return $matches;
   }
 
 }

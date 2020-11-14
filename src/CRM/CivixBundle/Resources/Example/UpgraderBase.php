@@ -89,6 +89,9 @@ class CRM_CivixBundle_Resources_Example_UpgraderBase {
   // ******** Task helpers ********
 
   // civix:inline_trait
+  use CRM_CivixBundle_Resources_Example_SchemaBuilderTrait;
+
+  // civix:inline_trait
   use CRM_CivixBundle_Resources_Example_UpgraderTasksTrait;
 
   /**
@@ -122,6 +125,13 @@ class CRM_CivixBundle_Resources_Example_UpgraderBase {
    * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
    */
   public function onInstall() {
+    $pat = sprintf("xml/schema/%s/*.xml", str_replace('_', '/', E::CLASS_PREFIX));
+    if (!empty(glob(E::path($pat)))) {
+      $ctx = ['basedir' => E::path(), 'namespace' => E::CLASS_PREFIX, 'fullName' => E::LONG_NAME];
+      $sql = $this->createSchemaBuilder($ctx)->addXml($pat)->generateSql('CREATE');
+      CRM_Utils_File::runSqlQuery(CIVICRM_DSN, $sql);
+    }
+
     $files = glob($this->extensionDir . '/sql/*_install.sql');
     if (is_array($files)) {
       foreach ($files as $file) {
