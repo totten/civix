@@ -156,12 +156,14 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
           $ordered[$k] = $table;
           unset($tables[$k]);
         }
-        foreach ($table['foreignKey'] as $fKey) {
-          if (in_array($fKey['table'], array_keys($tables))) {
-            continue;
+        if (isset($table['foreignKey'])) {
+          foreach ($table['foreignKey'] as $fKey) {
+            if (in_array($fKey['table'], array_keys($tables))) {
+              continue;
+            }
+            $ordered[$k] = $table;
+            unset($tables[$k]);
           }
-          $ordered[$k] = $table;
-          unset($tables[$k]);
         }
       }
     }
