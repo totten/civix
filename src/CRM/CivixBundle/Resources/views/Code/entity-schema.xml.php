@@ -14,6 +14,9 @@ echo '<?xml version="1.0" encoding="iso-8859-1" ?>'."\n";
     <type>int unsigned</type>
     <required>true</required>
     <comment>Unique <?php echo $entityNameCamel ?> ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
   </field>
   <primaryKey>
     <name>id</name>
