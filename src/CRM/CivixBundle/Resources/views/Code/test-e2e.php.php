@@ -30,7 +30,7 @@ use Civi\Test\EndToEndInterface;
  */
 class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements EndToEndInterface {
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void {
     // See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
 
     // Example: Install this extension. Don't care about anything else.
@@ -43,18 +43,18 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements En
     // \Civi\Test::e2e()->uninstall('*')->install('org.civicrm.*')->apply();
   }
 
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
   }
 
   /**
    * Example: Test that a version is returned.
    */
-  public function testWellFormedVersion() {
+  public function testWellFormedVersion(): void {
     $this->assertNotEmpty(E::SHORT_NAME);
     $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
@@ -62,7 +62,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements En
   /**
    * Example: Test that we're using a real CMS (Drupal, WordPress, etc).
    */
-  public function testWellFormedUF() {
+  public function testWellFormedUF(): void {
     $this->assertRegExp('/^(Drupal|Backdrop|WordPress|Joomla)/', CIVICRM_UF);
   }
 
