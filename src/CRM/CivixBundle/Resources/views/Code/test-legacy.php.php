@@ -22,25 +22,34 @@ use Civi\Test\HeadlessInterface;
  */
 class <?php echo $testClass ?> extends \CiviUnitTestCase implements HeadlessInterface {
 
-  public function setUpHeadless() {
-    // `CiviTestListener`+`HeadlessInterface` has some clever tricks for
-    // bootstrapping which make it easier to use phpunit CLI.
-    // However, there's not much point in using setupHeadless() with CiviUnitTestCase
-    // because CiviUnitTestCase performs its own special setup/teardown logic.
-  }
+  /**
+   * Setup for when Headless interface is implemented.
+   *
+   * `CiviTestListener`+`HeadlessInterface` has some clever tricks for
+   * bootstrapping which make it easier to use phpunit CLI.
+   * However, there's not much point in using setupHeadless() with CiviUnitTestCase
+   * because CiviUnitTestCase performs its own special setup/teardown logic.
+   */
+  public function setUpHeadless(): void {}
 
-  public function setUp() {
+  /**
+   * Setup any fixtures required for the tests in this class.
+   */
+  public function setUp(): void {
     parent::setUp();
   }
 
-  public function tearDown() {
+  /**
+   * Return the database to the original state..
+   */
+  public function tearDown(): void {
     parent::tearDown();
   }
 
   /**
    * Example: Test that a version is returned.
    */
-  public function testWellFormedVersion() {
+  public function testWellFormedVersion(): void {
     $this->assertNotEmpty(E::SHORT_NAME);
     $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
@@ -48,7 +57,7 @@ class <?php echo $testClass ?> extends \CiviUnitTestCase implements HeadlessInte
   /**
    * Example: Test that we're using a fake CMS.
    */
-  public function testWellFormedUF() {
+  public function testWellFormedUF(): void {
     $this->assertEquals('UnitTests', CIVICRM_UF);
   }
 
