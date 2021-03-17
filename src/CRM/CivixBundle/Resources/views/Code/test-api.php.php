@@ -21,7 +21,7 @@ class <?php echo $testClassName ?> extends \PHPUnit\Framework\TestCase implement
    *
    * See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
    */
-  public function setUpHeadless() {
+  public function setUpHeadless(): void {
     return \Civi\Test::headless()
       ->installMe(__DIR__)
       ->apply();
@@ -30,7 +30,7 @@ class <?php echo $testClassName ?> extends \PHPUnit\Framework\TestCase implement
   /**
    * The setup() method is executed before the test is executed (optional).
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
   }
 
@@ -38,7 +38,7 @@ class <?php echo $testClassName ?> extends \PHPUnit\Framework\TestCase implement
    * The tearDown() method is executed after the test was executed (optional)
    * This can be used for cleanup.
    */
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
   }
 
@@ -47,7 +47,7 @@ class <?php echo $testClassName ?> extends \PHPUnit\Framework\TestCase implement
    *
    * Note how the function name begins with the word "test".
    */
-  public function testApiExample() {
+  public function testApiExample(): void {
     $result = civicrm_api3('<?php echo $entityNameCamel ?>', '<?php echo $actionNameLower ?>', array('magicword' => 'sesame'));
     $this->assertEquals('Twelve', $result['values'][12]['name']);
   }
