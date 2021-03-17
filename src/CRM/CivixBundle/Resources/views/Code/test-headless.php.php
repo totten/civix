@@ -28,7 +28,7 @@ use Civi\Test\TransactionalInterface;
  */
 class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
 
-  public function setUpHeadless() {
+  public function setUpHeadless(): void {
     // Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
     // See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
     return \Civi\Test::headless()
@@ -36,18 +36,18 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements He
       ->apply();
   }
 
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
   }
 
   /**
    * Example: Test that a version is returned.
    */
-  public function testWellFormedVersion() {
+  public function testWellFormedVersion(): void {
     $this->assertNotEmpty(E::SHORT_NAME);
     $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
@@ -55,7 +55,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements He
   /**
    * Example: Test that we're using a fake CMS.
    */
-  public function testWellFormedUF() {
+  public function testWellFormedUF(): void {
     $this->assertEquals('UnitTests', CIVICRM_UF);
   }
 
