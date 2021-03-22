@@ -22,12 +22,13 @@ $loader->register();
  *   The rest of the command to send.
  * @param string $decode
  *   Ex: 'json' or 'phpcode'.
- * @return string
+ * @return mixed
  *   Response output (if the command executed normally).
+ *   For 'raw' or 'phpcode', this will be a string. For 'json', it could be any JSON value.
  * @throws \RuntimeException
  *   If the command terminates abnormally.
  */
-function cv(string $cmd, $decode = 'json'): string {
+function cv(string $cmd, string $decode = 'json') {
   $cmd = 'cv ' . $cmd;
   $descriptorSpec = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => STDERR];
   $oldOutput = getenv('CV_OUTPUT');
