@@ -10,15 +10,16 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase {
   /**
    * The setup() method is executed before the test is executed (optional).
    */
-  public function setUp() {
+  public function setUp():void {
     parent::setUp();
   }
 
   /**
-   * The tearDown() method is executed after the test was executed (optional)
+   * The tearDown() method is executed after the test was executed (optional).
+   *
    * This can be used for cleanup.
    */
-  public function tearDown() {
+  public function tearDown():void {
     parent::tearDown();
   }
 
@@ -27,7 +28,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase {
    *
    * Note how the function name begins with the word "test".
    */
-  public function testExample() {
+  public function testExample():void {
     self::assertTrue(TRUE, "The argument must be true to pass the test");
   }
 
