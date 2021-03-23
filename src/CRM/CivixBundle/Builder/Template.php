@@ -14,7 +14,12 @@ class Template implements Builder {
   protected $template, $path, $xml, $templateEngine, $enable;
 
   /**
-   * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+   * @var bool|string
+   */
+  private $overwrite;
+
+  /**
+   * @param $overwrite bool|string; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
   public function __construct($template, $path, $overwrite, $templateEngine) {
     $this->template = $template;
