@@ -40,7 +40,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements He
    *
    * @throws \CRM_Extension_Exception_ParseException
    */
-  public function setUpHeadless():void {
+  public function setUpHeadless(): CiviEnvBuilder {
     return \Civi\Test::headless()
       ->installMe(__DIR__)
       ->apply();
