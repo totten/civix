@@ -71,6 +71,8 @@ class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Com
     $config->phpCodePath = $basedir->string('');
     $config->sqlCodePath = $basedir->string('sql/');
 
+    $database['tableAttributes_modern'] = 'ENGINE=InnoDB';
+
     foreach ($xmlSchemas as $xmlSchema) {
       $dom = new \DomDocument();
       $xmlString = file_get_contents($xmlSchema);
