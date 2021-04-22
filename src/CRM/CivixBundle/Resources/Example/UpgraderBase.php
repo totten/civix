@@ -187,6 +187,12 @@ class CRM_CivixBundle_Resources_Example_UpgraderBase {
         CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
       }
     }
+    $pat = sprintf("xml/schema/%s/*.xml", str_replace('_', '/', E::CLASS_PREFIX));
+    if (!empty(glob(E::path($pat)))) {
+      $ctx = ['basedir' => E::path(), 'namespace' => E::CLASS_PREFIX, 'fullName' => E::LONG_NAME];
+      $sql = $this->createSchemaBuilder($ctx)->addXml($pat)->generateSql('DROP');
+      CRM_Utils_File::runSqlQuery(CIVICRM_DSN, $sql);
+    }
   }
 
   /**
