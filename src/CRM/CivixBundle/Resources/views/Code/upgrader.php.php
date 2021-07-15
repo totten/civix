@@ -64,7 +64,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * @return TRUE on success
    * @throws Exception
    */
-  // public function upgrade_4200() {
+  // public function upgrade_4200(): bool {
   //   $this->ctx->log->info('Applying update 4200');
   //   CRM_Core_DAO::executeQuery('UPDATE foo SET bar = "whiz"');
   //   CRM_Core_DAO::executeQuery('DELETE FROM bang WHERE willy = wonka(2)');
@@ -78,7 +78,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * @return TRUE on success
    * @throws Exception
    */
-  // public function upgrade_4201() {
+  // public function upgrade_4201(): bool {
   //   $this->ctx->log->info('Applying update 4201');
   //   // this path is relative to the extension base dir
   //   $this->executeSqlFile('sql/upgrade_4201.sql');
@@ -92,7 +92,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * @return TRUE on success
    * @throws Exception
    */
-  // public function upgrade_4202() {
+  // public function upgrade_4202(): bool {
   //   $this->ctx->log->info('Planning update 4202'); // PEAR Log interface
 
   //   $this->addTask(E::ts('Process first step'), 'processPart1', $arg1, $arg2);
@@ -111,7 +111,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * @return TRUE on success
    * @throws Exception
    */
-  // public function upgrade_4203() {
+  // public function upgrade_4203(): bool {
   //   $this->ctx->log->info('Planning update 4203'); // PEAR Log interface
 
   //   $minId = CRM_Core_DAO::singleValueQuery('SELECT coalesce(min(id),0) FROM civicrm_contribution');
