@@ -11,6 +11,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 use Civi\Test\HeadlessInterface;
 use Civi\Test\HookInterface;
 use Civi\Test\TransactionalInterface;
+use Civi\Test\CiviEnvBuilder;
 
 /**
  * FIXME - Add test description.
@@ -28,26 +29,35 @@ use Civi\Test\TransactionalInterface;
  */
 class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
 
-  public function setUpHeadless() {
-    // Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
-    // See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
+  /**
+   * Setup used when HeadlessInterface is implemented.
+   * 
+   * Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
+   * 
+   * @see See: https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md
+   *
+   * @return \Civi\Test\CiviEnvBuilder
+   *
+   * @throws \CRM_Extension_Exception_ParseException
+   */
+  public function setUpHeadless(): CiviEnvBuilder {
     return \Civi\Test::headless()
       ->installMe(__DIR__)
       ->apply();
   }
 
-  public function setUp() {
+  public function setUp():void {
     parent::setUp();
   }
 
-  public function tearDown() {
+  public function tearDown():void {
     parent::tearDown();
   }
 
   /**
    * Example: Test that a version is returned.
    */
-  public function testWellFormedVersion() {
+  public function testWellFormedVersion():void {
     $this->assertNotEmpty(E::SHORT_NAME);
     $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
@@ -55,7 +65,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements He
   /**
    * Example: Test that we're using a fake CMS.
    */
-  public function testWellFormedUF() {
+  public function testWellFormedUF():void {
     $this->assertEquals('UnitTests', CIVICRM_UF);
   }
 
