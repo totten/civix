@@ -74,6 +74,9 @@ class Info extends XML {
     $ctx['mainFile'] = (string) array_shift($items);
     $items = $this->get()->xpath('civix/namespace');
     $ctx['namespace'] = (string) array_shift($items);
+    $items = $this->get()->xpath('civix/angularModule');
+    $angularModule = (string) array_shift($items);
+    $ctx['angularModuleName'] = !empty($angularModule) ? $angularModule : $ctx['mainFile'];
   }
 
   /**

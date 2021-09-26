@@ -52,7 +52,7 @@ For more, see https://docs.angularjs.org/guide');
     }
 
     $ctx['tsDomain'] = (string) $attrs['key'];
-    $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
+    $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['angularModuleName'];
     $ctx['ctrlSuffix'] = $input->getArgument('<Ctrl>');
     $ctx['ctrlRelPath'] = $input->getArgument('<RelPath>');
     $ctx['ctrlName'] = ucwords($ctx['angularModuleName']) . $ctx['ctrlSuffix'];

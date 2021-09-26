@@ -36,7 +36,7 @@ class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command
       return;
     }
 
-    $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['mainFile'];
+    $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['angularModuleName'];
     $ctx['angularModulePhp'] = $basedir->string('ang', $ctx['angularModuleName'] . '.ang.php');
     $ctx['angularModuleJs'] = $basedir->string('ang', $ctx['angularModuleName'] . '.js');
     $ctx['angularModuleCss'] = $basedir->string('ang', $ctx['angularModuleName'] . '.css');
