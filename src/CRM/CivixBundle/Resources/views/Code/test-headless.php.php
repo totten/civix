@@ -31,10 +31,10 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements He
 
   /**
    * Setup used when HeadlessInterface is implemented.
-   * 
+   *
    * Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
-   * 
-   * @see See: https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md
+   *
+   * @link https://github.com/civicrm/org.civicrm.testapalooza/blob/master/civi-test.md
    *
    * @return \Civi\Test\CiviEnvBuilder
    *
