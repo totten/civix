@@ -5,7 +5,6 @@ use CRM\CivixBundle\Builder\CopyFile;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Naming;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,6 +17,7 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
+
   protected function configure() {
     Services::templating();
     $this
@@ -134,7 +134,7 @@ class InitCommand extends AbstractCommand {
     $civicrm_api3 = Services::api3();
 
     if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
-      $siteName = \CRM_Utils_System::baseURL(); // \CRM_Core_Config::singleton()->userSystem->cmsRootPath();
+      $siteName = \CRM_Utils_System::baseURL(); /* \CRM_Core_Config::singleton()->userSystem->cmsRootPath(); */
 
       $output->writeln("<info>Refresh extension list for \"$siteName\"</info>");
       if (!$civicrm_api3->Extension->refresh(['local' => TRUE, 'remote' => FALSE])) {
