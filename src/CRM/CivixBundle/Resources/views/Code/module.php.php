@@ -95,9 +95,7 @@ function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
 /**
  * Implements hook_civicrm_caseTypes().
  *
- * Generate a list of case-types.
- *
- * Note: This hook only runs in CiviCRM 4.4+.
+ * Add CiviCase types provided by this extension.
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
  */
@@ -108,14 +106,12 @@ function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
 /**
  * Implements hook_civicrm_angularModules().
  *
- * Generate a list of Angular modules.
- *
- * Note: This hook only runs in CiviCRM 4.5+. It may
- * use features only available in v4.6+.
+ * Add Angular modules provided by this extension.
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
  */
 function <?php echo $mainFile ?>_civicrm_angularModules(&$angularModules) {
+  // Auto-add module files from ./ang/*.ang.php
   _<?php echo $mainFile ?>_civix_civicrm_angularModules($angularModules);
 }
 
@@ -163,13 +159,13 @@ function <?php echo $mainFile ?>_civicrm_themes(&$themes) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
  */
 //function <?php echo $mainFile ?>_civicrm_navigationMenu(&$menu) {
-//  _<?php echo $mainFile ?>_civix_insert_navigation_menu($menu, 'Mailings', array(
+//  _<?php echo $mainFile ?>_civix_insert_navigation_menu($menu, 'Mailings', [
 //    'label' => E::ts('New subliminal message'),
 //    'name' => 'mailing_subliminal_message',
 //    'url' => 'civicrm/mailing/subliminal',
 //    'permission' => 'access CiviMail',
 //    'operator' => 'OR',
 //    'separator' => 0,
-//  ));
+//  ]);
 //  _<?php echo $mainFile ?>_civix_navigationMenu($menu);
 //}
