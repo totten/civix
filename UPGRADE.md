@@ -41,42 +41,28 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
-### Upgrade to v21.09.0+: Angular Module
+### Upgrade to v21.09.0+: Angular Module (optional)
 
-When generating Angular code, the default Angular module name has traditionally matched the extension's short-name, eg
+Angular code in Civi extensions usually has one of these layouts:
 
-| __Long Name (Key)__ | __Short Name (file)__ | __Default Angular Module__ |
-| -- | -- | -- |
-| `org.example.foobar` | `foobar` | `foobar` |
-| `org.example.foo-bar` | `foo_bar` | `foo_bar` (!!) |
+* (A) (default, most common) There is one Angular module, and its name exactly matches the Civi extension.
+* (B) There is one Angular module, and its name does *not* match the Civi extension.
+* (C) There are multiple Angular modules. It is impossible for them to all match.
 
-This has two problems:
-
-* If the extension has dashes or underscores, then the Angular module winds up with underscores. Underscores
-  do not map sensibly to HTML tags or attributes.
-* There is no standard prefix. By convention, most CiviCRM Angular modules use the prefix `crm` (`crm-`).
-
-In v21.09.0+, the `info.xml` may explicitly specify the Angular module, as in:
+Extensions with mismatched names (group B) may now provide a hint via `info.xml`. For example, if the extension is `foobar` and the Angular module is `crmFoobar`, then set:
 
 ```xml
-<extension key="org.example.foo-bar" type="module">
-  <file>foo_bar</file>
+<extension key="com.example.foobar" type="module">
+  <file>foobar</file>
   <civix>
-    <namespace>CRM/FooBar</namespace>
-    <angularModule>crmFooBar</namespace>
+    <angularModule>crmFoobar</angularModule>
   </civix>
 </extension>
 ```
 
-For new extensions, the `info.xml` will be set the name as follows:
+For group B, this will be a slight usability improvement - when calling `generate:angular-*` commands, the default value of `--am=...` will match the preferred name.
 
-| __Long Name (Key)__ | __Short Name (file)__ | __Default Angular Module__ |
-| -- | -- | -- |
-| `org.example.foobar` | `foobar` | `crmFoobar` |
-| `org.example.foo-bar` | `foo_bar` | `crmFooBar` |
-
-Without a directive in `info.xml`, the default name will continue as before. However, you may wish to explicitly
-set the preferred name in `info.xml`.
+For group C, you will still need to specify `--am=...` on a case-by-case basis.
 
 ### Upgrade to v20.09.0+: APIv3 Entity
 
