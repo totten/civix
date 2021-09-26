@@ -4,7 +4,7 @@
 BUILDDIR="$1"
 BUILDNAME="$2"
 WORKINGDIR="$BUILDDIR/build/$BUILDNAME/web/sites/all/modules/civicrm/tools/extensions"
-EXMODULE=org.civicrm.civixexample
+EXMODULE=${EXMODULE:-org.civicrm.civixexample}
 
 # validate environment
 if [ -z "$BUILDNAME" ]; then
