@@ -41,6 +41,43 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
+### Upgrade to v21.09.0+: Angular Module
+
+When generating Angular code, the default Angular module name has traditionally matched the extension's short-name, eg
+
+| __Long Name (Key)__ | __Short Name (file)__ | __Default Angular Module__ |
+| -- | -- | -- |
+| `org.example.foobar` | `foobar` | `foobar` |
+| `org.example.foo-bar` | `foo_bar` | `foo_bar` (!!) |
+
+This has two problems:
+
+* If the extension has dashes or underscores, then the Angular module winds up with underscores. Underscores
+  do not map sensibly to HTML tags or attributes.
+* There is no standard prefix. By convention, most CiviCRM Angular modules use the prefix `crm` (`crm-`).
+
+In v21.09.0+, the `info.xml` may explicitly specify the Angular module, as in:
+
+```xml
+<extension key="org.example.foo-bar" type="module">
+  <file>foo_bar</file>
+  <civix>
+    <namespace>CRM/FooBar</namespace>
+    <angularModule>crmFooBar</namespace>
+  </civix>
+</extension>
+```
+
+For new extensions, the `info.xml` will be set the name as follows:
+
+| __Long Name (Key)__ | __Short Name (file)__ | __Default Angular Module__ |
+| -- | -- | -- |
+| `org.example.foobar` | `foobar` | `crmFoobar` |
+| `org.example.foo-bar` | `foo_bar` | `crmFooBar` |
+
+Without a directive in `info.xml`, the default name will continue as before. However, you may wish to explicitly
+set the preferred name in `info.xml`.
+
 ### Upgrade to v20.09.0+: APIv3 Entity
 
 Some versions of `generate:entity` (late 2019/early 2020) created incorrect boilerplate for APIv3.  This affected the
