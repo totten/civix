@@ -12,9 +12,11 @@ class Naming {
    * @return bool
    */
   public static function isValidFullName($fullName) {
-    return
-      preg_match('/^[a-z][-_a-z0-9\.]*$/', $fullName)
+    // Primarily alphanumeric, with limited symbols
+    return preg_match('/^[a-z][-_a-z0-9\.]*$/', $fullName)
+      // Prohibit double symbols
       && !preg_match('/[-_\.][-_\.]/', $fullName)
+      // Prohibit terminal symbols
       && !preg_match('/[-_\.]$/', $fullName);
   }
 
