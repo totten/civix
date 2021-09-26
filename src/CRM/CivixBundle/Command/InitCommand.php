@@ -32,7 +32,7 @@ class InitCommand extends AbstractCommand {
         "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)\n" .
         "\n" .
         "<comment>Identification:</comment>\n" .
-        "  Keys must be lowercase alphanumeric (with dashes allowed).\n" .
+        "  Keys must be lowercase alphanumeric (with dashes and underscores allowed).\n" .
         "\n" .
         "  Optionally, you may use a Java-style prefix (reverse domain name).\n" .
         "\n" .
