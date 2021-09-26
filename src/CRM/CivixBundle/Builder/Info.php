@@ -2,7 +2,6 @@
 namespace CRM\CivixBundle\Builder;
 
 use SimpleXMLElement;
-use CRM\CivixBundle\Builder\XML;
 
 /**
  * Build/update info.xml
@@ -54,6 +53,9 @@ class Info extends XML {
     $civix = $xml->addChild('civix');
     if (isset($ctx['namespace'])) {
       $civix->addChild('namespace', $ctx['namespace']);
+    }
+    if (isset($ctx['angularModuleName'])) {
+      $civix->addChild('angularModule', $ctx['angularModuleName']);
     }
 
     if (isset($ctx['typeInfo'])) {

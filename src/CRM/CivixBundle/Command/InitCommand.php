@@ -83,6 +83,7 @@ class InitCommand extends AbstractCommand {
     $ctx['fullName'] = $name;
     $ctx['mainFile'] = Naming::createShortName($name);
     $ctx['namespace'] = 'CRM/' . Naming::createCamelName($name);
+    $ctx['angularModuleName'] = 'crm' . Naming::createCamelName($name);
 
     if ($input->getOption('author') && $input->getOption('email')) {
       $ctx['author'] = $input->getOption('author');
