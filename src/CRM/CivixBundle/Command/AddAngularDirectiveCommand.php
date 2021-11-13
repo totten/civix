@@ -12,9 +12,10 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddAngularDirectiveCommand extends \Symfony\Component\Console\Command\Command {
+class AddAngularDirectiveCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:angular-directive')
       ->setDescription('Add a new Angular directive (Civi v4.6+)')

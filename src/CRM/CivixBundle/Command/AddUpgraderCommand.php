@@ -11,8 +11,9 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
+class AddUpgraderCommand extends AbstractCommand {
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:upgrader')
       ->setDescription('Add an example upgrader class to a CiviCRM Module-Extension');

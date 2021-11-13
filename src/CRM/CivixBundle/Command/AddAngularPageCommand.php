@@ -12,9 +12,10 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddAngularPageCommand extends \Symfony\Component\Console\Command\Command {
+class AddAngularPageCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:angular-page')
       ->setDescription('Add a new Angular page (Civi v4.6+)')

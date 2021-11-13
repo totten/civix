@@ -5,8 +5,9 @@ use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PingCommand extends \Symfony\Component\Console\Command\Command {
+class PingCommand extends AbstractCommand {
   protected function configure() {
+    parent::configure();
     $this
       ->setName('civicrm:ping')
       ->setDescription('Test whether the CiviCRM client is properly configured');
