@@ -15,8 +15,9 @@ use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddReportCommand extends \Symfony\Component\Console\Command\Command {
+class AddReportCommand extends AbstractCommand {
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:report')
       ->setDescription('Add a report to a module-extension')

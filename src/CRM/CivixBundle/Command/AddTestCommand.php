@@ -12,8 +12,9 @@ use CRM\CivixBundle\Utils\Path;
 use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use Exception;
 
-class AddTestCommand extends \Symfony\Component\Console\Command\Command {
+class AddTestCommand extends AbstractCommand {
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:test')
       ->setDescription('Add a new PHPUnit test to a CiviCRM Module-Extension')

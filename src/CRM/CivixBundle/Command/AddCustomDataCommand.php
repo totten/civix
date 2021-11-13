@@ -11,8 +11,9 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\CustomDataXML;
 use CRM\CivixBundle\Utils\Path;
 
-class AddCustomDataCommand extends \Symfony\Component\Console\Command\Command {
+class AddCustomDataCommand extends AbstractCommand {
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:custom-xml')
       ->setDescription('Export custom data and profiles to an XML file')

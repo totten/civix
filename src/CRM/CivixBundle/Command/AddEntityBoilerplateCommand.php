@@ -9,10 +9,11 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddEntityBoilerplateCommand extends \Symfony\Component\Console\Command\Command {
+class AddEntityBoilerplateCommand extends AbstractCommand {
   const API_VERSION = 3;
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:entity-boilerplate')
       ->setDescription('Generates boilerplate code for entities based on xml schema definition files (*EXPERIMENTAL AND INCOMPLETE*)')

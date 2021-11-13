@@ -10,8 +10,9 @@ use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Ini;
 use CRM\CivixBundle\Utils\Path;
 
-class ConfigSetCommand extends \Symfony\Component\Console\Command\Command {
+class ConfigSetCommand extends AbstractCommand {
   protected function configure() {
+    parent::configure();
     $this
       ->setName('config:set')
       ->setDescription('Set configuration value')

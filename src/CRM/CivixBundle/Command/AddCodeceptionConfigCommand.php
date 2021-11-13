@@ -14,9 +14,10 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
  *
  * @package CRM\CivixBundle\Command
  */
-class AddCodeceptionConfigCommand extends \Symfony\Component\Console\Command\Command {
+class AddCodeceptionConfigCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:codeception-config')
       ->setDescription('Add a new End-to-end Configuration for codeception to a CiviCRM Module-Extension')
