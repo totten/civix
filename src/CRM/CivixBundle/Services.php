@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle;
 
 use Civi\Cv\Bootstrap;
+use CRM\CivixBundle\Utils\Mixlib;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\EngineInterface;
@@ -103,6 +104,17 @@ class Services {
       self::$cache['cacheDir'] = self::configDir()->path('cache');
     }
     return self::$cache['cacheDir'];
+  }
+
+  /**
+   * @return \CRM\CivixBundle\Utils\Mixlib
+   */
+  public static function mixlib(): Mixlib {
+    if (!isset(self::$cache[__FUNCTION__])) {
+      // TODO: Add support for locating 'mixlib' from the current CiviCRM.
+      self::$cache[__FUNCTION__] = new Mixlib('/Users/totten/bknix/build/dmaster/web/sites/all/modules/civicrm/ext/mixlib');
+    }
+    return self::$cache[__FUNCTION__];
   }
 
 }
