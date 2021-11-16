@@ -69,7 +69,7 @@ class PhpData implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
-    $output->writeln("<info>Write " . $this->path . "</info>");
+    $output->writeln("<info>Write</info> " . $this->path);
 
     $content = "<?php\n";
     if ($this->header) {
