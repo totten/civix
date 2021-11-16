@@ -1,13 +1,13 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\Dirs;
-use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
@@ -28,14 +28,7 @@ class AddAngularModuleCommand extends AbstractCommand {
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
-
-    $info = new Info($basedir->string('info.xml'));
-    $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
+    $info = $this->getModuleInfo($ctx);
 
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['angularModuleName'];
     $ctx['angularModulePhp'] = $basedir->string('ang', $ctx['angularModuleName'] . '.ang.php');
@@ -70,14 +63,17 @@ class AddAngularModuleCommand extends AbstractCommand {
       $header = "// This file declares an Angular module which can be autoloaded\n"
         . "// in CiviCRM. See also:\n"
         . "// \https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules/n";
-      $ext->builders['mgd.php'] = new PhpData($ctx['angularModulePhp'], $header);
-      $ext->builders['mgd.php']->set($angModMeta);
+      $ext->builders['ang.php'] = new PhpData($ctx['angularModulePhp'], $header);
+      $ext->builders['ang.php']->set($angModMeta);
     }
 
     $ext->builders['js'] = new Template('angular-module.js.php', $ctx['angularModuleJs'], FALSE, Services::templating());
     $ext->builders['css'] = new Template('angular-module.css.php', $ctx['angularModuleCss'], FALSE, Services::templating());
 
-    $ext->init($ctx);
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['ang-php@1.0']);
+    $ext->builders['info'] = $info;
+
+    $ext->loadInit($ctx);
     $ext->save($ctx, $output);
   }
 
