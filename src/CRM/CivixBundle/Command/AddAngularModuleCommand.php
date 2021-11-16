@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -70,12 +71,15 @@ class AddAngularModuleCommand extends AbstractCommand {
       $header = "// This file declares an Angular module which can be autoloaded\n"
         . "// in CiviCRM. See also:\n"
         . "// \https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules/n";
-      $ext->builders['mgd.php'] = new PhpData($ctx['angularModulePhp'], $header);
-      $ext->builders['mgd.php']->set($angModMeta);
+      $ext->builders['ang.php'] = new PhpData($ctx['angularModulePhp'], $header);
+      $ext->builders['ang.php']->set($angModMeta);
     }
 
     $ext->builders['js'] = new Template('angular-module.js.php', $ctx['angularModuleJs'], FALSE, Services::templating());
     $ext->builders['css'] = new Template('angular-module.css.php', $ctx['angularModuleCss'], FALSE, Services::templating());
+
+    $ext->builders['info'] = new Info($basedir->string('info.xml'));
+    $ext->builders['mixins'] = new Mixins($ext->builders['info'], $basedir->string('mixin'), ['ang-php@1.0']);
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
