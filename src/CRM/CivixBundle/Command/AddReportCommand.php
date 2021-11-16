@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -117,6 +118,9 @@ class AddReportCommand extends AbstractCommand {
       $ext->builders['report.php'] = new Template('report.php.php', $ctx['reportClassFile'], FALSE, Services::templating());
       $ext->builders['page.tpl.php'] = new Template('report.tpl.php', $ctx['reportTplFile'], FALSE, Services::templating());
     }
+
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), 'mgd-php@1.0');
+    $ext->builders['info'] = $info;
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
