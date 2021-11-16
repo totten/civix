@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConfigGetCommand extends AbstractCommand {
+
   protected function configure() {
     parent::configure();
     $this

@@ -16,6 +16,7 @@ use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
 class AddReportCommand extends AbstractCommand {
+
   protected function configure() {
     parent::configure();
     $this

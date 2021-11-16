@@ -135,7 +135,8 @@ class TestRunCommand extends Command {
    */
   protected static function createPhpShellCommand($script) {
     $php = escapeshellcmd(self::getPhp());
-    $args = func_get_args(); // get $script and any others
+    // get $script and any others
+    $args = func_get_args();
     $escArgs = array_map('escapeshellarg', $args);
     $cmd = $php . ' ' . implode(' ', $escArgs);
     return $cmd;
@@ -173,6 +174,7 @@ class TestRunCommand extends Command {
    * Find (or auto-create) a PHP file with information for bootstrapping the test environment
    *
    * @param string $key the extension for which tests will be run
+   * @param bool $clear
    * @return string temp file path
    */
   protected function getBootstrapFile($key, $clear = FALSE) {
