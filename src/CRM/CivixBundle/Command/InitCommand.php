@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\CopyFile;
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Naming;
@@ -17,6 +18,8 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
+
+  protected $defaultMixins = ['setting-php@1'];
 
   protected function configure() {
     Services::templating();
@@ -66,6 +69,11 @@ class InitCommand extends AbstractCommand {
       $module = new Module(Services::templating());
       $module->loadInit($ctx);
       $module->save($ctx, $output);
+
+      $mixins = new Mixins($info, $basedir->string('mixin'), $this->defaultMixins);
+      $mixins->save($ctx, $output);
+
+      $info->save($ctx, $output);
       return;
     }
 
@@ -102,10 +110,12 @@ class InitCommand extends AbstractCommand {
       $output->writeln('<error>Unrecognized license (' . $ctx['license'] . ')</error>');
       return;
     }
-    $ext = new Collection();
+
+    $basedir = new Path($ctx['basedir']);
 
     $output->writeln("<info>Initalize module " . $ctx['fullName'] . "</info>");
-    $basedir = new Path($ctx['basedir']);
+
+    $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
       $basedir->string('build'),
       $basedir->string('templates'),
@@ -114,6 +124,7 @@ class InitCommand extends AbstractCommand {
       $basedir->string($ctx['namespace']),
     ]);
     $ext->builders['info'] = new Info($basedir->string('info.xml'));
+    $ext->builders['mixins'] = new Mixins($ext->builders['info'], $basedir->string('mixin'), $this->defaultMixins);
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
