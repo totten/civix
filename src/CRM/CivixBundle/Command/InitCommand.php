@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\CopyFile;
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Naming;
@@ -17,6 +18,8 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
+
+  protected $defaultMixins = ['setting-php@1'];
 
   protected function configure() {
     Services::templating();
@@ -70,6 +73,11 @@ class InitCommand extends AbstractCommand {
       $module = new Module(Services::templating());
       $module->loadInit($ctx);
       $module->save($ctx, $output);
+
+      $mixins = new Mixins($info, $basedir->string('mixin'), $this->defaultMixins);
+      $mixins->save($ctx, $output);
+
+      $info->save($ctx, $output);
       return;
     }
 
@@ -133,7 +141,8 @@ class InitCommand extends AbstractCommand {
 
     $ext = new Collection();
 
-    $output->writeln("<info>Initalize module " . $ctx['fullName'] . "</info>");
+    $output->writeln("<info>Initalize module</info> " . $ctx['fullName']);
+
     $basedir = new Path($ctx['basedir']);
     $ext->builders['dirs'] = new Dirs([
       $basedir->string('build'),
@@ -143,6 +152,7 @@ class InitCommand extends AbstractCommand {
       $basedir->string($ctx['namespace']),
     ]);
     $ext->builders['info'] = new Info($basedir->string('info.xml'));
+    $ext->builders['mixins'] = new Mixins($ext->builders['info'], $basedir->string('mixin'), $this->defaultMixins);
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
@@ -165,7 +175,7 @@ class InitCommand extends AbstractCommand {
     if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
       $siteName = \CRM_Utils_System::baseURL(); /* \CRM_Core_Config::singleton()->userSystem->cmsRootPath(); */
 
-      $output->writeln("<info>Refresh extension list for \"$siteName\"</info>");
+      $output->writeln("<info>Refresh extension list for</info> $siteName");
       if (!$civicrm_api3->Extension->refresh(['local' => TRUE, 'remote' => FALSE])) {
         $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
         return FALSE;
@@ -175,7 +185,7 @@ class InitCommand extends AbstractCommand {
       }
 
       if ($input->getOption('enable') === 'yes' || $this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
-        $output->writeln("<info>Enable extension ($key) in \"$siteName\"</info>");
+        $output->writeln("<info>Enable extension ($key) in</info> $siteName");
         if (!$civicrm_api3->Extension->install(['key' => $key])) {
           $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
         }
