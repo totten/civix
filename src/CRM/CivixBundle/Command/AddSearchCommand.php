@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,7 +11,6 @@ use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\CopyClass;
 use CRM\CivixBundle\Builder\CopyFile;
 use CRM\CivixBundle\Builder\Dirs;
-use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
@@ -34,13 +34,7 @@ class AddSearchCommand extends AbstractCommand {
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
-    $info = new Info($basedir->string('info.xml'));
-    $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
+    $info = $this->getModuleInfo($ctx);
 
     $ctx['searchClassName'] = strtr($ctx['namespace'], '/', '_') . '_Form_Search_' . $input->getArgument('<ClassName>');
     $ctx['searchClassFile'] = $basedir->string(strtr($ctx['searchClassName'], '_', '/') . '.php');
@@ -113,7 +107,10 @@ class AddSearchCommand extends AbstractCommand {
       // $ext->builders['page.tpl.php'] = new Template('search.tpl.php', $ctx['searchTplFile'], FALSE, Services::templating());
     }
 
-    $ext->init($ctx);
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);
+    $ext->builders['info'] = $info;
+
+    $ext->loadInit($ctx);
     $ext->save($ctx, $output);
   }
 

@@ -1,22 +1,20 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
-use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class AddApiCommand extends Command {
+class AddApiCommand extends AbstractCommand {
   const API_VERSION = 3;
 
   public static function getSchedules() {
@@ -63,14 +61,7 @@ action names.
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
-
-    $info = new Info($basedir->string('info.xml'));
-    $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
+    $info = $this->getModuleInfo($ctx);
 
     if (!preg_match('/^[A-Za-z0-9]+$/', $input->getArgument('<EntityName>'))) {
       throw new Exception("Entity name must be alphanumeric camel-case");
@@ -117,6 +108,9 @@ action names.
     }
 
     if ($input->getOption('schedule')) {
+      $mixins = new Mixins($info, $basedir->string('mixin'), 'mgd-php@1.0');
+      $mixins->save($ctx, $output);
+
       if (!file_exists($ctx['apiCronFile'])) {
         $mgdEntities = [
           [
@@ -159,13 +153,11 @@ action names.
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiTestFile']));
     }
 
-    $module = new Module(Services::templating());
-    $module->loadInit($ctx);
-    $module->save($ctx, $output);
-
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
     $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
     $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+
+    $info->save($ctx, $output);
   }
 
 }
