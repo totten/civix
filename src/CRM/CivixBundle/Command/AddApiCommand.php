@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -117,6 +118,9 @@ action names.
     }
 
     if ($input->getOption('schedule')) {
+      $mixins = new Mixins($info, $basedir->string('mixin'), 'mgd-php@1.0');
+      $mixins->save($ctx, $output);
+
       if (!file_exists($ctx['apiCronFile'])) {
         $mgdEntities = [
           [
@@ -166,6 +170,8 @@ action names.
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
     $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
     $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+
+    $info->save($ctx, $output);
   }
 
 }
