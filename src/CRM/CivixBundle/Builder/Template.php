@@ -44,7 +44,7 @@ class Template implements Builder {
       $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write " . $this->path . "</info>");
+      $output->writeln("<info>Write</info> " . $this->path);
       file_put_contents($this->path, $this->templateEngine->render($this->template, $ctx));
     }
   }

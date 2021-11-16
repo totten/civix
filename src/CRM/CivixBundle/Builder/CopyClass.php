@@ -55,7 +55,7 @@ class CopyClass implements Builder {
       $output->writeln("<error>Skip " . $this->tgtFile . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write " . $this->tgtFile . "</info>");
+      $output->writeln("<info>Write</info> " . $this->tgtFile);
       $content = file_get_contents($clazz->getFileName(), TRUE);
       // FIXME parser
       $content = strtr($content, [

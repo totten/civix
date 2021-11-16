@@ -59,7 +59,7 @@ class XML implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
-    $output->writeln("<info>Write " . $this->path . "</info>");
+    $output->writeln("<info>Write</info> " . $this->path);
 
     // force pretty printing with encode/decode cycle
     $outXML = $this->get()->saveXML();

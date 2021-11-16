@@ -42,7 +42,7 @@ class License implements Builder {
       $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write " . $this->path . "</info>");
+      $output->writeln("<info>Write</info> " . $this->path);
       $text = strtr($this->license->getText(), [
         '<YEAR>' => date('Y'),
         '<OWNER>' => sprintf('%s <%s>', $ctx['author'], $ctx['email']),
