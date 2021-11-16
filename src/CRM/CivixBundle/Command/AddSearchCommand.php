@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -113,7 +114,10 @@ class AddSearchCommand extends AbstractCommand {
       // $ext->builders['page.tpl.php'] = new Template('search.tpl.php', $ctx['searchTplFile'], FALSE, Services::templating());
     }
 
-    $ext->init($ctx);
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);
+    $ext->builders['info'] = $info;
+
+    $ext->loadInit($ctx);
     $ext->save($ctx, $output);
   }
 
