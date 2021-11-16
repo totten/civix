@@ -9,9 +9,9 @@ use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
-use Exception;
 
 class AddUpgraderCommand extends AbstractCommand {
+
   protected function configure() {
     parent::configure();
     $this

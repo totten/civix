@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PingCommand extends AbstractCommand {
+
   protected function configure() {
     parent::configure();
     $this

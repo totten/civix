@@ -13,6 +13,7 @@ use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use Exception;
 
 class AddTestCommand extends AbstractCommand {
+
   protected function configure() {
     parent::configure();
     $this
@@ -90,7 +91,7 @@ as separate groups:
   /**
    * @param string $fullClassName
    * @param string $templateName
-   * @param Path $basedir
+   * @param \CRM\CivixBundle\Utils\Path $basedir
    * @param array $ctx
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    * @throws \Exception

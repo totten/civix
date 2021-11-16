@@ -1,13 +1,11 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 /**
  * Class AddCodeceptionConfigCommand

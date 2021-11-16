@@ -1,18 +1,12 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Builder\Module;
-use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
-use Exception;
 
 class InfoSetCommand extends Command {
 

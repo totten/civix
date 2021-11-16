@@ -12,6 +12,7 @@ use CRM\CivixBundle\Builder\CustomDataXML;
 use CRM\CivixBundle\Utils\Path;
 
 class AddCustomDataCommand extends AbstractCommand {
+
   protected function configure() {
     parent::configure();
     $this
