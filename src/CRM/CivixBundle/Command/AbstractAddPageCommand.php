@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +14,7 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-abstract class AbstractAddPageCommand extends Command {
+abstract class AbstractAddPageCommand extends AbstractCommand {
 
   protected function configure() {
     $this
@@ -35,13 +36,7 @@ abstract class AbstractAddPageCommand extends Command {
     $ctx['shortClassName'] = $input->getArgument('<ClassName>');
     $basedir = new Path($ctx['basedir']);
 
-    $info = new Info($basedir->string('info.xml'));
-    $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
+    $info = $this->getModuleInfo($ctx);
 
     $ctx['fullClassName'] = $this->createClassName($input, $ctx);
     $phpFile = $basedir->string(str_replace('_', '/', $ctx['fullClassName']) . '.php');
@@ -93,6 +88,10 @@ abstract class AbstractAddPageCommand extends Command {
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
+
+    $mixins = new Mixins($info, $basedir->string('mixin'), ['menu-xml@1.0']);
+    $mixins->save($ctx, $output);
+    $info->save($ctx, $output);
   }
 
   abstract protected function getPhpTemplate(InputInterface $input);
