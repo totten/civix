@@ -1,13 +1,12 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
+use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Dirs;
-use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
@@ -49,33 +48,15 @@ class AddCaseTypeCommand extends AbstractCommand {
     $ctx['caseTypeName'] = $input->getArgument('<Name>');
 
     $basedir = new Path($ctx['basedir']);
-
-    $info = new Info($basedir->string('info.xml'));
-    $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
-
-    $dirs = new Dirs([
-      $basedir->string('xml', 'case'),
-    ]);
-    $dirs->save($ctx, $output);
+    $info = $this->getModuleInfo($ctx);
 
     $xmlFile = $basedir->string('xml', 'case', $ctx['caseTypeName'] . '.xml');
-    if (!file_exists($xmlFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $xmlFile));
-      file_put_contents($xmlFile, Services::templating()
-        ->render('case-type.xml.php', $ctx));
-    }
-    else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $xmlFile));
-    }
+    $tpl = new Template('case-type.xml.php', $xmlFile, FALSE);
+    $tpl->save($ctx, $output);
 
-    $module = new Module(Services::templating());
-    $module->loadInit($ctx);
-    $module->save($ctx, $output);
+    $mixins = new Mixins($info, $basedir->string('mixin'), ['case-xml@1.0']);
+    $mixins->save($ctx, $output);
+    $info->save($ctx, $output);
   }
 
 }
