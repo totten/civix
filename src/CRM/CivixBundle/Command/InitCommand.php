@@ -28,6 +28,7 @@ class InitCommand extends AbstractCommand {
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if \"key\" not specified)')
       ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo_bar\" or \"org.example.foo-bar\")")
       ->addOption('enable', NULL, InputOption::VALUE_REQUIRED, 'Whether to auto-enable the new module (yes/no/ask)', 'ask')
+      ->addOption('mixins', NULL, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Automatically enable the listed mixins')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
       ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail())
@@ -62,19 +63,13 @@ class InitCommand extends AbstractCommand {
       $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
       $basedir = new Path($ctx['basedir']);
 
-      $info = new Info($basedir->string('info.xml'));
-      $info->load($ctx);
-      $attrs = $info->get()->attributes();
-      if ($attrs['type'] != 'module') {
-        $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-        return;
-      }
+      $info = $this->getModuleInfo($ctx);
 
       $module = new Module(Services::templating());
       $module->loadInit($ctx);
       $module->save($ctx, $output);
 
-      $mixins = new Mixins($info, $basedir->string('mixin'), $this->defaultMixins);
+      $mixins = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
       $mixins->save($ctx, $output);
 
       $info->save($ctx, $output);
@@ -144,6 +139,9 @@ class InitCommand extends AbstractCommand {
     $output->writeln("<info>Initalize module</info> " . $ctx['fullName']);
 
     $basedir = new Path($ctx['basedir']);
+
+    $info = new Info($basedir->string('info.xml'));
+
     $ext->builders['dirs'] = new Dirs([
       $basedir->string('build'),
       $basedir->string('templates'),
@@ -151,8 +149,8 @@ class InitCommand extends AbstractCommand {
       $basedir->string('images'),
       $basedir->string($ctx['namespace']),
     ]);
-    $ext->builders['info'] = new Info($basedir->string('info.xml'));
-    $ext->builders['mixins'] = new Mixins($ext->builders['info'], $basedir->string('mixin'), $this->defaultMixins);
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
+    $ext->builders['info'] = $info;
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
@@ -239,6 +237,12 @@ class InitCommand extends AbstractCommand {
       $result = $default;
     }
     return $result;
+  }
+
+  protected function getMixins(InputInterface $input) {
+    $requested = explode(',', implode(',', $input->getOption('mixins')));
+    $merged = array_unique(array_merge($this->defaultMixins, $requested));
+    return array_filter($merged);
   }
 
 }
