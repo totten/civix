@@ -41,6 +41,29 @@ The steps for upgrading the `Upgrader` are as follows:
 
 ## Special Tasks
 
+### Upgrade to v21.09.0+: Angular Module (optional)
+
+Angular code in Civi extensions usually has one of these layouts:
+
+* (A) (default, most common) There is one Angular module, and its name exactly matches the Civi extension.
+* (B) There is one Angular module, and its name does *not* match the Civi extension.
+* (C) There are multiple Angular modules. It is impossible for them to all match.
+
+Extensions with mismatched names (group B) may now provide a hint via `info.xml`. For example, if the extension is `foobar` and the Angular module is `crmFoobar`, then set:
+
+```xml
+<extension key="com.example.foobar" type="module">
+  <file>foobar</file>
+  <civix>
+    <angularModule>crmFoobar</angularModule>
+  </civix>
+</extension>
+```
+
+For group B, this will be a slight usability improvement - when calling `generate:angular-*` commands, the default value of `--am=...` will match the preferred name.
+
+For group C, you will still need to specify `--am=...` on a case-by-case basis.
+
 ### Upgrade to v20.09.0+: APIv3 Entity
 
 Some versions of `generate:entity` (late 2019/early 2020) created incorrect boilerplate for APIv3.  This affected the
