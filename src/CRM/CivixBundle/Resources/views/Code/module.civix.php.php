@@ -82,6 +82,14 @@ class <?php echo $_namespace ?>_ExtensionUtil {
 
 use <?php echo $_namespace ?>_ExtensionUtil as E;
 
+function _<?php echo $mainFile ?>_civix_mixin_polyfill() {
+  if (!class_exists('CRM_Extension_MixInfo')) {
+    $polyfill = __DIR__ . '/mixin/polyfill.php';
+    (require $polyfill)(E::LONG_NAME, E::SHORT_NAME, E::path());
+  }
+}
+
+
 /**
  * (Delegated) Implements hook_civicrm_config().
  *
@@ -108,6 +116,8 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
+
+  _<?php echo $mainFile ?>_civix_mixin_polyfill();
 }
 
 /**
@@ -133,6 +143,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_install() {
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     $upgrader->onInstall();
   }
+  _<?php echo $mainFile ?>_civix_mixin_polyfill();
 }
 
 /**
@@ -173,6 +184,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
       $upgrader->onEnable();
     }
   }
+  _<?php echo $mainFile ?>_civix_mixin_polyfill();
 }
 
 /**
