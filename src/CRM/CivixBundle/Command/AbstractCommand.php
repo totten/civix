@@ -1,6 +1,8 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,6 +26,17 @@ abstract class AbstractCommand extends Command {
     $helper = $this->getHelper('question');
     $question = new ConfirmationQuestion($message, $default);
     return (bool) $helper->ask($input, $output, $question);
+  }
+
+  protected function getModuleInfo(&$ctx): Info {
+    $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
+    $info = new Info($basedir->string('info.xml'));
+    $info->load($ctx);
+    $attrs = $info->get()->attributes();
+    if ($attrs['type'] != 'module') {
+      throw new \RuntimeException('Wrong extension type: ' . $attrs['type']);
+    }
+    return $info;
   }
 
 }
