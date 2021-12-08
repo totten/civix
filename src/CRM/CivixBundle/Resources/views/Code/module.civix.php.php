@@ -249,30 +249,6 @@ function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
 }
 
 /**
- * (Delegated) Implements hook_civicrm_managed().
- *
- * Find any *.mgd.php files, merge their content, and return.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed
- */
-function _<?php echo $mainFile ?>_civix_civicrm_managed(&$entities) {
-  $mgdFiles = _<?php echo $mainFile ?>_civix_find_files(__DIR__, '*.mgd.php');
-  sort($mgdFiles);
-  foreach ($mgdFiles as $file) {
-    $es = include $file;
-    foreach ($es as $e) {
-      if (empty($e['module'])) {
-        $e['module'] = E::LONG_NAME;
-      }
-      if (empty($e['params']['version'])) {
-        $e['params']['version'] = '3';
-      }
-      $entities[] = $e;
-    }
-  }
-}
-
-/**
  * (Delegated) Implements hook_civicrm_caseTypes().
  *
  * Find any and return any files matching "xml/case/*.xml"
