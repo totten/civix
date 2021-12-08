@@ -5,7 +5,6 @@ use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
@@ -15,6 +14,7 @@ use CRM\CivixBundle\Utils\Path;
 use Exception;
 
 abstract class AbstractAddPageCommand extends Command {
+
   protected function configure() {
     $this
       ->addArgument('<ClassName>', InputArgument::REQUIRED, 'Base name of the controller class name (eg "MyPage")')
@@ -73,7 +73,7 @@ abstract class AbstractAddPageCommand extends Command {
     }
 
     if (!file_exists($phpFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
       file_put_contents($phpFile, Services::templating()
         ->render($this->getPhpTemplate($input), $ctx));
     }
@@ -82,7 +82,7 @@ abstract class AbstractAddPageCommand extends Command {
     }
 
     if (!file_exists($tplFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $tplFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $tplFile));
       file_put_contents($tplFile, Services::templating()
         ->render($this->getTplTemplate($input), $ctx));
     }

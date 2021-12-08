@@ -12,9 +12,10 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddAngularDirectiveCommand extends \Symfony\Component\Console\Command\Command {
+class AddAngularDirectiveCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:angular-directive')
       ->setDescription('Add a new Angular directive (Civi v4.6+)')
@@ -64,7 +65,7 @@ For more, see https://docs.angularjs.org/guide/directive');
     $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular directive \"" . $ctx['dirNameHyp'] . "\" (aka \"" . $ctx['dirNameCamel'] . "\")</info>");
+    $output->writeln("<info>Initialize Angular directive</info> " . $ctx['dirNameHyp'] . " <info>(aka </info>" . $ctx['dirNameCamel'] . "<info>)</info>");
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

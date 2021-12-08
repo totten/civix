@@ -1,19 +1,12 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Command\HelpCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Builder\Module;
-use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
-use Exception;
 
 class InfoGetCommand extends Command {
 
@@ -59,7 +52,8 @@ Common fields:\n * " . implode("\n * ", $fields) . "\n");
     if (is_null($xpath)) {
       // missing xpath value so provide help
       $help = $this->getApplication()->get('help');
-      $help->setCommand($this); // tell help to provide specific help for this function
+      // tell help to provide specific help for this function
+      $help->setCommand($this);
       return $help->run($input, $output);
     }
     foreach ($info->get()->xpath($xpath) as $node) {

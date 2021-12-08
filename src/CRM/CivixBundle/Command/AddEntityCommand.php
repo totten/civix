@@ -17,10 +17,11 @@ use CRM\CivixBundle\Utils\Naming;
 
 use Exception;
 
-class AddEntityCommand extends \Symfony\Component\Console\Command\Command {
+class AddEntityCommand extends AbstractCommand {
   const API_VERSION = 3;
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:entity')
       ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL*)')

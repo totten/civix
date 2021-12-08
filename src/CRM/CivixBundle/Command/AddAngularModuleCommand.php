@@ -12,9 +12,10 @@ use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command {
+class AddAngularModuleCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:angular-module')
       ->setDescription('Add a new Angular module (Civi v4.6+)')
@@ -42,7 +43,7 @@ class AddAngularModuleCommand extends \Symfony\Component\Console\Command\Command
     $ctx['angularModuleCss'] = $basedir->string('ang', $ctx['angularModuleName'] . '.css');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular module \"" . $ctx['angularModuleName'] . "\"</info>");
+    $output->writeln("<info>Initialize Angular module</info> " . $ctx['angularModuleName']);
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

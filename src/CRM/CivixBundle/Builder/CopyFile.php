@@ -44,7 +44,7 @@ class CopyFile implements Builder {
       $output->writeln("<error>Skip " . $this->to . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write " . $this->to . "</info>");
+      $output->writeln("<info>Write</info> " . $this->to);
       $content = file_get_contents($this->from, TRUE);
       file_put_contents($this->to, $content);
     }

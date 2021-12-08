@@ -18,7 +18,7 @@ class PHPUnitGenerateInitFiles {
       ]);
       $dirs->save($ctx, $output);
 
-      $output->writeln(sprintf('<info>Write %s</info>', $bootstrapFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $bootstrapFile));
       file_put_contents($bootstrapFile, Services::templating()
         ->render('phpunit-boot-cv.php.php', $ctx));
     }

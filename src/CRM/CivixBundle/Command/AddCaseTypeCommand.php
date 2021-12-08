@@ -4,7 +4,6 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
@@ -12,8 +11,10 @@ use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
 
-class AddCaseTypeCommand extends \Symfony\Component\Console\Command\Command {
+class AddCaseTypeCommand extends AbstractCommand {
+
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:case-type')
       ->setDescription('Add a CiviCase case-type')

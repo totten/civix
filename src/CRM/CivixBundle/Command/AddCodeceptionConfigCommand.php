@@ -1,22 +1,21 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 /**
  * Class AddCodeceptionConfigCommand
  *
  * @package CRM\CivixBundle\Command
  */
-class AddCodeceptionConfigCommand extends \Symfony\Component\Console\Command\Command {
+class AddCodeceptionConfigCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:codeception-config')
       ->setDescription('Add a new End-to-end Configuration for codeception to a CiviCRM Module-Extension')

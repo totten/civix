@@ -1,8 +1,10 @@
 <?php
 namespace CRM\CivixBundle\Command;
+
 use Symfony\Component\Console\Input\InputInterface;
 
 class AddPageCommand extends AbstractAddPageCommand {
+
   protected function configure() {
     parent::configure();
     $this

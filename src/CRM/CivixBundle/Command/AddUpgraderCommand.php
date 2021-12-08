@@ -9,10 +9,11 @@ use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Utils\Path;
-use Exception;
 
-class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
+class AddUpgraderCommand extends AbstractCommand {
+
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:upgrader')
       ->setDescription('Add an example upgrader class to a CiviCRM Module-Extension');
@@ -43,7 +44,7 @@ class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
     if (!file_exists($phpFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
       file_put_contents($phpFile, Services::templating()
         ->render('upgrader.php.php', $ctx));
     }
@@ -52,7 +53,7 @@ class AddUpgraderCommand extends \Symfony\Component\Console\Command\Command {
     }
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');
-    $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
+    $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
     file_put_contents($phpFile, Services::templating()
       ->render('upgrader-base.php.php', $ctx));
 

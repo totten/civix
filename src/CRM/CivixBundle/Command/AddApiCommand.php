@@ -108,7 +108,7 @@ action names.
     $dirs->save($ctx, $output);
 
     if (!file_exists($ctx['apiFile'])) {
-      $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiFile']));
+      $output->writeln(sprintf('<info>Write</info> %s', $ctx['apiFile']));
       file_put_contents($ctx['apiFile'], Services::templating()
         ->render('api.php.php', $ctx));
     }
@@ -151,7 +151,7 @@ action names.
     ]);
     $test_dirs->save($ctx, $output);
     if (!file_exists($ctx['apiTestFile'])) {
-      $output->writeln(sprintf('<info>Write %s</info>', $ctx['apiTestFile']));
+      $output->writeln(sprintf('<info>Write</info> %s', $ctx['apiTestFile']));
       file_put_contents($ctx['apiTestFile'], Services::templating()
         ->render('test-api.php.php', $ctx));
     }

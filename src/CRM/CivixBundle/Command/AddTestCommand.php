@@ -12,8 +12,10 @@ use CRM\CivixBundle\Utils\Path;
 use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use Exception;
 
-class AddTestCommand extends \Symfony\Component\Console\Command\Command {
+class AddTestCommand extends AbstractCommand {
+
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:test')
       ->setDescription('Add a new PHPUnit test to a CiviCRM Module-Extension')
@@ -89,7 +91,7 @@ as separate groups:
   /**
    * @param string $fullClassName
    * @param string $templateName
-   * @param Path $basedir
+   * @param \CRM\CivixBundle\Utils\Path $basedir
    * @param array $ctx
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    * @throws \Exception
@@ -116,7 +118,7 @@ as separate groups:
     $dirs->save($ctx, $output);
 
     if (!file_exists($testPath)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $testPath));
+      $output->writeln(sprintf('<info>Write</info> %s', $testPath));
       file_put_contents($testPath, Services::templating()
         ->render($templateName, $ctx));
     }

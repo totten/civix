@@ -15,10 +15,11 @@ use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
+class AddSearchCommand extends AbstractCommand {
   const GENERIC_SEARCH_TEMPLATE = 'CRM/Contact/Form/Search/Custom.tpl';
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:search')
       ->setDescription('Add a custom search to a module-extension')
@@ -48,7 +49,7 @@ class AddSearchCommand extends \Symfony\Component\Console\Command\Command {
     $ctx['searchTplFile'] = $basedir->string('templates', $ctx['searchTplRelFile']);
 
     //// Construct files ////
-    $output->writeln("<info>Initialize search " . $ctx['searchClassName'] . "</info>");
+    $output->writeln("<info>Initialize search</info> " . $ctx['searchClassName']);
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

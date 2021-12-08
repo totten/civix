@@ -12,9 +12,10 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
-class AddAngularPageCommand extends \Symfony\Component\Console\Command\Command {
+class AddAngularPageCommand extends AbstractCommand {
 
   protected function configure() {
+    parent::configure();
     $this
       ->setName('generate:angular-page')
       ->setDescription('Add a new Angular page (Civi v4.6+)')
@@ -63,7 +64,7 @@ For more, see https://docs.angularjs.org/guide');
     $ctx['hlpPath'] = $basedir->string('templates', $ctx['hlpName'] . '.hlp');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular page \"" . $ctx['ctrlName'] . "\" (civicrm/a/#/" . $ctx['ctrlRelPath'] . ")</info>");
+    $output->writeln("<info>Initialize Angular page</info> " . $ctx['ctrlName'] . " <info>(</info>civicrm/a/#/" . $ctx['ctrlRelPath'] . "<info>)</info>");
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

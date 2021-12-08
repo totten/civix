@@ -6,8 +6,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConfigGetCommand extends \Symfony\Component\Console\Command\Command {
+class ConfigGetCommand extends AbstractCommand {
+
   protected function configure() {
+    parent::configure();
     $this
       ->setName('config:get')
       ->setDescription('Get configuration values')

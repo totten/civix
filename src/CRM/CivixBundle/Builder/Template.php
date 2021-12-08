@@ -1,9 +1,8 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
-use SimpleXMLElement;
-use DOMDocument;
 use CRM\CivixBundle\Builder;
+use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -11,16 +10,24 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Template implements Builder {
 
-  protected $template, $path, $xml, $templateEngine, $enable;
+  protected $template;
+  protected $path;
+  protected $xml;
+  protected $templateEngine;
+  protected $enable;
 
   /**
-   * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+   * @param string $template
+   * @param string $path
+   * @param bool|string $overwrite TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+   * @param \Symfony\Component\Templating\EngineInterface|null $templateEngine
+   * @param
    */
-  public function __construct($template, $path, $overwrite, $templateEngine) {
+  public function __construct(string $template, string $path, $overwrite, $templateEngine = NULL) {
     $this->template = $template;
     $this->path = $path;
     $this->overwrite = $overwrite;
-    $this->templateEngine = $templateEngine;
+    $this->templateEngine = $templateEngine ?: Services::templating();
     $this->enable = FALSE;
   }
 
@@ -37,6 +44,10 @@ class Template implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
+    $parent = dirname($this->path);
+    if (!is_dir($parent)) {
+      mkdir($parent, Dirs::MODE, TRUE);
+    }
     if (file_exists($this->path) && $this->overwrite === 'ignore') {
       // do nothing
     }
@@ -44,7 +55,7 @@ class Template implements Builder {
       $output->writeln("<error>Skip " . $this->path . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write " . $this->path . "</info>");
+      $output->writeln("<info>Write</info> " . $this->path);
       file_put_contents($this->path, $this->templateEngine->render($this->template, $ctx));
     }
   }

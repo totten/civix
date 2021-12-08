@@ -6,10 +6,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Path;
-use Exception;
 
-class BuildCommand extends \Symfony\Component\Console\Command\Command {
+class BuildCommand extends AbstractCommand {
+
   protected function configure() {
+    parent::configure();
     $this
       ->setName('build:zip')
       ->setDescription('Build a zip file for a CiviCRM Extension');
