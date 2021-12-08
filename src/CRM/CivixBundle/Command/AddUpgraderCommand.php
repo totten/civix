@@ -44,7 +44,7 @@ class AddUpgraderCommand extends AbstractCommand {
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
     if (!file_exists($phpFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
       file_put_contents($phpFile, Services::templating()
         ->render('upgrader.php.php', $ctx));
     }
@@ -53,7 +53,7 @@ class AddUpgraderCommand extends AbstractCommand {
     }
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');
-    $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
+    $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
     file_put_contents($phpFile, Services::templating()
       ->render('upgrader-base.php.php', $ctx));
 

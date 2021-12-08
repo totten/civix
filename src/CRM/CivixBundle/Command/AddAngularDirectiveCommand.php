@@ -65,7 +65,7 @@ For more, see https://docs.angularjs.org/guide/directive');
     $ctx['htmlPath'] = $basedir->string('ang', $ctx['angularModuleName'], $ctx['baseFileName'] . '.html');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular directive \"" . $ctx['dirNameHyp'] . "\" (aka \"" . $ctx['dirNameCamel'] . "\")</info>");
+    $output->writeln("<info>Initialize Angular directive</info> " . $ctx['dirNameHyp'] . " <info>(aka </info>" . $ctx['dirNameCamel'] . "<info>)</info>");
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

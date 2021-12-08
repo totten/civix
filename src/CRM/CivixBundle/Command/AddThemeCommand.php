@@ -69,7 +69,7 @@ $ civix generate:theme foobar
     $ctx['themeBootstrapCss'] = $ctx['themePrefixDir']->string('css', 'bootstrap.css');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize theme \"" . $ctx['themeName'] . "\"</info>");
+    $output->writeln("<info>Initialize theme</info> " . $ctx['themeName']);
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

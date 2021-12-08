@@ -49,7 +49,7 @@ class AddSearchCommand extends AbstractCommand {
     $ctx['searchTplFile'] = $basedir->string('templates', $ctx['searchTplRelFile']);
 
     //// Construct files ////
-    $output->writeln("<info>Initialize search " . $ctx['searchClassName'] . "</info>");
+    $output->writeln("<info>Initialize search</info> " . $ctx['searchClassName']);
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

@@ -43,7 +43,7 @@ class AddAngularModuleCommand extends AbstractCommand {
     $ctx['angularModuleCss'] = $basedir->string('ang', $ctx['angularModuleName'] . '.css');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular module \"" . $ctx['angularModuleName'] . "\"</info>");
+    $output->writeln("<info>Initialize Angular module</info> " . $ctx['angularModuleName']);
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

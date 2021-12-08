@@ -73,7 +73,7 @@ abstract class AbstractAddPageCommand extends Command {
     }
 
     if (!file_exists($phpFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $phpFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
       file_put_contents($phpFile, Services::templating()
         ->render($this->getPhpTemplate($input), $ctx));
     }
@@ -82,7 +82,7 @@ abstract class AbstractAddPageCommand extends Command {
     }
 
     if (!file_exists($tplFile)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $tplFile));
+      $output->writeln(sprintf('<info>Write</info> %s', $tplFile));
       file_put_contents($tplFile, Services::templating()
         ->render($this->getTplTemplate($input), $ctx));
     }

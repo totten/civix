@@ -64,7 +64,7 @@ For more, see https://docs.angularjs.org/guide');
     $ctx['hlpPath'] = $basedir->string('templates', $ctx['hlpName'] . '.hlp');
 
     //// Construct files ////
-    $output->writeln("<info>Initialize Angular page \"" . $ctx['ctrlName'] . "\" (civicrm/a/#/" . $ctx['ctrlRelPath'] . ")</info>");
+    $output->writeln("<info>Initialize Angular page</info> " . $ctx['ctrlName'] . " <info>(</info>civicrm/a/#/" . $ctx['ctrlRelPath'] . "<info>)</info>");
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([

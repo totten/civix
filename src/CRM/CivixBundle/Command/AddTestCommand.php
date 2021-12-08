@@ -117,7 +117,7 @@ as separate groups:
     $dirs->save($ctx, $output);
 
     if (!file_exists($testPath)) {
-      $output->writeln(sprintf('<info>Write %s</info>', $testPath));
+      $output->writeln(sprintf('<info>Write</info> %s', $testPath));
       file_put_contents($testPath, Services::templating()
         ->render($templateName, $ctx));
     }
