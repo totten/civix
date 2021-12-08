@@ -104,18 +104,6 @@ function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
 }
 
 /**
- * Implements hook_civicrm_angularModules().
- *
- * Add Angular modules provided by this extension.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
- */
-function <?php echo $mainFile ?>_civicrm_angularModules(&$angularModules) {
-  // Auto-add module files from ./ang/*.ang.php
-  _<?php echo $mainFile ?>_civix_civicrm_angularModules($angularModules);
-}
-
-/**
  * Implements hook_civicrm_alterSettingsFolders().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
