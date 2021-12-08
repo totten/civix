@@ -1,7 +1,9 @@
 {
     "chmod": "0755",
     "directories": [
-        "src"
+        "src",
+        "extern/src",
+        "extern/mixin"
     ],
     "finder": [
         {
