@@ -23,6 +23,7 @@ use CRM\CivixBundle\Command\ConfigSetCommand;
 use CRM\CivixBundle\Command\InfoGetCommand;
 use CRM\CivixBundle\Command\InfoSetCommand;
 use CRM\CivixBundle\Command\InitCommand;
+use CRM\CivixBundle\Command\MixinCommand;
 use CRM\CivixBundle\Command\PingCommand;
 use CRM\CivixBundle\Command\TestRunCommand;
 
@@ -69,6 +70,7 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new ConfigGetCommand();
     $commands[] = new ConfigSetCommand();
     $commands[] = new InitCommand();
+    $commands[] = new MixinCommand();
     $commands[] = new PingCommand();
     $commands[] = new TestRunCommand();
     $commands[] = new InfoGetCommand();
