@@ -81,17 +81,6 @@ function <?php echo $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = N
 }
 
 /**
- * Implements hook_civicrm_caseTypes().
- *
- * Add CiviCase types provided by this extension.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
- */
-function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
-  _<?php echo $mainFile ?>_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
  * Implements hook_civicrm_entityTypes().
  *
  * Declare entity types provided by this module.
