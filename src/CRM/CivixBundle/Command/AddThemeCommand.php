@@ -1,19 +1,18 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Collection;
 use CRM\CivixBundle\Builder\Dirs;
-use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
 
-class AddThemeCommand extends Command {
+class AddThemeCommand extends AbstractCommand {
 
   protected function configure() {
     $this
@@ -41,13 +40,7 @@ $ civix generate:theme foobar
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $basedir = new Path($ctx['basedir']);
 
-    $info = new Info($basedir->string('info.xml'));
-    $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
+    $info = $this->getModuleInfo($ctx);
 
     if (!$input->getArgument('name')) {
       // Make an eponymous theme directly in the extension.
@@ -74,7 +67,10 @@ $ civix generate:theme foobar
       dirname($ctx['themeMetaFile']),
       dirname($ctx['themeCivicrmCss']),
       dirname($ctx['themeBootstrapCss']),
-    ]);;
+    ]);
+
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['theme-php@1.0']);
+    $ext->builders['info'] = $info;
 
     if (!file_exists($ctx['themeMetaFile'])) {
       $header = "// This file declares a CSS theme for CiviCRM.\n";
@@ -94,7 +90,7 @@ $ civix generate:theme foobar
     $ext->builders['civicrm.css'] = new Template('civicrm.css.php', $ctx['themeCivicrmCss'], FALSE, Services::templating());
     $ext->builders['bootstrap.css'] = new Template('bootstrap.css.php', $ctx['themeBootstrapCss'], FALSE, Services::templating());
 
-    $ext->init($ctx);
+    $ext->loadInit($ctx);
     $ext->save($ctx, $output);
   }
 
