@@ -236,25 +236,6 @@ function _<?php echo $mainFile ?>_civix_find_files($dir, $pattern) {
 }
 
 /**
- * (Delegated) Implements hook_civicrm_themes().
- *
- * Find any and return any files matching "*.theme.php"
- */
-function _<?php echo $mainFile ?>_civix_civicrm_themes(&$themes) {
-  $files = _<?php echo $mainFile ?>_civix_glob(__DIR__ . '/*.theme.php');
-  foreach ($files as $file) {
-    $themeMeta = include $file;
-    if (empty($themeMeta['name'])) {
-      $themeMeta['name'] = preg_replace(':\.theme\.php$:', '', basename($file));
-    }
-    if (empty($themeMeta['ext'])) {
-      $themeMeta['ext'] = E::LONG_NAME;
-    }
-    $themes[$themeMeta['name']] = $themeMeta;
-  }
-}
-
-/**
  * Glob wrapper which is guaranteed to return an array.
  *
  * The documentation for glob() says, "On some systems it is impossible to

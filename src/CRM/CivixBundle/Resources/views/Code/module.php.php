@@ -82,13 +82,6 @@ function <?php echo $mainFile ?>_civicrm_entityTypes(&$entityTypes) {
   _<?php echo $mainFile ?>_civix_civicrm_entityTypes($entityTypes);
 }
 
-/**
- * Implements hook_civicrm_themes().
- */
-function <?php echo $mainFile ?>_civicrm_themes(&$themes) {
-  _<?php echo $mainFile ?>_civix_civicrm_themes($themes);
-}
-
 // --- Functions below this ship commented out. Uncomment as required. ---
 
 /**
