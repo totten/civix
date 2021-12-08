@@ -8,7 +8,6 @@
             "name": "*.php",
             "exclude": [
               "phpunit",
-              "php-parser", "jakub-onderka",
               "Tests", "Test", "tests", "test"
             ],
             "in": "vendor"
@@ -16,14 +15,6 @@
         {
             "name": "*.png",
             "in": "images"
-        },
-        {
-            "name": "bootstrap.php",
-            "in": "vendor/nikic/php-parser/lib"
-        },
-        {
-            "name": "Autoloader.php",
-            "in": "vendor/nikic/php-parser/lib/PhpParser"
         },
         {
             "name": "*.csv",
