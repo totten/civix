@@ -92,15 +92,6 @@ function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
 }
 
 /**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
- */
-function <?php echo $mainFile ?>_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders($metaDataFolders);
-}
-
-/**
  * Implements hook_civicrm_entityTypes().
  *
  * Declare entity types provided by this module.
