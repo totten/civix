@@ -32,11 +32,13 @@ class InitCommand extends AbstractCommand {
         "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)\n" .
         "\n" .
         "<comment>Identification:</comment>\n" .
-        "  Keys must be lowercase alphanumeric (with dashes and underscores allowed).\n" .
+        "  Keys should be lowercase alphanumeric with underscores. Additionally, dots and dashes\n" .
+        "  are also legal - but they are discouraged for new extensions.\n" .
         "\n" .
-        "  Optionally, you may use a Java-style prefix (reverse domain name).\n" .
+        "  Historically, the key often included a Java-style prefix (reverse domain name).\n" .
+        "  The benefit of the prefix was mostly cosmetic. It did not provide consistent\n" .
+        "  isolation between similarly named extensions. It is now recommended to skip\n" .
         "\n" .
-        "  However, the prefix is mostly cosmetic. The base part of the key should be globally unique.\n" .
         "\n" .
         "<comment>Examples:</comment>\n" .
         "  civix generate:module foo-bar\n" .
@@ -103,6 +105,31 @@ class InitCommand extends AbstractCommand {
       $output->writeln('<error>Unrecognized license (' . $ctx['license'] . ')</error>');
       return;
     }
+
+    if ($ctx['fullName'] !== $ctx['mainFile']) {
+      $output->writeln("");
+      $output->writeln("<info>Simpler names are simpler.</info>");
+      $output->writeln("");
+      $output->writeln("CiviCRM extensions formally have two names, the \"key\" and  the \"file\".");
+      $output->writeln("Some APIs require the \"file\", and others require the \"key\".");
+      $output->writeln("");
+      $output->writeln("   <comment>Key:</comment> {$ctx['fullName']}");
+      $output->writeln("   <comment>File:</comment> {$ctx['mainFile']}");
+      $output->writeln("");
+      $output->writeln("\"File\" names must meet tighter constraints than \"key\" names.");
+      $output->writeln("");
+      $output->writeln("With the current request, the names will be different. This is");
+      $output->writeln("entirely valid, although you need to know which is which.");
+      $output->writeln("");
+      $output->writeln("Many developers find it simpler to use matching names. If you would");
+      $output->writeln("like matching names, then cancel and try another name (without any");
+      $output->writeln("dots or dashes).");
+      $output->writeln("");
+      if (!$this->confirm($input, $output, "Continue with current name? [Y/n] ")) {
+        return 1;
+      }
+    }
+
     $ext = new Collection();
 
     $output->writeln("<info>Initalize module " . $ctx['fullName'] . "</info>");
