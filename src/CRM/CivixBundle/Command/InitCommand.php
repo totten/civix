@@ -110,7 +110,7 @@ class InitCommand extends AbstractCommand {
 
     if ($ctx['fullName'] !== $ctx['mainFile']) {
       $output->writeln("");
-      $output->writeln("<info>ALERT: The requested command requires split-naming.</info>");
+      $output->writeln("<error>ALERT:</error> <comment>The requested command requires split-naming.</comment>");
       $output->writeln("");
       $output->writeln("CiviCRM extensions formally have two names, the \"key\" and the \"file\".");
       $output->writeln("Some APIs use the \"key\" name, and other APIs use the \"file\" name.");
