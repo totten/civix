@@ -22,27 +22,29 @@ class InitCommand extends AbstractCommand {
     Services::templating();
     $this
       ->setName('generate:module')
-      ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)')
-      ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo-bar\" or \"org.example.foo-bar\")")
+      ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if \"key\" not specified)')
+      ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo_bar\" or \"org.example.foo-bar\")")
       ->addOption('enable', NULL, InputOption::VALUE_REQUIRED, 'Whether to auto-enable the new module (yes/no/ask)', 'ask')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
       ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail())
       ->setHelp(
-        "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if ext.name not specified)\n" .
+        "Create a new CiviCRM Module-Extension (Regenerate module.civix.php if \"key\" is not specified)\n" .
         "\n" .
         "<comment>Identification:</comment>\n" .
-        "  Keys should be lowercase alphanumeric with underscores. Additionally, dots and dashes\n" .
-        "  are also legal - but they are discouraged for new extensions.\n" .
+        "  Keys should be lowercase alphanumeric with underscores. Dots and dashes may be used with caveats.\n" .
         "\n" .
-        "  Historically, the key often included a Java-style prefix (reverse domain name).\n" .
-        "  The benefit of the prefix was mostly cosmetic. It did not provide consistent\n" .
-        "  isolation between similarly named extensions. It is now recommended to skip\n" .
+        "  CiviCRM extensions formally have two names, the \"key\" and the \"file\".\n" .
+        "  Some APIs use the \"key\" name, and other APIs use the \"file\" name.\n" .
+        "  The \"key\" allows a Java-style prefix (reverse domain name), but \"file\" does not.\n" .
         "\n" .
+        "  If you use a Java-style prefix (dots and dashes), then the extension will have split names.\n" .
+        "\n" .
+        "  If you omit a Java-style prefix (dots and dashes), then the extension will have a single (matching) name.\n" .
         "\n" .
         "<comment>Examples:</comment>\n" .
-        "  civix generate:module foo-bar\n" .
-        "  civix generate:module foo-bar --license=AGPL-3.0 --author=\"Alice\" --email=\"alice@example.org\"\n" .
+        "  civix generate:module foo_bar\n" .
+        "  civix generate:module foo_bar --license=AGPL-3.0 --author=\"Alice\" --email=\"alice@example.org\"\n" .
         "  civix generate:module org.example.foo-bar \n" .
         "\n"
       );
@@ -108,24 +110,23 @@ class InitCommand extends AbstractCommand {
 
     if ($ctx['fullName'] !== $ctx['mainFile']) {
       $output->writeln("");
-      $output->writeln("<info>Simpler names are simpler.</info>");
+      $output->writeln("<info>ALERT: The requested command requires split-naming.</info>");
       $output->writeln("");
-      $output->writeln("CiviCRM extensions formally have two names, the \"key\" and  the \"file\".");
-      $output->writeln("Some APIs require the \"file\", and others require the \"key\".");
+      $output->writeln("CiviCRM extensions formally have two names, the \"key\" and the \"file\".");
+      $output->writeln("Some APIs use the \"key\" name, and other APIs use the \"file\" name.");
       $output->writeln("");
-      $output->writeln("   <comment>Key:</comment> {$ctx['fullName']}");
-      $output->writeln("   <comment>File:</comment> {$ctx['mainFile']}");
+      $output->writeln("   <comment>\"Key\":</comment> Appears in many strings+indices. Allows Java-style prefix.");
+      $output->writeln("         <comment>Requested Value:</comment> {$ctx['fullName']}");
+      $output->writeln("         <comment>Example Usage:</comment> addStyleFile('{$ctx['fullName']}', 'example.css')");
+      $output->writeln("   <comment>\"File\"</comment>: Appears in PHP files+functions. No Java-style prefix.");
+      $output->writeln("         <comment>Requested Value:</comment> {$ctx['mainFile']}");
+      $output->writeln("         <comment>Example Usage:</comment> function {$ctx['mainFile']}_civicrm_config() {}");
       $output->writeln("");
-      $output->writeln("\"File\" names must meet tighter constraints than \"key\" names.");
+      $output->writeln("Many developers find it easier to use matching names, but the");
+      $output->writeln("requested command requires splitting the names. You may continue with");
+      $output->writeln("split names, or you may cancel and try again with a simpler name.");
       $output->writeln("");
-      $output->writeln("With the current request, the names will be different. This is");
-      $output->writeln("entirely valid, although you need to know which is which.");
-      $output->writeln("");
-      $output->writeln("Many developers find it simpler to use matching names. If you would");
-      $output->writeln("like matching names, then cancel and try another name (without any");
-      $output->writeln("dots or dashes).");
-      $output->writeln("");
-      if (!$this->confirm($input, $output, "Continue with current name? [Y/n] ")) {
+      if (!$this->confirm($input, $output, "Continue with current (split) name? [Y/n] ")) {
         return 1;
       }
     }
