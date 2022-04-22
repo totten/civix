@@ -39,10 +39,12 @@ class UpgradeCommand extends AbstractCommand {
       $startVersion = empty($mixins) ? '1.0' : '2.0';
       $io->writeln("info.xml does not declare the civix format. Inferred <info>v{$startVersion}</info>.");
     }
+    else {
+      $io->writeln("Current civix format is <info>v{$startVersion}</info>.");
+    }
 
     $upgrades = Services::upgradeList()->findUpgrades($startVersion);
     if (empty($upgrades)) {
-      $io->writeln("Current civix format is <info>v{$startVersion}</info>.");
       $io->writeln("No incremental upgrades required.");
       return 0;
     }
