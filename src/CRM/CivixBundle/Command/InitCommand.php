@@ -59,21 +59,7 @@ class InitCommand extends AbstractCommand {
     $ctx = [];
     $ctx['type'] = 'module';
     if (!$input->getArgument('key')) {
-      // Refresh existing module
-      $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
-      $basedir = new Path($ctx['basedir']);
-
-      $info = $this->getModuleInfo($ctx);
-
-      $module = new Module(Services::templating());
-      $module->loadInit($ctx);
-      $module->save($ctx, $output);
-
-      $mixins = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
-      $mixins->save($ctx, $output);
-
-      $info->save($ctx, $output);
-      return;
+      throw new \RuntimeException('To update an existing extension, please use "civix upgrade"');
     }
 
     $licenses = new \LicenseData\Repository();
