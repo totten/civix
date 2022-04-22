@@ -92,6 +92,15 @@ class Info extends XML {
   }
 
   /**
+   * Get the extension's file name (short name).
+   * @return string
+   */
+  public function getFile(): string {
+    $items = $this->get()->xpath('file');
+    return (string) array_shift($items);
+  }
+
+  /**
    * Get the extension type
    *
    * @return string (e.g. "module", "report")
