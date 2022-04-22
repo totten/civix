@@ -57,11 +57,13 @@ class UpgradeList {
       return preg_replace(';\.up\.php$;', '', $basename);
     };
 
-    $files = (array) glob(Application::findCivixDir() . '/upgrades/*.up.php');
     $upgrades = [];
-    foreach ($files as $file) {
-      $upgrades[$parseVer($file)] = realpath($file);
+    $iter = new \DirectoryIterator(Application::findCivixDir() . '/upgrades');
+    foreach ($iter as $file) {
+      /** @var \SplFileInfo $file */
+      $upgrades[$parseVer($file->getBasename())] = $file->getPathname();
     }
+
     uksort($upgrades, 'version_compare');
     return $upgrades;
   }
