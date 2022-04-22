@@ -116,4 +116,14 @@ class Services {
     return self::$cache[__FUNCTION__];
   }
 
+  /**
+   * @return \CRM\CivixBundle\UpgradeList
+   */
+  public static function upgradeList(): UpgradeList {
+    if (!isset(self::$cache[__FUNCTION__])) {
+      self::$cache[__FUNCTION__] = new UpgradeList();
+    }
+    return self::$cache[__FUNCTION__];
+  }
+
 }
