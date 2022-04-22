@@ -51,4 +51,29 @@ class Path {
     return TRUE;
   }
 
+  /**
+   * Recursively search for files matching $pattern.
+   *
+   * @param string $pattern
+   *   Ex: 'glob:foobar/*.xml' (non-recursive search)
+   *   Ex: 'find:*.whizbang.php' (recursive search, under .)
+   *   Ex: 'find:meta/*.whizbang.php' (recursive search, under ./meta)
+   * @return array
+   */
+  public function search($pattern): array {
+    [$patternType, $patternValue] = explode(':', $pattern, 2);
+    switch ($patternType) {
+      case 'glob':
+        return (array) glob($this->string($patternValue));
+
+      case 'find':
+        $relDir = dirname($patternValue);
+        $filePat = basename($patternValue);
+        return Files::findFiles($this->string($relDir), $filePat);
+
+      default:
+        throw new \RuntimeException("Unrecognized file pattern: $pattern");
+    }
+  }
+
 }
