@@ -2,6 +2,7 @@
     "chmod": "0755",
     "directories": [
         "src",
+        "upgrades",
         "extern/src",
         "extern/mixin"
     ],
