@@ -115,6 +115,7 @@ class Upgrader {
    */
   public function removeHookDelegation(array $names): void {
     $this->updateModulePhp(function(\CRM\CivixBundle\Builder\Info $info, string $content) use ($names) {
+      $mainPhp = $this->infoXml->getFile() . '.php';
       $oldLines = explode("\n", $content);
       $newLines = [];
 
@@ -124,13 +125,23 @@ class Upgrader {
           if (preg_match("|^(\s*)//(\s*)($nameQuoted\(.*)|", $line, $m)) {
             // ok, already disabled
           }
-          elseif (preg_match("|$nameQuoted|", $line, $m)) {
+          elseif (preg_match("|^(\s*)($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
+            // Easy case - we can disable it.
             $this->io->writeln(sprintf(
-              "<info>Found reference to obsolete function </info>%s()<info> at </info>%s.php:%d<info>.</info>\n",
-              $name, $this->infoXml->getFile(), 1 + $lineNum
+              "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
+              $name, $mainPhp, 1 + $lineNum
             ));
             $this->showLine($oldLines, $lineNum);
-            $this->io->writeln("\n<info>Obsolete functions should usually be removed. However, if you have customized the logic, then you may need to take a different action.</info>");
+            $this->io->writeln(sprintf("<info>Removing line </info>%s:%d<info></info>\n", $mainPhp, 1 + $lineNum));
+            $line = NULL;
+          }
+          elseif (preg_match("|$nameQuoted|", $line, $m)) {
+            $this->io->writeln(sprintf(
+              "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
+              $name, $mainPhp, 1 + $lineNum
+            ));
+            $this->showLine($oldLines, $lineNum);
+            $this->io->writeln("\n<info>Obsolete functions should usually be removed, but this line looks unusual.</info>");
             $action = $this->io->choice("What should we do with this line?", [
               'r' => 'Remove this line',
               'k' => 'Keep this line',
