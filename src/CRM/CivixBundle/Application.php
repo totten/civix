@@ -94,4 +94,8 @@ class Application extends \Symfony\Component\Console\Application {
     }
   }
 
+  public static function findCivixDir(): string {
+    return dirname(__DIR__, 3);
+  }
+
 }
