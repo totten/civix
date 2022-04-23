@@ -105,25 +105,6 @@ corresponding classloader:
   </classloader>
 ```
 
-### Upgrade to v19.06.2+: PHPUnit (Optional; #155)
-
-<!-- `civix upgrade` warns about this -->
-
-The templates for PHPUnit tests have been updated to match a major
-transition in PHPUnit -- *all upstream base-classes were renamed*:
-
-* `PHPUnit_Framework_TestCase` is the base-class in PHPUnit 4 and earlier
-* `\PHPUnit\Framework\TestCase` is the base-class in PHPUnit 6 and later
-* PHPUnit 5 is a transitional version which supports both naming conventions.
-
-In recent years, documentation+tooling in Civi have encouraged usage of
-PHPUnit 5, so (hopefully) most environments are compatible with the newer naming.
-
-Going forward, `civix` will generate templates using the newer naming.
-
-To be consistent and forward-compatible, you should consider updating your
-existing unit-tests to use the name base-classes.
-
 ### Upgrade to v18.02.0+: hook_civicrm_entityTypes
 
 Civix-based modules should pass metadata about custom database entities
