@@ -36,7 +36,7 @@ class UpgradeCommand extends AbstractCommand {
     if (!$startVersion) {
       // We'll have to make an educated guess...
       $mixins = $info->get()->xpath('mixins');
-      $startVersion = empty($mixins) ? '21.09.0' : '22.04.0';
+      $startVersion = empty($mixins) ? '13.10.0' : '22.04.0';
       $io->writeln("info.xml does not declare the civix format. Inferred <info>v{$startVersion}</info>.");
     }
     else {
