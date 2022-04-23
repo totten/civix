@@ -88,11 +88,6 @@ whether to fix the boolean:
 * __Switch to `TRUE`__: The output will have standard APIv3 formatting, but any existing callers may break.
 * __Leave as `FALSE`__: The output will have non-conventional formatting, but existing callers will work.
 
-### Upgrade to v20.06.0+: PHPUnit
-
-If you have a generated `phpunit.xml` or `phpunit.xml.dist` file, it may include the old option `syntaxCheck="false"`. 
-You can remove this.  The option has been inert and will raise errors in newer versions of PHPUnit.
-
 ### Upgrade to v19.11.0+: APIv4 and PSR-4
 
 APIv4 looks for classes in the `Civi\Api4` namespace and `Civi/Api4` folder. 
