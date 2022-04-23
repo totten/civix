@@ -19,7 +19,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
     ]),
   ]);
 
-  if (!$io->confirm('Proceed?')) {
+  if (!$io->confirm('Continue with upgrade?')) {
     throw new \RuntimeException('User stopped upgrade');
   }
 
