@@ -6,8 +6,8 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
   $prefix = $upgrader->infoXml->getFile();
 
   $io->note([
-    "Civix Format v1.0 used several boilerplate functions like \"_*_civix_civicrm_managed()\".",
-    "Civix Format v2.0 converts these to mixins. This reduces code-duplication and will enable easier updates in the future.",
+    "Civix v21.09 (and earlier) used several boilerplate functions like \"_*_civix_civicrm_managed()\".",
+    "Civix v22.04 converts these to mixins. This reduces code-duplication and will enable easier updates in the future.",
     "The upgrader will examine your extension, remove old function-calls, and enable mixins (if needed).",
     "The following functions+mixins may be affected:\n\n" . implode("\n", [
       "1. _*_civix_civicrm_angularModules()        =>  ang-php@1.0.0",
