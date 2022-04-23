@@ -100,28 +100,6 @@ corresponding classloader:
   </classloader>
 ```
 
-### Upgrade to v18.02.0+: hook_civicrm_entityTypes
-
-Civix-based modules should pass metadata about custom database entities
-through `hook_civicrm_entityTypes`.
-
-At time of writing, the functionality is flagged as *experimental*.
-Never-the-less, you may safely add the associated hook stub (regardless of
-whether you use the functionality).
-
-```php
-/**
- * Implements hook_civicrm_entityTypes().
- *
- * Declare entity types provided by this module.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function myext_civicrm_entityTypes(&$entityTypes) {
-  _myext_civix_civicrm_entityTypes($entityTypes);
-}
-```
-
 ### Upgrade to v18.02.0+: PHPUnit (Optional)
 
 The template for `tests/phpunit/bootstrap.php` changed slightly to make `phpunit` work in symlinked directory structures. You may want to manually apply the changes from https://github.com/totten/civix/pull/121.

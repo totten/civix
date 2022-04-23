@@ -67,7 +67,7 @@ class Upgrader {
    *
    * @param callable $function
    *   Filter the content of the main `.php` file.
-   *   Signature: `function(string $content): string`
+   *   Signature: `function($info, string $content): string`
    */
   public function updateModulePhp(callable $function): void {
     $fileName = $this->baseDir->string($this->infoXml->getFile() . '.php');
@@ -128,6 +128,86 @@ class Upgrader {
 
   // -------------------------------------------------
   // These filters are for fairly specific situations.
+
+  /**
+   * Add a hook-delegation stub to the main `mymodule.php` file.
+   *
+   * @param string $hook
+   *   Ex: 'civicrm_entityTypes'
+   * @param string $mainArg
+   *   Ex: '&$entityTypes'
+   * @param string|null $help
+   *   Explanatory message. Help the user decide whether to add the hook.
+   */
+  public function addHookDelegation(string $hook, string $mainArg, ?string $help = NULL): void {
+    $this->updateModulePhp(function(\CRM\CivixBundle\Builder\Info $infoXml, string $content) use ($hook, $mainArg, $help) {
+      $io = $this->io;
+      $contains = function ($needle) use (&$content) {
+        return strpos($content, $needle) !== FALSE;
+      };
+
+      $mainFunc = $infoXml->getFile() . '_' . $hook;
+      $delegateFunc = '_' . $infoXml->getFile() . '_civix_' . $hook;
+      $delegateArg = str_replace('&', '', $mainArg);
+
+      if ($contains($delegateFunc)) {
+        // They've already dealt with this.
+        return $content;
+      }
+
+      $stub = [
+        "/**",
+        " * Implements hook_{$hook}().",
+        " *",
+        " * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_{$hook}",
+        " */",
+        "function {$mainFunc}({$mainArg}) {",
+        "  {$delegateFunc}($delegateArg);",
+        "}",
+      ];
+      $io->writeln("<info>New civix builds include a stub for </info>hook_{$hook}<info>, e.g.</info>");
+      $io->write("\n");
+      $this->showCode($stub);
+      if ($help) {
+        $io->note($help);
+      }
+
+      $actions = [
+        'l' => 'Yes, add live-code',
+        'c' => 'Yes, add comment-code',
+        'n' => 'No, do not add anything',
+      ];
+      if ($contains($mainFunc)) {
+        $io->warning([
+          "This extension already includes an alternative variant of \"$mainFunc()\".",
+          "Adding more live-code would create a conflict.",
+          "However, you may add comment-code for future review.",
+        ]);
+        // unset($actions['y']);
+      }
+      $action = $io->choice("Add hook_{$hook}?", $actions, $contains($mainFunc) ? 'c' : 'l');
+
+      switch ($action) {
+        case 'y':
+          $content = rtrim($content, "\n") . "\n\n" . implode("\n", $stub) . "\n";
+          break;
+
+        case 'c':
+          $content = rtrim($content, "\n") . "\n\n" . implode("\n", array_map(
+              function($line) {
+                return "// $line";
+              },
+              $stub
+            )) . "\n";
+          break;
+
+        case 'n':
+          break;
+      }
+
+      return $content;
+    });
+  }
 
   /**
    * Find any calls to a stub function and disable them.
@@ -235,6 +315,12 @@ class Upgrader {
   protected function showLine(array $lines, int $focusLine): void {
     $low = max(0, $focusLine - 2);
     $high = min(count($lines), $focusLine + 2);
+    $this->showCode($lines, $low, $high, $focusLine);
+  }
+
+  protected function showCode(array $lines, ?int $low = NULL, ?int $high = NULL, ?int $focusLine = NULL): void {
+    $low = $low ?: 0;
+    $high = $high ?: (count($lines) - 1);
     for ($i = $low; $i <= $high; $i++) {
       $fmt = sprintf('% 5d', 1 + $i);
       if ($i === $focusLine) {
