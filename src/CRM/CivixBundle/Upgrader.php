@@ -104,6 +104,28 @@ class Upgrader {
     $this->infoXml->save($this->_ctx, $this->output);
   }
 
+  /**
+   * Update the content of a series of text files.
+   *
+   * Useful if you just want to do regex.
+   *
+   * @param iterable $fileNames
+   *   List of files to examine.
+   * @param callable $function
+   *   Filter-function to define updated content.
+   *   signature: `function(string $file, string $content): string`
+   */
+  public function updateTextFiles(iterable $fileNames, callable $function) {
+    foreach ($fileNames as $fileName) {
+      $oldContent = file_get_contents($fileName);
+      $newContent = $function($fileName, $oldContent);
+      if ($oldContent !== $newContent) {
+        $this->output->writeln('<info>Write</info> ' . $fileName);
+        file_put_contents($fileName, $newContent);
+      }
+    }
+  }
+
   // -------------------------------------------------
   // These filters are for fairly specific situations.
 
