@@ -135,7 +135,7 @@ Optionally, if you want to *use* this helper class, then add a line like this to
 use CRM_Myextension_ExtensionUtil as E;
 ```
 
-### Upgrade to v16.10+
+### Upgrade to v16.10+: Upgrader postInstall (optional)
 
 *(See also: "General Tasks: Upgrader Class")*
 
@@ -164,25 +164,15 @@ like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CR
  }
 ```
 
-### Upgrade to v16.10+: hook_civicrm_postInstall
+### Upgrade to v16.10+: Schema version
 
-Prior to v16.10.0, extension schema versions were stored in the `civicrm_settings`
+Prior to v16.10.0, extension schema versions were stored in the `civicrm_setting`
 table under the namespace `org.example.myext:version`. This storage
 mechanism proved problematic for multisites utilizing more than one domain (see
 [CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
-utilizes `hook_civicrm_postInstall` and an [updated Upgrader](#upgrade-to-v1609) to
-store schema versions in the `civicrm_extension` table.
+stores schema versions in the `civicrm_extension` table.
 
-```php
-/**
- * Implements hook_civicrm_postInstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
- */
-function myext_civicrm_postInstall() {
-  _myext_civix_civicrm_postInstall();
-}
-```
+Note: This depends on the new stub for `hook_civicrm_postInstall`.
 
 ### Upgrade v16.03.2+: Test Files
 
