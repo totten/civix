@@ -70,17 +70,23 @@ class UpgradeCommand extends AbstractCommand {
     $io = new SymfonyStyle($input, $output);
     $io->title('General upgrade');
 
+    /**
+     * @var Info $info
+     */
     [$ctx, $info] = $this->loadCtxInfo();
+    $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
 
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
 
-    // Don't do this as a blanket thing - leave it to specific upgrade steps.
-    // $mixins = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
-    // $mixins->save($ctx, $output);
-
-    $info->save($ctx, $output);
+    if ($ctx['namespace']) {
+      $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');;
+      if (file_exists($phpFile)) {
+        $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
+        file_put_contents($phpFile, Services::templating()->render('upgrader-base.php.php', $ctx));
+      }
+    }
   }
 
   protected function loadCtxInfo(): array {

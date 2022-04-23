@@ -22,23 +22,6 @@ snippets mentioned below (adjusting `myext` to match your extension).
 
 Hook stubs are documented below as special tasks.
 
-### General Tasks: Upgrader Class
-
-Sometimes new versions introduce changes to the `Upgrader` classes (e.g.,
-`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
-CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
-`civix` suggests a reasonable approach to doing so, and documentation and online
-support will assume this approach.
-
-The steps for upgrading the `Upgrader` are as follows:
-
-1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
-2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
-3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
-   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
-4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
-5. Look for additional, version-specific upgrade steps (below).
-
 ## Special Tasks
 
 ### Upgrade to v21.09.0+: Angular Module (optional)
