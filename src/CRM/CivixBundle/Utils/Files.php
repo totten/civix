@@ -51,4 +51,25 @@ class Files {
     return $result;
   }
 
+  /**
+   * Make a file path relative to some base dir.
+   *
+   * @param $directory
+   * @param $basePath
+   *
+   * @return string
+   */
+  public static function relativize($directory, $basePath) {
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      $directory = strtr($directory, '\\', '/');
+      $basePath = strtr($basePath, '\\', '/');
+    }
+    if (substr($directory, 0, strlen($basePath)) == $basePath) {
+      return substr($directory, strlen($basePath));
+    }
+    else {
+      return $directory;
+    }
+  }
+
 }
