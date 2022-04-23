@@ -1,28 +1,49 @@
-## General Tasks
+# Civix Upgrade Guide
 
-From time-to-time, the templates in civix may change. If you want to update
-your module to match the newer templates, then use this procedure:
+Extensions produced by `civix` include a mix of custom code and boilerplate code.  From time-to-time, you may wish to
+update the boilerplate code (eg to enable new functionality or to fix bugs).
 
-1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
-2. In the shell, navigate to the extension base directory. (If the extension is "org.example.myext" and it lives in
-   "/var/www/extensions/org.example.myext", then navigate to "**/var/www/extensions**".)
-3. Re-run the "civix generate:module" command (e.g. "**civix generate:module org.example.myext**"). This will regenerate
-   the *.civix.php file (e.g. "/var/www/extensions/org.example.myext/myext.civix.php").
-4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
-5. Look for additional, version-specific upgrade steps (below).
+In `civix` v22.04+, there is a built-in upgrade assistant:
 
-### General Tasks: Hook Stubs
+```bash
+cd myextension
+civix upgrade
+```
 
-Sometimes new versions introduce new hook stubs. These generally are not
-mandatory.  However, in civix documentation and online support, we will
-assume that they have been properly configured, so it's recommended that you
-update your extension's main PHP file.  For example, if the main PHP file
-for the extension is "/var/www/extensions/org.example.myext/myext.php", the
-snippets mentioned below (adjusting `myext` to match your extension).
+This command may perform common tasks like:
 
-Hook stubs are documented below as special tasks.
+* Add or remove tags in `info.xml`
+* Add or remove stub functions in the main PHP file (like `myextension.php`)
+* Regenerate reserved files (like `myextension.civix.php`)
+
+This process is semi-automatic. Some well-defined tasks run automatically;
+others require extra communication or decision-making.
+
+## Typical workflow (abstract)
+
+1. Make sure you have a backup of your code. If you use version-control (`git`/`svn`), then you should be good to go.
+2. In the shell, navigate to the target extension directory. (If the extension is `org.example.myext`, then the path may look like `/var/www/extensions/org.example.myext`.)
+3. Run the `civix upgrade` command. This will inspect the codebase, regenerate boilerplate (eg `*.civix.php`), provide a log of changes,
+   and (in some cases) provide extra questions or extra information about the upgrade.
+4. Compare the new code with the old code (e.g. `git diff` or `svn diff`).
+5. Review any new/relevant items [Special Tasks](#special-tasks).
+6. Perform any QA (as you normally would for changes in the extension).
+
+## Typical workflow (git)
+
+```bash
+cd myextension
+git checkout -b my-civix-upgrade
+civix upgrade
+git status
+git diff
+git add .
+git commit -m 'Upgraded civix templates'
+```
 
 ## Special Tasks
+
+Additionally, some tasks may require special attention. These are described below.
 
 ### Upgrade to v21.09.0+: Angular Module (optional)
 
