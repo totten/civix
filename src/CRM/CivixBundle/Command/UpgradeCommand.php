@@ -5,6 +5,7 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Upgrader;
+use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Utils\Path;
@@ -81,7 +82,7 @@ class UpgradeCommand extends AbstractCommand {
     $module->save($ctx, $output);
 
     if ($ctx['namespace']) {
-      $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');;
+      $phpFile = $basedir->string(Naming::createClassFile($ctx['namespace'], 'Upgrader', 'Base.php'));
       if (file_exists($phpFile)) {
         $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
         file_put_contents($phpFile, Services::templating()->render('upgrader-base.php.php', $ctx));
