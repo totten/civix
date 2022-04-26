@@ -123,4 +123,19 @@ class Info extends XML {
     return empty($this->xml->name) ? 'FIXME' : $this->xml->name;
   }
 
+  /**
+   * Get the namespace into which civix should place files
+   * @return string
+   */
+  public function getNamespace(): string {
+    $items = $this->get()->xpath('civix/namespace');
+    $result = (string) array_shift($items);
+    if ($result) {
+      return $result;
+    }
+    else {
+      throw new \RuntimeException("Failed to lookup civix/namespace in info.xml");
+    }
+  }
+
 }
