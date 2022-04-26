@@ -168,16 +168,6 @@ like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CR
  }
 ```
 
-### Upgrade to v16.10+: Schema version
-
-Prior to v16.10.0, extension schema versions were stored in the `civicrm_setting`
-table under the namespace `org.example.myext:version`. This storage
-mechanism proved problematic for multisites utilizing more than one domain (see
-[CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
-stores schema versions in the `civicrm_extension` table.
-
-Note: This depends on the new stub for `hook_civicrm_postInstall`.
-
 ### Upgrade v16.03.2+: Test Files
 
 Prior to civix v16.03, civix included the commands `civix generate:test` and `civix test`.  Beginning with v16.03, civix templates now
