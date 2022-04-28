@@ -3,7 +3,7 @@
 Extensions produced by `civix` include a mix of custom code and boilerplate code.  From time-to-time, you may wish to
 update the boilerplate code (eg to enable new functionality or to fix bugs).
 
-In `civix` v22.04+, there is a built-in upgrade assistant:
+In `civix` v22.05+, there is a built-in upgrade assistant:
 
 ```bash
 cd myextension
