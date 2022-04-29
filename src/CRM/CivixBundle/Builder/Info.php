@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
+use CRM\CivixBundle\Services;
 use SimpleXMLElement;
 
 /**
@@ -54,6 +55,7 @@ class Info extends XML {
     if (isset($ctx['namespace'])) {
       $civix->addChild('namespace', $ctx['namespace']);
     }
+    $civix->addChild('format', $ctx['civixFormat'] ?? Services::upgradeList()->getHeadVersion());
     if (isset($ctx['angularModuleName'])) {
       $civix->addChild('angularModule', $ctx['angularModuleName']);
     }
@@ -79,6 +81,8 @@ class Info extends XML {
     $items = $this->get()->xpath('civix/angularModule');
     $angularModule = (string) array_shift($items);
     $ctx['angularModuleName'] = !empty($angularModule) ? $angularModule : $ctx['mainFile'];
+    $items = $this->get()->xpath('civix/format');
+    $ctx['civixFormat'] = (string) array_shift($items);
   }
 
   /**
@@ -89,6 +93,15 @@ class Info extends XML {
   public function getKey() {
     $attrs = $this->get()->attributes();
     return (string) $attrs['key'];
+  }
+
+  /**
+   * Get the extension's file name (short name).
+   * @return string
+   */
+  public function getFile(): string {
+    $items = $this->get()->xpath('file');
+    return (string) array_shift($items);
   }
 
   /**
@@ -108,6 +121,21 @@ class Info extends XML {
    */
   public function getExtensionName() {
     return empty($this->xml->name) ? 'FIXME' : $this->xml->name;
+  }
+
+  /**
+   * Get the namespace into which civix should place files
+   * @return string
+   */
+  public function getNamespace(): string {
+    $items = $this->get()->xpath('civix/namespace');
+    $result = (string) array_shift($items);
+    if ($result) {
+      return $result;
+    }
+    else {
+      throw new \RuntimeException("Failed to lookup civix/namespace in info.xml");
+    }
   }
 
 }

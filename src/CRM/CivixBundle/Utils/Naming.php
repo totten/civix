@@ -71,4 +71,37 @@ class Naming {
     return 'civicrm_' . strtolower(implode('_', array_filter(preg_split('/(?=[A-Z])/', $entity))));
   }
 
+  /**
+   * Construct a class name, within some namespace.
+   *
+   * @param string $namespace
+   *   Ex: 'CRM_Foobar' or 'Civi\Foobar'.
+   * @param string[] ...$suffixes
+   *   Ex: ['Page', 'Hello']
+   * @return string
+   *   Ex: 'CRM_Foobar_Page_Hello' or 'Civi\Foobar\Page\Hello'
+   */
+  public static function createClassName(string $namespace, ...$suffixes): string {
+    $delim = substr($namespace, 0, 4) === 'CRM/' ? '_' : '\\';
+    $parts = [$namespace];
+    foreach ($suffixes as $suffix) {
+      $parts = array_merge($parts, is_array($suffix) ? $suffix : [$suffix]);
+    }
+    return str_replace('/', $delim, implode($delim, $parts));
+  }
+
+  /**
+   * Construct a class file, within some namespace.
+   *
+   * @param string $namespace
+   *   Ex: 'CRM_Foobar' or 'Civi\Foobar'.
+   * @param string[] ...$suffixes
+   *   Ex: ['Page', 'Hello']
+   * @return string
+   *   Ex: 'CRM/Foobar/Page/Hello.php' or 'Civi/Foobar/Page/Hello.php'
+   */
+  public static function createClassFile(string $namespace, ...$suffixes): string {
+    return preg_replace(';[_/\\\];', '/', static::createClassName($namespace, ...$suffixes)) . '.php';
+  }
+
 }

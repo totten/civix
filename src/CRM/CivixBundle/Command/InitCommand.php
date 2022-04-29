@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\CopyFile;
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Naming;
@@ -18,6 +19,8 @@ use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
 
+  protected $defaultMixins = ['setting-php@1'];
+
   protected function configure() {
     Services::templating();
     $this
@@ -25,6 +28,7 @@ class InitCommand extends AbstractCommand {
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if \"key\" not specified)')
       ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo_bar\" or \"org.example.foo-bar\")")
       ->addOption('enable', NULL, InputOption::VALUE_REQUIRED, 'Whether to auto-enable the new module (yes/no/ask)', 'ask')
+      ->addOption('mixins', NULL, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Automatically enable the listed mixins')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
       ->addOption('email', NULL, InputOption::VALUE_OPTIONAL, 'Email of the author', $this->getDefaultEmail())
@@ -55,22 +59,7 @@ class InitCommand extends AbstractCommand {
     $ctx = [];
     $ctx['type'] = 'module';
     if (!$input->getArgument('key')) {
-      // Refresh existing module
-      $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
-      $basedir = new Path($ctx['basedir']);
-
-      $info = new Info($basedir->string('info.xml'));
-      $info->load($ctx);
-      $attrs = $info->get()->attributes();
-      if ($attrs['type'] != 'module') {
-        $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-        return;
-      }
-
-      $module = new Module(Services::templating());
-      $module->loadInit($ctx);
-      $module->save($ctx, $output);
-      return;
+      throw new \RuntimeException('To update an existing extension, please use "civix upgrade"');
     }
 
     $licenses = new \LicenseData\Repository();
@@ -133,8 +122,12 @@ class InitCommand extends AbstractCommand {
 
     $ext = new Collection();
 
-    $output->writeln("<info>Initalize module " . $ctx['fullName'] . "</info>");
+    $output->writeln("<info>Initalize module</info> " . $ctx['fullName']);
+
     $basedir = new Path($ctx['basedir']);
+
+    $info = new Info($basedir->string('info.xml'));
+
     $ext->builders['dirs'] = new Dirs([
       $basedir->string('build'),
       $basedir->string('templates'),
@@ -142,7 +135,8 @@ class InitCommand extends AbstractCommand {
       $basedir->string('images'),
       $basedir->string($ctx['namespace']),
     ]);
-    $ext->builders['info'] = new Info($basedir->string('info.xml'));
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
+    $ext->builders['info'] = $info;
     $ext->builders['module'] = new Module(Services::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
     $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
@@ -165,7 +159,7 @@ class InitCommand extends AbstractCommand {
     if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
       $siteName = \CRM_Utils_System::baseURL(); /* \CRM_Core_Config::singleton()->userSystem->cmsRootPath(); */
 
-      $output->writeln("<info>Refresh extension list for \"$siteName\"</info>");
+      $output->writeln("<info>Refresh extension list for</info> $siteName");
       if (!$civicrm_api3->Extension->refresh(['local' => TRUE, 'remote' => FALSE])) {
         $output->writeln("<error>Refresh error: " . $civicrm_api3->errorMsg() . "</error>");
         return FALSE;
@@ -175,7 +169,7 @@ class InitCommand extends AbstractCommand {
       }
 
       if ($input->getOption('enable') === 'yes' || $this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
-        $output->writeln("<info>Enable extension ($key) in \"$siteName\"</info>");
+        $output->writeln("<info>Enable extension ($key) in</info> $siteName");
         if (!$civicrm_api3->Extension->install(['key' => $key])) {
           $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
         }
@@ -229,6 +223,12 @@ class InitCommand extends AbstractCommand {
       $result = $default;
     }
     return $result;
+  }
+
+  protected function getMixins(InputInterface $input) {
+    $requested = explode(',', implode(',', $input->getOption('mixins')));
+    $merged = array_unique(array_merge($this->defaultMixins, $requested));
+    return array_filter($merged);
   }
 
 }

@@ -23,8 +23,10 @@ use CRM\CivixBundle\Command\ConfigSetCommand;
 use CRM\CivixBundle\Command\InfoGetCommand;
 use CRM\CivixBundle\Command\InfoSetCommand;
 use CRM\CivixBundle\Command\InitCommand;
+use CRM\CivixBundle\Command\MixinCommand;
 use CRM\CivixBundle\Command\PingCommand;
 use CRM\CivixBundle\Command\TestRunCommand;
+use CRM\CivixBundle\Command\UpgradeCommand;
 
 class Application extends \Symfony\Component\Console\Application {
 
@@ -69,8 +71,10 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new ConfigGetCommand();
     $commands[] = new ConfigSetCommand();
     $commands[] = new InitCommand();
+    $commands[] = new MixinCommand();
     $commands[] = new PingCommand();
     $commands[] = new TestRunCommand();
+    $commands[] = new UpgradeCommand();
     $commands[] = new InfoGetCommand();
     $commands[] = new InfoSetCommand();
     return $commands;
@@ -90,6 +94,10 @@ class Application extends \Symfony\Component\Console\Application {
     else {
       throw new \RuntimeException("Failed to find \"info.xml\" ($cwd/). Are you running in the right directory?");
     }
+  }
+
+  public static function findCivixDir(): string {
+    return dirname(__DIR__, 3);
   }
 
 }

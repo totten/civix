@@ -1,55 +1,59 @@
-## General Tasks
+# Civix Upgrade Guide
 
-From time-to-time, the templates in civix may change. If you want to update
-your module to match the newer templates, then use this procedure:
+Extensions produced by `civix` include a mix of custom code and boilerplate code.  From time-to-time, you may wish to
+update the boilerplate code (eg to enable new functionality or to fix bugs).
 
-1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
-2. In the shell, navigate to the extension base directory. (If the extension is "org.example.myext" and it lives in
-   "/var/www/extensions/org.example.myext", then navigate to "**/var/www/extensions**".)
-3. Re-run the "civix generate:module" command (e.g. "**civix generate:module org.example.myext**"). This will regenerate
-   the *.civix.php file (e.g. "/var/www/extensions/org.example.myext/myext.civix.php").
-4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
-5. Look for additional, version-specific upgrade steps (below).
+In `civix` v22.05+, there is a built-in upgrade assistant:
 
-### General Tasks: Hook Stubs
+```bash
+cd myextension
+civix upgrade
+```
 
-Sometimes new versions introduce new hook stubs. These generally are not
-mandatory.  However, in civix documentation and online support, we will
-assume that they have been properly configured, so it's recommended that you
-update your extension's main PHP file.  For example, if the main PHP file
-for the extension is "/var/www/extensions/org.example.myext/myext.php", the
-snippets mentioned below (adjusting `myext` to match your extension).
+This command may perform common tasks like:
 
-Hook stubs are documented below as special tasks.
+* Add or remove tags in `info.xml`
+* Add or remove stub functions in the main PHP file (like `myextension.php`)
+* Regenerate reserved files (like `myextension.civix.php`)
 
-### General Tasks: Upgrader Class
+This process is semi-automatic. Some well-defined tasks run automatically;
+others require extra communication or decision-making.
 
-Sometimes new versions introduce changes to the `Upgrader` classes (e.g.,
-`CRM_Myext_Upgrader_Base` and its child). These generally are not mandatory --
-CiviCRM is largely agnostic as to how modules manage schema upgrades -- but
-`civix` suggests a reasonable approach to doing so, and documentation and online
-support will assume this approach.
+## Typical workflow (abstract)
 
-The steps for upgrading the `Upgrader` are as follows:
+1. Make sure you have a backup of your code. If you use version-control (`git`/`svn`), then you should be good to go.
+2. In the shell, navigate to the target extension directory. (If the extension is `org.example.myext`, then the path may look like `/var/www/extensions/org.example.myext`.)
+3. Run the `civix upgrade` command. This will inspect the codebase, regenerate boilerplate (eg `*.civix.php`), provide a log of changes,
+   and (in some cases) provide extra questions or extra information about the upgrade.
+4. Compare the new code with the old code (e.g. `git diff` or `svn diff`).
+5. Review any new/relevant items [Special Tasks](#special-tasks).
+6. Perform any QA (as you normally would for changes in the extension).
 
-1. Make sure you have a backup of your code. If you use version-control (git/svn), then you should be good to go.
-2. In the shell, navigate to your extension's root directory (e.g., "/var/www/extensions/org.example.myext").
-3. Re-run the **civix generate:upgrader** command. This will regenerate the upgrader base class
-   (e.g. "/var/www/extensions/org.example.myext/CRM/Myext/Upgrader/Base.php").
-4. Compare the new code with the old code (e.g. "**git diff**" or "**svn diff**").
-5. Look for additional, version-specific upgrade steps (below).
+## Typical workflow (git)
+
+```bash
+cd myextension
+git checkout -b my-civix-upgrade
+civix upgrade
+git status
+git diff
+git add .
+git commit -m 'Upgraded civix templates'
+```
 
 ## Special Tasks
+
+Additionally, some tasks may require special attention. These are described below.
 
 ### Upgrade to v21.09.0+: Angular Module (optional)
 
 Angular code in Civi extensions usually has one of these layouts:
 
-* (A) (default, most common) There is one Angular module, and its name exactly matches the Civi extension.
-* (B) There is one Angular module, and its name does *not* match the Civi extension.
-* (C) There are multiple Angular modules. It is impossible for them to all match.
+* (A) (*default, best supported*) There is **one** Angular module, and its name **exactly matches** the Civi extension.
+* (B) There is **one** Angular module, and its name does *not* match the Civi extension.
+* (C) There are **multiple** Angular modules. It is **impossible** for them to all match.
 
-Extensions with mismatched names (group B) may now provide a hint via `info.xml`. For example, if the extension is `foobar` and the Angular module is `crmFoobar`, then set:
+This version improves support for (B) (*one module, mismatched name*). You may now provide a hint via `info.xml`. For example, if the extension is `foobar` and the Angular module is `crmFoobar`, then set:
 
 ```xml
 <extension key="com.example.foobar" type="module">
@@ -60,9 +64,9 @@ Extensions with mismatched names (group B) may now provide a hint via `info.xml`
 </extension>
 ```
 
-For group B, this will be a slight usability improvement - when calling `generate:angular-*` commands, the default value of `--am=...` will match the preferred name.
+For (B), this will improve usability - when calling `generate:angular-*` commands, it will use a better the default value of `--am=...`.
 
-For group C, you will still need to specify `--am=...` on a case-by-case basis.
+There is no impact for (A) and (C).
 
 ### Upgrade to v20.09.0+: APIv3 Entity
 
@@ -88,11 +92,6 @@ whether to fix the boolean:
 * __Switch to `TRUE`__: The output will have standard APIv3 formatting, but any existing callers may break.
 * __Leave as `FALSE`__: The output will have non-conventional formatting, but existing callers will work.
 
-### Upgrade to v20.06.0+: PHPUnit
-
-If you have a generated `phpunit.xml` or `phpunit.xml.dist` file, it may include the old option `syntaxCheck="false"`. 
-You can remove this.  The option has been inert and will raise errors in newer versions of PHPUnit.
-
 ### Upgrade to v19.11.0+: APIv4 and PSR-4
 
 APIv4 looks for classes in the `Civi\Api4` namespace and `Civi/Api4` folder. 
@@ -103,63 +102,6 @@ corresponding classloader:
   <classloader>
     <psr4 prefix="Civi\" path="Civi" />
   </classloader>
-```
-
-### Upgrade to v19.06.2+: PHPUnit (Optional; #155)
-
-The templates for PHPUnit tests have been updated to match a major
-transition in PHPUnit -- *all upstream base-classes were renamed*:
-
-* `PHPUnit_Framework_TestCase` is the base-class in PHPUnit 4 and earlier
-* `\PHPUnit\Framework\TestCase`` is the base-class in PHPUnit 6 and later
-* PHPUnit 5 is a transitional version which supports both naming conventions.
-
-In recent years, documentation+tooling in Civi have encouraged usage of
-PHPUnit 5, so (hopefully) most environments are compatible with the newer naming.
-
-Going forward, `civix` will generate templates using the newer naming.
-
-To be consistent and forward-compatible, you should consider updating your
-existing unit-tests to use the name base-classes.
-
-### Upgrade to v19.06.2+: hook_civicrm_themes
-
-Civix-based modules should implement `hook_civicrm_themes` to handle any
-theme registrations.
-
-At time of writing, the functionality is flagged as *experimental*.
-Never-the-less, you may safely add the associated hook stub (regardless of
-whether you use the functionality).
-
-```php
-/**
- * Implements hook_civicrm_themes().
- */
-function myext_civicrm_themes(&$themes) {
-  _myext_civix_civicrm_themes($themes);
-}
-```
-
-### Upgrade to v18.02.0+: hook_civicrm_entityTypes
-
-Civix-based modules should pass metadata about custom database entities
-through `hook_civicrm_entityTypes`.
-
-At time of writing, the functionality is flagged as *experimental*.
-Never-the-less, you may safely add the associated hook stub (regardless of
-whether you use the functionality).
-
-```php
-/**
- * Implements hook_civicrm_entityTypes().
- *
- * Declare entity types provided by this module.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function myext_civicrm_entityTypes(&$entityTypes) {
-  _myext_civix_civicrm_entityTypes($entityTypes);
-}
 ```
 
 ### Upgrade to v18.02.0+: PHPUnit (Optional)
@@ -197,7 +139,7 @@ Optionally, if you want to *use* this helper class, then add a line like this to
 use CRM_Myextension_ExtensionUtil as E;
 ```
 
-### Upgrade to v16.10+
+### Upgrade to v16.10+: Upgrader postInstall (optional)
 
 *(See also: "General Tasks: Upgrader Class")*
 
@@ -224,26 +166,6 @@ like it) into the Upgrader class (e.g. "/var/www/extensions/org.example.myext/CR
      'myWeirdFieldSetting' => array('id' => $customFieldId, 'weirdness' => 1),
    ));
  }
-```
-
-### Upgrade to v16.10+: hook_civicrm_postInstall
-
-Prior to v16.10.0, extension schema versions were stored in the `civicrm_settings`
-table under the namespace `org.example.myext:version`. This storage
-mechanism proved problematic for multisites utilizing more than one domain (see
-[CRM-19252](https://issues.civicrm.org/jira/browse/CRM-19252)). `civix` now
-utilizes `hook_civicrm_postInstall` and an [updated Upgrader](#upgrade-to-v1609) to
-store schema versions in the `civicrm_extension` table.
-
-```php
-/**
- * Implements hook_civicrm_postInstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
- */
-function myext_civicrm_postInstall() {
-  _myext_civix_civicrm_postInstall();
-}
 ```
 
 ### Upgrade v16.03.2+: Test Files
@@ -303,62 +225,5 @@ function myext_civicrm_navigationMenu(&$menu) {
     'separator' => 0,
   ));
   _myext_civix_navigationMenu($menu);
-}
-```
-
-### Upgrade to v15.04+: hook_civicrm_angularModules
-
-Civix-based modules should scan for Angular modules names in `ang/*.ang.php`
-and auto-register them with the Civi-Angular base app (`civicrm/a/#`).
-
-```php
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Generate a list of Angular modules.
- *
- * Note: This hook only runs in CiviCRM 4.5+. It may
- * use features only available in v4.6+.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
- */
-function myext_civicrm_angularModules(&$angularModules) {
-  _myext_civix_civicrm_angularModules($angularModules);
-}
-```
-
-### Upgrade to v14.01+: hook_civicrm_caseTypes
-
-Civix-based modules should scan for any CiviCase XML files in
-`xml/case/*.xml` and automatically register these.
-
-```php
-/**
- * Implementation of hook_civicrm_caseTypes
- *
- * Generate a list of case-types
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
- */
-function myext_civicrm_caseTypes(&$caseTypes) {
-  _myext_civix_civicrm_caseTypes($caseTypes);
-}
-```
-
-### Upgrade to v14.01+: hook_civicrm_alterSettingsFolders
-
-Civix-based modules should scan for any settings files in
-`settings/*.setting.php` and automatically register these.
-
-```php
-/**
- * Implementation of hook_civicrm_alterSettingsFolders
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
- */
-function myext_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _myext_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 ```

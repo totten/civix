@@ -3,6 +3,7 @@ namespace CRM\CivixBundle;
 
 use Civi\Cv\Bootstrap;
 use CRM\CivixBundle\Utils\Path;
+use Mixlib;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\PhpEngine;
@@ -103,6 +104,26 @@ class Services {
       self::$cache['cacheDir'] = self::configDir()->path('cache');
     }
     return self::$cache['cacheDir'];
+  }
+
+  /**
+   * @return \Mixlib
+   */
+  public static function mixlib(): Mixlib {
+    if (!isset(self::$cache[__FUNCTION__])) {
+      self::$cache[__FUNCTION__] = new Mixlib(dirname(__DIR__, 3) . '/extern/mixin');
+    }
+    return self::$cache[__FUNCTION__];
+  }
+
+  /**
+   * @return \CRM\CivixBundle\UpgradeList
+   */
+  public static function upgradeList(): UpgradeList {
+    if (!isset(self::$cache[__FUNCTION__])) {
+      self::$cache[__FUNCTION__] = new UpgradeList();
+    }
+    return self::$cache[__FUNCTION__];
   }
 
 }

@@ -16,7 +16,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Civi\\Cv": "src/",
+            "Mixlib": "extern/src/",
+            "Civi\\Cv": "extern/src/",
             "CRM\\CivixBundle": "src/"
          }
     },
@@ -38,10 +39,33 @@
     "extra": {
         "downloads": {
           "bootstrap": {
-            "version": "v0.3.12",
-            "url": "https://raw.githubusercontent.com/civicrm/cv/{$version}/src/Bootstrap.php",
-            "path": "src/Civi/Cv/Bootstrap.php",
-            "type": "file"
+              "version": "v0.3.14",
+              "url": "https://raw.githubusercontent.com/civicrm/cv/{$version}/src/Bootstrap.php",
+              "path": "extern/src/Civi/Cv/Bootstrap.php",
+              "type": "file"
+          },
+          "mixlib": {
+              "version": "5.45",
+              "url": "https://raw.githubusercontent.com/civicrm/civicrm-core/{$version}/tools/mixin/src/Mixlib.php",
+              "path": "extern/src/Mixlib.php",
+              "type": "file"
+          },
+          "polyfill": {
+              "version": "5.45",
+              "url": "https://raw.githubusercontent.com/civicrm/civicrm-core/{$version}/mixin/polyfill.php",
+              "path": "extern/mixin/polyfill.php",
+              "type": "file"
+          },
+          "ang-php@1": {"version": "5.45"},
+          "case-xml@1": {"version": "5.45"},
+          "menu-xml@1": {"version": "5.45"},
+          "mgd-php@1": {"version": "5.45"},
+          "setting-php@1": {"version": "5.45"},
+          "theme-php@1": {"version": "5.45"},
+          "*": {
+              "path": "extern/mixin/{$id}/mixin.php",
+              "url": "https://raw.githubusercontent.com/civicrm/civicrm-core/{$version}/mixin/{$id}/mixin.php",
+              "type": "file"
           }
         }
     }

@@ -18,15 +18,6 @@ function <?php echo $mainFile ?>_civicrm_config(&$config) {
 }
 
 /**
- * Implements hook_civicrm_xmlMenu().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
- */
-function <?php echo $mainFile ?>_civicrm_xmlMenu(&$files) {
-  _<?php echo $mainFile ?>_civix_civicrm_xmlMenu($files);
-}
-
-/**
  * Implements hook_civicrm_install().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
@@ -81,50 +72,6 @@ function <?php echo $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = N
 }
 
 /**
- * Implements hook_civicrm_managed().
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed
- */
-function <?php echo $mainFile ?>_civicrm_managed(&$entities) {
-  _<?php echo $mainFile ?>_civix_civicrm_managed($entities);
-}
-
-/**
- * Implements hook_civicrm_caseTypes().
- *
- * Add CiviCase types provided by this extension.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
- */
-function <?php echo $mainFile ?>_civicrm_caseTypes(&$caseTypes) {
-  _<?php echo $mainFile ?>_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Add Angular modules provided by this extension.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
- */
-function <?php echo $mainFile ?>_civicrm_angularModules(&$angularModules) {
-  // Auto-add module files from ./ang/*.ang.php
-  _<?php echo $mainFile ?>_civix_civicrm_angularModules($angularModules);
-}
-
-/**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
- */
-function <?php echo $mainFile ?>_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _<?php echo $mainFile ?>_civix_civicrm_alterSettingsFolders($metaDataFolders);
-}
-
-/**
  * Implements hook_civicrm_entityTypes().
  *
  * Declare entity types provided by this module.
@@ -133,13 +80,6 @@ function <?php echo $mainFile ?>_civicrm_alterSettingsFolders(&$metaDataFolders 
  */
 function <?php echo $mainFile ?>_civicrm_entityTypes(&$entityTypes) {
   _<?php echo $mainFile ?>_civix_civicrm_entityTypes($entityTypes);
-}
-
-/**
- * Implements hook_civicrm_themes().
- */
-function <?php echo $mainFile ?>_civicrm_themes(&$themes) {
-  _<?php echo $mainFile ?>_civix_civicrm_themes($themes);
 }
 
 // --- Functions below this ship commented out. Uncomment as required. ---

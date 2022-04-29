@@ -67,4 +67,24 @@ class NamingTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals($expectTableName, Naming::createTableName($inputEntityName));
   }
 
+  public function testCreateClassName() {
+    $this->assertEquals('CRM_Foobar_Upgrade', Naming::createClassName('CRM/Foobar', 'Upgrade'));
+    $this->assertEquals('CRM_Foobar_Upgrade_Base', Naming::createClassName('CRM/Foobar', 'Upgrade', 'Base'));
+    $this->assertEquals('CRM_Foobar_Upgrade_Base', Naming::createClassName('CRM/Foobar', ['Upgrade', 'Base']));
+
+    $this->assertEquals('Civi\Foobar\Upgrade', Naming::createClassName('Civi/Foobar', 'Upgrade'));
+    $this->assertEquals('Civi\Foobar\Upgrade\Base', Naming::createClassName('Civi/Foobar', 'Upgrade', 'Base'));
+    $this->assertEquals('Civi\Foobar\Upgrade\Base', Naming::createClassName('Civi/Foobar', ['Upgrade', 'Base']));
+  }
+
+  public function testCreateClassFile() {
+    $this->assertEquals('CRM/Foobar/Upgrade.php', Naming::createClassFile('CRM/Foobar', 'Upgrade'));
+    $this->assertEquals('CRM/Foobar/Upgrade/Base.php', Naming::createClassFile('CRM/Foobar', 'Upgrade', 'Base'));
+    $this->assertEquals('CRM/Foobar/Upgrade/Base.php', Naming::createClassFile('CRM/Foobar', ['Upgrade', 'Base']));
+
+    $this->assertEquals('Civi/Foobar/Upgrade.php', Naming::createClassFile('Civi/Foobar', 'Upgrade'));
+    $this->assertEquals('Civi/Foobar/Upgrade/Base.php', Naming::createClassFile('Civi/Foobar', 'Upgrade', 'Base'));
+    $this->assertEquals('Civi/Foobar/Upgrade/Base.php', Naming::createClassFile('Civi/Foobar', ['Upgrade', 'Base']));
+  }
+
 }
