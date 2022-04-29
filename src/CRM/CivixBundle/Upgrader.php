@@ -280,6 +280,33 @@ class Upgrader {
     });
   }
 
+  /**
+   * Find any functions like `mymodle_civicrm_foobar(...) {}` (ie with an empty body).
+   */
+  public function cleanEmptyHooks() {
+    $this->updateModulePhp(function($infoXml, $content) {
+      $comment = "/\*\*\n( \*.*\n)* \*/";
+      $funcName = $infoXml->getFile() . "_civicrm_[a-zA-Z0-9_]+";
+      $funcArgs = "\([^\)]*\)";
+      $emptyBody = "\{\s*\}";
+      $content = preg_replace_callback("|({$comment})?\s*function ({$funcName})({$funcArgs})\s*{$emptyBody}\n*|m", function ($m) {
+        $func = $m[3];
+        $this->io->note("The function \"{$func}()\" currently appears to be empty.");
+        $this->showCode(explode("\n", $m[0]));
+        if ($this->io->confirm("Delete the empty function \"{$func}()\"?")) {
+          return "\n\n";
+        }
+        else {
+          return $m[0];
+        }
+      }, $content);
+
+      $content = preg_replace("|\n}\n\n+|m", "\n}\n\n", $content);
+
+      return $content;
+    });
+  }
+
   public function addMixins(array $mixinConstraints): void {
     $msg = count($mixinConstraints) > 1 ? 'Enable mixins' : 'Enable mixin';
     $this->io->writeln("<info>$msg</info> " . implode(', ', $mixinConstraints));

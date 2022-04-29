@@ -71,6 +71,9 @@ class UpgradeCommand extends AbstractCommand {
     $io = new SymfonyStyle($input, $output);
     $io->title('General upgrade');
 
+    $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+    $upgrader->cleanEmptyHooks();
+
     /**
      * @var Info $info
      */
