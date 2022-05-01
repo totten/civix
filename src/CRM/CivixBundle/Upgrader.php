@@ -155,17 +155,18 @@ class Upgrader {
         return $content;
       }
 
+      $fullHook = 'hook_' . $hook;
       $stub = [
         "/**",
-        " * Implements hook_{$hook}().",
+        " * Implements {$fullHook}().",
         " *",
-        " * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_{$hook}",
+        " * @link https://docs.civicrm.org/dev/en/latest/hooks/{$fullHook}",
         " */",
         "function {$mainFunc}({$mainArg}) {",
         "  {$delegateFunc}($delegateArg);",
         "}",
       ];
-      $io->writeln("<info>New civix builds include a stub for </info>hook_{$hook}<info>, e.g.</info>");
+      $io->writeln("<info>This extension does not implement </info>{$fullHook}<info>, but this is included in newer templates. This is a typical example:</info>");
       $io->write("\n");
       $this->showCode($stub);
       if ($help) {
@@ -173,19 +174,25 @@ class Upgrader {
       }
 
       $actions = [
-        'l' => 'Yes, add live-code',
-        'c' => 'Yes, add comment-code',
-        'n' => 'No, do not add anything',
+        'y' => 'Yes. Add live-code.',
+        'c' => 'Yes. Add comment-code.',
+        'n' => 'No. Do not add anything.',
       ];
       if ($contains($mainFunc)) {
-        $io->warning([
-          "This extension already includes an alternative variant of \"$mainFunc()\".",
-          "Adding more live-code would create a conflict.",
-          "However, you may add comment-code for future review.",
+        $io->note([
+          "This extension may already have a customized version of \"$mainFunc()\".\n" .
+          "civix will not add live-code because that could create a conflict.",
         ]);
-        // unset($actions['y']);
+        unset($actions['y']);
       }
-      $action = $io->choice("Add hook_{$hook}?", $actions, $contains($mainFunc) ? 'c' : 'l');
+      if ($help || $contains($mainFunc)) {
+        $io->note([
+          "If you are unsure what to do, you can safely add comment-code. " .
+          "Comment-code will not change the behavior. " .
+          "It merely provides an example to reference if you encounter issues in the future.",
+        ]);
+      }
+      $action = $io->choice("Add {$mainFunc}?", $actions, $contains($mainFunc) ? 'c' : 'y');
 
       switch ($action) {
         case 'y':

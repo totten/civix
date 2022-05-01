@@ -11,6 +11,6 @@
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
 
   $upgrader->addHookDelegation('civicrm_entityTypes', '&$entityTypes',
-    'If you use civix to generate custom entities, then you will need this stub. Otherwise, it is not needed.');
+    "If you use civix to generate custom entities, then you will need this. Otherwise, it will not be needed.");
 
 };
