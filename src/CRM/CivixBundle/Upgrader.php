@@ -298,7 +298,7 @@ class Upgrader {
       $emptyBody = "\{\s*\}";
       $content = preg_replace_callback("|({$comment})?\s*function ({$funcName})({$funcArgs})\s*{$emptyBody}\n*|m", function ($m) {
         $func = $m[3];
-        $this->io->note("The function \"{$func}()\" currently appears to be empty.");
+        $this->io->note("The function \"{$func}()\" now appears to be empty.");
         $this->showCode(explode("\n", $m[0]));
         if ($this->io->confirm("Delete the empty function \"{$func}()\"?")) {
           return "\n\n";

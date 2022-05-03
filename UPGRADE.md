@@ -43,9 +43,13 @@ git commit -m 'Upgraded civix templates'
 
 ## Special Tasks
 
-Additionally, some tasks may require special attention. These are described below.
+Some changes are not automated.  These changes are (generally) optional and subjective -- e.g.  they may introduce new options, methods, or
+template-code that improves the system.  If you ignore them, the extension will continue working as before (unless noted otherwise).
 
-### Upgrade to v21.09.0+: Angular Module (optional)
+Special-tasks are organized based on when the functionality was introduced.  (Ex: `v21.09.*` would indicate functionality that was added or modified
+circa September 2021.)
+
+### Upgrade to v21.09.0+: Angular Module
 
 Angular code in Civi extensions usually has one of these layouts:
 
