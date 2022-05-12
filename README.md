@@ -97,11 +97,24 @@ $ php -dphar.readonly=0 /usr/local/bin/box build
 
 ### Development: Testing
 
-There isn't a proper test-suite, but the script `tests/make-example.sh` will
-run all the code-generators (with a given build/version of CiviCRM).  It's
-not pretty, though -- it assumes you're using buildkit and Drupal
-single-site.
+Automated testing for `civix` requires a live CiviCRM deployment. The deployment must be amenable to CLI scripting (eg `civix`, `cv`).
 
+Tests are divided into three areas:
+
+* PHPUnit: End-to-end tests (`tests/e2e/**Test.php`)
+* PHPUnit: Unit tests (`src/CRM/CivixBundle/**Test.php`)
+* Bash: Example script (`tests/make-example.sh`) which runs all code-generators
+
+PHPUnit is now preferred for testing (because it can support better assertions, better debugging, and better coding).
+To run PHPUnit, one must define a folder (`CIVIX_WORKSPACE`) where it will place new/sample extensions. Example:
+
+```bash
+export CIVIX_WORKSPACE=$HOME/bknix/build/dmaster/web/sites/all/modules/civicrm/ext/civixtest
+phpunit8
+```
+
+The bash script (`make-example.sh`) has been around longer and covers more functionality, but the assertions are limited,
+and effective usage may require more effort. Example:
 
 ```bash
 ## Usage: tests/make-example.sh <BUILDKIT_ROOT> <BUILDKIT_BUILD>
