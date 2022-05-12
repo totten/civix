@@ -148,13 +148,6 @@ class Mixins implements Builder {
     $missingBackports = array_diff($expectedBackports, $existingBackports);
     $extraBackports = array_diff($existingBackports, $expectedBackports);
 
-    // print_r([
-    //   'expected' => $expectedBackports,
-    //   'existing' => $existingBackports,
-    //   'missing' => $missingBackports,
-    //   'extra' => $extraBackports,
-    // ]);
-
     foreach ($missingBackports as $mixinName) {
       $mixinSpec = Services::mixlib()->get($mixinName);
       $this->createBackportFile($output, $mixinSpec);
