@@ -16,4 +16,4 @@ if (!isset($loader)) {
 }
 
 #### Extra - Register classes in "tests" directory
-$loader->add('CRM', __DIR__);
+$loader->addPsr4('E2E\\', __DIR__ . '/e2e');
