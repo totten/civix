@@ -58,6 +58,9 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'mixin/polyfill.php' => 1,
       'mixin/menu-xml@1.*.*.mixin.php' => 1,
     ]);
+    $content = file_get_contents('civix_mixinrec.civix.php');
+    $this->assertRegExp('|function _civix_mixinrec_civix_mixin_polyfill\(\) \{|', $content);
+    $this->assertRegExp('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
   }
 
   public function testAddPageFor545() {
@@ -77,6 +80,10 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'mixin/setting-php@1.*.*.mixin.php' => 0,
       'mixin/menu-xml@1.*.*.mixin.php' => 0,
     ]);
+
+    $content = file_get_contents('civix_mixinrec.civix.php');
+    $this->assertNotRegExp('|function _civix_mixinrec_civix_mixin_polyfill\(\) \{|', $content);
+    $this->assertNotRegExp('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
   }
 
 }

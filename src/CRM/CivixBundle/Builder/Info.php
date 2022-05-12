@@ -39,7 +39,7 @@ class Info extends XML {
     $xml->addChild('releaseDate', date('Y-m-d'));
     $xml->addChild('version', '1.0');
     $xml->addChild('develStage', 'alpha');
-    $xml->addChild('compatibility')->addChild('ver', '5.0');
+    $xml->addChild('compatibility')->addChild('ver', $ctx['compatibilityVerMin'] ?? '5.0');
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
     // APIv4 will look for classes+files matching 'Civi/Api4', and
@@ -83,6 +83,8 @@ class Info extends XML {
     $ctx['angularModuleName'] = !empty($angularModule) ? $angularModule : $ctx['mainFile'];
     $items = $this->get()->xpath('civix/format');
     $ctx['civixFormat'] = (string) array_shift($items);
+    $ctx['compatibilityVerMin'] = $this->getCompatibilityVer('MIN');
+    $ctx['compatibilityVerMax'] = $this->getCompatibilityVer('MAX');
   }
 
   /**

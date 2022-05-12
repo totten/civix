@@ -1,6 +1,8 @@
 <?php
 echo "<?php\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
+$_compatibility = isset($compatibilityVerMin) ? $compatibilityVerMin : '5.0';
+$_invokePolyfill = version_compare($_compatibility, '5.45.beta1', '<') ? sprintf("  _%s_civix_mixin_polyfill();\n", $mainFile) : '';
 ?>
 
 // AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
@@ -82,6 +84,7 @@ class <?php echo $_namespace ?>_ExtensionUtil {
 
 use <?php echo $_namespace ?>_ExtensionUtil as E;
 
+<?php if (version_compare($_compatibility, '5.45.beta1', '<')) { ?>
 function _<?php echo $mainFile ?>_civix_mixin_polyfill() {
   if (!class_exists('CRM_Extension_MixInfo')) {
     $polyfill = __DIR__ . '/mixin/polyfill.php';
@@ -89,7 +92,7 @@ function _<?php echo $mainFile ?>_civix_mixin_polyfill() {
   }
 }
 
-
+<?php } ?>
 /**
  * (Delegated) Implements hook_civicrm_config().
  *
@@ -116,8 +119,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
-
-  _<?php echo $mainFile ?>_civix_mixin_polyfill();
+<?php echo $_invokePolyfill; ?>
 }
 
 /**
@@ -130,7 +132,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_install() {
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     $upgrader->onInstall();
   }
-  _<?php echo $mainFile ?>_civix_mixin_polyfill();
+<?php echo $_invokePolyfill; ?>
 }
 
 /**
@@ -171,7 +173,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
       $upgrader->onEnable();
     }
   }
-  _<?php echo $mainFile ?>_civix_mixin_polyfill();
+<?php echo $_invokePolyfill; ?>
 }
 
 /**
