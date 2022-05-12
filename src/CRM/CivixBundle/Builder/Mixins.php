@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
+use CRM\CivixBundle\Application;
 use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,6 +36,11 @@ class Mixins implements Builder {
   protected $removals;
 
   /**
+   * @var array
+   */
+  protected $allBackports;
+
+  /**
    * Mixins constructor.
    *
    * @param Info $info
@@ -48,6 +54,7 @@ class Mixins implements Builder {
     $this->outputDir = $outputDir;
     $this->newConstraints = (array) $newConstraints;
     $this->removals = [];
+    $this->allBackports = require Application::findCivixDir() . '/mixin-backports.php';
   }
 
   public function loadInit(&$ctx) {
@@ -112,41 +119,67 @@ class Mixins implements Builder {
         $output->writeln("<info>Unregister</info> " . $existingMixinXml);
         unset($existingMixinXml[0]);
       }
-
-      $files = (array) glob($this->outputDir . '/' . $removedMixin . '@*.mixin.php');
-      foreach ($files as $file) {
-        $output->writeln("<info>Remove</info> $file");
-        unlink($file);
-      }
     }
 
     // Let's clarify the versions we want.
-    $declared = array_merge($this->getDeclaredMixinConstraints(), $this->newConstraints);
-    $expected = array_column(Services::mixlib()->resolve($declared), 'mixinConstraint');
-    $existing = $this->getMixinFiles();
-
-    $missing = array_diff($expected, $existing);
-    $extras = array_diff($existing, $expected);
-
-    foreach ($expected as $newMixin) {
+    $actualDeclarations = array_merge($this->getDeclaredMixinConstraints(), $this->newConstraints);
+    $expectedDeclarations = array_column(Services::mixlib()->resolve($actualDeclarations), 'mixinConstraint');
+    foreach ($expectedDeclarations as $newMixin) {
       $this->addMixinToXml($newMixin);
     }
 
-    $this->createLocalFile($output, Services::mixlib()->get('polyfill'));
+    $this->reconcileBackports($output);
+  }
 
-    foreach ($missing as $mixinName) {
+  /**
+   * Look at the list of `<mixin>` tags, and look at the list of `mixin/*.php` files.
+   * Do we need to add or remove any  `mixin/*.php` files?
+   *
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   */
+  protected function reconcileBackports(OutputInterface $output) {
+    $declarations = $this->getDeclaredMixinConstraints();
+    $declarations[] = 'polyfill';
+
+    $expectedBackports = array_filter($declarations, function ($d) {
+      return !$this->isProvidedByCore($d);
+    });
+    $existingBackports = $this->getMixinFiles(TRUE);
+    $missingBackports = array_diff($expectedBackports, $existingBackports);
+    $extraBackports = array_diff($existingBackports, $expectedBackports);
+
+    // print_r([
+    //   'expected' => $expectedBackports,
+    //   'existing' => $existingBackports,
+    //   'missing' => $missingBackports,
+    //   'extra' => $extraBackports,
+    // ]);
+
+    foreach ($missingBackports as $mixinName) {
       $mixinSpec = Services::mixlib()->get($mixinName);
-      $this->createLocalFile($output, $mixinSpec);
+      $this->createBackportFile($output, $mixinSpec);
     }
 
-    foreach ($extras as $extra) {
-      $file = $this->outputDir . '/' . $extra . '.mixin.php';
-      $output->writeln("<error>Extraneous file: \"$file\" appears to be obsolete. Please review \"info.xml\" and \"mixins/*\", and then remove the extra file.</error>");
-      // Polyfill-loaders are likely to load the file even if it's not mentioned in info.xml.
+    foreach ($extraBackports as $extra) {
+      $fileExt = ($extra === 'polyfill') ? '.php' : '.mixin.php';
+      $file = $this->outputDir . '/' . $extra . $fileExt;
+      $backportInfo = $this->getBackportInfo($extra);
+      if ($this->isProvidedByCore($extra)) {
+        $output->writeln("<error>Extra backport: \"$extra\" is already included with civicrm-core ({$backportInfo['provided-by']} >= {$this->info->getCompatibilityVer('MIN')}).</error>");
+        $this->removeBackportFile($output, $file);
+      }
+      elseif ($backportInfo && !in_array($extra, $declarations)) {
+        $output->writeln("<error>Extra backport: \"$extra\" is inactive. It can be removed</error>");
+        $this->removeBackportFile($output, $file);
+      }
+      else {
+        $output->writeln("<error>Irregular mixin: \"$file\" is in the \"mixins/\" folder but is not referenced by \"info.xml\"! Consider deleting it.</error>");
+        // Polyfill-loaders are likely to load the file even if it's not mentioned in info.xml. This old+new runtimes disagree about whether load $file.
+      }
     }
   }
 
-  protected function createLocalFile(OutputInterface $output, array $mixin) {
+  protected function createBackportFile(OutputInterface $output, array $mixin) {
     $file = $this->outputDir . '/' . $mixin['mixinFile'];
     if (!is_dir(dirname($file))) {
       mkdir(dirname($file), Dirs::MODE, TRUE);
@@ -155,14 +188,38 @@ class Mixins implements Builder {
     file_put_contents($file, $mixin['src']);
   }
 
-  protected function getMixinFiles(): array {
+  protected function removeBackportFile(OutputInterface $output, string $file): void {
+    if (file_exists($file)) {
+      $output->writeln("<info>Remove</info> $file");
+      unlink($file);
+    }
+  }
+
+  protected function getMixinFiles(bool $includePolyfill = FALSE): array {
     $filePattern = $this->outputDir . '/*.mixin.php';
-    return array_map(
+    $result = array_map(
       function ($f) {
         return str_replace('.mixin.php', '', basename($f));
       },
       (array) glob($filePattern)
     );
+    if ($includePolyfill && file_exists($this->outputDir . '/polyfill.php')) {
+      $result[] = 'polyfill';
+    }
+    return $result;
+  }
+
+  protected function getBackportInfo(string $mixinConstraint): array {
+    $mixinMajor = preg_replace('/^([^@]+@\d+)(\..*)/', '\1', $mixinConstraint);
+    return $this->allBackports[$mixinMajor] ?? [];
+  }
+
+  protected function isProvidedByCore(string $mixinConstraint): bool {
+    $compatVer = $this->info->getCompatibilityVer('MIN');
+    $backportInfo = $this->getBackportInfo($mixinConstraint);
+    $result = empty($backportInfo['provided-by']) ? FALSE : version_compare($compatVer, $backportInfo['provided-by'], '>=');
+    // print_r([__FUNCTION__, '$compatVer'=> $compatVer, '$mixinConstraint' => $mixinConstraint, '$backportInfo' => $backportInfo, $result ? 'true' : 'false']);
+    return $result;
   }
 
   /**
