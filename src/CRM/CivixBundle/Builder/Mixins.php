@@ -158,11 +158,9 @@ class Mixins implements Builder {
       $file = $this->outputDir . '/' . $extra . $fileExt;
       $backportInfo = $this->getBackportInfo($extra);
       if ($this->isProvidedByCore($extra)) {
-        $output->writeln("<error>Extra backport: \"$extra\" is already included with civicrm-core ({$backportInfo['provided-by']} >= {$this->info->getCompatibilityVer('MIN')}).</error>");
         $this->removeBackportFile($output, $file);
       }
       elseif ($backportInfo && !in_array($extra, $declarations)) {
-        $output->writeln("<error>Extra backport: \"$extra\" is inactive. It can be removed</error>");
         $this->removeBackportFile($output, $file);
       }
       else {
