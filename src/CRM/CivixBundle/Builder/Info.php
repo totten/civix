@@ -138,4 +138,31 @@ class Info extends XML {
     }
   }
 
+  /**
+   * Determine the target version of CiviCRM.
+   *
+   * @param string $mode
+   *   The `info.xml` file may list multiple `<ver>` tags, and we will only return one.
+   *   Either return the lowest-compatible `<ver>` ('MIN') or the highest-compatible `<ver>` ('MAX').
+   * @return string|null
+   */
+  public function getCompatibilityVer(string $mode = 'MIN'): ?string {
+    $vers = [];
+    foreach ($this->get()->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    usort($vers, 'version_compare');
+
+    switch ($mode) {
+      case 'MIN':
+        return $vers ? reset($vers) : NULL;
+
+      case 'MAX':
+        return $vers ? end($vers) : NULL;
+
+      default:
+        throw new \RuntimeException("getCompatilityVer($mode): Unrecognized mode");
+    }
+  }
+
 }
