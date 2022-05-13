@@ -1,0 +1,92 @@
+<?php
+// [[ EX - Keep pure comment ]]
+
+// function civixcleanempty_civicrm_keepPureComment() {
+// foo
+// }
+
+// [[ EX - Removable 1 ]]
+
+function civixcleanempty_civicrm_removeOne() {
+}
+
+// [[ EX - Keepable 1 ]]
+
+function civixcleanempty_civicrm_keepOne() {
+  stuff();
+}
+
+// [[ EX - Removable 2 ]]
+
+/**
+ *
+ */
+function civixcleanempty_civicrm_removeTwo() {
+
+}
+
+// [[ EX - Keepable 2 ]]
+
+/**
+ * @param $x
+ */
+function civixcleanempty_civicrm_keepTwo($x) {
+  stuff($x);
+}
+
+// [[ EX - Removable 3 ]]
+
+/**
+ *
+ */
+function civixcleanempty_civicrm_remove_three($x) {
+  // Do nothing
+}
+
+// [[ EX - Keepable 3 ]]
+
+function civixcleanempty_civicrm_keepThree() {
+  stuff(); // Comment
+}
+
+// [[ EX - Removable 4 ]]
+
+function civixcleanempty_civicrm_removeFour() {}
+
+// [[ EX - Keepable 4 ]]
+
+function civixcleanempty_civicrm_keepFour() {
+  foreach ($a as $b) {} x();
+}
+
+// [[ EX - Removable 5 ]]
+
+function civixcleanempty_civicrm_removeFive() { }
+
+// [[ EX - Keepable 5 ]]
+
+function civixcleanempty_civicrm_keepFive() {
+  if (FOO) {
+    x();
+  }
+  y();
+}
+
+// [[ EX - Removable 6 ]]
+
+function civixcleanempty_civicrm_removeSix() {
+  return;
+}
+
+// [[ EX - Keepable 6 ]]
+
+function civixcleanempty_civicrm_keepSix() {
+  return;
+  $x++;
+}
+
+// [[ EX - Keepable 6a ]]
+
+function civixcleanempty_civicrm_keepSixA() {
+  return 1;
+}

@@ -234,7 +234,17 @@ class Upgrader {
           if (preg_match("|^(\s*)//(\s*)($nameQuoted\(.*)|", $line, $m)) {
             // ok, already disabled
           }
-          elseif (preg_match("|^(\s*)($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
+          elseif (preg_match("|^(\s*)return ($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
+            // Easy case - we can disable it.
+            $this->io->writeln(sprintf(
+              "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
+              $name, $mainPhp, 1 + $lineNum
+            ));
+            $this->showLine($oldLines, $lineNum);
+            $this->io->writeln(sprintf("<info>Redacting call in </info>%s:%d<info></info>\n", $mainPhp, 1 + $lineNum));
+            $line = $m[1] . 'return;';
+          }
+          elseif (preg_match("|^(\s*)?($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
             // Easy case - we can disable it.
             $this->io->writeln(sprintf(
               "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
@@ -295,9 +305,23 @@ class Upgrader {
       $comment = "/\*\*\n( \*.*\n)* \*/";
       $funcName = $infoXml->getFile() . "_civicrm_[a-zA-Z0-9_]+";
       $funcArgs = "\([^\)]*\)";
-      $emptyBody = "\{\s*\}";
-      $content = preg_replace_callback("|({$comment})?\s*function ({$funcName})({$funcArgs})\s*{$emptyBody}\n*|m", function ($m) {
+      $startBody = "\{[^\}]*\}"; /* For empty functions, this grabs everything. For non-empty functions, this may just grab the opening segment. */
+      $content = preg_replace_callback(";({$comment})?\n\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
         $func = $m[3];
+
+        // Is our start-body basically empty (notwithstanding silly things - like `{}`, `//Comment`, and `return;`)?
+        $mStartBody = explode("\n", $m[5]);
+        $mStartBody = preg_replace(';^\s*;', '', $mStartBody);
+        $mStartBody = preg_grep(';^\/\/;', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^$/', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^[\{\}]$/', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^return;$/', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^\{\s*\}$/', $mStartBody, PREG_GREP_INVERT);
+        if (!empty($mStartBody)) {
+          // There is some kind of substance in here...
+          return $m[0];
+        }
+
         $this->io->note("The function \"{$func}()\" now appears to be empty.");
         $this->showCode(explode("\n", $m[0]));
         if ($this->io->confirm("Delete the empty function \"{$func}()\"?")) {
@@ -355,18 +379,35 @@ class Upgrader {
    * @param array $lines
    * @param int $focusLine
    */
-  protected function showLine(array $lines, int $focusLine): void {
+  public function showLine(array $lines, int $focusLine): void {
     $low = max(0, $focusLine - 2);
     $high = min(count($lines), $focusLine + 2);
-    $this->showCode($lines, $low, $high, $focusLine);
+    $this->showCode($lines, $low, $high, $focusLine, $focusLine);
   }
 
-  protected function showCode(array $lines, ?int $low = NULL, ?int $high = NULL, ?int $focusLine = NULL): void {
-    $low = $low ?: 0;
-    $high = $high ?: (count($lines) - 1);
+  /**
+   * Show a chunk of code.
+   *
+   * @param array $lines
+   * @param int|null $low
+   *   The first line to show
+   * @param int|null $high
+   *   The last line to show
+   * @param int|null $focusStart
+   *   The first line to highlight (within the overall code)
+   * @param int|null $focusEnd
+   *   The last line to highlight (within the overall code).
+   */
+  public function showCode(array $lines, ?int $low = NULL, ?int $high = NULL, ?int $focusStart = NULL, ?int $focusEnd = NULL): void {
+    if ($low === NULL || $low < 0) {
+      $low = 0;
+    }
+    if ($high === NULL || $high >= count($lines)) {
+      $high = count($lines) - 1;
+    }
     for ($i = $low; $i <= $high; $i++) {
       $fmt = sprintf('% 5d', 1 + $i);
-      if ($i === $focusLine) {
+      if ($focusStart !== NULL && $focusEnd !== NULL && $i >= $focusStart && $i <= $focusEnd) {
         $this->io->write("<error>*{$fmt}: ");
         $this->io->write($lines[$i], SymfonyStyle::OUTPUT_RAW);
         $this->io->write("</error>");
