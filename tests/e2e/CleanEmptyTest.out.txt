@@ -1,4 +1,10 @@
 <?php
+// [[ EX - Keep pure comment ]]
+
+// function civixcleanempty_civicrm_keepPureComment() {
+// foo
+// }
+
 // [[ EX - Removable 1 ]]
 
 // [[ EX - Keepable 1 ]]

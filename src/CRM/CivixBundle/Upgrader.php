@@ -306,7 +306,7 @@ class Upgrader {
       $funcName = $infoXml->getFile() . "_civicrm_[a-zA-Z0-9_]+";
       $funcArgs = "\([^\)]*\)";
       $startBody = "\{[^\}]*\}"; /* For empty functions, this grabs everything. For non-empty functions, this may just grab the opening segment. */
-      $content = preg_replace_callback(";({$comment})?\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
+      $content = preg_replace_callback(";({$comment})?\n\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
         $func = $m[3];
 
         // Is our start-body basically empty (notwithstanding silly things - like `{}`, `//Comment`, and `return;`)?
