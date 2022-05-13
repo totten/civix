@@ -234,7 +234,17 @@ class Upgrader {
           if (preg_match("|^(\s*)//(\s*)($nameQuoted\(.*)|", $line, $m)) {
             // ok, already disabled
           }
-          elseif (preg_match("|^(\s*)($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
+          elseif (preg_match("|^(\s*)return ($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
+            // Easy case - we can disable it.
+            $this->io->writeln(sprintf(
+              "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
+              $name, $mainPhp, 1 + $lineNum
+            ));
+            $this->showLine($oldLines, $lineNum);
+            $this->io->writeln(sprintf("<info>Redacting call in </info>%s:%d<info></info>\n", $mainPhp, 1 + $lineNum));
+            $line = $m[1] . 'return;';
+          }
+          elseif (preg_match("|^(\s*)?($nameQuoted\([^;]*;\s*)$|", $line, $m)) {
             // Easy case - we can disable it.
             $this->io->writeln(sprintf(
               "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
@@ -299,13 +309,16 @@ class Upgrader {
       $content = preg_replace_callback(";({$comment})?\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
         $func = $m[3];
 
+        // Is our start-body basically empty (notwithstanding silly things - like `{}`, `//Comment`, and `return;`)?
         $mStartBody = explode("\n", $m[5]);
         $mStartBody = preg_replace(';^\s*;', '', $mStartBody);
         $mStartBody = preg_grep(';^\/\/;', $mStartBody, PREG_GREP_INVERT);
         $mStartBody = preg_grep('/^$/', $mStartBody, PREG_GREP_INVERT);
         $mStartBody = preg_grep('/^[\{\}]$/', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^return;$/', $mStartBody, PREG_GREP_INVERT);
         $mStartBody = preg_grep('/^\{\s*\}$/', $mStartBody, PREG_GREP_INVERT);
         if (!empty($mStartBody)) {
+          // There is some kind of substance in here...
           return $m[0];
         }
 

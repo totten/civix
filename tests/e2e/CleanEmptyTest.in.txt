@@ -65,3 +65,22 @@ function civixcleanempty_civicrm_keepFive() {
   }
   y();
 }
+
+// [[ EX - Removable 6 ]]
+
+function civixcleanempty_civicrm_removeSix() {
+  return;
+}
+
+// [[ EX - Keepable 6 ]]
+
+function civixcleanempty_civicrm_keepSix() {
+  return;
+  $x++;
+}
+
+// [[ EX - Keepable 6a ]]
+
+function civixcleanempty_civicrm_keepSixA() {
+  return 1;
+}
