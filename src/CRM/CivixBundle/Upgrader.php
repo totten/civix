@@ -295,9 +295,20 @@ class Upgrader {
       $comment = "/\*\*\n( \*.*\n)* \*/";
       $funcName = $infoXml->getFile() . "_civicrm_[a-zA-Z0-9_]+";
       $funcArgs = "\([^\)]*\)";
-      $emptyBody = "\{\s*\}";
-      $content = preg_replace_callback("|({$comment})?\s*function ({$funcName})({$funcArgs})\s*{$emptyBody}\n*|m", function ($m) {
+      $startBody = "\{[^\}]*\}"; /* For empty functions, this grabs everything. For non-empty functions, this may just grab the opening segment. */
+      $content = preg_replace_callback(";({$comment})?\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
         $func = $m[3];
+
+        $mStartBody = explode("\n", $m[5]);
+        $mStartBody = preg_replace(';^\s*;', '', $mStartBody);
+        $mStartBody = preg_grep(';^\/\/;', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^$/', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^[\{\}]$/', $mStartBody, PREG_GREP_INVERT);
+        $mStartBody = preg_grep('/^\{\s*\}$/', $mStartBody, PREG_GREP_INVERT);
+        if (!empty($mStartBody)) {
+          return $m[0];
+        }
+
         $this->io->note("The function \"{$func}()\" now appears to be empty.");
         $this->showCode(explode("\n", $m[0]));
         if ($this->io->confirm("Delete the empty function \"{$func}()\"?")) {
