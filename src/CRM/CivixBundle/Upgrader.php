@@ -379,18 +379,35 @@ class Upgrader {
    * @param array $lines
    * @param int $focusLine
    */
-  protected function showLine(array $lines, int $focusLine): void {
+  public function showLine(array $lines, int $focusLine): void {
     $low = max(0, $focusLine - 2);
     $high = min(count($lines), $focusLine + 2);
-    $this->showCode($lines, $low, $high, $focusLine);
+    $this->showCode($lines, $low, $high, $focusLine, $focusLine);
   }
 
-  protected function showCode(array $lines, ?int $low = NULL, ?int $high = NULL, ?int $focusLine = NULL): void {
-    $low = $low ?: 0;
-    $high = $high ?: (count($lines) - 1);
+  /**
+   * Show a chunk of code.
+   *
+   * @param array $lines
+   * @param int|null $low
+   *   The first line to show
+   * @param int|null $high
+   *   The last line to show
+   * @param int|null $focusStart
+   *   The first line to highlight (within the overall code)
+   * @param int|null $focusEnd
+   *   The last line to highlight (within the overall code).
+   */
+  public function showCode(array $lines, ?int $low = NULL, ?int $high = NULL, ?int $focusStart = NULL, ?int $focusEnd = NULL): void {
+    if ($low === NULL || $low < 0) {
+      $low = 0;
+    }
+    if ($high === NULL || $high >= count($lines)) {
+      $high = count($lines) - 1;
+    }
     for ($i = $low; $i <= $high; $i++) {
       $fmt = sprintf('% 5d', 1 + $i);
-      if ($i === $focusLine) {
+      if ($focusStart !== NULL && $focusEnd !== NULL && $i >= $focusStart && $i <= $focusEnd) {
         $this->io->write("<error>*{$fmt}: ");
         $this->io->write($lines[$i], SymfonyStyle::OUTPUT_RAW);
         $this->io->write("</error>");
