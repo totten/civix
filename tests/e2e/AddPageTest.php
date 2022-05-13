@@ -14,21 +14,27 @@ class AddPageTest extends \PHPUnit\Framework\TestCase {
     $this->civixGenerateModule(static::getKey());
     chdir(static::getKey());
 
-    $this->assertFileExists('info.xml');
-    $this->assertFileExists('civix_addpage.php');
-    $this->assertFileExists('civix_addpage.civix.php');
+    $this->assertFileGlobs([
+      'info.xml' => 1,
+      'civix_addpage.php' => 1,
+      'civix_addpage.civix.php' => 1,
+    ]);
   }
 
-  public function testAddPage() {
-    $this->assertFileNotExists('CRM/CivixAddpage/Page/MyPage.php');
-    $this->assertFileNotExists('templates/CRM/CivixAddpage/Page/MyPage.tpl');
-    $this->assertFileNotExists('xml/Menu/civix_addpage.xml');
+  public function testAddPage(): void {
+    $this->assertFileGlobs([
+      'CRM/CivixAddpage/Page/MyPage.php' => 0,
+      'templates/CRM/CivixAddpage/Page/MyPage.tpl' => 0,
+      'xml/Menu/civix_addpage.xml' => 0,
+    ]);
 
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
 
-    $this->assertFileExists('CRM/CivixAddpage/Page/MyPage.php');
-    $this->assertFileExists('templates/CRM/CivixAddpage/Page/MyPage.tpl');
-    $this->assertFileExists('xml/Menu/civix_addpage.xml');
+    $this->assertFileGlobs([
+      'CRM/CivixAddpage/Page/MyPage.php' => 1,
+      'templates/CRM/CivixAddpage/Page/MyPage.tpl' => 1,
+      'xml/Menu/civix_addpage.xml' => 1,
+    ]);
   }
 
 }

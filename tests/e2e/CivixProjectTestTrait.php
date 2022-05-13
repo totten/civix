@@ -46,7 +46,7 @@ trait CivixProjectTestTrait {
     self::$origDir = NULL;
   }
 
-  public static function assertValidSetup() {
+  public static function assertValidSetup(): void {
     if (!property_exists(static::class, 'key')) {
       throw new \RuntimeException(sprintf("Class %s does not have property \$longName"));
     }

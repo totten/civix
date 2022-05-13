@@ -17,7 +17,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $this->assertFileExists('info.xml');
   }
 
-  public function testDefaultMixins() {
+  public function testDefaultMixins(): void {
     $this->assertFileGlobs([
       'mixin/polyfill.php' => 1,
       'mixin/setting-php@1.*.*.mixin.php' => 1,
@@ -27,7 +27,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     ]);
   }
 
-  public function testChangeCompatibility() {
+  public function testChangeCompatibility(): void {
     $this->assertFileGlobs([
       'mixin/polyfill.php' => 1,
       'mixin/setting-php@1.*.*.mixin.php' => 1,
@@ -43,7 +43,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     ]);
   }
 
-  public function testAddPageFor530() {
+  public function testAddPageFor530(): void {
     $this->civixInfoSet('compatibility/ver', '5.30');
 
     $this->assertFileGlobs([
@@ -63,7 +63,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $this->assertRegExp('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
   }
 
-  public function testAddPageFor545() {
+  public function testAddPageFor545(): void {
     $this->civixInfoSet('compatibility/ver', '5.45');
 
     $this->assertFileGlobs([
