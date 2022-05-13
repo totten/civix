@@ -39,7 +39,7 @@ class Info extends XML {
     $xml->addChild('releaseDate', date('Y-m-d'));
     $xml->addChild('version', '1.0');
     $xml->addChild('develStage', 'alpha');
-    $xml->addChild('compatibility')->addChild('ver', '5.0');
+    $xml->addChild('compatibility')->addChild('ver', $ctx['compatibilityVerMin'] ?? '5.0');
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
     // APIv4 will look for classes+files matching 'Civi/Api4', and
@@ -83,6 +83,8 @@ class Info extends XML {
     $ctx['angularModuleName'] = !empty($angularModule) ? $angularModule : $ctx['mainFile'];
     $items = $this->get()->xpath('civix/format');
     $ctx['civixFormat'] = (string) array_shift($items);
+    $ctx['compatibilityVerMin'] = $this->getCompatibilityVer('MIN');
+    $ctx['compatibilityVerMax'] = $this->getCompatibilityVer('MAX');
   }
 
   /**
@@ -135,6 +137,33 @@ class Info extends XML {
     }
     else {
       throw new \RuntimeException("Failed to lookup civix/namespace in info.xml");
+    }
+  }
+
+  /**
+   * Determine the target version of CiviCRM.
+   *
+   * @param string $mode
+   *   The `info.xml` file may list multiple `<ver>` tags, and we will only return one.
+   *   Either return the lowest-compatible `<ver>` ('MIN') or the highest-compatible `<ver>` ('MAX').
+   * @return string|null
+   */
+  public function getCompatibilityVer(string $mode = 'MIN'): ?string {
+    $vers = [];
+    foreach ($this->get()->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    usort($vers, 'version_compare');
+
+    switch ($mode) {
+      case 'MIN':
+        return $vers ? reset($vers) : NULL;
+
+      case 'MAX':
+        return $vers ? end($vers) : NULL;
+
+      default:
+        throw new \RuntimeException("getCompatilityVer($mode): Unrecognized mode");
     }
   }
 

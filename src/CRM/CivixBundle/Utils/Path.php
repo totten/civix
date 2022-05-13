@@ -8,6 +8,10 @@ class Path {
     $this->basedir = $basedir;
   }
 
+  public function __toString(): string {
+    return $this->basedir;
+  }
+
   /**
    * Determine the full path to a file underneath this path
    *

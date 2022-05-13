@@ -8,6 +8,10 @@
     ],
     "finder": [
         {
+            "name": "mixin-backports.php",
+            "in": "."
+        },
+        {
             "name": "*.php",
             "exclude": [
               "phpunit",

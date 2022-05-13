@@ -34,6 +34,7 @@ class NamingTest extends \PHPUnit\Framework\TestCase {
    */
   public function testCreateShortName($name, $expectValid, $expectShort, $expectCamel) {
     if (!$expectValid) {
+      $this->assertTrue(TRUE);
       return;
     }
     $this->assertEquals($expectShort, Naming::createShortName($name));
@@ -44,6 +45,7 @@ class NamingTest extends \PHPUnit\Framework\TestCase {
    */
   public function testCreateCamelName($name, $expectValid, $expectShort, $expectCamel) {
     if (!$expectValid) {
+      $this->assertTrue(TRUE);
       return;
     }
     $this->assertEquals($expectCamel, Naming::createCamelName($name));

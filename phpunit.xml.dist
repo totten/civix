@@ -10,8 +10,11 @@
          cacheResult="false"
 >
   <testsuites>
-    <testsuite name="Civix Test Suite">
+    <testsuite name="unit">
       <directory>./src/</directory>
+    </testsuite>
+    <testsuite name="e2e">
+      <directory>./tests/e2e/</directory>
     </testsuite>
   </testsuites>
 

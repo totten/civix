@@ -73,9 +73,10 @@ class UpgradeCommand extends AbstractCommand {
 
     $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
     $upgrader->cleanEmptyHooks();
+    $upgrader->reconcileMixins();
 
     /**
-     * @var Info $info
+     * @var \CRM\CivixBundle\Builder\Info $info
      */
     [$ctx, $info] = $this->loadCtxInfo();
     $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());

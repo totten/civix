@@ -314,6 +314,15 @@ class Upgrader {
     });
   }
 
+  /**
+   * Ensure that the `mixin/` folder is in-sync with the current 'info.xml'.
+   */
+  public function reconcileMixins(): void {
+    $this->updateMixins(function (\CRM\CivixBundle\Builder\Mixins $mixins) {
+      // noop
+    });
+  }
+
   public function addMixins(array $mixinConstraints): void {
     $msg = count($mixinConstraints) > 1 ? 'Enable mixins' : 'Enable mixin';
     $this->io->writeln("<info>$msg</info> " . implode(', ', $mixinConstraints));
