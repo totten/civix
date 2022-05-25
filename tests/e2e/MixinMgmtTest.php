@@ -43,6 +43,35 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     ]);
   }
 
+  public function testEnableAllDisableAll(): void {
+    $this->assertFileGlobs([
+      'mixin/polyfill.php' => 1,
+      'mixin/setting-php@1.*.*.mixin.php' => 1,
+    ]);
+
+    $enableAll = $this->civix('mixin');
+    $this->assertEquals(0, $enableAll->execute(['--enable-all' => TRUE]));
+
+    $this->assertFileGlobs([
+      'mixin/polyfill.php' => 1,
+      'mixin/setting-php@1.*.*.mixin.php' => 1,
+      'mixin/case-xml@1.*.*.mixin.php' => 1,
+      'mixin/menu-xml@1.*.*.mixin.php' => 1,
+      'mixin/mgd-php@1.*.*.mixin.php' => 1,
+    ]);
+
+    $disableAll = $this->civix('mixin');
+    $this->assertEquals(0, $disableAll->execute(['--disable-all' => TRUE]));
+
+    $this->assertFileGlobs([
+      'mixin/polyfill.php' => 1,
+      'mixin/setting-php@1.*.*.mixin.php' => 0,
+      'mixin/case-xml@1.*.*.mixin.php' => 0,
+      'mixin/menu-xml@1.*.*.mixin.php' => 0,
+      'mixin/mgd-php@1.*.*.mixin.php' => 0,
+    ]);
+  }
+
   public function testAddPageFor530(): void {
     $this->civixInfoSet('compatibility/ver', '5.30');
 

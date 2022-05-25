@@ -73,10 +73,13 @@ class MixinCommand extends AbstractCommand {
       $io = new SymfonyStyle($input, $output);
       $this->showList($io, $mixins);
     }
+
+    return 0;
   }
 
   protected function enableAll(InputInterface $input, OutputInterface $output, Mixins $mixins) {
-    foreach ($this->findAllMixins() as $spec) {
+    $all = $this->findAllMixins();
+    foreach ($all as $spec) {
       $mixins->addMixin($spec['mixinConstraint']);
     }
   }
@@ -102,6 +105,8 @@ class MixinCommand extends AbstractCommand {
 
   protected function showList(SymfonyStyle $io, Mixins $mixins) {
     $mixlib = Services::mixlib();
+    $mixinBackports = preg_grep(';@;', array_keys(Services::mixinBackports()));
+
     $toNameMajor = function($mixinConstraint) {
       [$mixinName, $mixinVersion] = explode('@', $mixinConstraint);
       return $mixinName . '@' . explode('.', $mixinVersion)[0];
@@ -109,7 +114,7 @@ class MixinCommand extends AbstractCommand {
 
     $nameMajors = array_unique(array_merge(
       array_map($toNameMajor, $mixins->getDeclaredMixinConstraints()),
-      array_map($toNameMajor, $mixlib->getList())
+      array_map($toNameMajor, $mixinBackports)
     ));
     sort($nameMajors);
 
@@ -125,8 +130,7 @@ class MixinCommand extends AbstractCommand {
       $data[$nameMajor]['constraint'] = $mixinVersion;
     }
 
-    $mixlib = Services::mixlib();
-    foreach ($mixlib->getList() as $availMixin) {
+    foreach ($mixinBackports as $availMixin) {
       $mixinInfo = $mixlib->get($availMixin);
       $nameMajor = $toNameMajor($mixinInfo['mixinConstraint']);
       $data[$nameMajor]['available'] = $mixinInfo['mixinVersion'];
@@ -154,9 +158,9 @@ class MixinCommand extends AbstractCommand {
   protected function findAllMixins(): iterable {
     yield from [];
     $mixlib = Services::mixlib();
-    $list = $mixlib->getList();
-    sort($list);
-    foreach ($list as $id) {
+    $mixinBackports = preg_grep(';@;', array_keys(Services::mixinBackports()));
+    sort($mixinBackports);
+    foreach ($mixinBackports as $id) {
       yield $mixlib->get($id);
     }
   }
