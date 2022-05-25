@@ -117,6 +117,16 @@ class Services {
   }
 
   /**
+   * @return array
+   */
+  public static function mixinBackports(): array {
+    if (!isset(self::$cache[__FUNCTION__])) {
+      self::$cache[__FUNCTION__] = require Application::findCivixDir() . '/mixin-backports.php';
+    }
+    return self::$cache[__FUNCTION__];
+  }
+
+  /**
    * @return \CRM\CivixBundle\UpgradeList
    */
   public static function upgradeList(): UpgradeList {

@@ -54,7 +54,7 @@ class Mixins implements Builder {
     $this->outputDir = $outputDir;
     $this->newConstraints = (array) $newConstraints;
     $this->removals = [];
-    $this->allBackports = require Application::findCivixDir() . '/mixin-backports.php';
+    $this->allBackports = Services::mixinBackports();
   }
 
   public function loadInit(&$ctx) {
