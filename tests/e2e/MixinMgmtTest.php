@@ -23,7 +23,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'mixin/setting-php@1.*.*.mixin.php' => 1,
       'mixin/case-xml@1.*.*.mixin.php' => 0,
       'mixin/menu-xml@1.*.*.mixin.php' => 0,
-      'mixin/mgd-php@1.*.*.mixin.php' => 0,
+      'mixin/mgd-php@1.*.*.mixin.php' => 1,
     ]);
   }
 
