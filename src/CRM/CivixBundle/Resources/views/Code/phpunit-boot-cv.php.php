@@ -9,7 +9,6 @@ eval(cv('php:boot --level=classloader', 'phpcode'));
 // phpcs:enable
 // Allow autoloading of PHPUnit helper classes in this extension.
 $loader = new \Composer\Autoload\ClassLoader();
-$loader = new \Composer\Autoload\ClassLoader();
 $loader->add('CRM_', [__DIR__ . '/../..', __DIR__]);
 $loader->addPsr4('Civi\\', [__DIR__ . '/../../Civi', __DIR__ . '/Civi']);
 $loader->add('api_', [__DIR__ . '/../..', __DIR__]);
