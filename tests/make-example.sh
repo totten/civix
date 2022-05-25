@@ -65,7 +65,6 @@ pushd $WORKINGDIR
     $CIVIX $VERBOSITY generate:report MyReport CiviContribute
     $CIVIX $VERBOSITY generate:search MySearch
     $CIVIX $VERBOSITY generate:test CRM_Civiexample_FooTest
-    $CIVIX $VERBOSITY generate:test --template=legacy CRM_Civiexample_LegacyTest
     $CIVIX $VERBOSITY generate:test --template=headless 'Civi\Civiexample\BarTest'
     $CIVIX $VERBOSITY generate:test --template=e2e 'Civi\Civiexample\EndTest'
     $CIVIX $VERBOSITY generate:test --template=phpunit 'Civi\CiviExample\PHPUnitTest'
@@ -83,7 +82,6 @@ pushd $WORKINGDIR
   ## Make sure the unit tests are runnable.
   pushd $EXMODULE
     phpunit5 ./tests/phpunit/CRM/Civiexample/FooTest.php
-    phpunit5 ./tests/phpunit/CRM/Civiexample/LegacyTest.php
     phpunit5 ./tests/phpunit/Civi/Civiexample/BarTest.php
     phpunit5 ./tests/phpunit/Civi/Civiexample/EndTest.php
     phpunit5 ./tests/phpunit/Civi/CiviExample/PHPUnitTest.php
