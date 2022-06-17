@@ -8,6 +8,11 @@
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
   $io = $upgrader->io;
 
+  if (!empty($upgrader->infoXml->get()->upgrader)) {
+    $io->note("Found <upgrader> tag. Skip hook_postInstall.");
+    return;
+  }
+
   // Give a notice if the new `CRM/*/Upgrader/Base` has a substantive change.
   // Note: The change is actually done in the generic regen. This is just a notice.
   $phpBaseClass = \CRM\CivixBundle\Utils\Naming::createClassName($upgrader->infoXml->getNamespace(), 'Upgrader', 'Base');
