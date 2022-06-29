@@ -10,6 +10,13 @@ return [
     'local' => 'extern/mixin/polyfill.php',
     'provided-by' => '5.45.beta1',
   ],
+  'afform-entity-php@1' => [
+    'version' => '1.0.0',
+    'sha256' => '1f737bc96e019dac459aade88206778cf141c59d322d5aa56c02ee4afb9eb649',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.50.0/mixin/afform-entity-php@1/mixin.php',
+    'local' => 'extern/mixin/afform-entity-php@1/mixin.php',
+    'provided-by' => '5.50.beta1',
+  ],
   'ang-php@1' => [
     'version' => '1.0.0',
     'sha256' => '7dc91fab620fc6ba74a5a00347a2d8f39846c97c8cf20cf4291a1002d3d9c245',
