@@ -38,6 +38,13 @@ return [
     'local' => 'extern/mixin/mgd-php@1/mixin.php',
     'provided-by' => '5.45.beta1',
   ],
+  'scan-classes@1' => [
+    'version' => '1.0.0',
+    'sha256' => '68b543079255d3d92773a5d75f5b033b3227b595337ece207f6dec865a54f0c4',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/4b0558d911bfcbd81e1f5199b0eb0c837c7c8205/mixin/scan-classes@1/mixin.php',
+    'local' => 'extern/mixin/scan-classes@1/mixin.php',
+    'provided-by' => '5.51.beta2',
+  ],
   'setting-php@1' => [
     'version' => '1.0.0',
     'sha256' => '5ce236c1a1a63637ce5f0f4fe5bf7f21eaa06c750ca16c0fbf4dd792da0d23c9',
