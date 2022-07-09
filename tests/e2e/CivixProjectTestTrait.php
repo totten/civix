@@ -98,6 +98,24 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
+  public function civixGenerateEntity(string $entity, array $options = []): CommandTester {
+    $tester = static::civix('generate:entity');
+    $tester->execute(['<EntityName>' => $entity] + $options);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to generate entity (%s)", static::getKey()));
+    }
+    return $tester;
+  }
+
+  public function civixGenerateEntityBoilerplate(): CommandTester {
+    $tester = static::civix('generate:entity-boilerplate');
+    $tester->execute([]);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to generate entity boilerplate (%s)", static::getKey()));
+    }
+    return $tester;
+  }
+
   /**
    * Update the "info.xml" by calling "civix info:set"
    *
