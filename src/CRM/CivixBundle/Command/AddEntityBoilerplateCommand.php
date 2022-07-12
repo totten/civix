@@ -152,21 +152,31 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
   private function orderTables(&$tables) {
 
     $ordered = [];
+    $abort = count($tables);
 
     while (count($tables)) {
+      // Safety valve
+      if ($abort-- == 0) {
+        $output->writeln("<error>Cannot determine FK ordering of tables.</error>  Do you have circular Foreign Keys?  Change your FK's or fix your auto_install.sql");
+        break;
+      }
+      // Consider each table
       foreach ($tables as $k => $table) {
+        // No FK's? Easy - add now
         if (!isset($table['foreignKey'])) {
           $ordered[$k] = $table;
           unset($tables[$k]);
         }
         if (isset($table['foreignKey'])) {
+          // If any FK references a table still in our list, skip this table for now
           foreach ($table['foreignKey'] as $fKey) {
             if (in_array($fKey['table'], array_keys($tables))) {
-              continue;
+              continue 2;
             }
-            $ordered[$k] = $table;
-            unset($tables[$k]);
           }
+          // If we get here, all FK's reference already added tables or external tables so add now
+          $ordered[$k] = $table;
+          unset($tables[$k]);
         }
       }
     }
