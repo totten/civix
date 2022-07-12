@@ -17,6 +17,7 @@ class PhpUnitXML extends XML {
     $xml->addAttribute('convertErrorsToExceptions', 'true');
     $xml->addAttribute('convertNoticesToExceptions', 'true');
     $xml->addAttribute('convertWarningsToExceptions', 'true');
+    $xml->addAttribute('convertDeprecationsToExceptions', 'true');
     $xml->addAttribute('processIsolation', 'false');
     $xml->addAttribute('stopOnFailure', 'false');
     $xml->addAttribute('cacheResult', 'false');
