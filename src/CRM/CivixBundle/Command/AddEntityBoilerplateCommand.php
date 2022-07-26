@@ -71,8 +71,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
     $config = new \stdClass();
     $config->phpCodePath = $basedir->string('');
     $config->sqlCodePath = $basedir->string('sql/');
-
-    $database['tableAttributes_modern'] = 'ENGINE=InnoDB';
+    $config->database = $this->getDefaultDatabase();
 
     foreach ($xmlSchemas as $xmlSchema) {
       $dom = new \DomDocument();
@@ -83,7 +82,8 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
         $output->writeln('<error>There is an error in the XML for ' . $xmlSchema . '</error>');
         continue;
       }
-      $specification->getTable($xml, $database, $tables);
+      /** @var array $tables */
+      $specification->getTable($xml, $config->database, $tables);
       $name = (string) $xml->name;
       $tables[$name]['name'] = $name;
       $sourcePath = strstr($xmlSchema, "/xml/schema/{$ctx['namespace']}/");
@@ -200,6 +200,30 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
         }
       }
     }
+  }
+
+  /**
+   * Get general/default database options (eg character set, collation).
+   *
+   * In civicrm-core, the `database` definition comes from
+   * `xml/schema/Schema.xml` and `$spec->getDatabase($dbXml)`.
+   *
+   * Civix uses different defaults. Explanations are inlined below.
+   *
+   * @return array
+   */
+  private function getDefaultDatabase(): array {
+    return [
+      'name' => '',
+      'attributes' => '',
+      'tableAttributes_modern' => 'ENGINE=InnoDB',
+      'tableAttributes_simple' => 'ENGINE=InnoDB',
+      // ^^ Set very limited defaults.
+      // Existing deployments may be inconsistent with respect to charsets and collations, and
+      // it's hard to attune with static code. This represents a compromise (until we can
+      // rework the process in a way that clearly addresses the inconsistencies among deployments).
+      'comment' => '',
+    ];
   }
 
 }
