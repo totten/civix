@@ -61,7 +61,9 @@ class UpgradeList {
     $iter = new \DirectoryIterator(Application::findCivixDir() . '/upgrades');
     foreach ($iter as $file) {
       /** @var \SplFileInfo $file */
-      $upgrades[$parseVer($file->getBasename())] = $file->getPathname();
+      if (preg_match(';\.up\.php$;', $file->getBasename())) {
+        $upgrades[$parseVer($file->getBasename())] = $file->getPathname();
+      }
     }
 
     uksort($upgrades, 'version_compare');
