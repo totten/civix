@@ -9,6 +9,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/polyfill.php',
     'local' => 'extern/mixin/polyfill.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'afform-entity-php@1' => [
     'version' => '1.0.0',
@@ -16,6 +17,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.50.0/mixin/afform-entity-php@1/mixin.php',
     'local' => 'extern/mixin/afform-entity-php@1/mixin.php',
     'provided-by' => '5.50.beta1',
+    'minimum' => '5.31', /* See #246. Scanner introduced as global (5.31) then became optional (5.50 mixin). Mixin should be enabled for 5.50 compat, but it's a technical nullop on 5.31. */
   ],
   'ang-php@1' => [
     'version' => '1.0.0',
@@ -23,6 +25,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/ang-php@1/mixin.php',
     'local' => 'extern/mixin/ang-php@1/mixin.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'case-xml@1' => [
     'version' => '1.0.0',
@@ -30,6 +33,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/case-xml@1/mixin.php',
     'local' => 'extern/mixin/case-xml@1/mixin.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'menu-xml@1' => [
     'version' => '1.0.0',
@@ -37,6 +41,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/menu-xml@1/mixin.php',
     'local' => 'extern/mixin/menu-xml@1/mixin.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'mgd-php@1' => [
     'version' => '1.0.0',
@@ -44,13 +49,16 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/mgd-php@1/mixin.php',
     'local' => 'extern/mixin/mgd-php@1/mixin.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'scan-classes@1' => [
+    // scan-calsses is not meaningful to backport, but tracking metadata helps with admin.
     'version' => '1.0.0',
     'sha256' => '68b543079255d3d92773a5d75f5b033b3227b595337ece207f6dec865a54f0c4',
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/4b0558d911bfcbd81e1f5199b0eb0c837c7c8205/mixin/scan-classes@1/mixin.php',
     'local' => 'extern/mixin/scan-classes@1/mixin.php',
     'provided-by' => '5.51.beta2',
+    'minimum' => '5.51', /* No point in deploying no systems that lack civicrm-core:693067e365915ce280217047009c9e87d70d0719 */
   ],
   'setting-php@1' => [
     'version' => '1.0.0',
@@ -58,6 +66,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/setting-php@1/mixin.php',
     'local' => 'extern/mixin/setting-php@1/mixin.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'theme-php@1' => [
     'version' => '1.0.0',
@@ -65,5 +74,6 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/theme-php@1/mixin.php',
     'local' => 'extern/mixin/theme-php@1/mixin.php',
     'provided-by' => '5.45.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
 ];
