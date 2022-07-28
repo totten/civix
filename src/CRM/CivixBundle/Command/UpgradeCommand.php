@@ -1,12 +1,12 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Upgrader;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -17,11 +17,32 @@ class UpgradeCommand extends AbstractCommand {
     Services::templating();
     $this
       ->setName('upgrade')
-      ->setDescription('Apply upgrades to the layout of the codebase');
+      ->setDescription('Apply upgrades to the layout of the codebase')
+      ->addOption('start', NULL, InputOption::VALUE_REQUIRED, 'Replay the upgrade steps, starting from an older version', 'current')
+      ->setHelp('
+This command applies incremental upgrade steps, starting from the declared version
+(info.xml\'s <civix><format>...</format></civix>) and proceeding to the current.
+
+In some edge-cases (eg merging code-branches from different versions), you may find
+it useful to replay upgrade steps. For example:
+
+  civix upgrade --start=0
+  civix upgrade --start=13.10.0
+  civix upgrade --start=22.05.0
+
+Most upgrade steps should be safe to re-run repeatedly, but this is not guaranteed.
+');
     parent::configure();
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $startVer = $input->getOption('start');
+    if ($startVer !== 'current') {
+      $verAliases = ['0' => '13.10.0'];
+      $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $upgrader->updateFormatVersion($verAliases[$startVer] ?? $startVer);
+    }
+
     $this->executeIncrementalUpgrades($input, $output);
     $this->executeGenericUpgrade($input, $output);
     return 0;
