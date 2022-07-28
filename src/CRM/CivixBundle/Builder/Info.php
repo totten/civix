@@ -167,4 +167,23 @@ class Info extends XML {
     }
   }
 
+  /**
+   * Determine the civix-format version of this extension.
+   *
+   * If the value isn't explicitly available, inspect some related fields to make an
+   * educated  guess.
+   *
+   * @return string
+   */
+  public function detectFormat(): string {
+    $items = $this->get()->xpath('civix/format');
+    $explicit = (string) array_shift($items);
+    if ($explicit) {
+      return $explicit;
+    }
+
+    $mixins = $this->get()->xpath('mixins');
+    return empty($mixins) ? '13.10.0' : '22.05.0';
+  }
+
 }
