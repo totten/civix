@@ -92,6 +92,16 @@ class Upgrader {
   }
 
   /**
+   * @param string $newVersion
+   */
+  public function updateFormatVersion(string $newVersion) {
+    $this->updateInfo(function (Info $info) use ($newVersion) {
+      $this->io->writeln("<info>Set civix format to </info>$newVersion<info> in </info>info.xml");
+      $info->get()->civix->format = $newVersion;
+    });
+  }
+
+  /**
    * Apply a filter to the "Mixins" list.
    *
    * @param callable $function

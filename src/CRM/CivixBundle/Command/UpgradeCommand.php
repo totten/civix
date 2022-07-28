@@ -56,11 +56,7 @@ class UpgradeCommand extends AbstractCommand {
       $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
       $func = require $upgradeFile;
       $func($upgrader);
-
-      $upgrader->updateInfo(function (Info $info) use ($upgradeVersion, $io) {
-        $io->writeln("<info>Set civix format to </info>$upgradeVersion<info> in </info>info.xml");
-        $info->get()->civix->format = $upgradeVersion;
-      });
+      $upgrader->updateFormatVersion($upgradeVersion);
       $lastVersion = $upgradeVersion;
     }
   }
