@@ -29,6 +29,8 @@ class AddReportCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $this->assertCurrentFormat();
+
     //// Figure out template data and put it in $ctx ////
     $ctx = [];
     $ctx['type'] = 'module';

@@ -17,6 +17,8 @@ class BuildCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $this->assertCurrentFormat();
+
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();

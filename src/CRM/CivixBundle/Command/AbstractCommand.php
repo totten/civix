@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Info;
+use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,6 +38,15 @@ abstract class AbstractCommand extends Command {
       throw new \RuntimeException('Wrong extension type: ' . $attrs['type']);
     }
     return $info;
+  }
+
+  protected function assertCurrentFormat() {
+    $info = $this->getModuleInfo($ctx);
+    $actualVersion = $info->detectFormat();
+    $expectedVersion = Services::upgradeList()->getHeadVersion();
+    if (version_compare($actualVersion, $expectedVersion, '<')) {
+      throw new \Exception("This extension requires an upgrade for the file-format (current=$actualVersion; expected=$expectedVersion). Please run 'civix upgrade' before generating code.");
+    }
   }
 
 }

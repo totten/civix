@@ -34,6 +34,8 @@ $ civix generate:theme foobar
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $this->assertCurrentFormat();
+
     //// Figure out template data ////
     $ctx = [];
     $ctx['type'] = 'module';

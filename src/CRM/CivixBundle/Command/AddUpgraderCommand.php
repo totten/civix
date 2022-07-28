@@ -20,6 +20,8 @@ class AddUpgraderCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $this->assertCurrentFormat();
+
     // TODO validate that hook_civicrm_upgrade has been implemented
 
     $ctx = [];

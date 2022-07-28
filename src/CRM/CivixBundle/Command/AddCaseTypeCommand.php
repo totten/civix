@@ -30,6 +30,8 @@ class AddCaseTypeCommand extends AbstractCommand {
       return;
     }
 
+    $this->assertCurrentFormat();
+
     if (!preg_match('/^[A-Z][A-Za-z0-9_ \.\-]*$/', $input->getArgument('<Label>'))) {
       throw new Exception("Label should be valid");
     }
