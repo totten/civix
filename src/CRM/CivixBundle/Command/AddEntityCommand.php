@@ -48,6 +48,8 @@ explicity.');
       return;
     }
 
+    $this->assertCurrentFormat();
+
     $apiVersions = explode(',', $input->getOption('api-version'));
     if (!empty(array_diff($apiVersions, ['3', '4']))) {
       throw new Exception("In --api-versions, found unrecognized versions. Expected: '3' and/or '4'");

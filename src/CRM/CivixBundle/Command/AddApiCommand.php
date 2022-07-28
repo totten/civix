@@ -57,6 +57,8 @@ action names.
       return;
     }
 
+    $this->assertCurrentFormat();
+
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();

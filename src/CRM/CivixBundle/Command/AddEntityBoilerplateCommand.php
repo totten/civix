@@ -45,6 +45,8 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       return 1;
     }
 
+    $this->assertCurrentFormat();
+
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();

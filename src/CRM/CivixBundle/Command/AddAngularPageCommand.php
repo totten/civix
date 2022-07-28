@@ -38,6 +38,8 @@ For more, see https://docs.angularjs.org/guide');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $this->assertCurrentFormat();
+
     //// Figure out template data ////
     $ctx = [];
     $ctx['type'] = 'module';

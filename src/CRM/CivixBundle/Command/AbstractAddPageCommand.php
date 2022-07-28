@@ -28,6 +28,8 @@ abstract class AbstractAddPageCommand extends AbstractCommand {
       throw new Exception("Class name should be valid (alphanumeric beginning with uppercase)");
     }
 
+    $this->assertCurrentFormat();
+
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
