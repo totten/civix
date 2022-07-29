@@ -74,11 +74,8 @@ explicity.');
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
     $ctx['tableName'] = $input->getOption('table-name') ? $input->getOption('table-name') : Naming::createTableName($input->getArgument('<EntityName>'));
-    if (function_exists('civicrm_api_get_function_name')) {
-      $ctx['apiFunctionPrefix'] = strtolower(civicrm_api_get_function_name($ctx['entityNameCamel'], '', self::API_VERSION));
-    }
-    elseif (function_exists('_civicrm_api_get_entity_name_from_camel')) {
-      $ctx['apiFunctionPrefix'] = 'civicrm_api' . self::API_VERSION . '_' . _civicrm_api_get_entity_name_from_camel($ctx['entityNameCamel']) . '_' . $ctx['actionNameCamel'];
+    if (function_exists('_civicrm_api_get_entity_name_from_camel')) {
+      $ctx['apiFunctionPrefix'] = 'civicrm_api' . self::API_VERSION . '_' . _civicrm_api_get_entity_name_from_camel($ctx['entityNameCamel']) . '_';
     }
     else {
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");

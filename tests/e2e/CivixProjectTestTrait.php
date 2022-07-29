@@ -4,6 +4,7 @@ namespace E2E;
 
 use CRM\CivixBundle\Application;
 use CRM\CivixBundle\Upgrader;
+use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
 use ProcessHelper\ProcessHelper as PH;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -134,6 +135,26 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
+  /**
+   * Run the 'upgrade' command (non-interactively; all default choices).
+   *
+   * @param array $options
+   * @return \Symfony\Component\Console\Tester\CommandTester
+   */
+  public function civixUpgrade(array $options = []): CommandTester {
+    $tester = static::civix('upgrade');
+    $tester->execute($options);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to run upgrade (%s)", static::getKey()));
+    }
+    return $tester;
+  }
+
+  /**
+   * Get the upgrade-utility/helper.
+   *
+   * @return \CRM\CivixBundle\Upgrader
+   */
   public function civixUpgradeHelper(): Upgrader {
     $input = new ArrayInput([]);
     $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
@@ -168,6 +189,39 @@ trait CivixProjectTestTrait {
       }
     }
     $this->assertEquals([], $errors);
+  }
+
+  /**
+   * Get a snapshot of all files from the extension.
+   *
+   * Note: There is an intnernal whitelist of supported file-extensions (*.php, *.xml, *.js, *.css, etc).
+   *
+   * @return array
+   *   List of files and their contents.
+   *   Ex: ['info.xml' => '<extension key="foo.bar">...</extension>']
+   * @throws \Exception
+   */
+  protected function getExtSnapshot(): array {
+    $snapshot = [];
+    $extPath = static::getExtPath();
+    $files = array_merge(
+      Files::findFiles($extPath, '*.css'),
+      Files::findFiles($extPath, '*.html'),
+      Files::findFiles($extPath, '*.js'),
+      Files::findFiles($extPath, '*.md'),
+      Files::findFiles($extPath, '*.php'),
+      Files::findFiles($extPath, '*.tpl'),
+      Files::findFiles($extPath, '*.txt'),
+      Files::findFiles($extPath, '*.xml')
+    );
+    foreach ($files as $file) {
+      $snapshot[Files::relativize($file, "$extPath/")] = file_get_contents($file);
+    }
+    ksort($snapshot);
+    if (!isset($snapshot['info.xml']) || count($snapshot) < 2) {
+      throw new \Exception("Error reading extension snapshot. The snapshot is missing basic data or has inconsistent filenames.");
+    }
+    return $snapshot;
   }
 
 }
