@@ -123,7 +123,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   //       2 => $endId,
   //     ));
   //     $sql = '
-  //       UPDATE civicrm_contribution SET foobar = whiz(wonky()+wanker)
+  //       UPDATE civicrm_contribution SET foobar = apple(banana()+durian)
   //       WHERE id BETWEEN %1 and %2
   //     ';
   //     $params = array(
