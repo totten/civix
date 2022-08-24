@@ -52,6 +52,8 @@ class AddEntityTest extends \PHPUnit\Framework\TestCase {
     $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Bread.xml'), 'flour', 'civicrm_flour');
     $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Sandwich.xml'), 'bread', 'civicrm_bread');
     $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Meal.xml'), 'sandwich', 'civicrm_sandwich');
+    // add FK referencing its own table
+    $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Meal.xml'), 'next_meal', 'civicrm_meal');
     $this->civixGenerateEntityBoilerplate();
 
     $this->assertFileGlobs([
