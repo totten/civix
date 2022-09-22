@@ -2,7 +2,9 @@
 echo "<?php\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+// phpcs:disable
 use <?php echo $_namespace ?>_ExtensionUtil as E;
+// phpcs:enable
 
 class <?php echo $baoClassName ?> extends <?php echo $daoClassName ?> {
 
@@ -11,7 +13,8 @@ class <?php echo $baoClassName ?> extends <?php echo $daoClassName ?> {
    *
    * @param array $params key-value pairs
    * @return <?php echo $daoClassName ?>|NULL
-   *
+   */
+  /*
   public static function create($params) {
     $className = '<?php echo $daoClassName ?>';
     $entityName = '<?php echo $entityNameCamel ?>';
@@ -24,6 +27,7 @@ class <?php echo $baoClassName ?> extends <?php echo $daoClassName ?> {
     CRM_Utils_Hook::post($hook, $entityName, $instance->id, $instance);
 
     return $instance;
-  } */
+  }
+  */
 
 }

@@ -20,7 +20,7 @@ class <?php echo $testApi3ClassName ?> extends \PHPUnit\Framework\TestCase imple
    *
    * See: https://docs.civicrm.org/dev/en/latest/testing/phpunit/#civitest
    */
-  public function setUpHeadless() {
+  public function setUpHeadless(): CiviEnvBuilder {
     return \Civi\Test::headless()
       ->installMe(__DIR__)
       ->apply();

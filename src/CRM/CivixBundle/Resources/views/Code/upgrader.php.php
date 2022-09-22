@@ -2,7 +2,9 @@
 echo "<?php\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+// phpcs:disable
 use <?php echo $_namespace ?>_ExtensionUtil as E;
+// phpcs:enable
 
 /**
  * Collection of upgrade steps.
@@ -15,8 +17,10 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   /**
    * Example: Run an external SQL script when the module is installed.
    *
-  public function install() {
-    $this->executeSqlFile('sql/myinstall.sql');
+   * Note that if a file is present sql\auto_install that will run regardless of this hook.
+   */
+  public function install(): void {
+    //$this->executeSqlFile('sql/my_install.sql');
   }
 
   /**
@@ -27,7 +31,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * created during the installation (e.g., a setting or a managed entity), do
    * so here to avoid order of operation problems.
    */
-  // public function postInstall() {
+  // public function postInstall(): void {
   //  $customFieldId = civicrm_api3('CustomField', 'getvalue', array(
   //    'return' => array("id"),
   //    'name' => "customFieldCreatedViaManagedHook",
@@ -39,22 +43,24 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
 
   /**
    * Example: Run an external SQL script when the module is uninstalled.
+   *
+   * Note that if a file is present sql\auto_uninstall that will run regardless of this hook.
    */
-  // public function uninstall() {
-  //  $this->executeSqlFile('sql/myuninstall.sql');
-  // }
+  public function uninstall(): void {
+    //$this->executeSqlFile('sql/my_uninstall.sql');
+  }
 
   /**
    * Example: Run a simple query when a module is enabled.
    */
-  // public function enable() {
+  // public function enable(): void {
   //  CRM_Core_DAO::executeQuery('UPDATE foo SET is_active = 1 WHERE bar = "whiz"');
   // }
 
   /**
    * Example: Run a simple query when a module is disabled.
    */
-  // public function disable() {
+  // public function disable(): void {
   //   CRM_Core_DAO::executeQuery('UPDATE foo SET is_active = 0 WHERE bar = "whiz"');
   // }
 
@@ -62,7 +68,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * Example: Run a couple simple queries.
    *
    * @return TRUE on success
-   * @throws Exception
+   * @throws CRM_Core_Exception
    */
   // public function upgrade_4200(): bool {
   //   $this->ctx->log->info('Applying update 4200');
@@ -76,7 +82,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * Example: Run an external SQL script.
    *
    * @return TRUE on success
-   * @throws Exception
+   * @throws CRM_Core_Exception
    */
   // public function upgrade_4201(): bool {
   //   $this->ctx->log->info('Applying update 4201');
@@ -90,7 +96,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * Example: Run a slow upgrade process by breaking it up into smaller chunk.
    *
    * @return TRUE on success
-   * @throws Exception
+   * @throws CRM_Core_Exception
    */
   // public function upgrade_4202(): bool {
   //   $this->ctx->log->info('Planning update 4202'); // PEAR Log interface
@@ -109,7 +115,7 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    * millions) of records by breaking it up into smaller chunks.
    *
    * @return TRUE on success
-   * @throws Exception
+   * @throws CRM_Core_Exception
    */
   // public function upgrade_4203(): bool {
   //   $this->ctx->log->info('Planning update 4203'); // PEAR Log interface

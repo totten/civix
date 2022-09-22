@@ -97,7 +97,7 @@ class <?php echo $_namespace ?>_Upgrader_Base {
    *   the CustomData XML file path (relative to this extension's dir)
    * @return bool
    */
-  public function executeCustomDataFile($relativePath) {
+  public function executeCustomDataFile($relativePath): bool {
     $xml_file = $this->extensionDir . '/' . $relativePath;
     return $this->executeCustomDataFileByAbsPath($xml_file);
   }
