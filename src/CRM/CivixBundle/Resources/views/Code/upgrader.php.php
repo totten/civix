@@ -19,9 +19,9 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    *
    * Note that if a file is present sql\auto_install that will run regardless of this hook.
    */
-  public function install(): void {
-    //$this->executeSqlFile('sql/my_install.sql');
-  }
+  // public function install(): void {
+  //   $this->executeSqlFile('sql/my_install.sql');
+  // }
 
   /**
    * Example: Work with entities usually not available during the install step.
@@ -46,9 +46,9 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
    *
    * Note that if a file is present sql\auto_uninstall that will run regardless of this hook.
    */
-  public function uninstall(): void {
-    //$this->executeSqlFile('sql/my_uninstall.sql');
-  }
+  // public function uninstall(): void {
+  //   $this->executeSqlFile('sql/my_uninstall.sql');
+  // }
 
   /**
    * Example: Run a simple query when a module is enabled.
@@ -77,7 +77,6 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   //   return TRUE;
   // }
 
-
   /**
    * Example: Run an external SQL script.
    *
@@ -90,7 +89,6 @@ class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgra
   //   $this->executeSqlFile('sql/upgrade_4201.sql');
   //   return TRUE;
   // }
-
 
   /**
    * Example: Run a slow upgrade process by breaking it up into smaller chunk.
