@@ -2,6 +2,7 @@
 echo "<?php\n";
 ?>
 
+use Civi\Test\CiviEnvBuilder;
 use Civi\Test\HeadlessInterface;
 use Civi\Test\HookInterface;
 use Civi\Test\TransactionalInterface;
