@@ -8,10 +8,10 @@ $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
 use <?php echo $_namespace ?>_ExtensionUtil as E;
+use Civi\Test\CiviEnvBuilder;
 use Civi\Test\HeadlessInterface;
 use Civi\Test\HookInterface;
 use Civi\Test\TransactionalInterface;
-use Civi\Test\CiviEnvBuilder;
 
 /**
  * FIXME - Add test description.
