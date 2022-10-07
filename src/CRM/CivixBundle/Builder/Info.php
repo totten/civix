@@ -47,9 +47,14 @@ class Info extends XML {
     // classes for this ext should be 'Civi\MyExt', so this is the
     // simplest default.
     $classloader = $xml->addChild('classloader');
-    $classloaderRule = $classloader->addChild('psr4');
-    $classloaderRule->addAttribute('prefix', 'Civi\\');
-    $classloaderRule->addAttribute('path', 'Civi');
+
+    $crmClassloaderRule = $classloader->addChild('psr0');
+    $crmClassloaderRule->addAttribute('prefix', 'CRM_');
+    $crmClassloaderRule->addAttribute('path', '.');
+
+    $civiClassloaderRule = $classloader->addChild('psr4');
+    $civiClassloaderRule->addAttribute('prefix', 'Civi\\');
+    $civiClassloaderRule->addAttribute('path', 'Civi');
 
     // store extra metadata to facilitate code manipulation
     $civix = $xml->addChild('civix');
@@ -185,6 +190,47 @@ class Info extends XML {
 
     $mixins = $this->get()->xpath('mixins');
     return empty($mixins) ? '13.10.0' : '22.05.0';
+  }
+
+  public function getClassloaders(): array {
+    $loaders = [];
+
+    foreach (['psr0', 'psr4'] as $type) {
+      $items = $this->get()->xpath("classloader/$type");
+      foreach ($items as $item) {
+        $attrs = $item->attributes();
+        $loaders[] = [
+          'type' => $type,
+          'prefix' => (string) $attrs['prefix'],
+          'path' => (string) $attrs['path'],
+        ];
+      }
+    }
+    return $loaders;
+  }
+
+  /**
+   * @param array $loaders
+   *   Ex: [['type' => 'psr4', 'prefix' => 'Civi\Foobar\', 'path' => 'src']]
+   */
+  public function setClassLoaders(array $loaders): void {
+    foreach ($this->xml->xpath('classloader/*') as $child) {
+      unset($child[0]);
+    }
+
+    $classloader = $this->findCreateElement($this->xml, 'classloader');
+    foreach ($loaders as $loader) {
+      $rule = $classloader->addChild($loader['type']);
+      $rule->addAttribute('prefix', $loader['prefix']);
+      $rule->addAttribute('path', $loader['path']);
+    }
+  }
+
+  private function findCreateElement(SimpleXMLElement $base, string $tag): SimpleXMLElement {
+    foreach ($base->xpath($tag) as $existingClassloader) {
+      return $existingClassloader;
+    }
+    return $base->addChild($tag);
   }
 
 }
