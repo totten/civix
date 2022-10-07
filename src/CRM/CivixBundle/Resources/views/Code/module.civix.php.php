@@ -154,7 +154,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_postInstall() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
  */
-function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
+function _<?php echo $mainFile ?>_civix_civicrm_uninstall(): void {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     $upgrader->onUninstall();
@@ -166,7 +166,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_uninstall() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
-function _<?php echo $mainFile ?>_civix_civicrm_enable() {
+function _<?php echo $mainFile ?>_civix_civicrm_enable(): void {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     if (is_callable([$upgrader, 'onEnable'])) {
@@ -182,7 +182,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_enable() {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
  * @return mixed
  */
-function _<?php echo $mainFile ?>_civix_civicrm_disable() {
+function _<?php echo $mainFile ?>_civix_civicrm_disable(): void {
   _<?php echo $mainFile ?>_civix_civicrm_config();
   if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
     if (is_callable([$upgrader, 'onDisable'])) {
