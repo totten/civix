@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Services;
+use LicenseData\Repository;
 use SimpleXMLElement;
 
 /**
@@ -15,7 +16,7 @@ class Info extends XML {
     $xml->addAttribute('type', $ctx['type']);
     // $xml->addChild('downloadUrl', 'http://FIXME/' . $ctx['fullName'] . '.zip');
     $xml->addChild('file', $ctx['mainFile']);
-    $xml->addChild('name', 'FIXME');
+    $xml->addChild('name', $ctx['fullName']);
     $xml->addChild('description', 'FIXME');
     // urls
     $xml->addChild('license', isset($ctx['license']) ? $ctx['license'] : 'FIXME');
@@ -28,7 +29,7 @@ class Info extends XML {
     $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Documentation');
     $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Support');
 
-    $licenses = new \LicenseData\Repository();
+    $licenses = new Repository();
     if (isset($ctx['license']) && $license = $licenses->get($ctx['license'])) {
       $urls->addChild('url', $license->getUrl())->addAttribute('desc', 'Licensing');
     }
