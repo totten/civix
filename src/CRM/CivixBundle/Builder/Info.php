@@ -50,7 +50,7 @@ class Info extends XML {
 
     $crmClassloaderRule = $classloader->addChild('psr0');
     $crmClassloaderRule->addAttribute('prefix', 'CRM_');
-    $crmClassloaderRule->addAttribute('path', '');
+    $crmClassloaderRule->addAttribute('path', '.');
 
     $civiClassloaderRule = $classloader->addChild('psr4');
     $civiClassloaderRule->addAttribute('prefix', 'Civi\\');
