@@ -187,4 +187,45 @@ class Info extends XML {
     return empty($mixins) ? '13.10.0' : '22.05.0';
   }
 
+  public function getClassloaders(): array {
+    $loaders = [];
+
+    foreach (['psr0', 'psr4'] as $type) {
+      $items = $this->get()->xpath("classloader/$type");
+      foreach ($items as $item) {
+        $attrs = $item->attributes();
+        $loaders[] = [
+          'type' => $type,
+          'prefix' => (string) $attrs['prefix'],
+          'path' => (string) $attrs['path'],
+        ];
+      }
+    }
+    return $loaders;
+  }
+
+  /**
+   * @param array $loaders
+   *   Ex: [['type' => 'psr4', 'prefix' => 'Civi\Foobar\', 'path' => 'src']]
+   */
+  public function setClassLoaders(array $loaders): void {
+    foreach ($this->xml->xpath('classloader/*') as $child) {
+      unset($child[0]);
+    }
+
+    $classloader = $this->findCreateElement($this->xml, 'classloader');
+    foreach ($loaders as $loader) {
+      $rule = $classloader->addChild($loader['type']);
+      $rule->addAttribute('prefix', $loader['prefix']);
+      $rule->addAttribute('path', $loader['path']);
+    }
+  }
+
+  private function findCreateElement(SimpleXMLElement $base, string $tag): SimpleXMLElement {
+    foreach ($base->xpath($tag) as $existingClassloader) {
+      return $existingClassloader;
+    }
+    return $base->addChild($tag);
+  }
+
 }
