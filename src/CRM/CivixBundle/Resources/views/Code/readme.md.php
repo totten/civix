@@ -9,7 +9,7 @@ The extension is licensed under [<?php echo $license ?>](LICENSE.txt).
 
 ## Requirements
 
-* PHP v7.2+
+* PHP v7.4+
 * CiviCRM (*FIXME: Version number*)
 
 ## Installation (Web UI)
@@ -25,6 +25,11 @@ install it with the command-line tool [cv](https://github.com/civicrm/cv).
 cd <extension-dir>
 cv dl <?php echo $fullName; ?>@https://github.com/FIXME/<?php echo $fullName; ?>/archive/master.zip
 ```
+or
+```bash
+cd <extension-dir>
+cv dl <?php echo $fullName; ?>@https://lab.civicrm.org/extensions/<?php echo $fullName; ?>/-/archive/main/<?php echo $fullName; ?>-main.zip
+```
 
 ## Installation (CLI, Git)
 
@@ -33,6 +38,11 @@ install it with the command-line tool [cv](https://github.com/civicrm/cv).
 
 ```bash
 git clone https://github.com/FIXME/<?php echo $fullName; ?>.git
+cv en <?php echo $mainFile . "\n"; ?>
+```
+or
+```bash
+git clone https://lab.civicrm.org/extensions/<?php echo $fullName; ?>.git
 cv en <?php echo $mainFile . "\n"; ?>
 ```
 
