@@ -47,9 +47,14 @@ class Info extends XML {
     // classes for this ext should be 'Civi\MyExt', so this is the
     // simplest default.
     $classloader = $xml->addChild('classloader');
-    $classloaderRule = $classloader->addChild('psr4');
-    $classloaderRule->addAttribute('prefix', 'Civi\\');
-    $classloaderRule->addAttribute('path', 'Civi');
+
+    $crmClassloaderRule = $classloader->addChild('psr0');
+    $crmClassloaderRule->addAttribute('prefix', 'CRM_');
+    $crmClassloaderRule->addAttribute('path', '');
+
+    $civiClassloaderRule = $classloader->addChild('psr4');
+    $civiClassloaderRule->addAttribute('prefix', 'Civi\\');
+    $civiClassloaderRule->addAttribute('path', 'Civi');
 
     // store extra metadata to facilitate code manipulation
     $civix = $xml->addChild('civix');
