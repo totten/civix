@@ -94,7 +94,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
 
     $config->tables = $tables;
     $_namespace = ' ' . preg_replace(':/:', '_', $ctx['namespace']);
-    $this->orderTables($tables);
+    $this->orderTables($tables, $output);
     $this->resolveForeignKeys($tables);
     $config->tables = $tables;
 
@@ -151,7 +151,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
 
   }
 
-  private function orderTables(&$tables) {
+  private function orderTables(&$tables, $output) {
 
     $ordered = [];
     $abort = count($tables);
@@ -170,9 +170,10 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
           unset($tables[$k]);
         }
         if (isset($table['foreignKey'])) {
-          // If any FK references a table still in our list, skip this table for now
+          // If any FK references a table still in our list (but is not a self-reference),
+          // skip this table for now
           foreach ($table['foreignKey'] as $fKey) {
-            if (in_array($fKey['table'], array_keys($tables))) {
+            if (in_array($fKey['table'], array_keys($tables)) && $fKey['table'] != $table['name']) {
               continue 2;
             }
           }
