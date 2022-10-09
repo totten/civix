@@ -11,8 +11,8 @@ function absdirname() {
 PRJDIR=$(absdirname "$0")
 set -ex
 
-BOX_VERSION=3.8.4
-BOX_URL="https://github.com/humbug/box/releases/download/${BOX_VERSION}/box.phar"
+BOX_VERSION=3.16.0
+BOX_URL="https://github.com/box-project/box/releases/download/${BOX_VERSION}/box.phar"
 BOX_DIR="$PRJDIR/extern/box-$BOX_VERSION"
 BOX_BIN="$BOX_DIR/box"
 [ ! -f "$BOX_BIN" ] && ( mkdir -p "$BOX_DIR" ; curl -L "$BOX_URL" -o "$BOX_BIN" )
