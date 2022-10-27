@@ -95,6 +95,12 @@ $ which box
 $ php -dphar.readonly=0 /usr/local/bin/box build
 ```
 
+If you want to run with the same versions of PHP+box that are used for official builds, then run:
+
+```
+nix-shell --run ./build.sh
+```
+
 ### Development: Testing
 
 Automated testing for `civix` requires a live CiviCRM deployment. The deployment must be amenable to CLI scripting (eg `civix`, `cv`).
