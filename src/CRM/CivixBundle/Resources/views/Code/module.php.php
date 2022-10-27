@@ -13,7 +13,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
  */
-function <?php echo $mainFile ?>_civicrm_config(&$config) {
+function <?php echo $mainFile ?>_civicrm_config(&$config): void {
   _<?php echo $mainFile ?>_civix_civicrm_config($config);
 }
 
