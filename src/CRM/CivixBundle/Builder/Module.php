@@ -39,6 +39,15 @@ class Module implements Builder {
     $ctx['entityTypes'] = $this->generateEntityTypes("{$ctx['basedir']}/xml/schema/CRM/*/*.entityType.php");
 
     $moduleCivix->save($ctx, $output);
+
+    // Add composer package info
+    $composerPackage = new Template(
+      'composer.json.php',
+      $basedir->string('composer.json'),
+      'ignore',
+      $this->templateEngine
+    );
+    $composerPackage->save($ctx, $output);
   }
 
   private function generateEntityTypes($glob){
