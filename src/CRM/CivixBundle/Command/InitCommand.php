@@ -156,8 +156,8 @@ class InitCommand extends AbstractCommand {
     Services::boot(['output' => $output]);
     $civicrm_api3 = Services::api3();
 
-    if ($civicrm_api3 && $civicrm_api3->local && version_compare(\CRM_Utils_System::version(), '4.3.dev', '>=')) {
-      $siteName = \CRM_Utils_System::baseURL(); /* \CRM_Core_Config::singleton()->userSystem->cmsRootPath(); */
+    if ($civicrm_api3 && $civicrm_api3->local) {
+      $siteName = \CRM_Utils_System::baseURL();
 
       $output->writeln("<info>Refresh extension list for</info> $siteName");
       if (!$civicrm_api3->Extension->refresh(['local' => TRUE, 'remote' => FALSE])) {
