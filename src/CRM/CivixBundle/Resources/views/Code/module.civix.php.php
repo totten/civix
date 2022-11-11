@@ -105,20 +105,13 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
   }
   $configured = TRUE;
 
-  $template = CRM_Core_Smarty::singleton();
+  $tplDir = __DIR__ . DIRECTORY_SEPARATOR . 'templates';
 
-  $extRoot = __DIR__ . DIRECTORY_SEPARATOR;
-  $extDir = $extRoot . 'templates';
-
-  if (is_array($template->template_dir)) {
-    array_unshift($template->template_dir, $extDir);
-  }
-  else {
-    $template->template_dir = [$extDir, $template->template_dir];
+  if (is_dir($tplDir)) {
+    $smarty = CRM_Core_Smarty::singleton();
+    $smarty->template_dir = array_merge([$tplDir], (array) $smarty->template_dir);
   }
 
-  $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
-  set_include_path($include_path);
 <?php echo $_invokePolyfill; ?>
 }
 
