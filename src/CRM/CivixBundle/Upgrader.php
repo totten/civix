@@ -264,7 +264,7 @@ class Upgrader {
             $this->io->writeln(sprintf("<info>Removing line </info>%s:%d<info></info>\n", $mainPhp, 1 + $lineNum));
             $line = NULL;
           }
-          elseif (preg_match("|$nameQuoted|", $line, $m)) {
+          elseif (preg_match("|$nameQuoted|", (string) $line, $m)) {
             $this->io->writeln(sprintf(
               "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
               $name, $mainPhp, 1 + $lineNum
@@ -315,12 +315,13 @@ class Upgrader {
       $comment = "/\*\*\n( \*.*\n)* \*/";
       $funcName = $infoXml->getFile() . "_civicrm_[a-zA-Z0-9_]+";
       $funcArgs = "\([^\)]*\)";
+      $typeHint = ":[ ]*[|?a-z]+";
       $startBody = "\{[^\}]*\}"; /* For empty functions, this grabs everything. For non-empty functions, this may just grab the opening segment. */
-      $content = preg_replace_callback(";({$comment})?\n\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
+      $content = preg_replace_callback(";($comment)?\n\s*function ($funcName)($funcArgs)[ ]*($typeHint)?\s*($startBody)\n*;m", function ($m) {
         $func = $m[3];
 
         // Is our start-body basically empty (notwithstanding silly things - like `{}`, `//Comment`, and `return;`)?
-        $mStartBody = explode("\n", $m[5]);
+        $mStartBody = explode("\n", $m[6]);
         $mStartBody = preg_replace(';^\s*;', '', $mStartBody);
         $mStartBody = preg_grep(';^\/\/;', $mStartBody, PREG_GREP_INVERT);
         $mStartBody = preg_grep('/^$/', $mStartBody, PREG_GREP_INVERT);
