@@ -53,8 +53,7 @@ class UpgradeList {
    */
   protected function scan(): array {
     $parseVer = function($file) {
-      $basename = basename($file);
-      return preg_replace(';\.up\.php$;', '', $basename);
+      return basename($file, '.up.php');
     };
 
     $upgrades = [];

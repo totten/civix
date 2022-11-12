@@ -190,7 +190,7 @@ class Mixins implements Builder {
     $filePattern = $this->outputDir . '/*.mixin.php';
     $result = array_map(
       function ($f) {
-        return str_replace('.mixin.php', '', basename($f));
+        return basename($f, '.mixin.php');
       },
       (array) glob($filePattern)
     );
