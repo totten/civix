@@ -6,6 +6,7 @@ use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Utils\Path;
 
 class Module implements Builder {
+
   public function __construct($templateEngine) {
     $this->templateEngine = $templateEngine;
   }
@@ -36,19 +37,7 @@ class Module implements Builder {
       $this->templateEngine
     );
 
-    $ctx['entityTypes'] = $this->generateEntityTypes("{$ctx['basedir']}/xml/schema/CRM/*/*.entityType.php");
-
     $moduleCivix->save($ctx, $output);
   }
 
-  private function generateEntityTypes($glob){
-    $entityTypes = [];
-    foreach(glob($glob) as $entityFile){
-      $entities = include $entityFile;
-      foreach ($entities as $entity) {
-        $entityTypes[$entity['class']] = $entity;
-      }
-    }
-    return $entityTypes;
-  }
 }
