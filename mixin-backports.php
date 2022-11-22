@@ -36,6 +36,14 @@ return [
     'provided-by' => '5.45.beta1',
     'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
+  'entity-types-php@1' => [
+    'version' => '1.0.0',
+    'sha256' => 'f8e10aac991b2b3acac269a1fca81f883a295908990687959e790885a2e410c2',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/8de7881b35e3f98d38b147dcf23f5a44d5dfe035/mixin/entity-types-php%401/mixin.php',
+    'local' => 'extern/mixin/entity-types-php@1/mixin.php',
+    'provided-by' => '5.57.beta1',
+    'minimum' => '5.45',
+  ],
   'menu-xml@1' => [
     'version' => '1.0.0',
     'sha256' => '4f5be44d6764816b22d0a5cdc2e047cfd9ec4acf48e548f82bb20c05db933d0e',
