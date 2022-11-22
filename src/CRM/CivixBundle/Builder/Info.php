@@ -11,6 +11,11 @@ use SimpleXMLElement;
 class Info extends XML {
 
   public function init(&$ctx) {
+    $ctx += [
+      // FIXME: Auto-detect current installed civi version
+      'compatibilityVerMin' => 5.45,
+    ];
+
     $xml = new SimpleXMLElement('<extension></extension>');
     $xml->addAttribute('key', $ctx['fullName']);
     $xml->addAttribute('type', $ctx['type']);
@@ -40,7 +45,7 @@ class Info extends XML {
     $xml->addChild('releaseDate', date('Y-m-d'));
     $xml->addChild('version', '1.0');
     $xml->addChild('develStage', 'alpha');
-    $xml->addChild('compatibility')->addChild('ver', $ctx['compatibilityVerMin'] ?? '5.0');
+    $xml->addChild('compatibility')->addChild('ver', $ctx['compatibilityVerMin']);
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
     // APIv4 will look for classes+files matching 'Civi/Api4', and

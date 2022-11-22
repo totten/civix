@@ -37,12 +37,21 @@ class AddUpgraderCommand extends AbstractCommand {
       return;
     }
 
-    $dirs = new Dirs([
+    $compatVer = $info->getCompatibilityVer();
+    // Since 5.38 core provides its own upgrader base class
+    $useCore = version_compare($compatVer, '5.38', '>=');
+
+    $dirs = [
       $basedir->string('sql'),
       $basedir->string($ctx['namespace']),
-      $basedir->string($ctx['namespace'], 'Upgrader'),
-    ]);
-    $dirs->save($ctx, $output);
+    ];
+    if (!$useCore) {
+      $dirs[] = $basedir->string($ctx['namespace'], 'Upgrader');
+    }
+    (new Dirs($dirs))->save($ctx, $output);
+
+    $crmPrefix = preg_replace(':/:', '_', $ctx['namespace']);
+    $ctx['baseUpgrader'] = $useCore ? 'CRM_Extension_Upgrader_Base' : $crmPrefix . '_Upgrader_Base';
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
     if (!file_exists($phpFile)) {
@@ -54,10 +63,18 @@ class AddUpgraderCommand extends AbstractCommand {
       $output->writeln(sprintf('<error>Skip %s: file already exists, defer to customized version</error>', $phpFile));
     }
 
-    $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');
-    $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
-    file_put_contents($phpFile, Services::templating()
-      ->render('upgrader-base.php.php', $ctx));
+    if (!$useCore) {
+      $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');
+      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
+      file_put_contents($phpFile, Services::templating()
+        ->render('upgrader-base.php.php', $ctx));
+    }
+    else {
+      if (!$info->get()->xpath('upgrader')) {
+        $info->get()->addChild('upgrader', $crmPrefix . '_Upgrader');
+        $info->save($ctx, $output);
+      }
+    }
 
     $module = new Module(Services::templating());
     $module->loadInit($ctx);

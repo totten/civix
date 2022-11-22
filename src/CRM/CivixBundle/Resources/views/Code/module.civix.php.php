@@ -3,6 +3,7 @@ echo "<?php\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 $_compatibility = isset($compatibilityVerMin) ? $compatibilityVerMin : '5.0';
 $_invokePolyfill = version_compare($_compatibility, '5.45.beta1', '<') ? sprintf("  _%s_civix_mixin_polyfill();\n", $mainFile) : '';
+$_useCoreUpgrader = version_compare($_compatibility, '5.38', '>=');
 ?>
 
 // AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
@@ -122,6 +123,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
 <?php echo $_invokePolyfill; ?>
 }
 
+<?php if (!$_useCoreUpgrader) { ?>
 /**
  * Implements hook_civicrm_install().
  *
@@ -221,6 +223,7 @@ function _<?php echo $mainFile ?>_civix_upgrader() {
   }
 }
 
+<?php } ?>
 /**
  * Inserts a navigation menu item at a given place in the hierarchy.
  *

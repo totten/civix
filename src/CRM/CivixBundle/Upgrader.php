@@ -264,7 +264,7 @@ class Upgrader {
             $this->io->writeln(sprintf("<info>Removing line </info>%s:%d<info></info>\n", $mainPhp, 1 + $lineNum));
             $line = NULL;
           }
-          elseif (preg_match("|$nameQuoted|", $line, $m)) {
+          elseif (preg_match("|$nameQuoted|", (string) $line, $m)) {
             $this->io->writeln(sprintf(
               "<info>Found reference to obsolete function </info>%s()<info> at </info>%s:%d<info>.</info>\n",
               $name, $mainPhp, 1 + $lineNum
@@ -315,12 +315,13 @@ class Upgrader {
       $comment = "/\*\*\n( \*.*\n)* \*/";
       $funcName = $infoXml->getFile() . "_civicrm_[a-zA-Z0-9_]+";
       $funcArgs = "\([^\)]*\)";
+      $typeHint = ":[ ]*[|?a-z]+";
       $startBody = "\{[^\}]*\}"; /* For empty functions, this grabs everything. For non-empty functions, this may just grab the opening segment. */
-      $content = preg_replace_callback(";({$comment})?\n\s*function ({$funcName})({$funcArgs})\s*({$startBody})\n*;m", function ($m) {
+      $content = preg_replace_callback(";($comment)?\n\s*function ($funcName)($funcArgs)[ ]*($typeHint)?\s*($startBody)\n*;m", function ($m) {
         $func = $m[3];
 
         // Is our start-body basically empty (notwithstanding silly things - like `{}`, `//Comment`, and `return;`)?
-        $mStartBody = explode("\n", $m[5]);
+        $mStartBody = explode("\n", $m[6]);
         $mStartBody = preg_replace(';^\s*;', '', $mStartBody);
         $mStartBody = preg_grep(';^\/\/;', $mStartBody, PREG_GREP_INVERT);
         $mStartBody = preg_grep('/^$/', $mStartBody, PREG_GREP_INVERT);
@@ -365,6 +366,46 @@ class Upgrader {
         $mixins->addMixin($mixinConstraint);
       }
     });
+  }
+
+  /**
+   * Since 5.38 core supports an <upgrader> tag in liu of hooks, and a common base class.
+   *
+   * Remove hook delegations from module.php and add <upgrader> to info.xml
+   * Switch upgrader base class to use the one in core and remove the boilerplate version
+   */
+  public function cleanUpgraderBase(): void {
+    $compatVer = $this->infoXml->getCompatibilityVer();
+    $useCore = version_compare($compatVer, '5.38', '>=');
+    if ($useCore) {
+      $prefix = $this->infoXml->getFile();
+      $this->removeHookDelegation([
+        "_{$prefix}_civix_civicrm_install",
+        "_{$prefix}_civix_civicrm_postInstall",
+        "_{$prefix}_civix_civicrm_uninstall",
+        "_{$prefix}_civix_civicrm_enable",
+        "_{$prefix}_civix_civicrm_disable",
+        "_{$prefix}_civix_civicrm_upgrade",
+      ]);
+      $nameSpace = $this->infoXml->getNamespace();
+      $upgraderFile = $this->baseDir->string($nameSpace . DIRECTORY_SEPARATOR . 'Upgrader.php');
+      $upgraderBaseFile = $this->baseDir->string($nameSpace . DIRECTORY_SEPARATOR . 'Upgrader' . DIRECTORY_SEPARATOR . 'Base.php');
+      if (file_exists($upgraderFile)) {
+        $crmPrefix = preg_replace(':/:', '_', $nameSpace);
+        // Add <upgrader> tag
+        if (!$this->infoXml->get()->xpath('upgrader')) {
+          $this->infoXml->get()->addChild('upgrader', $crmPrefix . '_Upgrader');
+          $this->infoXml->save($this->_ctx, $this->output);
+        }
+        // Switch base class
+        file_put_contents($upgraderFile,
+          str_replace("{$crmPrefix}_Upgrader_Base", 'CRM_Extension_Upgrader_Base', file_get_contents($upgraderFile))
+        );
+      }
+      if (file_exists($upgraderBaseFile)) {
+        unlink($upgraderBaseFile);
+      }
+    }
   }
 
   // -------------------------------------------------

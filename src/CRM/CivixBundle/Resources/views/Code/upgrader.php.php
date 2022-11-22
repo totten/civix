@@ -9,7 +9,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 /**
  * Collection of upgrade steps.
  */
-class <?php echo $_namespace ?>_Upgrader extends <?php echo $_namespace ?>_Upgrader_Base {
+class <?php echo $_namespace ?>_Upgrader extends <?php echo $baseUpgrader ?> {
 
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).
