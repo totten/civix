@@ -11,7 +11,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
   public function setUp(): void {
     chdir(static::getWorkspacePath());
     static::cleanDir(static::getKey());
-    $this->civixGenerateModule(static::getKey());
+    $this->civixGenerateModule(static::getKey(), ['--compatibility' => '5.0']);
     chdir(static::getKey());
 
     $this->assertFileExists('info.xml');

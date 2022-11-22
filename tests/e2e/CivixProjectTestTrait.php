@@ -75,9 +75,9 @@ trait CivixProjectTestTrait {
     return new CommandTester($command);
   }
 
-  public function civixGenerateModule(string $key): CommandTester {
+  public function civixGenerateModule(string $key, array $options = []): CommandTester {
     $tester = static::civix('generate:module');
-    $tester->execute([
+    $tester->execute($options + [
       'key' => $key,
       '--enable' => 'false',
     ]);

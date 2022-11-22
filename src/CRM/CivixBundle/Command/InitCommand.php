@@ -28,6 +28,7 @@ class InitCommand extends AbstractCommand {
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if \"key\" not specified)')
       ->addArgument('key', InputArgument::OPTIONAL, "Extension identifier (Ex: \"foo_bar\" or \"org.example.foo-bar\")")
       ->addOption('enable', NULL, InputOption::VALUE_REQUIRED, 'Whether to auto-enable the new module (yes/no/ask)', 'ask')
+      ->addOption('compatibility', NULL, InputOption::VALUE_REQUIRED, 'Version of CiviCRM that we target (eg "5.30" or "current")', 'current')
       ->addOption('mixins', NULL, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Automatically enable the listed mixins')
       ->addOption('license', NULL, InputOption::VALUE_OPTIONAL, 'License for the extension (' . implode(', ', $this->getLicenses()) . ')', $this->getDefaultLicense())
       ->addOption('author', NULL, InputOption::VALUE_REQUIRED, 'Name of the author', $this->getDefaultAuthor())
@@ -56,6 +57,8 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    Services::boot(['output' => $output]);
+
     $ctx = [];
     $ctx['type'] = 'module';
     if (!$input->getArgument('key')) {
@@ -95,6 +98,14 @@ class InitCommand extends AbstractCommand {
     else {
       $output->writeln('<error>Unrecognized license (' . $ctx['license'] . ')</error>');
       return;
+    }
+
+    if ($input->getOption('compatibility') === 'current') {
+      [$verMajor, $verMinor] = explode('.', \CRM_Utils_System::version());
+      $ctx['compatibilityVerMin'] = "$verMajor.$verMinor";
+    }
+    else {
+      $ctx['compatibilityVerMin'] = $input->getOption('compatibility');
     }
 
     if ($ctx['fullName'] !== $ctx['mainFile']) {
