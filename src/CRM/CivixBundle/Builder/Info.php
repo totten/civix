@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Versioning;
 use LicenseData\Repository;
 use SimpleXMLElement;
 
@@ -164,17 +165,40 @@ class Info extends XML {
     foreach ($this->get()->xpath('compatibility/ver') as $ver) {
       $vers[] = (string) $ver;
     }
-    usort($vers, 'version_compare');
+    return Versioning::pickVer($vers, $mode);
+  }
 
-    switch ($mode) {
-      case 'MIN':
-        return $vers ? reset($vers) : NULL;
+  /**
+   * Increase the minimum requirement (`<compatibility><ver>X.Y</ver></compatibility>`).
+   *
+   * There may be multiple `<ver>` expressions. They will be reconciled as follows:
+   * - Any existing constraints (which are < X.Y) will be dropped.
+   * - Any existing constraints (which are >= X.Y) will be kept.
+   * - If necessary, it will add a constraint for `X.Y`.
+   *
+   * @param string $newMin
+   *   Ex: '5.27'
+   */
+  public function raiseCompatibilityMinimum(string $newMin): void {
+    /** @var \SimpleXMLElement $xml */
+    $xml = $this->get();
+    $keptConstraints = 0;
+    foreach ($xml->xpath('compatibility/ver') as $existingConstraint) {
+      if (version_compare((string) $existingConstraint, $newMin, '>=')) {
+        $keptConstraints++;
+      }
+      else {
+        // dom_import_simplexml($existingConstraint)->remove();
+        $dom = dom_import_simplexml($existingConstraint);
+        $dom->parentNode->removeChild($dom);
+      }
+    }
 
-      case 'MAX':
-        return $vers ? end($vers) : NULL;
-
-      default:
-        throw new \RuntimeException("getCompatilityVer($mode): Unrecognized mode");
+    if (!$keptConstraints) {
+      if (empty($xml->xpath('compatibility'))) {
+        $xml->addChild('compatibility');
+      }
+      $xml->compatibility->addChild('ver', $newMin);
     }
   }
 
