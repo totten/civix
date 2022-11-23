@@ -4,6 +4,11 @@ namespace CRM\CivixBundle\Utils;
 
 class Path {
 
+  /**
+   * @var string
+   */
+  protected $basedir;
+
   public function __construct($basedir) {
     $this->basedir = $basedir;
   }
