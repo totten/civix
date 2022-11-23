@@ -153,7 +153,8 @@ class MixinCommand extends AbstractCommand {
   }
 
   protected function parseOptionList(InputInterface $input, string $optionName) {
-    $requested = explode(',', implode(',', $input->getOption($optionName)));
+    $optionValue = (array) $input->getOption($optionName);
+    $requested = explode(',', implode(',', $optionValue));
     return array_filter(array_unique($requested));
   }
 
