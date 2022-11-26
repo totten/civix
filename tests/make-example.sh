@@ -68,7 +68,6 @@ pushd $WORKINGDIR
     $CIVIX $VERBOSITY generate:test --template=headless 'Civi\Civiexample\BarTest'
     $CIVIX $VERBOSITY generate:test --template=e2e 'Civi\Civiexample\EndTest'
     $CIVIX $VERBOSITY generate:test --template=phpunit 'Civi\CiviExample\PHPUnitTest'
-    $CIVIX $VERBOSITY generate:codeception-config
     $CIVIX $VERBOSITY generate:upgrader
     $CIVIX $VERBOSITY generate:angular-module
     $CIVIX $VERBOSITY generate:angular-page FooCtrl foo
@@ -87,16 +86,10 @@ pushd $WORKINGDIR
     phpunit5 ./tests/phpunit/Civi/CiviExample/PHPUnitTest.php
     phpunit5 --group headless
     phpunit5 --group e2e
-
-    codecept generate:cest acceptance HelloWorld
-    codecept run
   popd
 
   ## Make sure all generated files pass linter.
-  ## ... Except codeception. Because we don't own that code-generator.
   pushd "$EXMODULE"
-    find tests -name '*.php' \
-      | grep -v tests/.*Cest.php \
-      | xargs civilint
+    find tests -name '*.php' | xargs civilint
   popd
 popd
