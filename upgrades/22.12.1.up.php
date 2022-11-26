@@ -1,5 +1,7 @@
 <?php
 
+use CRM\CivixBundle\Utils\Files;
+use CRM\CivixBundle\Utils\Formatting;
 use CRM\CivixBundle\Utils\Naming;
 
 /**
@@ -13,37 +15,64 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
   $io = $upgrader->io;
   $io->section('Lifecycle Hooks: Install, Upgrade, etc');
 
+  $info = $upgrader->infoXml;
   $MIN_COMPAT = '5.38';
-  $nameSpace = $upgrader->infoXml->getNamespace();
+  $oldCompat = $info->getCompatibilityVer();
+  $nameSpace = $info->getNamespace();
+  $mainFile = $upgrader->baseDir->string($info->getFile() . '.php');
   $upgraderClass = Naming::createClassName($nameSpace, 'Upgrader');
   $upgraderFile = Naming::createClassFile($nameSpace, 'Upgrader');
   $upgraderBaseClass = Naming::createClassName($nameSpace, 'Upgrader', 'Base');
   $upgraderBaseFile = Naming::createClassFile($nameSpace, 'Upgrader', 'Base');
-  // $upgraderFile = $upgrader->baseDir->string(Naming::createClassFile($nameSpace, 'Upgrader'));
-  // $upgraderBaseFile = $upgrader->baseDir->string(Naming::createClassFile($nameSpace, 'Upgrader', 'Base'));
   $hasUpgrader = file_exists($upgraderFile);
 
-  $notes = [];
-  $notes[] = 'Old templates included ~10 boilerplate functions to handle lifecycle events (hook_install, hook_upgrade, hook_uninstall, etc).';
-  $notes[] = $hasUpgrader
-    ? "With CiviCRM $MIN_COMPAT+, these can be simplified or removed. Instead, we will use the \"info.xml\" directive for \"<upgrader>\"."
-    : 'Much of this boilerplate can be simplified or removed.';
-  $io->note($notes);
+  $previewChanges = [];
+  if ($hasUpgrader) {
+    $previewChanges[] = ['info.xml', 'Fill-in <upgrader> tag'];
+    $previewChanges[] = [$upgraderClass, 'Use new base-class'];
+    $previewChanges[] = [$upgraderBaseClass, 'Remove old base-class'];
+  }
+  $previewChanges[] = ['*_civix_civicrm_install()', 'Simplify boilerplate'];
+  $previewChanges[] = ['*_civix_civicrm_postInstall()', 'Remove boilerplate'];
+  $previewChanges[] = ['*_civix_civicrm_enable()', 'Simplify boilerplate'];
+  $previewChanges[] = ['*_civix_civicrm_upgrade()', 'Remove boilerplate'];
+  $previewChanges[] = ['*_civix_civicrm_disable()', 'Remove boilerplate'];
+  $previewChanges[] = ['*_civix_civicrm_uninstall()', 'Remove boilerplate'];
 
-  if ($hasUpgrader && version_compare($upgrader->infoXml->getCompatibilityVer(), $MIN_COMPAT, '<')) {
-    $io->warning("The minimum required version of CiviCRM will increase to $MIN_COMPAT.");
+  $io->note([
+    'Civix v22.12 simplifies the boilerplate code used for install/upgrade/uninstall (etc).',
+    'The following may be affected:',
+    Formatting::ol("%-31s %s\n", $previewChanges),
+  ]);
+
+  if ($hasUpgrader && version_compare($oldCompat, $MIN_COMPAT, '<')) {
+    $io->warning("This relies on functionality added by CiviCRM v5.38 (June 2021). The minimum requirements will increase automatically.");
+  }
+
+  // The `hook_install`, `hook_uninstall`, etc will no longer fire `_mymodule_civix_civicrm_config()`.
+  // For class-loading, this should be OK - since we now have PSR-0 enabled. But Smarty could
+  // potentially break. Except... in practice... I could only find 2 ext's in universe that might
+  // be impacted. So won't try hard to change them -- we'll merely warn.
+  if (!empty(glob('sql/*.tpl'))
+    || Files::grepFiles(';smarty;i', [$upgraderFile])
+    || Files::grepFiles(';\\.tpl;i', [$upgraderFile])
+    || Files::grepFiles(';execute.*Template;i', [$upgraderFile])
+    || Files::grepFiles(';civicrm_install.*smarty;si', [$mainFile])
+    || Files::grepFiles(';civicrm_upgrade.*smarty;si', [$mainFile])
+    || Files::grepFiles(';civicrm_install.*\.tpl;si', [$mainFile])
+    || Files::grepFiles(';civicrm_upgrade.*\.tpl;si', [$mainFile])
+  ) {
+    $io->warning('If you use the uncommon practice of calling Smarty during installation/upgrade, then you should review/retest these steps. Determine whether the Smarty include-path is sufficiently up-to-date.');
   }
 
   if (!$io->confirm('Continue with upgrade?')) {
     throw new \RuntimeException('User stopped upgrade');
   }
 
-  $prefix = $upgrader->infoXml->getFile();
+  $prefix = $info->getFile();
   $upgrader->removeHookDelegation([
-    // Needed by mixin-polyfill: "_{$prefix}_civix_civicrm_install",
     "_{$prefix}_civix_civicrm_postInstall",
     "_{$prefix}_civix_civicrm_uninstall",
-    // Needed by mixin-polyfill: "_{$prefix}_civix_civicrm_enable",
     "_{$prefix}_civix_civicrm_disable",
     "_{$prefix}_civix_civicrm_upgrade",
   ]);
