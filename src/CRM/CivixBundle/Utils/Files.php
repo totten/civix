@@ -52,6 +52,27 @@ class Files {
   }
 
   /**
+   * Determine if any files match the regex.
+   *
+   * @param string $regex
+   * @param array $files
+   * @return array
+   */
+  public static function grepFiles(string $regex, array $files): array {
+    $result = [];
+    foreach ($files as $file) {
+      if (!file_exists($file)) {
+        continue;
+      }
+      $c = file_get_contents($file);
+      if (preg_match($regex, $c)) {
+        $result[] = $file;
+      }
+    }
+    return $result;
+  }
+
+  /**
    * Make a file path relative to some base dir.
    *
    * @param $directory
