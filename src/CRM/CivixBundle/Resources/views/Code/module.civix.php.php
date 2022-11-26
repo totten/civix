@@ -318,7 +318,7 @@ $entityTypeLines = '';
 $count = count($entityTypes);
 $thisLineCount = 1;
 // Add appropriate indentation
-foreach($entityTypes as $entityName => $entityKeys) {
+foreach ($entityTypes as $entityName => $entityKeys) {
   $entityTypeLines .= "\n    '$entityName' => [\n";
   foreach ($entityKeys as $key => $value) {
     $entityTypeLines .= "      '$key' => '{$value}',\n";
