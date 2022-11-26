@@ -2,7 +2,9 @@
 echo "<?php\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 $_compatibility = isset($compatibilityVerMin) ? $compatibilityVerMin : '5.0';
-$_invokePolyfill = version_compare($_compatibility, '5.45.beta1', '<') ? sprintf("  _%s_civix_mixin_polyfill();\n", $mainFile) : '';
+$_invokePolyfill = version_compare($_compatibility, '5.45.beta1', '<')
+  ? sprintf("  _%s_civix_mixin_polyfill();\n", $mainFile)
+  : "  // Based on <compatibility>, this does not currently require mixin/polyfill.php.\n";
 ?>
 
 // AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
