@@ -380,10 +380,10 @@ class Upgrader {
     if ($useCore) {
       $prefix = $this->infoXml->getFile();
       $this->removeHookDelegation([
-        "_{$prefix}_civix_civicrm_install",
+        // Needed by mixin-polyfill: "_{$prefix}_civix_civicrm_install",
         "_{$prefix}_civix_civicrm_postInstall",
         "_{$prefix}_civix_civicrm_uninstall",
-        "_{$prefix}_civix_civicrm_enable",
+        // Needed by mixin-polyfill: "_{$prefix}_civix_civicrm_enable",
         "_{$prefix}_civix_civicrm_disable",
         "_{$prefix}_civix_civicrm_upgrade",
       ]);
