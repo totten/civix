@@ -66,66 +66,65 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
     return $this->findSnapshots('org.example.civixsnapshot-*.zip');
   }
 
-  public function getSnapshotsEntity(): array {
-    return $this->findSnapshots('org.example.civixsnapshot-*-entity*.zip');
-  }
-
-  public function getSnapshotsQf(): array {
-    return $this->findSnapshots('org.example.civixsnapshot-*-qf.zip');
-  }
-
   /**
    * @param string $snapshot
    * @dataProvider getSnapshotsAll
    */
-  public function testAll(string $snapshot) {
+  public function testSnapshot(string $snapshot) {
     $this->setupSnapshot($snapshot);
 
-    // If the extension is well-formed, then we will at least have the big E.
+    $class = new \ReflectionClass($this);
+    foreach ($class->getMethods() as $method) {
+      /** @var \ReflectionMethod $method */
+      if (preg_match('/^checkSnapshot_.*/', $method->getName())) {
+        $method->invoke($this, $snapshot);
+      }
+    }
+  }
+
+  public function checkSnapshot_common(string $snapshot) {
     $getName = PH::runOk('cv ev "echo CRM_Civixsnapshot_ExtensionUtil::LONG_NAME";');
     $this->assertEquals('org.example.civixsnapshot', trim($getName->getOutput()));
   }
 
-  /**
-   * Test upgrades for the entity snapshots (`*-entity3.zip`, `*-entity34.zip`).
-   *
-   * @param string $snapshot
-   * @dataProvider getSnapshotsEntity
-   */
-  public function testEntity(string $snapshot) {
-    $this->setupSnapshot($snapshot);
-
-    $hasApi3 = preg_match(';-entity34?.zip;', $snapshot);
-    $hasApi4 = preg_match(';-entity3?4.zip;', $snapshot);
-    $this->assertTrue($hasApi3 || $hasApi4, 'I only know how to test with APIv3 or APIv4.');
-    $entity = 'MyEntity' . ($hasApi3 ? 'Three' : '') . ($hasApi4 ? 'Four' : '');
-
-    if ($hasApi3) {
-      $getFields3 = PH::runOK("cv api3 $entity.getfields --out=json");
-      $parsed3 = json_decode($getFields3->getOutput(), TRUE);
-      $descriptions3 = array_column($parsed3['values'], 'description');
-      $this->assertTrue(in_array("Unique $entity ID", $descriptions3), "$entity.id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
-      $this->assertTrue(in_array('FK to Contact', $descriptions3), "$entity.contact_id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
+  public function checkSnapshot_entity3(string $snapshot): void {
+    if (!preg_match(';-entity3.zip;', $snapshot)) {
+      return;
     }
 
-    if ($hasApi4) {
-      $getFields4 = PH::runOK("cv api4 $entity.getFields --out=json");
-      $parsed4 = json_decode($getFields4->getOutput(), TRUE);
-      $descriptions4 = array_column($parsed4, 'description');
-      $this->assertTrue(in_array("Unique $entity ID", $descriptions4), "$entity.id should have APIv4 description. Actual metadata response was: ");
-      $this->assertTrue(in_array('FK to Contact', $descriptions4), "$entity.contact_id should have APIv4 description. Actual metadata response was: ");
-    }
+    $entity = 'MyEntityThree';
+
+    $getFields3 = PH::runOK("cv api3 $entity.getfields --out=json");
+    $parsed3 = json_decode($getFields3->getOutput(), TRUE);
+    $descriptions3 = array_column($parsed3['values'], 'description');
+    $this->assertTrue(in_array("Unique $entity ID", $descriptions3), "$entity.id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
+    $this->assertTrue(in_array('FK to Contact', $descriptions3), "$entity.contact_id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
   }
 
-  /**
-   * Test upgrades for the Quickform snapshots (`*-qf.zip`).
-   *
-   * @param string $snapshot
-   *   Ex: 'org.example.civixsnapshot-v16.02.0-qf.zip'
-   * @dataProvider getSnapshotsQf
-   */
-  public function testQf(string $snapshot) {
-    $this->setupSnapshot($snapshot);
+  public function checkSnapshot_entity34(string $snapshot): void {
+    if (!preg_match(';-entity34.zip;', $snapshot)) {
+      return;
+    }
+
+    $entity = 'MyEntityThreeFour';
+
+    $getFields3 = PH::runOK("cv api3 $entity.getfields --out=json");
+    $parsed3 = json_decode($getFields3->getOutput(), TRUE);
+    $descriptions3 = array_column($parsed3['values'], 'description');
+    $this->assertTrue(in_array("Unique $entity ID", $descriptions3), "$entity.id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
+    $this->assertTrue(in_array('FK to Contact', $descriptions3), "$entity.contact_id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
+
+    $getFields4 = PH::runOK("cv api4 $entity.getFields --out=json");
+    $parsed4 = json_decode($getFields4->getOutput(), TRUE);
+    $descriptions4 = array_column($parsed4, 'description');
+    $this->assertTrue(in_array("Unique $entity ID", $descriptions4), "$entity.id should have APIv4 description. Actual metadata response was: ");
+    $this->assertTrue(in_array('FK to Contact', $descriptions4), "$entity.contact_id should have APIv4 description. Actual metadata response was: ");
+  }
+
+  public function checkSnapshot_qf(string $snapshot): void {
+    if (!preg_match(';-qf.zip;', $snapshot)) {
+      return;
+    }
 
     $getPage = PH::runOK('cv api4 Route.get +w path=civicrm/my-page +s page_callback');
     $this->assertTrue((bool) preg_match('/CRM_Civixsnapshot_Page_MyPage/', $getPage->getOutput()), 'Route should be registered');
