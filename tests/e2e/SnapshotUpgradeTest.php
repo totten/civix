@@ -147,10 +147,14 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
     $classExists = PH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Page_MyPage::class) ? "found" : "missing";\'');
     $this->assertTrue((bool) preg_match('/^found/', $classExists->getOutput()), 'Class should be loadable/parsable.');
 
+    $getPage = PH::runOK('cv api4 Route.get +w path=civicrm/my-form +s page_callback');
+    $this->assertTrue((bool) preg_match('/CRM_Civixsnapshot_Form_MyForm/', $getPage->getOutput()), 'Route should be registered');
+
+    $classExists = PH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Form_MyForm::class) ? "found" : "missing";\'');
+    $this->assertTrue((bool) preg_match('/^found/', $classExists->getOutput()), 'Class should be loadable/parsable.');
+
     // TODO: Send an actual web-request... or maybe add a test...
     // PH::runOk('cv en authx && cv curl --user=demo --login civicrm/my-page');
-
-    // TODO: check on `civicrm/my-form`
   }
 
 }
