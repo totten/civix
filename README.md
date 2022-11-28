@@ -105,21 +105,25 @@ nix-shell --run ./build.sh
 
 Automated testing for `civix` requires a live CiviCRM deployment. The deployment must be amenable to CLI scripting (eg `civix`, `cv`).
 
-Tests are divided into three areas:
+Tests are divided into a few areas:
 
 * PHPUnit: End-to-end tests (`tests/e2e/**Test.php`)
 * PHPUnit: Unit tests (`src/CRM/CivixBundle/**Test.php`)
+* Snapshots: Some of the PHPUnit-E2E tests build on a library of example code (`tests/snapshots/*`)
 * Bash: Example script (`tests/make-example.sh`) which runs all code-generators
 
 PHPUnit is now preferred for testing (because it can support better assertions, better debugging, and better coding).
-To run PHPUnit, one must define a folder (`CIVIX_WORKSPACE`) where it will place new/sample extensions. Example:
+To directly run PHPUnit, one must define a folder (`CIVIX_WORKSPACE`) where it will place new/sample extensions. Example:
 
 ```bash
 export CIVIX_WORKSPACE=$HOME/bknix/build/dmaster/web/sites/all/modules/civicrm/ext/civixtest
 phpunit8
 ```
 
-The bash script (`make-example.sh`) has been around longer and covers more functionality, but the assertions are limited,
+The bash scripts (`run-tests.sh`, `make-snapshots.sh`, `upgrade-snapshots.sh`, `tidy-snapshots.sh`) will help you work with PHPUnit
+and snapshot data.
+
+The deprecated bash script (`make-example.sh`) has been around longer and covers more functionality, but the assertions are limited,
 and effective usage may require more effort. Example:
 
 ```bash

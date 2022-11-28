@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## Generate a series of example extensions in ./tests/snapshots/{EXTENSION}-{VERSION}-{SCENARIO}.
+
 ################################################
 ## Quick hack for manually testing all commands
 CIVIX_BUILD_TYPE=
@@ -16,6 +18,7 @@ while [ -n "$1" ]; do
     --version) SNAPSHOT_VER="$1" ; shift ; ;;
   esac
 done
+
 
 ################################################
 function show_help() {
@@ -36,15 +39,17 @@ function show_help() {
 
 function clean_workspace() {
   civibuild restore --no-test
-  [ -d "$EXMODULE" ] && rm -rf "$EXMODULE"
+  [ -d "$EXMODULE" ] && rm -rf "$EXMODULE" || echo ""
 }
 
 function build_snapshot() {
   local name="$1"
-  local zipfile="$SNAPSHOT_DIR/$EXMODULE-$SNAPSHOT_VER-$name.zip"
+  local snapdir="$SNAPSHOT_DIR/$EXMODULE-$SNAPSHOT_VER-$name/"
+  local zipfile="$snapdir/original.zip"
 
   clean_workspace
   [ -f "$zipfile" ] && rm -f "$zipfile"
+  [ ! -d "$snapdir" ] && mkdir -p "$snapdir"
 
   $CIVIX $VERBOSITY generate:module "$EXMODULE" --enable=no --no-interaction
 
@@ -111,7 +116,11 @@ function build_snapshot() {
 }
 
 ################################################
-## parse options
+## Didn't set a workspace? Educated guess...
+if [ -z "$CIVIX_WORKSPACE" -a -d "$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm" ]; then
+  export CIVIX_WORKSPACE="$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest"
+  echo "Inferred CIVIX_WORKSPACE=$CIVIX_WORKSPACE"
+fi
 
 ################################################
 # Validate environment
@@ -131,10 +140,10 @@ if [ "$CIVIX_BUILD_TYPE" = "--phar" ]; then
     exit 1
   fi
   ./build.sh
-  CIVIX=$PWD/bin/civix.phar
+  CIVIX="$PWD"/bin/civix.phar
 else
   composer install
-  CIVIX=$PWD/bin/civix
+  CIVIX="$PWD"/bin/civix
 fi
 
 [ ! -d "$CIVIX_WORKSPACE" ] && mkdir "$CIVIX_WORKSPACE"
