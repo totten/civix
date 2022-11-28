@@ -1,23 +1,52 @@
 #!/bin/bash
 
+################################################
 ## Quick hack for manually testing all commands
-BUILDDIR="$1"
-BUILDNAME="$2"
-WORKINGDIR="$BUILDDIR/build/$BUILDNAME/web/sites/all/modules/civicrm/tools/extensions"
+CIVIX_BUILD_TYPE=
 EXMODULE=${EXMODULE:-org.example.civixsnapshot}
 SNAPSHOT_DIR="$PWD/tests/snapshots"
 SNAPSHOT_VER=$( git describe --tags )
+VERBOSITY=
+
+while [ -n "$1" ]; do
+  OPT="$1"
+  shift
+  case "$OPT" in
+    --src|--phar) CIVIX_BUILD_TYPE="$OPT" ; ;;
+    --version) SNAPSHOT_VER="$1" ; shift ; ;;
+  esac
+done
 
 ################################################
+function show_help() {
+  echo "About: Generate a series of example extensions ($EXMODULE) in $SNAPSHOT_DIR."
+  echo "Usage: $0 [--phar|--src] [--version VERSION]"
+  echo
+  echo "Environment:"
+  echo "   CIVIX_WORKSPACE: A folder within a live Civi [civibuild] tree where we can put new extensions"
+  echo
+  echo "Options:"
+  echo "  --phar: Create and run a new civix.phar"
+  echo "  --src: Directly run the current source tree"
+  echo "  --version: Set the version-number on the generated snapshots"
+  echo
+  echo "Example:"
+  echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src"
+}
+
+function clean_workspace() {
+  civibuild restore --no-test
+  [ -d "$EXMODULE" ] && rm -rf "$EXMODULE"
+}
+
 function build_snapshot() {
   local name="$1"
   local zipfile="$SNAPSHOT_DIR/$EXMODULE-$SNAPSHOT_VER-$name.zip"
 
-  civibuild restore "$BUILDNAME" --no-test
-  [ -d "$EXMODULE" ] && rm -rf "$EXMODULE"
+  clean_workspace
   [ -f "$zipfile" ] && rm -f "$zipfile"
 
-  $CIVIX $VERBOSITY generate:module "$EXMODULE" --enable=no
+  $CIVIX $VERBOSITY generate:module "$EXMODULE" --enable=no --no-interaction
 
   pushd "$EXMODULE"
   case "$name" in
@@ -82,42 +111,41 @@ function build_snapshot() {
 }
 
 ################################################
-# validate environment
-if [ -z "$BUILDNAME" ]; then
-  echo "Usage: $0 <buildkit-dir> <build-name>"
-  echo "Running this will:"
-  echo " 1. Rebuild civix"
-  echo " 2. Reset the build's database"
-  echo " 3. Generate a few variations of the $EXMODULE extension"
-  echo " 4. Save each variation to $SNAPSHOT_DIR"
-  exit 1
-fi
+## parse options
 
-if [ ! -d $WORKINGDIR ]; then
-  echo "error: missing $WORKINGDIR"
+################################################
+# Validate environment
+if [ -z "$CIVIX_WORKSPACE" -o -z "$CIVIX_BUILD_TYPE" ]; then
+  show_help 1>&2
   exit 1
 fi
 
 set -ex
-#if [ ! -f "box.json" -o ! -f "build.sh" ]; then
-#  echo "Must call from civix root dir"
-#  exit 1
-#fi
-composer install
 
-# (re)build civix
-#[ -z "$SKIP_PHAR_BUILD" ] && ./build.sh
-#CIVIX=$PWD/bin/civix.phar
-CIVIX=$PWD/bin/civix
-VERBOSITY=
+################################################
+# Main
 
-pushd $WORKINGDIR
+if [ "$CIVIX_BUILD_TYPE" = "--phar" ]; then
+  if [ ! -f "box.json" -o ! -f "build.sh" ]; then
+    echo "Must call from civix root dir"
+    exit 1
+  fi
+  ./build.sh
+  CIVIX=$PWD/bin/civix.phar
+else
+  composer install
+  CIVIX=$PWD/bin/civix
+fi
+
+[ ! -d "$CIVIX_WORKSPACE" ] && mkdir "$CIVIX_WORKSPACE"
+pushd "$CIVIX_WORKSPACE"
   [ ! -d "$SNAPSHOT_DIR" ] && mkdir "$SNAPSHOT_DIR"
   build_snapshot empty
   build_snapshot qf
   build_snapshot entity3
   build_snapshot entity34
   build_snapshot kitchensink
+  clean_workspace
 popd
 
 ls -l "$SNAPSHOT_DIR"
