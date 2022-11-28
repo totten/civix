@@ -12,6 +12,7 @@ build/
 /tests/snapshots/*/upgrade.log
 /tests/snapshots/*/upgrade.err
 /tests/snapshots/*/upgrade.diff
+/tests/snapshots/org.example.civixsnapshot-HEAD-*
 /extern/
 /tmp/
 vendor

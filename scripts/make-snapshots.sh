@@ -7,8 +7,10 @@
 CIVIX_BUILD_TYPE=
 EXMODULE=${EXMODULE:-org.example.civixsnapshot}
 SNAPSHOT_DIR="$PWD/tests/snapshots"
-SNAPSHOT_VER=$( git describe --tags )
+SNAPSHOT_VER='HEAD'
+#SNAPSHOT_VER=$( git describe --tags )
 VERBOSITY=
+RUN_TEST=
 
 while [ -n "$1" ]; do
   OPT="$1"
@@ -16,6 +18,7 @@ while [ -n "$1" ]; do
   case "$OPT" in
     --src|--phar) CIVIX_BUILD_TYPE="$OPT" ; ;;
     --version) SNAPSHOT_VER="$1" ; shift ; ;;
+    --test) RUN_TEST=1 ; ;;
   esac
 done
 
@@ -23,7 +26,7 @@ done
 ################################################
 function show_help() {
   echo "About: Generate a series of example extensions ($EXMODULE) in $SNAPSHOT_DIR."
-  echo "Usage: $0 [--phar|--src] [--version VERSION]"
+  echo "Usage: $0 [--phar|--src] [--version VERSION] [--test]"
   echo
   echo "Environment:"
   echo "   CIVIX_WORKSPACE: A folder within a live Civi [civibuild] tree where we can put new extensions"
@@ -32,19 +35,20 @@ function show_help() {
   echo "  --phar: Create and run a new civix.phar"
   echo "  --src: Directly run the current source tree"
   echo "  --version: Set the version-number on the generated snapshots"
+  echo "  --test: Install each flavor of the extension. Run linters. Run tests."
   echo
   echo "Example:"
   echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src"
 }
 
 function clean_workspace() {
-  civibuild restore --no-test
+  [ -n "$RUN_TEST" ] && civibuild restore  || civibuild restore --no-test
   [ -d "$EXMODULE" ] && rm -rf "$EXMODULE" || echo ""
 }
 
 function build_snapshot() {
   local name="$1"
-  local snapdir="$SNAPSHOT_DIR/$EXMODULE-$SNAPSHOT_VER-$name/"
+  local snapdir="$SNAPSHOT_DIR/$EXMODULE-$SNAPSHOT_VER-$name"
   local zipfile="$snapdir/original.zip"
 
   clean_workspace
@@ -113,6 +117,16 @@ function build_snapshot() {
   popd
 
   zip -r "$zipfile" "$EXMODULE"
+
+  if [ -n "$RUN_TEST" ]; then
+    ## If any of these fail, then we should exit
+    cv en "$EXMODULE"
+    find tests -name '*.php' | xargs civilint
+    if [ -e 'tests/phpunit' ]; then
+      phpunit8 --group headless
+      phpunit8 --group e2e
+    fi
+  fi
 }
 
 ################################################
