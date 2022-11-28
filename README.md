@@ -110,7 +110,7 @@ Tests are divided into a few areas:
 * PHPUnit: End-to-end tests (`tests/e2e/**Test.php`)
 * PHPUnit: Unit tests (`src/CRM/CivixBundle/**Test.php`)
 * Snapshots: Some of the PHPUnit-E2E tests build on a library of example code (`tests/snapshots/*`)
-* Bash: Example script (`tests/make-example.sh`) which runs all code-generators
+* Bash: Example script (`make-example.sh`) which runs all code-generators
 
 PHPUnit is now preferred for testing (because it can support better assertions, better debugging, and better coding).
 To directly run PHPUnit, one must define a folder (`CIVIX_WORKSPACE`) where it will place new/sample extensions. Example:
@@ -127,18 +127,18 @@ The deprecated bash script (`make-example.sh`) has been around longer and covers
 and effective usage may require more effort. Example:
 
 ```bash
-## Usage: tests/make-example.sh <BUILDKIT_ROOT> <BUILDKIT_BUILD>
-bash tests/make-example.sh ~/buildkit dmaster
+## Usage: scripts/make-example.sh <BUILDKIT_ROOT> <BUILDKIT_BUILD>
+bash scripts/make-example.sh ~/buildkit dmaster
 
 ## Make a copy of the original output.
 cp -r ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{,-orig}
 
 ## Hack the code... then rerun...
-bash tests/make-example.sh ~/buildkit dmaster
+bash scripts/make-example.sh ~/buildkit dmaster
 
 ## And see how the outputs changed.
 colordiff -ru ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{-orig,}
 
 ## Tip: Use && to run the last two commands together
-bash tests/make-example.sh ~/buildkit dmaster && colordiff -ru ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{-orig,}
+bash scripts/make-example.sh ~/buildkit dmaster && colordiff -ru ~/buildkit/build/dmaster/sites/all/modules/civicrm/tools/extensions/org.civicrm.civixexample{-orig,}
 ```
