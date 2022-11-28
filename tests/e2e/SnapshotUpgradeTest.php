@@ -55,6 +55,14 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
   // const SNAPSHOT_FILTER = '/v22.*entity34/';       // Snapshots originating in v22.* with APIv3+APIv4.
 
   /**
+   * Should we retain extra copies of the upgraded code?
+   *
+   * Alternatively, you may set env-var SNAPSHOT_SAVE.
+   */
+  // const SNAPSHOT_SAVE = FALSE;                     // Default
+  // const SNAPSHOT_SAVE = TRUE;
+
+  /**
    * Name of the example extension.
    *
    * @var string
@@ -62,7 +70,7 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
   public static $key = 'org.example.civixsnapshot';
 
   public function getSnapshots(): array {
-    return $this->findSnapshots('org.example.civixsnapshot-*.zip');
+    return $this->findSnapshots('org.example.civixsnapshot-*');
   }
 
   public function setUp(): void {
