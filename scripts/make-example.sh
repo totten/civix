@@ -1,25 +1,28 @@
 #!/bin/bash
 
-## Quick hack for manually testing all commands
-BUILDDIR="$1"
-BUILDNAME="$2"
-WORKINGDIR="$BUILDDIR/build/$BUILDNAME/web/sites/all/modules/civicrm/tools/extensions"
+## NOTE: This script is deprecated. Consider update the PHPUnit suite instead. There's a lot of overlap with the snapshot testing.
+
+## This script will:
+## 1. Rebuild civix
+## 2. Reset the database
+## 3. Generate the $EXMODULE
+## 4. Run tests from $EXMODULE
+
 EXMODULE=${EXMODULE:-org.civicrm.civixexample}
 
-# validate environment
-if [ -z "$BUILDNAME" ]; then
-  echo "Usage: $0 <buildkit-dir> <build-name>"
-  echo "Running this will:"
-  echo " 1. Rebuild civix"
-  echo " 2. Reset the build's database"
-  echo " 3. Over-write the $EXMODULE extension"
+################################################
+## Didn't set a workspace? Educated guess...
+if [ -z "$CIVIX_WORKSPACE" -a -d "$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm" ]; then
+  export CIVIX_WORKSPACE="$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest"
+  echo "Inferred CIVIX_WORKSPACE=$CIVIX_WORKSPACE"
+fi
+if [ -z "$CIVIX_WORKSPACE" ]; then
+  echo "Missing env var: CIVIX_WORKSPACE"
   exit 1
 fi
 
-if [ ! -d $WORKINGDIR ]; then
-  echo "error: missing $WORKINGDIR"
-  exit 1
-fi
+################################################
+# validate environment
 
 set -ex
 if [ ! -f "box.json" -o ! -f "build.sh" ]; then
@@ -32,9 +35,13 @@ fi
 CIVIX=$PWD/bin/civix.phar
 VERBOSITY=-v
 
-pushd $WORKINGDIR
+if [ ! -d "$CIVIX_WORKSPACE" ]; then
+  mkdir -p "$CIVIX_WORKSPACE"
+fi
+
+pushd "$CIVIX_WORKSPACE"
   # restore database
-  civibuild restore $BUILDNAME
+  civibuild restore
 
   # clean up any existing extension
   if [ -d "$EXMODULE" ]; then
