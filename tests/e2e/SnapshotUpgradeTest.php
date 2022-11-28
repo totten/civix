@@ -2,8 +2,7 @@
 
 namespace E2E;
 
-use CRM\CivixBundle\RunsIfException;
-use CRM\CivixBundle\Utils\Path;
+use CRM\CivixBundle\RunMethodsTrait;
 use ProcessHelper\ProcessHelper as PH;
 
 /**
@@ -30,6 +29,7 @@ use ProcessHelper\ProcessHelper as PH;
  *      - 'entity3': An extension with an entity supporting APIv3.
  *      - 'entity34': An extension with an entity supporting APIv3 and APIv4.
  *      - 'kitchensink': An extension with a bunch of random things. (Varies based on the CIVIX_VERSION.)
+ *      - (NOTE: For a more detailed sketch of each scenario, see `tests/make-snapshots.sh`.)
  *
  * SnapshotUpgradeTest MUST run in an environment with `civibuild` and `cv`. It will use `civibuild restore`
  * to reinitialize the database.
@@ -37,6 +37,8 @@ use ProcessHelper\ProcessHelper as PH;
 class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
   use CivixProjectTestTrait;
+  use CivixSnapshotUpgradeTestTrait;
+  use RunMethodsTrait;
 
   /**
    * Limit the list of snapshots to test. Useful for development/inspection of specific issues.
@@ -59,20 +61,6 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
    */
   public static $key = 'org.example.civixsnapshot';
 
-  /**
-   * Name of the current snapshot file.
-   *
-   * @var string
-   */
-  protected $snapshot;
-
-  /**
-   * Console output from running `civix upgrade` against the current snapshot file.
-   *
-   * @var string|null
-   */
-  protected $upgradeLog;
-
   public function getSnapshots(): array {
     return $this->findSnapshots('org.example.civixsnapshot-*.zip');
   }
@@ -80,6 +68,24 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function setUp(): void {
     chdir(static::getWorkspacePath());
     static::cleanDir(static::getKey());
+  }
+
+  /**
+   * @param string $snapshot
+   * @dataProvider getSnapshots
+   * @throws \ReflectionException
+   */
+  public function testSnapshot(string $snapshot): void {
+    $this->setupSnapshot($snapshot);
+    [$liveChecks, $skipChecks] = $this->runMethods('/^checkSnapshot_.*/');
+
+    if (getenv('DEBUG') >= 1) {
+      printf("%s(%s) executed these checks: %s\n", __FUNCTION__, json_encode($snapshot), json_encode(array_keys($liveChecks)));
+      printf("%s(%s) skipped these checks: %s\n", __FUNCTION__, json_encode($snapshot), json_encode(array_keys($skipChecks)));
+    }
+
+    $minChecks = $this->isScenario('empty') ? 1 : 2;
+    $this->assertGreaterThanOrEqual($minChecks, count($liveChecks), "Check for $snapshot should have at least $minChecks affirmative checks.");
   }
 
   /**
@@ -145,119 +151,6 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
     // PH::runOk('cv en authx && cv curl --user=demo --login civicrm/my-page');
 
     // TODO: check on `civicrm/my-form`
-  }
-
-  /**
-   * @param string $snapshot
-   * @dataProvider getSnapshots
-   * @throws \ReflectionException
-   */
-  public function testSnapshot(string $snapshot): void {
-    $this->setupSnapshot($snapshot);
-
-    $liveChecks = [];
-    $skippedChecks = [];
-
-    $class = new \ReflectionClass($this);
-    foreach ($class->getMethods() as $method) {
-      /** @var \ReflectionMethod $method */
-      if (preg_match('/^checkSnapshot_.*/', $method->getName())) {
-        try {
-          $method->invoke($this, $snapshot);
-          $liveChecks[] = $method->getName();
-        }
-        catch (RunsIfException $e) {
-          $skippedChecks[] = $method->getName();
-        }
-      }
-    }
-
-    if (getenv('DEBUG') >= 1) {
-      fprintf(STDERR, "%s(\"%s\") executed these checks: %s\n", __FUNCTION__, $snapshot, json_encode($liveChecks));
-      fprintf(STDERR, "%s(\"%s\") skipped these checks: %s\n", __FUNCTION__, $snapshot, json_encode($skippedChecks));
-    }
-
-    $minChecks = $this->isScenario('empty') ? 1 : 2;
-    $this->assertGreaterThanOrEqual($minChecks, count($liveChecks), "Check for $snapshot should have at least $minChecks affirmative checks.");
-  }
-
-  /**
-   * Extract, upgrade, and install the $snapshot in a clean environment.
-   *
-   * @param string $snapshot
-   */
-  protected function setupSnapshot(string $snapshot) {
-    $this->snapshot = $snapshot;
-    PH::runOk('civibuild restore');
-    PH::runOk('unzip ' . escapeshellarg($this->getSnapshotPath($snapshot)));
-    chdir(static::getKey());
-    $this->upgradeLog = $this->civixUpgrade()->getDisplay(TRUE);
-    $this->assertStringSequence(['Incremental upgrades', 'General upgrade'], $this->upgradeLog);
-    PH::runOk('cv en civixsnapshot');
-  }
-
-  public static function getSnapshotPath(...$subpath): Path {
-    $path = new Path(dirname(__DIR__));
-    array_unshift($subpath, 'snapshots');
-    return empty($subpath) ? $path : $path->path(...$subpath);
-  }
-
-  /**
-   * Ex: Does 'org.example.
-   * @param string $type
-   * @return bool
-   */
-  public function isScenario(string $type): bool {
-    [, , $actualType] = explode('-', $this->snapshot);
-    $actualType = str_replace('.zip', '', $actualType);
-    return $actualType === $type;
-  }
-
-  public function isSnapshotVersion(string $op, string $expectCivixVer): bool {
-    [, $actualCivixVer] = explode('-', $this->snapshot);
-    $actualCivixVer = str_replace('v', '', $actualCivixVer);
-    $expectCivixVer = str_replace('v', '', $expectCivixVer);
-    return version_compare($actualCivixVer, $expectCivixVer, $op);
-  }
-
-  public function isKitchenSinkWith(string $glob): bool {
-    return $this->isScenario('kitchensink') && !empty(glob($glob));
-  }
-
-  public function findSnapshots(string $glob): array {
-    $r = [];
-
-    $filterConstantName = static::class . '::SNAPSHOT_FILTER';
-    $filterConstant = defined($filterConstantName) ? constant($filterConstantName) : NULL;
-    $filterEnv = getenv('SNAPSHOT_FILTER');
-    if ($filterConstant && $filterEnv) {
-      throw new \RuntimeException('Error: SNAPSHOT_FILTER has been set twice!');
-    }
-
-    $filter = $filterConstant ?: $filterEnv ?: ';.;';
-    $files = glob($this->getSnapshotPath($glob));
-    foreach ($files as $file) {
-      if (preg_match($filter, basename($file))) {
-        $key = preg_replace(';^org\.example\.(.*)\.zip$;', '$1', basename($file));
-        $r[$key] = [basename($file)];
-      }
-    }
-    return $r;
-  }
-
-  /**
-   * Assert that the current 'checkSnapshot_*' method is (or is not) applicable to the current snapshot.
-   *
-   * @param bool $bool
-   *   If TRUE, then proceed with normal execution.
-   *
-   *   If FALSE, raise an exception that will propagate back to the main `testSnapshot()` method.
-   *   The next check will run.
-   */
-  protected function runsIf(bool $bool) {
-    if (!$bool) {
-      throw new RunsIfException();
-    }
   }
 
 }
