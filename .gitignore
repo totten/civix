@@ -8,7 +8,12 @@ bin/php-parse
 bin/psysh
 bin/var-dump-server
 build/
+/tests/snapshots/*/upgrade
+/tests/snapshots/*/upgrade.log
+/tests/snapshots/*/upgrade.err
+/tests/snapshots/*/upgrade.diff
 /extern/
+/tmp/
 vendor
 composer.phar
 *~
