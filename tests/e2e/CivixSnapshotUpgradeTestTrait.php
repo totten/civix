@@ -54,7 +54,7 @@ trait CivixSnapshotUpgradeTestTrait {
     if ($this->resolveConstant('SNAPSHOT_SAVE', FALSE)) {
       file_put_contents("$snapshotDir/upgrade.log", $this->upgradeLog);
       $fs->mirror('.', "$snapshotDir/upgrade");
-      PH::runOk(sprintf('zipdiff.php %s/original.zip %s/upgrade > %s/upgrade.diff', escapeshellarg($snapshotDir), escapeshellarg($snapshotDir), escapeshellarg($snapshotDir)));
+      PH::runOk(sprintf('zipdiff %s/original.zip %s/upgrade > %s/upgrade.diff', escapeshellarg($snapshotDir), escapeshellarg($snapshotDir), escapeshellarg($snapshotDir)));
     }
 
     $this->assertStringSequence(['Incremental upgrades', 'General upgrade'], $this->upgradeLog);
