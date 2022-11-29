@@ -93,24 +93,4 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals($start, $end);
   }
 
-  /**
-   * Assert that each item of $expectSubstrings appears in $actualText.
-   * Strings must appear in the given order. Other text is ignored.
-   *
-   * @param string[] $expectSubstrings
-   *   List of strings that should appear, in order of appearance.
-   *   Ex: ['200', '400']
-   * @param string $actualText
-   *   Ex: "100\n200\n300\n400\n500\n"
-   */
-  protected function assertStringSequence(array $expectSubstrings, string $actualText) {
-    $lastPos = 0;
-    foreach ($expectSubstrings as $n => $expectLine) {
-      $pos = strpos($actualText, $expectLine, $lastPos);
-      $this->assertTrue($pos !== FALSE && $pos >= $lastPos, "Expect to find item #{$n} (\"$expectLine\")");
-      $lastPos = $pos;
-    }
-    $this->assertTrue($lastPos > 0, 'Should have found multiple lines.');
-  }
-
 }
