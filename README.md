@@ -142,10 +142,12 @@ export CIVIX_WORKSPACE=$HOME/buildkit/build/dmaster/web/sites/all/modules/civicr
 ## Look at available snapshots
 ls tests/snapshots/
 
-## Run "civix upgrade" against the existing snapshots. Optionally, filter by the name of the snapshots.
+## Run "civix upgrade" against the existing snapshots.
+## Optionally, you may filter by name and increase verbosity.
 ./scripts/upgrade-snapshots.sh
 ./scripts/upgrade-snapshots.sh /entity34/
 ./scripts/upgrade-snapshots.sh /v22.10.2-entity34/
+DEBUG=2 ./scripts/upgrade-snapshots.sh /v22.10.2-entity34/
 
 ## Review the output of "civix upgrade"
 cd tests/snapshots/*/*v22.10.2-entity34*
@@ -153,7 +155,8 @@ less upgrade.log
 zipdiff.php original.zip upgrade | colordiff | less -R
 cd ../../../..
 
-## Make new extensions with the current civix source-code. Save the snapshots for us to inspect.
+## Make new extensions with the current civix source-code.
+## Save the snapshots for us to inspect.
 ./scripts/make-snapshots.sh --src
 
 ## As above, but also install and test the snapshots.
