@@ -55,7 +55,7 @@ function build_snapshot() {
   [ -f "$zipfile" ] && rm -f "$zipfile"
   [ ! -d "$snapdir" ] && mkdir -p "$snapdir"
 
-  $CIVIX $VERBOSITY generate:module "$EXMODULE" --enable=no --no-interaction
+  $CIVIX $VERBOSITY generate:module "$EXMODULE" --enable=no --no-interaction --compatibility=5.0
 
   pushd "$EXMODULE"
   case "$name" in
