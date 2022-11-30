@@ -130,6 +130,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
  */
 function _<?php echo $mainFile ?>_civix_civicrm_install() {
+  _<?php echo $mainFile ?>_civix_civicrm_config();
 <?php echo $_invokePolyfill; ?>
 }
 
@@ -139,6 +140,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_install() {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
 function _<?php echo $mainFile ?>_civix_civicrm_enable(): void {
+  _<?php echo $mainFile ?>_civix_civicrm_config();
 <?php echo $_invokePolyfill; ?>
 }
 
