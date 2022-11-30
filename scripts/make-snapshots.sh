@@ -133,12 +133,15 @@ function build_snapshot() {
 
   if [ -n "$RUN_TEST" ]; then
     ## If any of these fail, then we should exit
-    cv en "$EXMODULE"
-    find tests -name '*.php' | xargs civilint
-    if [ -e 'tests/phpunit' ]; then
-      phpunit8 --group headless
-      phpunit8 --group e2e
-    fi
+    pushd "$EXMODULE"
+      cv en "$EXMODULE"
+      find tests -name '*.php' | xargs civilint
+      if [ -e 'tests/phpunit' ]; then
+        ## FIXME: phpunit8; but some tests need updating?
+        phpunit5 --group headless
+        phpunit5 --group e2e
+      fi
+    popd
   fi
 }
 
