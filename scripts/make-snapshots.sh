@@ -11,6 +11,8 @@ SNAPSHOT_VER='HEAD'
 #SNAPSHOT_VER=$( git describe --tags )
 VERBOSITY=
 RUN_TEST=
+KEEP=
+SCENARIOS=
 
 while [ -n "$1" ]; do
   OPT="$1"
@@ -18,15 +20,21 @@ while [ -n "$1" ]; do
   case "$OPT" in
     --src|--phar) CIVIX_BUILD_TYPE="$OPT" ; ;;
     --version) SNAPSHOT_VER="$1" ; shift ; ;;
-    --test) RUN_TEST=1 ; ;;
+    --test|-t) RUN_TEST=1 ; ;;
+    --keep|-k) KEEP=1 ; ;;
+    empty|qf|entity3|entity34|kitchensink) SCENARIOS="$SCENARIOS $OPT" ; ;;
+    *) echo "Unrecognized option: $OPT" 1>&2 ; exit 1 ;;
   esac
 done
 
+if [ -z "$SCENARIOS" ]; then
+  SCENARIOS="empty qf entity3 entity34 kitchensink"
+fi
 
 ################################################
 function show_help() {
   echo "About: Generate a series of example extensions ($EXMODULE) in $SNAPSHOT_DIR."
-  echo "Usage: $0 [--phar|--src] [--version VERSION] [--test]"
+  echo "Usage: $0 [--phar|--src] [--version VERSION] [--test|-t] [--keep|-k] [scenarios...]"
   echo
   echo "Environment:"
   echo "   CIVIX_WORKSPACE: A folder within a live Civi [civibuild] tree where we can put new extensions"
@@ -36,9 +44,14 @@ function show_help() {
   echo "  --src: Directly run the current source tree"
   echo "  --version: Set the version-number on the generated snapshots"
   echo "  --test: Install each flavor of the extension. Run linters. Run tests."
+  echo "  --keep: Keep the temporary work folder"
+  echo
+  echo "Scenarios:"
+  echo "  empty qf entity3 entity34 kitchensink"
   echo
   echo "Example:"
   echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src"
+  echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src --keep entity34"
 }
 
 function clean_workspace() {
@@ -163,12 +176,10 @@ fi
 [ ! -d "$CIVIX_WORKSPACE" ] && mkdir "$CIVIX_WORKSPACE"
 pushd "$CIVIX_WORKSPACE"
   [ ! -d "$SNAPSHOT_DIR" ] && mkdir "$SNAPSHOT_DIR"
-  build_snapshot empty
-  build_snapshot qf
-  build_snapshot entity3
-  build_snapshot entity34
-  build_snapshot kitchensink
-  clean_workspace
+  for SCENARIO in $SCENARIOS ; do
+    build_snapshot "$SCENARIO"
+  done
+  [ -z "$KEEP" ] && clean_workspace
 popd
 
 ls -l "$SNAPSHOT_DIR"
