@@ -349,6 +349,13 @@ class Upgrader {
     });
   }
 
+  public function cleanEmptyLines(): void {
+    $this->updateModulePhp(function($infoXml, $content) {
+      // It might be better to cleanup more stuff, but this is enough to get IdempotentUpgradeTest to pass.
+      return rtrim($content, "\n") . "\n";
+    });
+  }
+
   /**
    * Ensure that the `mixin/` folder is in-sync with the current 'info.xml'.
    */
