@@ -27,48 +27,12 @@ function <?php echo $mainFile ?>_civicrm_install(): void {
 }
 
 /**
- * Implements hook_civicrm_postInstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
- */
-function <?php echo $mainFile ?>_civicrm_postInstall(): void {
-  _<?php echo $mainFile ?>_civix_civicrm_postInstall();
-}
-
-/**
- * Implements hook_civicrm_uninstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
- */
-function <?php echo $mainFile ?>_civicrm_uninstall(): void {
-  _<?php echo $mainFile ?>_civix_civicrm_uninstall();
-}
-
-/**
  * Implements hook_civicrm_enable().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
 function <?php echo $mainFile ?>_civicrm_enable(): void {
   _<?php echo $mainFile ?>_civix_civicrm_enable();
-}
-
-/**
- * Implements hook_civicrm_disable().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
- */
-function <?php echo $mainFile ?>_civicrm_disable(): void {
-  _<?php echo $mainFile ?>_civix_civicrm_disable();
-}
-
-/**
- * Implements hook_civicrm_upgrade().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_upgrade
- */
-function <?php echo $mainFile ?>_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, $queue);
 }
 
 /**

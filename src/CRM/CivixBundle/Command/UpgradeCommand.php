@@ -87,8 +87,8 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $io->title('General upgrade');
 
     $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
-    $upgrader->cleanUpgraderBase();
     $upgrader->cleanEmptyHooks();
+    $upgrader->cleanEmptyLines();
     $upgrader->reconcileMixins();
 
     /**

@@ -2,8 +2,9 @@
 echo "<?php\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 $_compatibility = isset($compatibilityVerMin) ? $compatibilityVerMin : '5.0';
-$_invokePolyfill = version_compare($_compatibility, '5.45.beta1', '<') ? sprintf("  _%s_civix_mixin_polyfill();\n", $mainFile) : '';
-$_useCoreUpgrader = version_compare($_compatibility, '5.38', '>=');
+$_invokePolyfill = version_compare($_compatibility, '5.45.beta1', '<')
+  ? sprintf("  _%s_civix_mixin_polyfill();\n", $mainFile)
+  : "  // Based on <compatibility>, this does not currently require mixin/polyfill.php.\n";
 ?>
 
 // AUTO-GENERATED FILE -- Civix may overwrite any changes made to this file
@@ -123,7 +124,6 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
 <?php echo $_invokePolyfill; ?>
 }
 
-<?php if (!$_useCoreUpgrader) { ?>
 /**
  * Implements hook_civicrm_install().
  *
@@ -131,36 +131,7 @@ function _<?php echo $mainFile ?>_civix_civicrm_config(&$config = NULL) {
  */
 function _<?php echo $mainFile ?>_civix_civicrm_install() {
   _<?php echo $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    $upgrader->onInstall();
-  }
 <?php echo $_invokePolyfill; ?>
-}
-
-/**
- * Implements hook_civicrm_postInstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
- */
-function _<?php echo $mainFile ?>_civix_civicrm_postInstall() {
-  _<?php echo $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    if (is_callable([$upgrader, 'onPostInstall'])) {
-      $upgrader->onPostInstall();
-    }
-  }
-}
-
-/**
- * Implements hook_civicrm_uninstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
- */
-function _<?php echo $mainFile ?>_civix_civicrm_uninstall(): void {
-  _<?php echo $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    $upgrader->onUninstall();
-  }
 }
 
 /**
@@ -170,60 +141,9 @@ function _<?php echo $mainFile ?>_civix_civicrm_uninstall(): void {
  */
 function _<?php echo $mainFile ?>_civix_civicrm_enable(): void {
   _<?php echo $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    if (is_callable([$upgrader, 'onEnable'])) {
-      $upgrader->onEnable();
-    }
-  }
 <?php echo $_invokePolyfill; ?>
 }
 
-/**
- * (Delegated) Implements hook_civicrm_disable().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
- * @return mixed
- */
-function _<?php echo $mainFile ?>_civix_civicrm_disable(): void {
-  _<?php echo $mainFile ?>_civix_civicrm_config();
-  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    if (is_callable([$upgrader, 'onDisable'])) {
-      $upgrader->onDisable();
-    }
-  }
-}
-
-/**
- * (Delegated) Implements hook_civicrm_upgrade().
- *
- * @param $op string, the type of operation being performed; 'check' or 'enqueue'
- * @param $queue CRM_Queue_Queue, (for 'enqueue') the modifiable list of pending up upgrade tasks
- *
- * @return mixed
- *   based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
- *   for 'enqueue', returns void
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_upgrade
- */
-function _<?php echo $mainFile ?>_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  if ($upgrader = _<?php echo $mainFile ?>_civix_upgrader()) {
-    return $upgrader->onUpgrade($op, $queue);
-  }
-}
-
-/**
- * @return <?php echo $_namespace ?>_Upgrader
- */
-function _<?php echo $mainFile ?>_civix_upgrader() {
-  if (!file_exists(__DIR__ . '/<?php echo $namespace ?>/Upgrader.php')) {
-    return NULL;
-  }
-  else {
-    return <?php echo $_namespace ?>_Upgrader_Base::instance();
-  }
-}
-
-<?php } ?>
 /**
  * Inserts a navigation menu item at a given place in the hierarchy.
  *

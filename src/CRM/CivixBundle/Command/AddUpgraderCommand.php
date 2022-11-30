@@ -22,8 +22,6 @@ class AddUpgraderCommand extends AbstractCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $this->assertCurrentFormat();
 
-    // TODO validate that hook_civicrm_upgrade has been implemented
-
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = Application::findExtDir();
@@ -37,21 +35,14 @@ class AddUpgraderCommand extends AbstractCommand {
       return;
     }
 
-    $compatVer = $info->getCompatibilityVer();
-    // Since 5.38 core provides its own upgrader base class
-    $useCore = version_compare($compatVer, '5.38', '>=');
-
     $dirs = [
       $basedir->string('sql'),
       $basedir->string($ctx['namespace']),
     ];
-    if (!$useCore) {
-      $dirs[] = $basedir->string($ctx['namespace'], 'Upgrader');
-    }
     (new Dirs($dirs))->save($ctx, $output);
 
     $crmPrefix = preg_replace(':/:', '_', $ctx['namespace']);
-    $ctx['baseUpgrader'] = $useCore ? 'CRM_Extension_Upgrader_Base' : $crmPrefix . '_Upgrader_Base';
+    $ctx['baseUpgrader'] = 'CRM_Extension_Upgrader_Base';
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
     if (!file_exists($phpFile)) {
@@ -63,18 +54,11 @@ class AddUpgraderCommand extends AbstractCommand {
       $output->writeln(sprintf('<error>Skip %s: file already exists, defer to customized version</error>', $phpFile));
     }
 
-    if (!$useCore) {
-      $phpFile = $basedir->string($ctx['namespace'], 'Upgrader', 'Base.php');
-      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
-      file_put_contents($phpFile, Services::templating()
-        ->render('upgrader-base.php.php', $ctx));
+    if (!$info->get()->xpath('upgrader')) {
+      $info->get()->addChild('upgrader', $crmPrefix . '_Upgrader');
     }
-    else {
-      if (!$info->get()->xpath('upgrader')) {
-        $info->get()->addChild('upgrader', $crmPrefix . '_Upgrader');
-        $info->save($ctx, $output);
-      }
-    }
+    $info->raiseCompatibilityMinimum('5.38');
+    $info->save($ctx, $output);
 
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
