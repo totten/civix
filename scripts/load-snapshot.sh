@@ -33,6 +33,8 @@ EXMODULE=${EXMODULE:-org.example.civixsnapshot}
 #shift
 SNAPSHOT=
 TASKS=
+CIVIX="$PWD"/bin/civix
+
 while getopts "hs:rxgeu" opt; do
   case $opt in
     h) usage ; exit ; ;;
@@ -97,8 +99,7 @@ pushd "$CIVIX_WORKSPACE"
         popd
         ;;
       enable) cv en "$EXMODULE" ; ;;
-      upgrade) echo "FIXME: Need CIVIX var" ; ;;
-      # upgrade) pushd "$EXMODULE" && $CIVIX upgrade && popd ; ;;
+      upgrade) pushd "$EXMODULE" && $CIVIX upgrade && popd ; ;;
       *) echo "Unrecognized task: $TASK" ; exit 1; ;;
     esac
   done
