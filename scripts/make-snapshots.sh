@@ -138,8 +138,8 @@ function build_snapshot() {
       find tests -name '*.php' | xargs civilint
       if [ -e 'tests/phpunit' ]; then
         ## FIXME: phpunit8; but some tests need updating?
-        phpunit5 --group headless
-        phpunit5 --group e2e
+        phpunit8 --group headless
+        phpunit8 --group e2e
       fi
     popd
   fi
