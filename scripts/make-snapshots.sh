@@ -138,8 +138,8 @@ function build_snapshot() {
       find tests -name '*.php' | xargs civilint
       if [ -e 'tests/phpunit' ]; then
         ## FIXME: phpunit8; but some tests need updating?
-        phpunit5 --group headless
-        phpunit5 --group e2e
+        phpunit8 --group headless
+        phpunit8 --group e2e
       fi
     popd
   fi
@@ -182,7 +182,12 @@ pushd "$CIVIX_WORKSPACE"
   for SCENARIO in $SCENARIOS ; do
     build_snapshot "$SCENARIO"
   done
-  [ -z "$KEEP" ] && clean_workspace
+  if [ -z "$KEEP" ]; then
+    clean_workspace
+  else
+    ## If we're keeping this one, then let's make it easier to play around in the work dir
+    (cd "$EXMODULE" && git init && git add . && git commit -m 'Import skeleton')
+  fi
 popd
 
 ls -l "$SNAPSHOT_DIR"
