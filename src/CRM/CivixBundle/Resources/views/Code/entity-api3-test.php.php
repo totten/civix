@@ -30,7 +30,7 @@ class <?php echo $testApi3ClassName ?> extends \PHPUnit\Framework\TestCase imple
   /**
    * The setup() method is executed before the test is executed (optional).
    */
-  public function setUp() {
+  public function setUp(): void {
     $table = CRM_Core_DAO_AllCoreTables::getTableForEntityName(<?php var_export($entityNameCamel); ?>);
     $this->assertTrue($table && CRM_Core_DAO::checkTableExists($table), 'There was a problem with extension installation. Table for ' . <?php var_export($entityNameCamel); ?> . ' not found.');
     parent::setUp();
@@ -40,7 +40,7 @@ class <?php echo $testApi3ClassName ?> extends \PHPUnit\Framework\TestCase imple
    * The tearDown() method is executed after the test was executed (optional)
    * This can be used for cleanup.
    */
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
   }
 
@@ -49,7 +49,7 @@ class <?php echo $testApi3ClassName ?> extends \PHPUnit\Framework\TestCase imple
    *
    * Note how the function name begins with the word "test".
    */
-  public function testCreateGetDelete() {
+  public function testCreateGetDelete(): void {
     // Boilerplate entity has one data field -- 'contact_id'.
     // Put some data in, read it back out, and delete it.
 
