@@ -297,6 +297,10 @@ class Upgrader {
                 throw new \RuntimeException("Error: Unrecongized option ($action)");
             }
           }
+          if ($line === NULL) {
+            // If any $name matches and causes removal, then we don't need to check the other $names.
+            break;
+          }
         }
 
         if ($line !== NULL) {
