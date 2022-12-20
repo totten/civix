@@ -1,9 +1,9 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
-use CRM\CivixBundle\Application;
 use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Versioning;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -128,6 +128,7 @@ class Mixins implements Builder {
       $this->addMixinToXml($newMixin);
     }
 
+    $this->reconcileMinimums($output);
     $this->reconcileBackports($output);
   }
 
@@ -210,6 +211,41 @@ class Mixins implements Builder {
     $backportInfo = $this->getBackportInfo($mixinConstraint);
     $result = empty($backportInfo['provided-by']) ? FALSE : version_compare($compatVer, $backportInfo['provided-by'], '>=');
     // print_r([__FUNCTION__, '$compatVer'=> $compatVer, '$mixinConstraint' => $mixinConstraint, '$backportInfo' => $backportInfo, $result ? 'true' : 'false']);
+    return $result;
+  }
+
+  protected function reconcileMinimums(OutputInterface $output): void {
+    $currentMin = $this->info->getCompatibilityVer();
+    $unmetMinimums = $this->findUnmetMinimums($this->getDeclaredMixinConstraints());
+    if ($unmetMinimums) {
+      $effectiveMin = Versioning::pickVer($unmetMinimums, 'MAX');
+
+      foreach ($unmetMinimums as $mixinConstraint => $mixinMin) {
+        $output->writeln("<comment>! [NOTE] The requirements should be increased because \"$mixinConstraint\" requires CiviCRM $mixinMin.</comment>");
+      }
+      $output->writeln("<info>Increase minimum CiviCRM requirement from</info> $currentMin <info>to</info> $effectiveMin");
+      $this->info->raiseCompatibilityMinimum($effectiveMin);
+    }
+  }
+
+  /**
+   * Each required mixin may implicitly require some minimum version of Civi.
+   * Does the current `<compatibility>` support these minimums?
+   *
+   * @param array $mixinConstraints
+   *   Ex: ['entity-types-php@1.0.0', 'mgd-php@1.0.0', 'ang-php@1.0.0']
+   * @return array
+   *   Ex: ['entity-types-php@1.0.0' => '5.45']
+   */
+  protected function findUnmetMinimums(array $mixinConstraints): array {
+    $currentMin = $this->info->getCompatibilityVer();
+    $result = [];
+    foreach ($mixinConstraints as $mixinConstraint) {
+      $info = $this->getBackportInfo($mixinConstraint);
+      if (isset($info['minimum']) && version_compare($currentMin, $info['minimum'], '<')) {
+        $result[$mixinConstraint] = $info['minimum'];
+      }
+    }
     return $result;
   }
 

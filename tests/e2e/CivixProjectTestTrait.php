@@ -118,6 +118,22 @@ trait CivixProjectTestTrait {
   }
 
   /**
+   * Get a value from "info.xml" by calling "civix info:get"
+   *
+   * @param string $xpath
+   */
+  public function civixInfoGet(string $xpath): CommandTester {
+    $tester = static::civix('info:get');
+    $tester->execute([
+      '--xpath' => $xpath,
+    ]);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to get \"%s\"", $xpath));
+    }
+    return $tester;
+  }
+
+  /**
    * Update the "info.xml" by calling "civix info:set"
    *
    * @param string $xpath
@@ -187,6 +203,65 @@ trait CivixProjectTestTrait {
           $errors[$glob] = "Expected to find {$expectMatches} matches for \"$glob\". Found  {$countMatches} matches (" . implode(' ', $matches) . ")";
         }
       }
+    }
+    $this->assertEquals([], $errors);
+  }
+
+  /**
+   * Assert that various mixins are turned on or off.
+   *
+   * @param array $expectedMixins
+   *   Ex: ['setting-php@1' => 'on']
+   *   Valid statuses:
+   *    - 'off' (mixin does not appear in 'info.xml' or 'mixins/*.php')
+   *    - 'on' (mixin appears 'info.xml' but does not need a backport 'mixins/*.php')
+   *    - 'on+backport' (mixin appears in both 'info.xml' and 'mixins/*.php')
+   */
+  protected function assertMixinStatuses(array $expectedMixins): void {
+    $output = $this->civixInfoGet('mixins/mixin')->getDisplay();
+    $lines = explode("\n", $output);
+
+    $errors = [];
+    foreach ($expectedMixins as $mixinPrefix => $expectedStatus) {
+      $mixinRegex = ';^' . $mixinPrefix . ';';
+      $mixinBackportsGlob = "mixin/{$mixinPrefix}.*.*.mixin.php";
+      $mixinBackports = (array) glob($mixinBackportsGlob);
+
+      switch ($expectedStatus) {
+        case 'off':
+          if (preg_grep($mixinRegex, $lines)) {
+            $errors[] = "Unexpectedly found mixin $mixinPrefix";
+          }
+          if (count($mixinBackports) > 0) {
+            $errors[] = "Found unnecessary backport files for $mixinPrefix: " . json_encode($mixinBackports);
+          }
+          break;
+
+        case 'on':
+          if (!preg_grep($mixinRegex, $lines)) {
+            $errors[] = "Failed to find mixin $mixinPrefix";
+          }
+          if (count($mixinBackports) > 0) {
+            $errors[] = "Found unnecessary backport files for $mixinPrefix: " . json_encode($mixinBackports);
+          }
+          break;
+
+        case 'on+backport':
+          if (!preg_grep($mixinRegex, $lines)) {
+            $errors[] = "Failed to find mixin $mixinPrefix";
+          }
+          if (count($mixinBackports) < 1) {
+            $errors[] = "Failed to find backport files for $mixinPrefix: $mixinBackportsGlob";
+          }
+          if (count($mixinBackports) > 1) {
+            $errors[] = "Found excessive backport files for $mixinPrefix: " . json_encode($mixinBackports);
+          }
+          break;
+
+        default:
+          throw new \RuntimeException("Error: Malformed expectationat (status=$expectedStatus)");
+      }
+
     }
     $this->assertEquals([], $errors);
   }
