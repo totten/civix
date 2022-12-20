@@ -9,7 +9,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
 
   if (is_dir($upgrader->baseDir->string('xml/schema/CRM'))) {
     $upgrader->io->note([
-      'Civix 22.12 removes `*_civix_civicrm_entityTypes` in favor of a mixin `entity-types-php@1.0`.',
+      'Civix 23.02 removes `*_civix_civicrm_entityTypes` in favor of a mixin `entity-types-php@1.0`.',
       'This reduces code-duplication and will enable easier updates in the future.',
       'This may raise the minimum requirements to CiviCRM v5.45.',
     ]);
