@@ -17,6 +17,10 @@ BOX_DIR="$PRJDIR/extern/box-$BOX_VERSION"
 BOX_BIN="$BOX_DIR/box"
 [ ! -f "$BOX_BIN" ] && ( mkdir -p "$BOX_DIR" ; curl -L "$BOX_URL" -o "$BOX_BIN" )
 
+## Box's temp file convention is not multi-user aware. Prone to permission error when second user tries to write.
+export TMPDIR="/tmp/box-$USER"
+if [ ! -d "$TMPDIR" ]; then mkdir "$TMPDIR"  ; fi
+
 pushd "$PRJDIR" >> /dev/null
   composer install --prefer-dist --no-progress --no-suggest --no-dev
   BOX_ALLOW_XDEBUG=1 php -d phar.readonly=0 "$BOX_BIN" compile -v
