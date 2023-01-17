@@ -109,7 +109,9 @@ function _<?php echo $mainFile ?>_civix_civicrm_config($config = NULL) {
 
   $extRoot = __DIR__ . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
-  CRM_Core_Smarty::singleton()->addTemplateDir($extDir);
+  if (file_exists($extDir)) {
+    CRM_Core_Smarty::singleton()->addTemplateDir($extDir);
+  }
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
