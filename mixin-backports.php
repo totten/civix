@@ -69,6 +69,14 @@ return [
     'provided-by' => '5.45.beta1',
     'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
+  'smarty-v2@1' => [
+    'version' => '1.0.0',
+    'sha256' => '8896fcec3498395127473eb41202694502f6017e3fdf80d32629631e11d0ba42',
+    'remote' => 'https://github.com/civicrm/civicrm-core/raw/5de68476ca160005ee7809f0963e61bb49b67142/mixin/smarty-v2%401/mixin.php',
+    'local' => 'extern/mixin/smarty-v2@1/mixin.php',
+    'provided-by' => '5.58',
+    'minimum' => '5.27', /* Compat may go back to 5.25; only really tested 5.33 */
+  ],
   'theme-php@1' => [
     'version' => '1.0.0',
     'sha256' => '2d4bd2442fde152c8f31805ac265c2249d5cf771185f1ac870fd1fcbb18db3ed',
