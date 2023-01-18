@@ -19,7 +19,7 @@ use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
 
-  protected $defaultMixins = ['setting-php@1', 'mgd-php@1'];
+  protected $defaultMixins = ['setting-php@1', 'mgd-php@1', 'smarty-v2@1'];
 
   protected function configure() {
     Services::templating();
