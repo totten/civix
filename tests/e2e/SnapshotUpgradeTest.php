@@ -161,8 +161,8 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
     $classExists = PH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Form_MyForm::class) ? "found" : "missing";\'');
     $this->assertTrue((bool) preg_match('/^found/', $classExists->getOutput()), 'Class should be loadable/parsable.');
 
-    // TODO: Send an actual web-request... or maybe add a test...
-    // PH::runOk('cv en authx && cv curl --user=demo --login civicrm/my-page');
+    $httpGet = PH::runOk('cv en authx && cv http -LU admin civicrm/my-page');
+    $this->assertRegExp(';The current time is;', $httpGet->getOutput());
   }
 
 }
