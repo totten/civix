@@ -214,34 +214,3 @@ function _<?php echo $mainFile ?>_civix_fixNavigationMenuItems(&$nodes, &$maxNav
     }
   }
 }
-
-/**
- * (Delegated) Implements hook_civicrm_entityTypes().
- *
- * Find any *.entityType.php files, merge their content, and return.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-<?php
-$entityTypeLines = '';
-$count = count($entityTypes);
-$thisLineCount = 1;
-// Add appropriate indentation
-foreach ($entityTypes as $entityName => $entityKeys) {
-  $entityTypeLines .= "\n    '$entityName' => [\n";
-  foreach ($entityKeys as $key => $value) {
-    $entityTypeLines .= "      '$key' => '{$value}',\n";
-  }
-  if ($thisLineCount < $count) {
-    $entityTypeLines .= '    ],';
-    $thisLineCount++;
-  }
-  else {
-    $entityTypeLines .= "    ],\n  ";
-  }
-}
-
-?>
-function _<?php echo $mainFile ?>_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, [<?php echo $entityTypeLines ?>]);
-}

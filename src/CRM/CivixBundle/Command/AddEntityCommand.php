@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
+use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
@@ -80,6 +81,11 @@ explicity.');
     else {
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
+
+    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@1.0']);
+    $mixins->save($ctx, $output);
+    $info->save($ctx, $output);
+
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'] . '.php');
     $ctx['api4File'] = $basedir->string('Civi', 'Api4', $ctx['entityNameCamel'] . '.php');
     $ctx['daoClassName'] = strtr($ctx['namespace'], '/', '_') . '_DAO_' . $input->getArgument('<EntityName>');

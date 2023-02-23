@@ -35,17 +35,6 @@ function <?php echo $mainFile ?>_civicrm_enable(): void {
   _<?php echo $mainFile ?>_civix_civicrm_enable();
 }
 
-/**
- * Implements hook_civicrm_entityTypes().
- *
- * Declare entity types provided by this module.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function <?php echo $mainFile ?>_civicrm_entityTypes(&$entityTypes): void {
-  _<?php echo $mainFile ?>_civix_civicrm_entityTypes($entityTypes);
-}
-
 // --- Functions below this ship commented out. Uncomment as required. ---
 
 /**

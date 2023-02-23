@@ -18,8 +18,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       ->setName('generate:entity-boilerplate')
       ->setDescription('Generates boilerplate code for entities based on xml schema definition files (*EXPERIMENTAL AND INCOMPLETE*)')
       ->setHelp(
-        "Creates DAOs, mysql install and uninstall instructions, and an appropriate\n" .
-        "hook_civicrm_entityTypes based on this extension's xml schema files.\n" .
+        "Creates DAOs, mysql install and uninstall instructions.\n" .
         "\n" .
         "Typically you will run this command after creating or updating one or more\n" .
         "xml/schema/CRM/NameSpace/EntityName.xml files.\n"
