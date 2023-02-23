@@ -39,7 +39,7 @@ return [
   'entity-types-php@1' => [
     'version' => '1.0.0',
     'sha256' => 'f8e10aac991b2b3acac269a1fca81f883a295908990687959e790885a2e410c2',
-    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/8de7881b35e3f98d38b147dcf23f5a44d5dfe035/mixin/entity-types-php%401/mixin.php',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.57.0/mixin/entity-types-php%401/mixin.php',
     'local' => 'extern/mixin/entity-types-php@1/mixin.php',
     'provided-by' => '5.57.beta1',
     'minimum' => '5.45',
