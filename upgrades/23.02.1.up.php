@@ -22,7 +22,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
       ]);
 
       if ($io->confirm('Add the "Civi" namespace?')) {
-        $loaders[] = ['type' => 'psr4', 'prefix' => 'Civi\\', 'path' => '.'];
+        $loaders[] = ['type' => 'psr4', 'prefix' => 'Civi\\', 'path' => 'Civi'];
         $info->setClassLoaders($loaders);
       }
     }
