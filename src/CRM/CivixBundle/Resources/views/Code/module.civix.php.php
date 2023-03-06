@@ -149,8 +149,8 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
   if (empty($path)) {
     $menu[] = [
       'attributes' => array_merge([
-        'label'      => CRM_Utils_Array::value('name', $item),
-        'active'     => 1,
+        'label' => $item['name'] ?? NULL,
+        'active' => 1,
       ], $item),
     ];
     return TRUE;
