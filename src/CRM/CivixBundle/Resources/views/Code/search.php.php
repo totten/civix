@@ -131,7 +131,7 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
 
     $count  = 1;
     $clause = array();
-    $name   = $this->_formValues['household_name'] ?? NULL;
+    $name = $this->_formValues['household_name'] ?? NULL;
     if ($name != NULL) {
       if (strpos($name, '%') === FALSE) {
         $name = "%{$name}%";
