@@ -194,7 +194,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
         // in previous row
         $repeatFound = FALSE;
         foreach ($row as $colName => $colVal) {
-          if (CRM_Utils_Array::value($colName, $checkList) &&
+          if ($checkList[$colName] ?? NULL) &&
             is_array($checkList[$colName]) &&
             in_array($colVal, $checkList[$colName])
           ) {

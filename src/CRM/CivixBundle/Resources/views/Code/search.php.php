@@ -131,9 +131,7 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
 
     $count  = 1;
     $clause = array();
-    $name   = CRM_Utils_Array::value('household_name',
-      $this->_formValues
-    );
+    $name = $this->_formValues['household_name'] ?? NULL;
     if ($name != NULL) {
       if (strpos($name, '%') === FALSE) {
         $name = "%{$name}%";
@@ -143,9 +141,7 @@ class <?php echo $searchClassName ?> extends CRM_Contact_Form_Search_Custom_Base
       $count++;
     }
 
-    $state = CRM_Utils_Array::value('state_province_id',
-      $this->_formValues
-    );
+    $state = $this->_formValues['state_province_id'] ?? NULL;
     if (!$state &&
       $this->_stateID
     ) {
