@@ -18,10 +18,19 @@ class Services {
   public static function boot($options = []) {
     if (!isset(self::$cache['boot'])) {
       $cwd = getcwd();
-      $options = array_merge(['prefetch' => FALSE], $options);
-      Bootstrap::singleton()->boot($options);
-      \CRM_Core_Config::singleton();
-      \CRM_Utils_System::loadBootStrap([], FALSE);
+      // TODO: It might be better for civix commands to use cv's BootTrait.
+      if (!empty(getenv('CIVICRM_BOOT'))) {
+        \Civi\Cv\CmsBootstrap::singleton()
+          ->addOptions($options)
+          ->bootCms()
+          ->bootCivi();
+      }
+      else {
+        $options = array_merge(['prefetch' => FALSE], $options);
+        Bootstrap::singleton()->boot($options);
+        \CRM_Core_Config::singleton();
+        \CRM_Utils_System::loadBootStrap([], FALSE);
+      }
       chdir($cwd);
       self::$cache['boot'] = 1;
     }
