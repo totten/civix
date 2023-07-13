@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51b24f21ca09ac6dbc30b84efe25fc77",
+    "content-hash": "a5592a3df476be469baa755d54e61757",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -111,22 +111,21 @@
         },
         {
             "name": "civicrm/cv-lib",
-            "version": "v0.3.44",
+            "version": "v0.3.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/cv-lib.git",
-                "reference": "34cd212d371d541c53f180e7382880dcaeb01d37"
+                "reference": "40b85edaa8a1ceefe3230fe4cea8289ecc2ef9c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/civicrm/cv-lib/zipball/34cd212d371d541c53f180e7382880dcaeb01d37",
-                "reference": "34cd212d371d541c53f180e7382880dcaeb01d37",
+                "url": "https://api.github.com/repos/civicrm/cv-lib/zipball/40b85edaa8a1ceefe3230fe4cea8289ecc2ef9c7",
+                "reference": "40b85edaa8a1ceefe3230fe4cea8289ecc2ef9c7",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=7.3.0",
-                "psr/log": "~1.1 || ~2.0 || ~3.0"
+                "php": ">=7.3.0"
             },
             "type": "library",
             "autoload": {
@@ -148,9 +147,9 @@
             ],
             "description": "Bootstrap library for CiviCRM CLI tools",
             "support": {
-                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.44"
+                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.45"
             },
-            "time": "2023-07-12T04:38:41+00:00"
+            "time": "2023-07-13T12:37:59+00:00"
         },
         {
             "name": "psr/container",
@@ -204,56 +203,6 @@
                 "source": "https://github.com/php-fig/container/tree/master"
             },
             "time": "2017-02-14T16:28:37+00:00"
-        },
-        {
-            "name": "psr/log",
-            "version": "1.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Log\\": "Psr/Log/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for logging libraries",
-            "homepage": "https://github.com/php-fig/log",
-            "keywords": [
-                "log",
-                "psr",
-                "psr-3"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.4"
-            },
-            "time": "2021-05-03T11:20:27+00:00"
         },
         {
             "name": "symfony/console",
