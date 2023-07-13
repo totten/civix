@@ -21,6 +21,7 @@ return [
   'exclude-classes' => [
     '/^(CRM_|HTML_|DB_|Log_)/',
     'civicrm_api3',
+    'Mixlib',
     'DB',
     'Log',
     'JFactory',
@@ -42,6 +43,6 @@ return [
     glob('src/CRM/CivixBundle/Resources/views/*/*.php'),
     glob('extern/*/*/*.php'),
     glob('extern/*/*.php'),
-  )
+  ),
 
 ];
