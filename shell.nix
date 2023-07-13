@@ -10,7 +10,7 @@ let
     sha256 = "0d643wp3l77hv2pmg2fi7vyxn4rwy0iyr8djcw1h5x72315ck9ik";
   };
   pkgs = import pkgSrc {};
-  myphp = pkgs.php74.buildEnv {
+  myphp = pkgs.php81.buildEnv {
     extraConfig = ''
       memory_limit=-1
     '';
@@ -20,5 +20,5 @@ in
 
   pkgs.mkShell {
     # nativeBuildInputs is usually what you want -- tools you need to run
-    nativeBuildInputs = [ myphp pkgs.php74Packages.composer ];
+    nativeBuildInputs = [ myphp pkgs.php81Packages.composer ];
 }
