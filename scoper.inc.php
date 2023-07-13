@@ -2,21 +2,46 @@
 
 return [
   'prefix' => 'CivixPhar',
-  'patchers' => [
-      function (string $filePath, string $prefix, string $content) {
-          // In some cases, `civix` references classes provided by civicrm-core or by the UF. Preserve the original names.
-          $content = preg_replace(';CivixPhar\\\(CRM_|HTML_|DB_|Drupal|JFactory|Civi::);', '$1', $content);
-          $content = preg_replace_callback(';CivixPhar\Civi\([A-Za-z0-9_\\]*);', function($m){
-            if (substr($m[1], 0, 3) === 'Cv\\') return $m[0]; // Civi\Cv is mapped.
-            else return 'Civi\\' . $m[1]; // Nothing else is mapped.
-          }, $content);
-          return $content;
-      },
+
+  'exclude-namespaces' => [
+    // Provided by civicrm
+    'Civi',
+    'Guzzle',
+    'Symfony\Component\DependencyInjection',
+
+    // Drupal8+ bootstrap
+    'Drupal',
+    'Symfony\\Component\\HttpFoundation',
+    'Symfony\\Component\\Routing',
+
+    // Joomla bootstrap
+    'TYPO3\\PharStreamWrapper',
+  ],
+
+  'exclude-classes' => [
+    '/^(CRM_|HTML_|DB_|Log_)/',
+    'civicrm_api3',
+    'DB',
+    'Log',
+    'JFactory',
+    'Civi',
+    'Drupal',
+  ],
+  'exclude-functions' => [
+    '/^civicrm_/',
+    '/^wp_.*/',
+    '/^(drupal|backdrop|user|module)_/',
+    't',
   ],
 
   // Do not generate wrappers/aliases for `civicrm_api()` etc or various CMS-booting functions.
-  'expose-global-functions' => false,
+  'expose-global-functions' => FALSE,
 
   // Do not filter template files
-  'exclude-files' => glob('src/CRM/CivixBundle/Resources/views/*/*.php'),
+  'exclude-files' => array_merge(
+    glob('src/CRM/CivixBundle/Resources/views/*/*.php'),
+    glob('extern/*/*/*.php'),
+    glob('extern/*/*.php'),
+  )
+
 ];
