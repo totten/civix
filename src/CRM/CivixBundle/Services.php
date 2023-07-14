@@ -120,6 +120,10 @@ class Services {
    */
   public static function mixlib(): Mixlib {
     if (!isset(self::$cache[__FUNCTION__])) {
+      if (!class_exists('Mixlib')) {
+        // For some reason, autoloading rule doesn't for this doesn't survive box/php-scoper/phar transofrmation.
+        require_once dirname(__DIR__, 3) . '/extern/src/Mixlib.php';
+      }
       self::$cache[__FUNCTION__] = new Mixlib(dirname(__DIR__, 3) . '/extern/mixin');
     }
     return self::$cache[__FUNCTION__];
