@@ -30,6 +30,7 @@ return [
   ],
   'exclude-functions' => [
     '/^civicrm_/',
+    '/_civicrm_api_get_entity_name_from_camel/',
     '/^wp_.*/',
     '/^(drupal|backdrop|user|module)_/',
     't',
