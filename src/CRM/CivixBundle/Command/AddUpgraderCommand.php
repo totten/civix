@@ -63,6 +63,8 @@ class AddUpgraderCommand extends AbstractCommand {
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
+
+    return 0;
   }
 
 }

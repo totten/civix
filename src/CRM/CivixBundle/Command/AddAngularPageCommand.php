@@ -81,6 +81,7 @@ For more, see https://docs.angularjs.org/guide');
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
+    return 0;
   }
 
 }

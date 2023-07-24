@@ -114,6 +114,8 @@ class AddSearchCommand extends AbstractCommand {
 
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
+
+    return 0;
   }
 
   /**

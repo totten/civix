@@ -121,6 +121,7 @@ class TestRunCommand extends Command {
       $output->write($buffer);
     });
     $output->write("\n");
+    return 0;
   }
 
   /**

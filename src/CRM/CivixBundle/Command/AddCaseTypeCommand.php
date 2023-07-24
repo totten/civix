@@ -59,6 +59,7 @@ class AddCaseTypeCommand extends AbstractCommand {
     $mixins = new Mixins($info, $basedir->string('mixin'), ['case-xml@1.0']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
+    return 0;
   }
 
 }

@@ -28,6 +28,7 @@ class PingCommand extends AbstractCommand {
     else {
       $output->writeln('<error>Ping failed: API Error: ' . $civicrm_api3->errorMsg() . '</error>');
     }
+    return 0;
   }
 
 }

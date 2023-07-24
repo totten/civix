@@ -59,6 +59,8 @@ Common fields:\n * " . implode("\n * ", $fields) . "\n");
     foreach ($info->get()->xpath($xpath) as $node) {
       $output->writeln((string) $node, OutputInterface::OUTPUT_RAW);
     }
+
+    return 0;
   }
 
 }

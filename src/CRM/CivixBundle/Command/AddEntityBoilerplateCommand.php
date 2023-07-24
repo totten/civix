@@ -148,6 +148,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       $output->writeln('<comment>You are missing an upgrader class. Your generated SQL files will not be executed on enable and uninstall. Fix this by running `civix generate:upgrader`.</comment>');
     }
 
+    return 0;
   }
 
   private function orderTables(&$tables, $output) {

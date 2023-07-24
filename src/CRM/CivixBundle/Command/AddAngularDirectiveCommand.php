@@ -80,6 +80,7 @@ For more, see https://docs.angularjs.org/guide/directive');
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
+    return 0;
   }
 
   public function toHyphen($dirName) {

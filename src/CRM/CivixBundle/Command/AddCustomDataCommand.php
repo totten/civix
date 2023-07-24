@@ -77,6 +77,8 @@ class AddCustomDataCommand extends AbstractCommand {
     else {
       $output->writeln(" * NOTE: By default, this file will not be loaded automatically -- you must define installation or upgrade logic to load the file.");
     }
+
+    return 0;
   }
 
 }

@@ -36,6 +36,7 @@ class ConfigSetCommand extends AbstractCommand {
     $data['parameters'][$input->getArgument('key')] = $input->getArgument('value');
     $ext->builders['ini']->set($data);
     $ext->save($ctx, $output);
+    return 0;
   }
 
 }

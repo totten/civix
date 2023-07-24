@@ -156,6 +156,7 @@ class InitCommand extends AbstractCommand {
     $ext->save($ctx, $output);
 
     $this->tryEnable($input, $output, $ctx['fullName']);
+    return 0;
   }
 
   /**

@@ -60,6 +60,7 @@ Common fields:
     }
 
     $info->save($ctx, $output);
+    return 0;
   }
 
 }

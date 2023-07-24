@@ -54,6 +54,7 @@ class BuildCommand extends AbstractCommand {
       throw new \RuntimeException('Failed to create zip');
     }
     print $process->getOutput();
+    return 0;
   }
 
 }

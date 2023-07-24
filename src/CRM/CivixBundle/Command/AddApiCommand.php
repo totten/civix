@@ -160,6 +160,7 @@ action names.
     $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
 
     $info->save($ctx, $output);
+    return 0;
   }
 
 }
