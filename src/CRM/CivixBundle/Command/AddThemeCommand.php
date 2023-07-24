@@ -94,6 +94,8 @@ $ civix generate:theme foobar
 
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
+
+    return 0;
   }
 
 }

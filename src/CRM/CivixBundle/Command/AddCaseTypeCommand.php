@@ -27,7 +27,7 @@ class AddCaseTypeCommand extends AbstractCommand {
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("Requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-      return;
+      return 1;
     }
 
     $this->assertCurrentFormat();
@@ -59,6 +59,7 @@ class AddCaseTypeCommand extends AbstractCommand {
     $mixins = new Mixins($info, $basedir->string('mixin'), ['case-xml@1.0']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
+    return 0;
   }
 
 }

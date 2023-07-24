@@ -73,6 +73,8 @@ as separate groups:
     $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
     $this->initTestClass(
       $input->getArgument('<CRM_Full_ClassName>'), $this->getTestTemplate($input->getOption('template')), $basedir, $ctx, $output);
+
+    return 0;
   }
 
   protected function getTestTemplate($type) {

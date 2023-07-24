@@ -77,6 +77,7 @@ class AddAngularModuleCommand extends AbstractCommand {
 
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
+    return 0;
   }
 
 }

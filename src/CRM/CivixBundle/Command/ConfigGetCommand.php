@@ -21,6 +21,7 @@ class ConfigGetCommand extends AbstractCommand {
     foreach ($this->getInterestingParameters() as $key) {
       printf("%-40s \"%s\"\n", $key, @$config['parameters'][$key]);
     }
+    return 0;
   }
 
   protected function getInterestingParameters() {

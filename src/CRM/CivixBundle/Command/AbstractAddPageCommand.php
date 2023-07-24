@@ -92,6 +92,7 @@ abstract class AbstractAddPageCommand extends AbstractCommand {
     $mixins = new Mixins($info, $basedir->string('mixin'), ['menu-xml@1.0', 'smarty-v2@1.0']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
+    return 0;
   }
 
   abstract protected function getPhpTemplate(InputInterface $input);

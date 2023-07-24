@@ -32,7 +32,7 @@ class AddUpgraderCommand extends AbstractCommand {
     $attrs = $info->get()->attributes();
     if ($attrs['type'] != 'module') {
       $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
+      return 1;
     }
 
     $dirs = [
@@ -63,6 +63,8 @@ class AddUpgraderCommand extends AbstractCommand {
     $module = new Module(Services::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
+
+    return 0;
   }
 
 }
