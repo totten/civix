@@ -29,7 +29,7 @@ class BuildCommand extends AbstractCommand {
     $attrs = $info->get()->attributes();
     if ($attrs['type'] != 'module') {
       $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
+      return 1;
     }
 
     $ctx['zipFile'] = $basedir->string('build', $ctx['fullName'] . '.zip');

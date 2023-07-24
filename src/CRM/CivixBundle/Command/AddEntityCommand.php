@@ -46,7 +46,7 @@ explicity.');
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>Require access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-      return;
+      return 1;
     }
 
     $this->assertCurrentFormat();

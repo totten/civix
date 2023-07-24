@@ -50,32 +50,32 @@ class TestRunCommand extends Command {
     $info->load($ctx);
     if ($info->getType() != 'module') {
       $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
+      return 1;
     }
 
     // Find the main phpunit
     $civicrm_api3 = Services::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>'test' requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-      return;
+      return 1;
     }
     global $civicrm_root;
     if (empty($civicrm_root) || !is_dir($civicrm_root)) {
       $output->writeln("<error>Failed to locate CiviCRM root path: $civicrm_root</error>");
-      return;
+      return 1;
     }
     $phpunit_bin = "$civicrm_root/tools/scripts/phpunit";
     if (!file_exists($phpunit_bin)) {
       $output->writeln("<error>Failed to locate PHPUnit:\n  $phpunit_bin</error>");
       $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  https://docs.civicrm.org/dev/en/latest/testing/#setup</error>");
-      return;
+      return 1;
     }
     $test_settings_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.php";
     $test_settings_dist_path = "$civicrm_root/tests/phpunit/CiviTest/civicrm.settings.dist.php";
     if (!file_exists($test_settings_path) && !file_exists($test_settings_dist_path)) {
       $output->writeln("<error>Failed to locate test settings:\n  $test_settings_path</error>");
       $output->writeln("<error>Have you configured CiviCRM for testing? See also:\n  https://docs.civicrm.org/dev/en/latest/testing/#setup</error>");
-      return;
+      return 1;
     }
     if (file_exists($test_settings_path) && self::checkLegacyExtensionSettings($test_settings_path)) {
       $output->writeln("<comment>Warning: Possible conflicts in $test_settings_path</comment>");
@@ -85,7 +85,7 @@ class TestRunCommand extends Command {
     $phpunit_boot = $this->getBootstrapFile($info->getKey(), $input->getOption('clear'));
     if (empty($phpunit_boot) || !file_exists($phpunit_boot)) {
       $output->writeln("<error>Failed to create PHPUnit bootstrap file</error>");
-      return;
+      return 1;
     }
 
     $tests_dir = implode(DIRECTORY_SEPARATOR, [getcwd(), 'tests', 'phpunit']);

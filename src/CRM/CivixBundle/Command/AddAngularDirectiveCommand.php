@@ -46,7 +46,7 @@ For more, see https://docs.angularjs.org/guide/directive');
     $attrs = $info->get()->attributes();
     if ($attrs['type'] != 'module') {
       $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
+      return 1;
     }
 
     $ctx['tsDomain'] = (string) $attrs['key'];

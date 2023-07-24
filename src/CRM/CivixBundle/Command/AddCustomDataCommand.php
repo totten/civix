@@ -45,7 +45,7 @@ class AddCustomDataCommand extends AbstractCommand {
     $attrs = $info->get()->attributes();
     if ($attrs['type'] != 'module') {
       $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
+      return 1;
     }
 
     $dirs = new Dirs([

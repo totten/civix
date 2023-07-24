@@ -72,7 +72,7 @@ class InitCommand extends AbstractCommand {
     // Name should start with an alpha and only contain alphanumeric, - and .
     if (!Naming::isValidFullName($name)) {
       $output->writeln('<error>Malformed package name</error>');
-      return;
+      return 1;
     }
 
     $ctx['basedir'] = $name;
@@ -88,7 +88,7 @@ class InitCommand extends AbstractCommand {
     else {
       $output->writeln("<error>Missing author name or email address</error>");
       $output->writeln("<error>Please pass --author and --email, or set defaults in ~/.gitconfig</error>");
-      return;
+      return 1;
     }
     $ctx['license'] = $input->getOption('license');
     if ($licenses->get($ctx['license'])) {
@@ -97,7 +97,7 @@ class InitCommand extends AbstractCommand {
     }
     else {
       $output->writeln('<error>Unrecognized license (' . $ctx['license'] . ')</error>');
-      return;
+      return 1;
     }
 
     if ($input->getOption('compatibility') === 'current') {
