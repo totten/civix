@@ -8,7 +8,8 @@ function absdirname() {
   popd >> /dev/null
 }
 
-PRJDIR=$(absdirname "$0")
+SCRDIR=$(absdirname "$0")
+PRJDIR=$(dirname "$SCRDIR")
 OUTFILE="$PRJDIR/bin/civix.phar"
 set -ex
 
