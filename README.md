@@ -1,73 +1,49 @@
+# civix
+
 Civix is a command-line tool for building CiviCRM extensions. It is distributed as part of [CiviCRM-Buildkit](https://github.com/civicrm/civicrm-buildkit).
 
-### Requirements
+## Requirements
 
-* PHP 7.1.3+
-* CiviCRM 5.0+ (installed from git http://github.com/civicrm)
+* PHP 7.3+
+* CiviCRM 5.x (*Recommended: any release from the prior 12 months*)
 * (For MAMP, WAMP, XAMPP, etc) PHP command-line configuration (http://wiki.civicrm.org/confluence/display/CRMDOC/Setup+Command-Line+PHP)
 * (For CentOS/RHEL) Compatible version of libxml2 (https://github.com/totten/civix/issues/19)
 
-### Download: Single Executable
+## Download
 
-Civix is distributed as a single, portable PHAR executable.  As long as you have PHP-CLI
-properly configured, it should work as a simple download, e.g.
+`civix` is distributed in PHAR format, which is a portable executable file (for PHP). It should run on most Unix-like systems where PHP is installed.
+Here are two quick ways to download it:
 
-```bash
-sudo curl -LsS https://download.civicrm.org/civix/civix.phar -o /usr/local/bin/civix
-sudo chmod +x /usr/local/bin/civix
-```
+* Download [the latest release of `civix.phar`](https://download.civicrm.org/civix/civix.phar) (*[SHA256](https://download.civicrm.org/civix/civix.SHA256SUMS),
+  [GPG](https://download.civicrm.org/civix/civix.phar.asc)*) and put it in the PATH. For example:
 
-To upgrade an existing installation, simply re-download the latest `civix.phar`.
+    ```bash
+    sudo curl -LsS https://download.civicrm.org/civix/civix.phar -o /usr/local/bin/civix
+    sudo chmod +x /usr/local/bin/civix
+    ```
 
-### Download: Git + Composer (Linux/OS X)
+    (*Learn more: [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](#phar-unix)*)
 
-To download the source tree and all dependencies, use [`git`](https://git-scm.com) and [`composer`](https://getcomposer.org/), e.g.:
+* Use [phar.io's `phive` installer](https://phar.io/) to download, validate, and cache the `civix.phar` file.
 
-```
-$ git clone https://github.com/totten/civix
-$ cd civix
-$ composer install
-```
+    ```bash
+    phive install totten/civix
+    ```
 
-### Download: Git + Composer (Windows)
+    (*Learn more: [Install `civix.phar` as project tool (phive)](#phar-phive)*)
 
-```
-# Install composer
-In a browser, visit http://getcomposer.org
-Click on the download button.
-Scroll down to Windows Installer and click on Composer-Setup.exe.
-Choose Run when prompted.
+There are several more options for downloading `civix`. See also:
 
-# Install git
-If you don't already have git, then in a browser visit http://git-scm.com/download/win.
-Choose Run when prompted.
-Leave all the defaults.
+* [Download URLs](doc/download.md#urls)
+* [Comparison](doc/download.md#comparison)
+* [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](doc/download.md#phar-unix)
+* [Install `civix.phar` as project tool (composer)](doc/download.md#phar-composer)
+* [Install `civix.phar` as project tool (phive)](doc/download.md#phar-phive)
+* [Install `civix.git` as system-wide tool (Linux/BSD/macOS)](doc/download.md#src-unix)
+* [Install `civix.git` as system-wide tool (Windows)](doc/download.md#src-win)
+* [Install `civix.git` as project tool (composer)](doc/download.md#src-composer)
 
-# Download civix
-Decide where you want to install civix. You might want to put it in C:\Program Files, but you might get hassled about admin rights, in which case you can pick somewhere else, like C:\users\<your name>.
-From the start menu choose All Programs -> Git -> Git Bash.
-In the window that appears, type:
-  cd "/c/users/<your name>"
-  (note the forward slashes)
-git clone git://github.com/totten/civix.git
-exit
-
-# Download dependencies
-In windows explorer, navigate to C:\users\<your name> (or whereever you installed civix).
-Shift-right-click on the civix folder.
-Choose open command window here.
-In the window that appears, type:
-  composer install
-
-# Add civix to the PATH
-Either temporarily add it:
-set PATH=%PATH%;C:\users\<your name>\civix\bin
-
-OR permanently:
-Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
-```
-
-### Documentation
+## Documentation
 
 The [CiviCRM Developer Guide](https://docs.civicrm.org/dev/en/latest/) includes [tutorials for building extensions](https://docs.civicrm.org/dev/en/latest/extensions/civix/)
 
@@ -78,94 +54,6 @@ to get reference materials about the "generate:page" command, run:
 civix generate:page --help
 ```
 
-### Development: Custom Build
+## Development
 
-`civix.phar` is usually compiled inside a [nix](https://nixos.org/download.html) shell, i.e.
-
-```bash
-nix-shell --run ./scripts/build.sh
-```
-
-You may also compile it manually in another environment -- if you have [`git`](https://git-scm.com),
-[composer](https://getcomposer.org/), and [box](http://box-project.github.io/box2/):
-
-```bash
-git clone https://github.com/totten/civix
-cd civix
-composer install
-box compile
-```
-
-> __Tips__
->
-> * To match exact versions of the toolchain, consult [shell.nix](shell.nix) and the corresponding release of [buildkit pkgs](https://github.com/civicrm/civicrm-buildkit/blob/master/nix/pkgs/default.nix).
-> * `box` may require updating `php.ini`.
-
-### Development: Testing
-
-Automated testing for `civix` requires a live CiviCRM deployment -- where it can generate and install example extensions.  The deployment
-must be amenable to CLI scripting (eg `civix`, `cv`, `civibuild`).  You should set the environment variable `CIVIX_WORKSPACE` to point to
-a folder where we can safely fill+destroy extensions, such as:
-
-```bash
-export CIVIX_WORKSPACE=$HOME/buildkit/build/dmaster/web/sites/all/modules/civicrm/ext/civixtest
-```
-
-Tests are divided into a few areas:
-
-* PHPUnit: End-to-end tests (`tests/e2e/**Test.php`)
-* PHPUnit: Unit tests (`src/CRM/CivixBundle/**Test.php`)
-* Snapshots: Library of example extensions (`tests/snapshots/*`)
-
-### Development: Testing: PHPUnit
-
-Ensure that the `CIVIX_WORKSPACE` is set before running phpunit. Also, ensure that there is clean database to test against.
-For example:
-
-```bash
-export CIVIX_WORKSPACE=$HOME/buildkit/build/dmaster/web/sites/all/modules/civicrm/ext/civixtest
-civibuild restore dmaster
-phpunit8
-```
-
-The helper `./scripts/run-tests.sh` is a small wrapper which does the above.
-
-### Development: Testing: Snapshots
-
-Snapshots are extensions generated by historical versions of civix.  The library of snapshots is used for E2E testing.
-Working with snapshots is also a handy way to evaluate patches and see how civix behaves. There are several
-scripts for working with snapshots.
-
-```bash
-export CIVIX_WORKSPACE=$HOME/buildkit/build/dmaster/web/sites/all/modules/civicrm/ext/civixtest
-
-## Look at available snapshots
-ls tests/snapshots/
-
-## Run "civix upgrade" against the existing snapshots.
-## Optionally, you may filter by name and increase verbosity.
-./scripts/upgrade-snapshots.sh
-./scripts/upgrade-snapshots.sh /entity34/
-./scripts/upgrade-snapshots.sh /v22.10.2-entity34/
-DEBUG=2 ./scripts/upgrade-snapshots.sh /v22.10.2-entity34/
-
-## Review the output of "civix upgrade"
-cd tests/snapshots/*/*v22.10.2-entity34*
-less upgrade.log
-zipdiff original.zip upgrade | colordiff | less -R
-cd ../../../..
-
-## Make new extensions with the current civix source-code.
-## Save the snapshots for us to inspect.
-./scripts/make-snapshots.sh --src
-
-## As above, but also install and test the snapshots.
-./scripts/make-snapshots.sh --src --test
-
-## Make new snapshots and save for future reference.
-./scripts/make-snapshots.sh --src --version v99.88
-git add tests/snapshots/*v99.88*
-
-## Remove any temporary data generated by the above.
-./scripts/tidy-snapshots.sh
-```
+If you are developing updates for `civix.git`, then see [doc/develop.md](doc/develop.md). It discusses PHAR compilation, unit tests, and similar processes.
