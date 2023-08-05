@@ -80,26 +80,26 @@ civix generate:page --help
 
 ### Development: Custom Build
 
-If you are developing new changes to `civix` and want to create custom build of
-`civix.phar` from source, you must have [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and
-[`box`](http://box-project.github.io/box2/) installed. Then run:
+`civix.phar` is usually compiled inside a [nix](https://nixos.org/download.html) shell, i.e.
 
-```
-$ git clone https://github.com/totten/civix
-...
-$ cd civix
-$ composer install
-...
-$ which box
-/usr/local/bin/box
-$ php -dphar.readonly=0 /usr/local/bin/box build
+```bash
+nix-shell --run ./scripts/build.sh
 ```
 
-If you want to run with the same versions of PHP+box that are used for official builds, then run:
+You may also compile it manually in another environment -- if you have [`git`](https://git-scm.com),
+[composer](https://getcomposer.org/), and [box](http://box-project.github.io/box2/):
 
+```bash
+git clone https://github.com/totten/civix
+cd civix
+composer install
+box compile
 ```
-nix-shell --run ./build.sh
-```
+
+> __Tips__
+>
+> * To match exact versions of the toolchain, consult [shell.nix](shell.nix) and the corresponding release of [buildkit pkgs](https://github.com/civicrm/civicrm-buildkit/blob/master/nix/pkgs/default.nix).
+> * `box` may require updating `php.ini`.
 
 ### Development: Testing
 

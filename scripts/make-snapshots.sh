@@ -165,11 +165,11 @@ set -ex
 # Main
 
 if [ "$CIVIX_BUILD_TYPE" = "--phar" ]; then
-  if [ ! -f "box.json" -o ! -f "build.sh" ]; then
+  if [ ! -f "box.json" -o ! -f "scripts/build.sh" ]; then
     echo "Must call from civix root dir"
     exit 1
   fi
-  ./build.sh
+  ./scripts/build.sh
   CIVIX="$PWD"/bin/civix.phar
 else
   composer install
