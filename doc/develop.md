@@ -8,10 +8,7 @@
 nix-shell --run ./scripts/build.sh
 ```
 
-To compile in another environment, use git and composer, e.g.:
-
-You may also compile it manually in another environment -- if you have [`git`](https://git-scm.com),
-[`composer`](https://getcomposer.org/), and [`box`](http://box-project.github.io/box2/):
+You may also compile it in another environment using [`git`](https://git-scm.com), [`composer`](https://getcomposer.org/), and [`box`](http://box-project.github.io/box2/).
 
 ```bash
 git clone https://github.com/totten/civix
@@ -20,9 +17,11 @@ composer install
 box compile
 ```
 
+The output will be `./bin/civix.phar`.
+
 __Tips__
 
-* To match exact versions of the toolchain, consult [shell.nix](shell.nix) and the corresponding release of [buildkit pkgs](https://github.com/civicrm/civicrm-buildkit/blob/master/nix/pkgs/default.nix).
+* To match exact versions of the toolchain, consult [shell.nix](../shell.nix) and the corresponding release of [buildkit `pkgs`](https://github.com/civicrm/civicrm-buildkit/blob/master/nix/pkgs/default.nix).
 * `box` may require updating `php.ini`.
 
 ### Testing

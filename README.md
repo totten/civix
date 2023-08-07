@@ -22,7 +22,7 @@ Here are two quick ways to download it:
     sudo chmod +x /usr/local/bin/civix
     ```
 
-    (*Learn more: [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](#phar-unix)*)
+    (*Learn more: [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](doc/download.md#phar-unix)*)
 
 * Use [phar.io's `phive` installer](https://phar.io/) to download, validate, and cache the `civix.phar` file.
 
@@ -30,11 +30,11 @@ Here are two quick ways to download it:
     phive install totten/civix
     ```
 
-    (*Learn more: [Install `civix.phar` as project tool (phive)](#phar-phive)*)
+    (*Learn more: [Install `civix.phar` as project tool (phive)](doc/download.md#phar-phive)*)
 
 There are several more options for downloading `civix`. See also:
 
-* [Download URLs for alternate ersions)](doc/download.md#urls)
+* [Download URLs for alternate versions](doc/download.md#urls)
 * [Comparison of install options](doc/download.md#comparison)
 * [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](doc/download.md#phar-unix)
 * [Install `civix.phar` as project tool (composer)](doc/download.md#phar-composer)
