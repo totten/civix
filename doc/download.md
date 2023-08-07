@@ -5,8 +5,8 @@
 `civix` is available as an executable binary (`civix.phar`) or source-code (`civix.git`).  It may be deployed as a system-wide tool, or it may be deployed as part of an
 existing web-project. Below, we give general download summary and several example procedures.
 
-* [Download URLs](#urls)
-* [Comparison](#comparison)
+* [Download URLs for alternate versions](#urls)
+* [Comparison of install options](#comparison)
 * [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](#phar-unix)
 * [Install `civix.phar` as project tool (composer)](#phar-composer)
 * [Install `civix.phar` as project tool (phive)](#phar-phive)
@@ -15,17 +15,17 @@ existing web-project. Below, we give general download summary and several exampl
 * [Install `civix.git` as project tool (composer)](#src-composer)
 
 <a name="urls"></a>
-## Download URLs
+## Download URLs for alternate versions
 
 | Format            | Version(s)           | URLs |
 | --                | --                   | --   |
 | Executable binary | Latest               | PHAR: https://download.civicrm.org/civix/civix.phar<br/>GPG: https://download.civicrm.org/civix/civix.phar.asc<br/>SHA256: https://download.civicrm.org/civix/civix.SHA256SUMS |
 |                   | Edge (*autobuild*)   | PHAR: https://download.civicrm.org/civix/civix-EDGE.phar<br/>Logs: https://test.civicrm.org/view/Tools/job/Tool-Publish-civix/ |
-|                   | Historical           | Browse: https://github.com/civicrm/civix/releases/<br/>PHAR: `https://download.civicrm.org/civix/civix-X.Y.Z.phar`<br/>GPG: `https://download.civicrm.org/civix/civix-X.Y.Z.phar.asc`<br/>SHA256: `https://download.civicrm.org/civix/civix-X.Y.Z.SHA256SUMS`<br/><br/>(*Note: Prior to v23.08, binaries were not posted to Github.*) |
+|                   | Historical           | PHAR: `https://download.civicrm.org/civix/civix-X.Y.Z.phar`<br/>GPG: `https://download.civicrm.org/civix/civix-X.Y.Z.phar.asc`<br/>SHA256: `https://download.civicrm.org/civix/civix-X.Y.Z.SHA256SUMS`<br/>Browse: https://github.com/civicrm/civix/releases/<br/><br/>(*Note: Prior to v23.08, binaries were not posted to Github.*) |
 | Source code       | All versions         | Git: https://github.com/totten/civix |
 
 <a name="comparison"></a>
-## Comparison
+## Comparison of install options
 
 There are a few procedures for installing. Here are key differences:
 

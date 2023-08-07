@@ -34,8 +34,8 @@ Here are two quick ways to download it:
 
 There are several more options for downloading `civix`. See also:
 
-* [Download URLs](doc/download.md#urls)
-* [Comparison](doc/download.md#comparison)
+* [Download URLs for alternate ersions)](doc/download.md#urls)
+* [Comparison of install options](doc/download.md#comparison)
 * [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](doc/download.md#phar-unix)
 * [Install `civix.phar` as project tool (composer)](doc/download.md#phar-composer)
 * [Install `civix.phar` as project tool (phive)](doc/download.md#phar-phive)
