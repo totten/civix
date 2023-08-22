@@ -8,15 +8,7 @@
 
 let
 
-  buildkit = import (pkgs.fetchFromGitHub {
-    owner = "totten";
-    repo = "civicrm-buildkit";
-    rev = "153371e9bdcb22392b878cca545df0888fb61925";
-    sha256 = "sha256-rdwmA4uqIqfqXu2f+ewVH0Gs/BzcB13p8oRbbTdUsAs=";
-  });
-
-  ## If you're trying to patch buildkit at the sametime, then use a local copy:
-  #buildkit = import ((builtins.getEnv "HOME") + "/bknix/default.nix");
+  buildkit = (import ./nix/buildkit.nix) { inherit pkgs; };
 
 in
 
