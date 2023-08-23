@@ -44,6 +44,7 @@ return [
     glob('src/CRM/CivixBundle/Resources/views/*/*.php'),
     glob('extern/*/*/*.php'),
     glob('extern/*/*.php'),
+    glob('vendor/symfony/polyfill-php80/Resources/stubs/*php'), /* polyfill-php80@1.27.0 + box@4.8.3 */
   ),
 
 ];
