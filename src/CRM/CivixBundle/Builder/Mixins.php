@@ -86,6 +86,9 @@ class Mixins implements Builder {
 
   protected function addMixinToXml(string $newMixinConstraint) {
     [$newMixinName, $newMixinVer] = explode('@', $newMixinConstraint);
+    // Just write the major version since that's all core will care about
+    [$majorVersion] = explode('.', $newMixinVer);
+    $newMixinConstraint = $newMixinName . '@' . $majorVersion;
 
     /** @var \SimpleXMLElement $xml */
     $xml = $this->info->get();
