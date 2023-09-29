@@ -18,7 +18,7 @@ class AddAngularPageCommand extends AbstractCommand {
     parent::configure();
     $this
       ->setName('generate:angular-page')
-      ->setDescription('Add a new Angular page (Civi v4.6+)')
+      ->setDescription('Add a new Angular page (DEPRECATED)')
       ->addOption('am', NULL, InputOption::VALUE_REQUIRED, 'Name of the Angular module (default: match the Civi module name)')
       ->addArgument('<Ctrl>', InputArgument::REQUIRED, 'Controller name (Ex: "EditCtrl")')
       ->addArgument('<RelPath>', InputArgument::REQUIRED, 'Web path (Ex: "about/me")')

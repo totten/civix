@@ -18,7 +18,7 @@ class AddAngularModuleCommand extends AbstractCommand {
     parent::configure();
     $this
       ->setName('generate:angular-module')
-      ->setDescription('Add a new Angular module (Civi v4.6+)')
+      ->setDescription('Add a new Angular module')
       ->addOption('am', NULL, InputOption::VALUE_REQUIRED, 'Name of the Angular module (default: match the Civi module name)');
   }
 
@@ -62,9 +62,8 @@ class AddAngularModuleCommand extends AbstractCommand {
         'requires' => ['crmUi', 'crmUtil', 'ngRoute'],
         'settings' => [],
       ];
-      $header = "// This file declares an Angular module which can be autoloaded\n"
-        . "// in CiviCRM. See also:\n"
-        . "// \https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules/n";
+      $header = "// Angular module $ctx[angularModuleName].\n"
+        . "// @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules";
       $ext->builders['ang.php'] = new PhpData($ctx['angularModulePhp'], $header);
       $ext->builders['ang.php']->set($angModMeta);
     }
