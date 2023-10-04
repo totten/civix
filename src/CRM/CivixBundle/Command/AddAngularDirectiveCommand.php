@@ -18,7 +18,7 @@ class AddAngularDirectiveCommand extends AbstractCommand {
     parent::configure();
     $this
       ->setName('generate:angular-directive')
-      ->setDescription('Add a new Angular directive (Civi v4.6+)')
+      ->setDescription('Add a new Angular directive')
       ->addOption('am', NULL, InputOption::VALUE_REQUIRED, 'Name of the Angular module (default: match the Civi module name)')
       ->addArgument('<directive-name>', InputArgument::REQUIRED, 'Directive name (Ex: "my-directive")')
       ->setHelp('An Angular directive is a custom HTML tag implemented in Javascript.
