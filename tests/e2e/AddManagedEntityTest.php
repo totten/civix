@@ -28,7 +28,7 @@ class AddManagedEntityTest extends \PHPUnit\Framework\TestCase {
     $this->assertMixinStatuses(['mgd-php@1' => 'off']);
     $this->assertFileGlobs(['managed/OptionGroup_preferred_communication_method.mgd.php' => 0]);
 
-    $tester = static::civix('generate:managed');
+    $tester = static::civix('export');
     $tester->execute(['<EntityName>' => 'OptionGroup', '<EntityId>' => 1]);
     if ($tester->getStatusCode() !== 0) {
       throw new \RuntimeException(sprintf("Failed to generate mgd (%s)", static::getKey()));
