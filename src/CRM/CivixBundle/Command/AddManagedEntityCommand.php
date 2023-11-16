@@ -24,14 +24,19 @@ class AddManagedEntityCommand extends AbstractCommand {
     parent::configure();
     $this
       ->setName('export')
-      ->setDescription('Exports a record in packaged format for distribution in this extension')
+      ->setDescription('(Experimental) Exports a record in packaged format for distribution in this extension')
       ->addArgument('<EntityName>', InputArgument::REQUIRED, 'API entity name (Ex: "SavedSearch")')
       ->addArgument('<EntityId>', InputArgument::REQUIRED, 'Id of entity to be exported (or name if exporting an Afform)')
       ->setHelp('Uses APIv4 Export to save existing records as .mgd.php files.
 Specify the name of the entity and the id.
 The file will be saved to the managed directory.
 
-This command also works to export Afforms to the ang directory.');
+This command also works to export Afforms to the ang directory.
+
+The command has some support for updating (re-exporting) managed records.
+However, this is experimental. At time of writing, it does not interoperate
+with most existing extensions+generators.
+');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
