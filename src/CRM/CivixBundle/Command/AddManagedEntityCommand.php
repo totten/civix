@@ -5,6 +5,7 @@ use CRM\CivixBundle\Builder\Content;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -89,8 +90,6 @@ with most existing extensions+generators.
     if (!$export) {
       throw new \Exception("$entityName $id not found.");
     }
-    $managedName = $export[0]['name'];
-    $this->assertManageableEntity($entityName, $id, $info->getKey(), $managedName);
 
     $localizable = $this->localizable;
     // Lookup entity-specific fields that should be wrapped in E::ts()
@@ -102,7 +101,9 @@ with most existing extensions+generators.
       $localizable = array_merge($localizable, $fields);
     }
 
+    $managedName = $export[0]['name'];
     $managedFileName = $basedir->string('managed', "$managedName.mgd.php");
+    $this->assertManageableEntity($entityName, $id, $info->getKey(), $managedName, $managedFileName);
     $phpData = new PhpData($managedFileName);
     $phpData->useExtensionUtil($info->getExtensionUtilClass());
     $phpData->useTs($localizable);
@@ -110,7 +111,7 @@ with most existing extensions+generators.
     $ext->builders["$managedName.mgd.php"] = $phpData;
   }
 
-  private function assertManageableEntity(string $entityName, $id, string $extKey, string $managedName): void {
+  private function assertManageableEntity(string $entityName, $id, string $extKey, string $managedName, string $managedFileName): void {
     $existingMgd = \civicrm_api4('Managed', 'get', [
       'select' => ['module', 'name', 'id'],
       'where' => [
@@ -121,12 +122,24 @@ with most existing extensions+generators.
     ])->first();
     if ($existingMgd) {
       if ($existingMgd['module'] !== $extKey || $existingMgd['name'] !== $managedName) {
-        throw new \Exception(sprintf("Requested entity (%s) is already managed by \"%s\" (#%s). Adding new entity \"%s\" would create conflict.",
-        "$entityName $id",
-          $existingMgd['module'] . ':' . $existingMgd['name'],
-          $existingMgd['id'],
-          "$extKey:$managedName"
-        ));
+        $this->getIO()->error([
+          sprintf("Requested entity (%s) is already managed by \"%s\" (#%s). Adding new entity \"%s\" would create conflict.",
+            "$entityName $id",
+            $existingMgd['module'] . ':' . $existingMgd['name'],
+            $existingMgd['id'],
+            "$extKey:$managedName"
+          ),
+        ]);
+        throw new \Exception('Export would create conflict between extensions');
+      }
+      if (!file_exists($managedFileName)) {
+        $this->getIO()->warning([
+          sprintf('The managed entity (%s) already exists in the database, but the expected file (%s) does not exist.',
+            "$extKey:$managedName",
+            Files::relativize($managedFileName, \CRM\CivixBundle\Application::findExtDir())
+          ),
+          'The new file will be created, but you may have a conflict within this extension.',
+        ]);
       }
     }
   }
