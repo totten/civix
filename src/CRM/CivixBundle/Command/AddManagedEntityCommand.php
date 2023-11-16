@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Content;
+use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use Symfony\Component\Console\Input\InputArgument;
@@ -76,7 +77,7 @@ with most existing extensions+generators.
     return 0;
   }
 
-  private function exportMgd($entityName, $id, $info, $ext, $ctx) {
+  private function exportMgd($entityName, $id, Info $info, $ext, $ctx) {
     $basedir = new Path($ctx['basedir']);
     $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);
     $ext->builders['dirs']->addPath($basedir->string('managed'));
@@ -89,6 +90,7 @@ with most existing extensions+generators.
       throw new \Exception("$entityName $id not found.");
     }
     $managedName = $export[0]['name'];
+    $this->assertManageableEntity($entityName, $id, $info->getKey(), $managedName);
 
     $localizable = $this->localizable;
     // Lookup entity-specific fields that should be wrapped in E::ts()
@@ -106,6 +108,27 @@ with most existing extensions+generators.
     $phpData->useTs($localizable);
     $phpData->set($export);
     $ext->builders["$managedName.mgd.php"] = $phpData;
+  }
+
+  private function assertManageableEntity(string $entityName, $id, string $extKey, string $managedName): void {
+    $existingMgd = \civicrm_api4('Managed', 'get', [
+      'select' => ['module', 'name', 'id'],
+      'where' => [
+        ['entity_type', '=', $entityName],
+        ['entity_id', '=', $id],
+      ],
+      'checkPermissions' => FALSE,
+    ])->first();
+    if ($existingMgd) {
+      if ($existingMgd['module'] !== $extKey || $existingMgd['name'] !== $managedName) {
+        throw new \Exception(sprintf("Requested entity (%s) is already managed by \"%s\" (#%s). Adding new entity \"%s\" would create conflict.",
+        "$entityName $id",
+          $existingMgd['module'] . ':' . $existingMgd['name'],
+          $existingMgd['id'],
+          "$extKey:$managedName"
+        ));
+      }
+    }
   }
 
   private function exportAfform($afformName, $info, $ext, $ctx) {
