@@ -137,6 +137,10 @@ class Info extends XML {
     return empty($this->xml->name) ? 'FIXME' : $this->xml->name;
   }
 
+  public function getExtensionUtilClass(): string {
+    return str_replace('/', '_', $this->getNamespace()) . '_ExtensionUtil';
+  }
+
   /**
    * Get the namespace into which civix should place files
    * @return string

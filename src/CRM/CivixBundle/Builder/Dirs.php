@@ -12,8 +12,17 @@ class Dirs implements Builder {
   // Note: Permissions will be further restricted by umask
   const MODE = 0777;
 
-  public function __construct($paths) {
+  /**
+   * @var string[]
+   */
+  private $paths;
+
+  public function __construct($paths = []) {
     $this->paths = $paths;
+  }
+
+  public function addPath(string $path) {
+    $this->paths[] = $path;
   }
 
   public function loadInit(&$ctx) {

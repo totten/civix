@@ -152,6 +152,23 @@ trait CivixProjectTestTrait {
   }
 
   /**
+   * Update the mixin settings by calling `civix mixin`.
+   *
+   * @param array $options
+   *  Ex: ['--disable-all' => TRUE]
+   *  Ex: ['--enable' => 'foo@1']
+   * @return \Symfony\Component\Console\Tester\CommandTester
+   */
+  public function civixMixin(array $options): CommandTester {
+    $tester = static::civix('mixin');
+    $tester->execute($options);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to call \"civix mixin\" with options: %s", json_encode($options)));
+    }
+    return $tester;
+  }
+
+  /**
    * Run the 'upgrade' command (non-interactively; all default choices).
    *
    * @param array $options

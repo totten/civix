@@ -9,11 +9,33 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class AbstractCommand extends Command {
 
   protected function configure() {
     $this->addOption('yes', NULL, InputOption::VALUE_NONE, 'Answer yes to any questions');
+  }
+
+  /**
+   * @var \Symfony\Component\Console\Style\StyleInterface
+   */
+  private $io;
+
+  /**
+   * @param \Symfony\Component\Console\Input\InputInterface $input
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   */
+  protected function initialize(InputInterface $input, OutputInterface $output) {
+    parent::initialize($input, $output);
+    $this->io = new SymfonyStyle($input, $output);
+  }
+
+  /**
+   * @return \Symfony\Component\Console\Style\StyleInterface
+   */
+  protected function getIO() {
+    return $this->io;
   }
 
   protected function confirm(InputInterface $input, OutputInterface $output, $message, $default = TRUE) {
