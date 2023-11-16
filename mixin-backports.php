@@ -69,6 +69,14 @@ return [
     'provided-by' => '5.51.beta2',
     'minimum' => '5.51', /* No point in deploying no systems that lack civicrm-core:693067e365915ce280217047009c9e87d70d0719 */
   ],
+  'setting-admin@1' => [
+    'version' => '1.0.1',
+    'sha256' => 'b7b5209c88d07a483886f73f0f709fa510c5c35dc1a3e415cda56eb3ac9b8bf8',
+    'remote' => 'file://' . __DIR__ . '/mixin-mods/setting-admin@1.0.1.mixin.php',
+    'local' => 'extern/mixin/setting-admin@1/mixin.php',
+    'provided-by' => '5.68.beta1',
+    'minimum' => '5.27', /* civix ships a special backport from `./mixin-mods/` to provide broader compatibility. Compat may go back further; haven't tested. Mainline has higher requirements. */
+  ],
   'setting-php@1' => [
     'version' => '1.0.0',
     'sha256' => '5ce236c1a1a63637ce5f0f4fe5bf7f21eaa06c750ca16c0fbf4dd792da0d23c9',
