@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Upgrader;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,12 +24,29 @@ abstract class AbstractCommand extends Command {
   private $io;
 
   /**
+   * @var Symfony\Component\Console\Input\InputInterface
+   */
+  private $input;
+
+  /**
+   * @var Symfony\Component\Console\Output\OutputInterface
+   */
+  private $output;
+
+  /**
+   * @var \CRM\CivixBundle\Upgrader
+   */
+  private $upgrader;
+
+  /**
    * @param \Symfony\Component\Console\Input\InputInterface $input
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    */
   protected function initialize(InputInterface $input, OutputInterface $output) {
     parent::initialize($input, $output);
     $this->io = new SymfonyStyle($input, $output);
+    $this->input = $input;
+    $this->output = $output;
   }
 
   /**
@@ -36,6 +54,13 @@ abstract class AbstractCommand extends Command {
    */
   protected function getIO() {
     return $this->io;
+  }
+
+  protected function getUpgrader(): Upgrader {
+    if ($this->upgrader === NULL) {
+      $this->upgrader = new Upgrader($this->input, $this->output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+    }
+    return $this->upgrader;
   }
 
   protected function confirm(InputInterface $input, OutputInterface $output, $message, $default = TRUE) {
