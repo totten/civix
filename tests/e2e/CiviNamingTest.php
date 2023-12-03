@@ -39,7 +39,7 @@ class CiviNamingTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testNaming_OnePart(): void {
-    $vars = $this->upgrader->createClassVars('Widget');
+    $vars = $this->upgrader->createClassVars('Civi\\NamingTest\\Widget');
     $this->assertTrue(is_string($vars['extBaseDir']) && is_dir($vars['extBaseDir']));
     $this->assertEquals('civix_civinaming', $vars['extMainFile']);
     $this->assertEquals('civix_civinaming', $vars['extKey']);
@@ -52,7 +52,7 @@ class CiviNamingTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testNaming_TwoParts(): void {
-    $vars = $this->upgrader->createClassVars(['Widget', 'Gizmo']);
+    $vars = $this->upgrader->createClassVars('Civi\\NamingTest\\Widget\\Gizmo');
     $this->assertTrue(is_string($vars['extBaseDir']) && is_dir($vars['extBaseDir']));
     $this->assertEquals('civix_civinaming', $vars['extMainFile']);
     $this->assertEquals('civix_civinaming', $vars['extKey']);

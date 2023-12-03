@@ -383,10 +383,9 @@ class Upgrader {
   /**
    * Add a class file. The class-name and file-name are relative to your configured <namespace>.
    *
-   * @param string|string[] $relName
-   *   Class-name, relative to the namespace
-   *   Ex: 'Stuff' (as in "CRM_Mynamespace_Stuff" or "Civi\Mynamespace\Stuff")
-   *   Ex: ['Page', 'Stuff'] (as in "CRM_Mynamespace_Page_Stuff" or "Civi\Mynamespace\Page\Stuff")
+   * @param string $className
+   *   Class-name
+   *   Ex: "CRM_Mynamespace_Stuff" or "Civi\Mynamespace\Stuff"
    * @param string $template
    *   Logical name of the template.
    *   Corresponds to a file in `src/CRM/CivixBundle/Resources/`
@@ -402,16 +401,10 @@ class Upgrader {
    *     - classNamespace (e.g. "Civi\Foo")
    *     - classNamespaceDecl (e.g. "namespace Civi\Foo;")
    *     - useE (e.g. 'use CRM_Myextension_ExtensionUtil as E;')
-   * @param string $layout
-   *   Use this option to force the use of 'CRM_Foo_Bar' or Civi\Foo\Bar'.
-   *   Values may be:
-   *     - 'auto': Respect the configured <namespace>
-   *     - 'CRM': Force the use of 'CRM_Foo_Bar'
-   *     - 'Civi': Force the use of 'Civi\Foo\Bar'
    * @return void
    */
-  public function addClass($relName, string $template, array $tplData = [], string $layout = 'auto'): void {
-    $tplData = array_merge($this->createClassVars($relName, $layout), $tplData);
+  public function addClass(string $className, string $template, array $tplData = []): void {
+    $tplData = array_merge($this->createClassVars($className), $tplData);
     $classFile = $tplData['classFile'];
     $className = $tplData['className'];
 
@@ -431,23 +424,22 @@ class Upgrader {
   }
 
   /**
-   * @param string|string[] $relName
+   * @param string $className
    * @param string $layout
    * @return array
    * @internal
    */
-  public function createClassVars($relName, string $layout = 'auto'): array {
-    $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), $layout);
-    $relName = (array) $relName;
-
-    $className = Naming::createClassName($namespace, ...$relName);
-    $classFile = Naming::createClassFile($namespace, ...$relName);
+  public function createClassVars($className, string $layout = 'auto'): array {
+    if ($this->input->isInteractive()) {
+      $className = $this->io->ask('Class name', $className);
+    }
+    $classFile = preg_replace(';[_/\\\];', '/', $className) . '.php';
 
     $tplData = [];
     $tplData['extBaseDir'] = \CRM\CivixBundle\Application::findExtDir();
     $tplData['extMainFile'] = $this->infoXml->getFile();
     $tplData['extKey'] = $this->infoXml->getKey();
-    $tplData['useE'] = sprintf('use %s as E;', Naming::createUtilClassName($namespace));
+    $tplData['useE'] = sprintf('use %s as E;', Naming::createUtilClassName($this->infoXml->getNamespace()));
 
     $tplData['classFile'] = $classFile;
     if (preg_match('/^CRM_/', $className)) {

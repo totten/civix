@@ -40,7 +40,7 @@ class CRMNamingTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testNaming_OnePart(): void {
-    $vars = $this->upgrader->createClassVars('Widget');
+    $vars = $this->upgrader->createClassVars('CRM_NamingTest_Widget');
     $this->assertTrue(is_string($vars['extBaseDir']) && is_dir($vars['extBaseDir']));
     $this->assertEquals('civix_crmnaming', $vars['extMainFile']);
     $this->assertEquals('civix_crmnaming', $vars['extKey']);
@@ -53,7 +53,7 @@ class CRMNamingTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testNaming_TwoParts(): void {
-    $vars = $this->upgrader->createClassVars(['Widget', 'Gizmo']);
+    $vars = $this->upgrader->createClassVars('CRM_NamingTest_Widget_Gizmo');
     $this->assertTrue(is_string($vars['extBaseDir']) && is_dir($vars['extBaseDir']));
     $this->assertEquals('civix_crmnaming', $vars['extMainFile']);
     $this->assertEquals('civix_crmnaming', $vars['extKey']);
