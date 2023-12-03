@@ -3,6 +3,7 @@ namespace CRM\CivixBundle;
 
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
+use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -377,6 +378,92 @@ class Upgrader {
         $mixins->addMixin($mixinConstraint);
       }
     });
+  }
+
+  /**
+   * Add a class file. The class-name and file-name are relative to your configured <namespace>.
+   *
+   * @param string|string[] $relName
+   *   Class-name, relative to the namespace
+   *   Ex: 'Stuff' (as in "CRM_Mynamespace_Stuff" or "Civi\Mynamespace\Stuff")
+   *   Ex: ['Page', 'Stuff'] (as in "CRM_Mynamespace_Page_Stuff" or "Civi\Mynamespace\Page\Stuff")
+   * @param string $template
+   *   Logical name of the template.
+   *   Corresponds to a file in `src/CRM/CivixBundle/Resources/`
+   * @param array $tplData
+   *   Open-ended data to pass into the template.
+   *   Note: Some variables are defined automatically:
+   *     - extBaseDir (e.g. "/var/www/civicrm/ext/foobar")
+   *     - extMainFile (e.g. "myextension")
+   *     - extKey (e.g. "org.example.myextension")
+   *     - classFile (e.g. "Civi/Foo/Bar.php")
+   *     - className (e.g. "Bar")
+   *     - classNameFull (e.g. "Civi\Foo\Bar")
+   *     - classNamespace (e.g. "Civi\Foo")
+   *     - classNamespaceDecl (e.g. "namespace Civi\Foo;")
+   *     - useE (e.g. 'use CRM_Myextension_ExtensionUtil as E;')
+   * @param string $layout
+   *   Use this option to force the use of 'CRM_Foo_Bar' or Civi\Foo\Bar'.
+   *   Values may be:
+   *     - 'auto': Respect the configured <namespace>
+   *     - 'CRM': Force the use of 'CRM_Foo_Bar'
+   *     - 'Civi': Force the use of 'Civi\Foo\Bar'
+   * @return void
+   */
+  public function addClass($relName, string $template, array $tplData = [], string $layout = 'auto'): void {
+    $tplData = array_merge($this->createClassVars($relName, $layout), $tplData);
+    $classFile = $tplData['classFile'];
+    $className = $tplData['className'];
+
+    if (file_exists($classFile)) {
+      $forced = $this->input->hasOption('force') && $this->input->getOption('force');
+      if (!$forced && !$this->io->confirm("Class $className already exists. Overwrite?")) {
+        return;
+      }
+    }
+
+    $this->io->info("Write $classFile");
+    $rendered = Services::templating()->render($template, $tplData);
+    if (!is_dir(dirname($classFile))) {
+      mkdir(dirname($classFile), 0777, TRUE);
+    }
+    file_put_contents($classFile, $rendered);
+  }
+
+  /**
+   * @param string|string[] $relName
+   * @param string $layout
+   * @return array
+   * @internal
+   */
+  public function createClassVars($relName, string $layout = 'auto'): array {
+    $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), $layout);
+    $relName = (array) $relName;
+
+    $className = Naming::createClassName($namespace, ...$relName);
+    $classFile = Naming::createClassFile($namespace, ...$relName);
+
+    $tplData = [];
+    $tplData['extBaseDir'] = \CRM\CivixBundle\Application::findExtDir();
+    $tplData['extMainFile'] = $this->infoXml->getFile();
+    $tplData['extKey'] = $this->infoXml->getKey();
+    $tplData['useE'] = sprintf('use %s as E;', Naming::createUtilClassName($namespace));
+
+    $tplData['classFile'] = $classFile;
+    if (preg_match('/^CRM_/', $className)) {
+      $tplData['classNameFull'] = $className;
+      $tplData['className'] = $className;
+      $tplData['classNamespace'] = '';
+      $tplData['classNamespaceDecl'] = '';
+    }
+    else {
+      $parts = explode('\\', $className);
+      $tplData['classNameFull'] = $className;
+      $tplData['className'] = array_pop($parts);
+      $tplData['classNamespace'] = implode('\\', $parts);
+      $tplData['classNamespaceDecl'] = sprintf('namespace %s;', $tplData['classNamespace']);
+    }
+    return $tplData;
   }
 
   // -------------------------------------------------

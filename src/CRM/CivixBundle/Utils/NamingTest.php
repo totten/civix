@@ -89,4 +89,25 @@ class NamingTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals('Civi/Foobar/Upgrade/Base.php', Naming::createClassFile('Civi/Foobar', ['Upgrade', 'Base']));
   }
 
+  public function testCreateService() {
+    $this->assertEquals('foo.bar', Naming::createServiceName('CRM_Foo', 'Bar'));
+    $this->assertEquals('foo.bar', Naming::createServiceName('Civi\\Foo', 'Bar'));
+
+    $this->assertEquals('fooBar.whizBang', Naming::createServiceName('CRM_FooBar', 'WhizBang'));
+    $this->assertEquals('fooBar.whizBang', Naming::createServiceName('Civi\\FooBar', 'WhizBang'));
+
+    $this->assertEquals('foo.bar.whiz.bang', Naming::createServiceName('CRM_Foo', 'Bar', 'Whiz', 'Bang'));
+    $this->assertEquals('foo.bar.whiz.bang', Naming::createServiceName('Civi\\Foo', 'Bar', 'Whiz', 'Bang'));
+  }
+
+  public function testCoerceNamespace() {
+    $this->assertEquals('CRM_Foobar', Naming::coerceNamespace('CRM_Foobar', 'auto'));
+    $this->assertEquals('CRM_Foobar', Naming::coerceNamespace('CRM_Foobar', 'CRM'));
+    $this->assertEquals('Civi\\Foobar', Naming::coerceNamespace('CRM_Foobar', 'Civi'));
+
+    $this->assertEquals('Civi\\Foobar', Naming::coerceNamespace('Civi\\Foobar', 'auto'));
+    $this->assertEquals('CRM_Foobar', Naming::coerceNamespace('Civi\\Foobar', 'CRM'));
+    $this->assertEquals('Civi\\Foobar', Naming::coerceNamespace('Civi\\Foobar', 'Civi'));
+  }
+
 }
