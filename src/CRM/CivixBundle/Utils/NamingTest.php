@@ -100,4 +100,14 @@ class NamingTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals('foo.bar.whiz.bang', Naming::createServiceName('Civi\\Foo', 'Bar', 'Whiz', 'Bang'));
   }
 
+  public function testCoerceNamespace() {
+    $this->assertEquals('CRM_Foobar', Naming::coerceNamespace('CRM_Foobar', 'auto'));
+    $this->assertEquals('CRM_Foobar', Naming::coerceNamespace('CRM_Foobar', 'CRM'));
+    $this->assertEquals('Civi\\Foobar', Naming::coerceNamespace('CRM_Foobar', 'Civi'));
+
+    $this->assertEquals('Civi\\Foobar', Naming::coerceNamespace('Civi\\Foobar', 'auto'));
+    $this->assertEquals('CRM_Foobar', Naming::coerceNamespace('Civi\\Foobar', 'CRM'));
+    $this->assertEquals('Civi\\Foobar', Naming::coerceNamespace('Civi\\Foobar', 'Civi'));
+  }
+
 }

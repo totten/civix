@@ -113,4 +113,33 @@ class Naming {
     return implode('.', $parts);
   }
 
+  public static function createUtilClassName(string $namespace): string {
+    return Naming::createClassName(Naming::coerceNamespace($namespace, 'CRM'), 'ExtensionUtil');
+  }
+
+  /**
+   * Force the use of 'CRM_Foo_Bar' or Civi\Foo\Bar'.
+   *
+   * @param string $namespace
+   *   Either 'CRM_Foobar' or 'Civi\Foobar'
+   * @param string $layout
+   *   Values may be:
+   *     - 'auto': Respect the configured <namespace>
+   *     - 'CRM': Force the use of 'CRM_Foobar'
+   *     - 'Civi': Force the use of 'Civi\Foobar'
+   * @return string
+   *   Either 'CRM_Foobar' or 'Civi\Foobar'
+   */
+  public static function coerceNamespace(string $namespace, string $layout): string {
+    if ($layout === 'CRM') {
+      $namespace = preg_replace(';^Civi\\\;', 'CRM_', $namespace);
+      $namespace = preg_replace(';^Civi/;', 'CRM/', $namespace);
+    }
+    elseif ($layout === 'Civi') {
+      $namespace = preg_replace(';^CRM_;', 'Civi\\', $namespace);
+      $namespace = preg_replace(';^CRM/;', 'Civi/', $namespace);
+    }
+    return $namespace;
+  }
+
 }
