@@ -22,13 +22,13 @@ while [ -n "$1" ]; do
     --version) SNAPSHOT_VER="$1" ; shift ; ;;
     --test|-t) RUN_TEST=1 ; ;;
     --keep|-k) KEEP=1 ; ;;
-    empty|qf|entity3|entity34|kitchensink) SCENARIOS="$SCENARIOS $OPT" ; ;;
+    empty|qf|entity3|entity34|kitchensink|svc) SCENARIOS="$SCENARIOS $OPT" ; ;;
     *) echo "Unrecognized option: $OPT" 1>&2 ; exit 1 ;;
   esac
 done
 
 if [ -z "$SCENARIOS" ]; then
-  SCENARIOS="empty qf entity3 entity34 kitchensink"
+  SCENARIOS="empty qf entity3 entity34 kitchensink svc"
 fi
 
 ################################################
@@ -47,7 +47,7 @@ function show_help() {
   echo "  --keep: Keep the temporary work folder"
   echo
   echo "Scenarios:"
-  echo "  empty qf entity3 entity34 kitchensink"
+  echo "  empty qf entity3 entity34 kitchensink svc"
   echo
   echo "Example:"
   echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src"
@@ -119,6 +119,10 @@ function build_snapshot() {
       $CIVIX $VERBOSITY generate:angular-directive foo-bar
       $CIVIX $VERBOSITY generate:theme
       $CIVIX $VERBOSITY generate:theme extratheme
+      ;;
+
+    svc)
+      $CIVIX $VERBOSITY generate:service some.thing --naming=Civi --no-interaction
       ;;
 
     *)
