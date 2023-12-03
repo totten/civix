@@ -422,7 +422,7 @@ class Upgrader {
       }
     }
 
-    $this->io->info("Write $classFile");
+    $this->io->note("Write $classFile");
     $rendered = Services::templating()->render($template, $tplData);
     if (!is_dir(dirname($classFile))) {
       mkdir(dirname($classFile), 0777, TRUE);
