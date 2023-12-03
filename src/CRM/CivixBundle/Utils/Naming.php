@@ -104,4 +104,13 @@ class Naming {
     return preg_replace(';[_/\\\];', '/', static::createClassName($namespace, ...$suffixes)) . '.php';
   }
 
+  public static function createServiceName(string $namespace, ...$suffixes): string {
+    $namespace = preg_replace(';^(CRM_|Civi\\\);', '', $namespace);
+    $parts = [lcfirst($namespace)];
+    foreach ($suffixes as $suffix) {
+      $parts[] = lcfirst($suffix);
+    }
+    return implode('.', $parts);
+  }
+
 }
