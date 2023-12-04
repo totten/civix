@@ -117,6 +117,15 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
+  public function civixGenerateService(string $name, array $options = []): CommandTester {
+    $tester = static::civix('generate:service');
+    $tester->execute($options + ['name' => $name]);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to generate service (%s)", $name));
+    }
+    return $tester;
+  }
+
   /**
    * Get a value from "info.xml" by calling "civix info:get"
    *

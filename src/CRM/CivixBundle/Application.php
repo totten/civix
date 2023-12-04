@@ -14,6 +14,7 @@ use CRM\CivixBundle\Command\AddManagedEntityCommand;
 use CRM\CivixBundle\Command\AddPageCommand;
 use CRM\CivixBundle\Command\AddReportCommand;
 use CRM\CivixBundle\Command\AddSearchCommand;
+use CRM\CivixBundle\Command\AddServiceCommand;
 use CRM\CivixBundle\Command\AddTestCommand;
 use CRM\CivixBundle\Command\AddThemeCommand;
 use CRM\CivixBundle\Command\AddUpgraderCommand;
@@ -64,6 +65,7 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new AddPageCommand();
     $commands[] = new AddReportCommand();
     $commands[] = new AddSearchCommand();
+    $commands[] = new AddServiceCommand();
     $commands[] = new AddTestCommand();
     $commands[] = new AddThemeCommand();
     $commands[] = new AddUpgraderCommand();

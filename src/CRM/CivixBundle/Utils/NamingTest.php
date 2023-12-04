@@ -90,14 +90,18 @@ class NamingTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testCreateService() {
-    $this->assertEquals('foo.bar', Naming::createServiceName('CRM_Foo', 'Bar'));
-    $this->assertEquals('foo.bar', Naming::createServiceName('Civi\\Foo', 'Bar'));
+    $this->assertEquals('foo.bar', Naming::createServiceName('foo', 'Bar'));
+    $this->assertEquals('foo.whizBang', Naming::createServiceName('foo', 'WhizBang'));
+    $this->assertEquals('foo.whiz_bang', Naming::createServiceName('foo', 'whiz_bang'));
+    $this->assertEquals('foo.bar.whiz.bang', Naming::createServiceName('foo', 'Bar', 'Whiz', 'Bang'));
 
-    $this->assertEquals('fooBar.whizBang', Naming::createServiceName('CRM_FooBar', 'WhizBang'));
-    $this->assertEquals('fooBar.whizBang', Naming::createServiceName('Civi\\FooBar', 'WhizBang'));
+    $this->assertEquals('fooBar.bar', Naming::createServiceName('fooBar', 'Bar'));
+    $this->assertEquals('fooBar.whizBang', Naming::createServiceName('fooBar', 'WhizBang'));
+    $this->assertEquals('fooBar.whiz_bang', Naming::createServiceName('fooBar', 'whiz_bang'));
 
-    $this->assertEquals('foo.bar.whiz.bang', Naming::createServiceName('CRM_Foo', 'Bar', 'Whiz', 'Bang'));
-    $this->assertEquals('foo.bar.whiz.bang', Naming::createServiceName('Civi\\Foo', 'Bar', 'Whiz', 'Bang'));
+    $this->assertEquals('foo_bar.bar', Naming::createServiceName('foo_bar', 'Bar'));
+    $this->assertEquals('foo_bar.whizBang', Naming::createServiceName('foo_bar', 'WhizBang'));
+    $this->assertEquals('foo_bar.whiz_bang', Naming::createServiceName('foo_bar', 'whiz_bang'));
   }
 
   public function testCoerceNamespace() {

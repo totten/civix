@@ -29,6 +29,7 @@ use ProcessHelper\ProcessHelper as PH;
  *      - 'entity3': An extension with an entity supporting APIv3.
  *      - 'entity34': An extension with an entity supporting APIv3 and APIv4.
  *      - 'kitchensink': An extension with a bunch of random things. (Varies based on the CIVIX_VERSION.)
+ *      - 'svc': An extension with a service-object.
  *      - (NOTE: For a more detailed sketch of each scenario, see `tests/make-snapshots.sh`.)
  *
  * SnapshotUpgradeTest MUST run in an environment with `civibuild` and `cv`. It will use `civibuild restore`
@@ -163,6 +164,16 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
     $httpGet = PH::runOk('cv en authx && cv http -LU admin civicrm/my-page');
     $this->assertRegExp(';The current time is;', $httpGet->getOutput());
+  }
+
+  public function checkSnapshot_svc(): void {
+    $this->runsIf($this->isScenario('svc') || $this->isKitchenSinkWith('Civi/Civixsnapshot/Some/Thing.php'));
+
+    $getServices = PH::runOK("cv service some.thing --out=json");
+    $parsed = json_decode($getServices->getOutput(), TRUE);
+    $this->assertEquals('some.thing', $parsed[0]['service'], 'Expected to find service name');
+    $this->assertEquals('Civi\\Civixsnapshot\\Some\\Thing', $parsed[0]['class'], 'Expected to find class name');
+    $this->assertTrue((bool) preg_match(';tag.event_subscriber;', $parsed[0]['extras']), 'Failed to find tag.event_subscriber in description');
   }
 
 }

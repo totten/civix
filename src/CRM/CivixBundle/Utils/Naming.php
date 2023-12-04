@@ -46,14 +46,15 @@ class Naming {
    * @param string $fullName
    *   Ex: 'org.example.foo'
    *   Ex: 'foo-bar'
+   * @param string $delimiter
    * @return string
    *   Ex: 'Foo'
    *   Ex: 'FooBar'
    */
-  public static function createCamelName($fullName) {
+  public static function createCamelName($fullName, $delimiter = '_') {
     $shortName = self::createShortName($fullName);
     $camelCase = '';
-    foreach (explode('_', $shortName) as $shortNamePart) {
+    foreach (explode($delimiter, $shortName) as $shortNamePart) {
       $camelCase .= ucfirst($shortNamePart);
     }
     return $camelCase;
@@ -105,12 +106,19 @@ class Naming {
   }
 
   public static function createServiceName(string $namespace, ...$suffixes): string {
-    $namespace = preg_replace(';^(CRM_|Civi\\\);', '', $namespace);
+    $namespace = preg_replace(';^(CRM|Civi)[_/\\\];', '', $namespace);
     $parts = [lcfirst($namespace)];
     foreach ($suffixes as $suffix) {
       $parts[] = lcfirst($suffix);
     }
     return implode('.', $parts);
+  }
+
+  public static function removeServicePrefix(string $namespace, string $serviceName) {
+    $defaultPrefix = Naming::createServiceName($namespace);
+    $defaultPrefixLen = mb_strlen($defaultPrefix);
+    return (mb_substr($serviceName, 0, $defaultPrefixLen) === $defaultPrefix)
+      ? mb_substr($serviceName, 1 + $defaultPrefixLen) : $serviceName;
   }
 
   public static function createUtilClassName(string $namespace): string {
