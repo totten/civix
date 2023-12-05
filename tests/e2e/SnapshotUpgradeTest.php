@@ -169,6 +169,12 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function checkSnapshot_svc(): void {
     $this->runsIf($this->isScenario('svc') || $this->isKitchenSinkWith('Civi/Civixsnapshot/Some/Thing.php'));
 
+    $getSystem = PH::runOK('cv api3 System.get --out=json');
+    $system = json_decode($getSystem->getOutput(), TRUE);
+    if (!version_compare($system['values'][0]['version'], '5.55', '>=')) {
+      return;
+    }
+
     $getServices = PH::runOK("cv service some.thing --out=json");
     $parsed = json_decode($getServices->getOutput(), TRUE);
     $this->assertEquals('some.thing', $parsed[0]['service'], 'Expected to find service name');
