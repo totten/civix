@@ -122,7 +122,7 @@ with most existing extensions+generators.
     ])->first();
     if ($existingMgd) {
       if ($existingMgd['module'] !== $extKey || $existingMgd['name'] !== $managedName) {
-        $this->getIO()->error([
+        $this->getIO()->warning([
           sprintf("Requested entity (%s) is already managed by \"%s\" (#%s). Adding new entity \"%s\" would create conflict.",
             "$entityName $id",
             $existingMgd['module'] . ':' . $existingMgd['name'],
@@ -130,7 +130,6 @@ with most existing extensions+generators.
             "$extKey:$managedName"
           ),
         ]);
-        throw new \Exception('Export would create conflict between extensions');
       }
       if (!file_exists($managedFileName)) {
         $this->getIO()->warning([
