@@ -85,6 +85,8 @@ class Files {
       $directory = strtr($directory, '\\', '/');
       $basePath = strtr($basePath, '\\', '/');
     }
+    $basePath = rtrim($basePath, '/') . '/';
+
     if (substr($directory, 0, strlen($basePath)) == $basePath) {
       return substr($directory, strlen($basePath));
     }
