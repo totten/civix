@@ -183,7 +183,7 @@ class Mixins implements Builder {
 
   protected function removeBackportFile(OutputInterface $output, string $file): void {
     if (file_exists($file)) {
-      $output->writeln("<info>Remove</info> $file");
+      $output->writeln("<info>Remove</info> " . Files::relativize($file));
       unlink($file);
     }
   }

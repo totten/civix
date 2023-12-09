@@ -1,5 +1,6 @@
 <?php
 namespace CRM\CivixBundle\Builder;
+
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +41,7 @@ class PHPUnitGenerateInitFiles {
       $phpunitXml->save($ctx, $output);
     }
     else {
-      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $phpunitXmlFile));
+      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', Files::relativize($phpunitXmlFile)));
     }
   }
 

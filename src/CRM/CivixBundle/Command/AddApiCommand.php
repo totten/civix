@@ -107,7 +107,7 @@ action names.
         ->render('api.php.php', $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiFile']));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiFile'])));
     }
 
     if ($input->getOption('schedule')) {
@@ -139,7 +139,7 @@ action names.
         $mgdBuilder->save($ctx, $output);
       }
       else {
-        $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiCronFile']));
+        $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiCronFile'])));
       }
     }
 
@@ -153,7 +153,7 @@ action names.
         ->render('test-api.php.php', $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiTestFile']));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiTestFile'])));
     }
 
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
