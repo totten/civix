@@ -417,9 +417,7 @@ class Upgrader {
 
     $this->io->note("Write " . Files::relativize($classFile, getcwd()));
     $rendered = Services::templating()->render($template, $tplData);
-    if (!is_dir(dirname($classFile))) {
-      mkdir(dirname($classFile), 0777, TRUE);
-    }
+    Path::for(dirname($classFile))->mkdir();
     file_put_contents($classFile, $rendered);
   }
 

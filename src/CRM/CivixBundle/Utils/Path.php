@@ -9,8 +9,30 @@ class Path {
    */
   protected $basedir;
 
+  /**
+   * @param string|Path $basedir
+   * @param string[] $args
+   *   Optionally append to the path
+   * @return Path
+   */
+  public static function for($basedir, ...$args): Path {
+    $result = new Path($basedir);
+    if (!empty($args)) {
+      $result = $result->path(...$args);
+    }
+    return $result;
+  }
+
+  /**
+   * @param string|Path $basedir
+   */
   public function __construct($basedir) {
-    $this->basedir = $basedir;
+    if ($basedir instanceof Path) {
+      $this->basedir = $basedir->basedir;
+    }
+    else {
+      $this->basedir = $basedir;
+    }
   }
 
   public function __toString(): string {
@@ -48,16 +70,15 @@ class Path {
    * Make a folder for this path (if necessary).
    *
    * @param int $mode
-   * @return bool
-   *   TRUE if folder exists/is-created. FALSE if an error prevented it.
    */
-  public function mkdir($mode = 0777) {
+  public function mkdir($mode = 0777): void {
     $args = func_get_args();
     $dir = call_user_func_array([$this, 'string'], $args);
     if (!is_dir($dir)) {
-      return mkdir($dir, $mode, TRUE);
+      if (!mkdir($dir, $mode, TRUE)) {
+        throw new \RuntimeException("Failed to make directory: $path");
+      }
     }
-    return TRUE;
   }
 
   /**
