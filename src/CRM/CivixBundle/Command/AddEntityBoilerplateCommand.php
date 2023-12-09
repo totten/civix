@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Info;
@@ -104,7 +105,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       $dao->run();
       ob_end_clean();
       $daoFileName = $basedir->string("{$table['base']}{$table['fileName']}");
-      $output->writeln("<info>Write</info> $daoFileName");
+      $output->writeln("<info>Write</info>" . Files::relativize($daoFileName));
     }
 
     $schema = new \CRM_Core_CodeGen_Schema($config);
@@ -121,7 +122,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       // We're poking into an internal class+function (`$schema->$generator()`) that changed in v5.23.
       // Beginning in 5.23: $schema->$function() returns an array with file content.
       // Before 5.23: $schema->$function($fileName) creates $fileName and returns void.
-      $output->writeln("<info>Write</info> $filePath");
+      $output->writeln("<info>Write</info> " . Files::relativize($filePath));
       if (version_compare(\CRM_Utils_System::version(), '5.23.alpha1', '>=')) {
         $data = $schema->$generator();
         if (!file_put_contents($filePath, reset($data))) {

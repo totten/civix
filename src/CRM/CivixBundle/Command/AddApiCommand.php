@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -101,7 +102,7 @@ action names.
     $dirs->save($ctx, $output);
 
     if (!file_exists($ctx['apiFile'])) {
-      $output->writeln(sprintf('<info>Write</info> %s', $ctx['apiFile']));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($ctx['apiFile'])));
       file_put_contents($ctx['apiFile'], Services::templating()
         ->render('api.php.php', $ctx));
     }
@@ -147,7 +148,7 @@ action names.
     ]);
     $test_dirs->save($ctx, $output);
     if (!file_exists($ctx['apiTestFile'])) {
-      $output->writeln(sprintf('<info>Write</info> %s', $ctx['apiTestFile']));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($ctx['apiTestFile'])));
       file_put_contents($ctx['apiTestFile'], Services::templating()
         ->render('test-api.php.php', $ctx));
     }

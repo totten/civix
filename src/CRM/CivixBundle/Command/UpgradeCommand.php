@@ -4,6 +4,7 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Upgrader;
+use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -104,7 +105,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     if ($ctx['namespace']) {
       $phpFile = $basedir->string(Naming::createClassFile($ctx['namespace'], 'Upgrader', 'Base.php'));
       if (file_exists($phpFile)) {
-        $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
+        $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
         file_put_contents($phpFile, Services::templating()->render('upgrader-base.php.php', $ctx));
       }
     }

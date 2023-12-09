@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -122,12 +123,12 @@ as separate groups:
     $dirs->save($ctx, $output);
 
     if (!file_exists($testPath)) {
-      $output->writeln(sprintf('<info>Write</info> %s', $testPath));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($testPath)));
       file_put_contents($testPath, Services::templating()
         ->render($templateName, $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $testPath));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($testPath)));
     }
   }
 

@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Application;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
@@ -46,12 +47,12 @@ class AddUpgraderCommand extends AbstractCommand {
 
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
     if (!file_exists($phpFile)) {
-      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
       file_put_contents($phpFile, Services::templating()
         ->render('upgrader.php.php', $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists, defer to customized version</error>', $phpFile));
+      $output->writeln(sprintf('<error>Skip %s: file already exists, defer to customized version</error>', Files::relativize($phpFile)));
     }
 
     if (!$info->get()->xpath('upgrader')) {
