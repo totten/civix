@@ -3,7 +3,6 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Content;
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,6 +43,8 @@ with most existing extensions+generators.
   protected function execute(InputInterface $input, OutputInterface $output) {
     $this->assertCurrentFormat();
 
+    $this->getUpgrader()->addMixins(['mgd-php@1.0']);
+
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
@@ -80,7 +81,6 @@ with most existing extensions+generators.
 
   private function exportMgd($entityName, $id, Info $info, $ext, $ctx) {
     $basedir = new Path($ctx['basedir']);
-    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);
     $ext->builders['dirs']->addPath($basedir->string('managed'));
 
     $export = (array) \civicrm_api4($entityName, 'export', [
