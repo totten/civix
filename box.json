@@ -21,10 +21,6 @@
             "in": "vendor"
         },
         {
-            "name": "*.png",
-            "in": "images"
-        },
-        {
             "name": "*.csv",
             "in": "vendor/totten/license-data"
         },
