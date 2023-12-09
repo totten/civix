@@ -59,17 +59,11 @@ with most existing extensions+generators.
     // Boot CiviCRM to use api4
     Services::boot(['output' => $output]);
 
-    try {
-      if ($entityName === 'Afform') {
-        $this->exportAfform($entityId, $info, $ext, $ctx);
-      }
-      else {
-        $this->exportMgd($entityName, $entityId, $info, $ext, $ctx);
-      }
+    if ($entityName === 'Afform') {
+      $this->exportAfform($entityId, $info, $ext, $ctx);
     }
-    catch (\Exception $e) {
-      $output->writeln("Error: " . $e->getMessage());
-      return 1;
+    else {
+      $this->exportMgd($entityName, $entityId, $info, $ext, $ctx);
     }
 
     $ext->builders['info'] = $info;
