@@ -1,17 +1,10 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Builder\Content;
-use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Services;
-use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use CRM\CivixBundle\Builder\Collection;
-use CRM\CivixBundle\Builder\Dirs;
-use CRM\CivixBundle\Builder\PhpData;
-use CRM\CivixBundle\Utils\Path;
 
 class AddManagedEntityCommand extends AbstractCommand {
 
@@ -43,165 +36,22 @@ with most existing extensions+generators.
   protected function execute(InputInterface $input, OutputInterface $output) {
     $this->assertCurrentFormat();
 
-    $this->getUpgrader()->addMixins(['mgd-php@1.0']);
-
-    $ctx = [];
-    $ctx['type'] = 'module';
-    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
-    $info = $this->getModuleInfo($ctx);
-
-    $ext = new Collection();
-    $ext->builders['dirs'] = new Dirs();
-
     $entityName = $input->getArgument('<EntityName>');
     $entityId = $input->getArgument('<EntityId>');
 
     // Boot CiviCRM to use api4
     Services::boot(['output' => $output]);
 
+    $upgrader = $this->getUpgrader();
+    $upgrader->addMixins(['mgd-php@1.0']);
     if ($entityName === 'Afform') {
-      $this->exportAfform($entityId, $info, $ext, $ctx);
+      $upgrader->exportAfform($entityId);
     }
     else {
-      $this->exportMgd($entityName, $entityId, $info, $ext, $ctx);
+      $upgrader->exportMgd($entityName, $entityId);
     }
 
-    $ext->builders['info'] = $info;
-
-    $ext->loadInit($ctx);
-    $ext->save($ctx, $output);
     return 0;
-  }
-
-  private function exportMgd($entityName, $id, Info $info, $ext, $ctx) {
-    $basedir = new Path($ctx['basedir']);
-    $ext->builders['dirs']->addPath($basedir->string('managed'));
-
-    $export = (array) \civicrm_api4($entityName, 'export', [
-      'checkPermissions' => FALSE,
-      'id' => $id,
-    ]);
-    if (!$export) {
-      throw new \Exception("$entityName $id not found.");
-    }
-
-    $localizable = $this->localizable;
-    // Lookup entity-specific fields that should be wrapped in E::ts()
-    foreach ($export as $item) {
-      $fields = (array) \civicrm_api4($item['entity'], 'getFields', [
-        'checkPermissions' => FALSE,
-        'where' => [['localizable', '=', TRUE]],
-      ], ['name']);
-      $localizable = array_merge($localizable, $fields);
-    }
-
-    $managedName = $export[0]['name'];
-    $managedFileName = $basedir->string('managed', "$managedName.mgd.php");
-    $this->assertManageableEntity($entityName, $id, $info->getKey(), $managedName, $managedFileName);
-    $phpData = new PhpData($managedFileName);
-    $phpData->useExtensionUtil($info->getExtensionUtilClass());
-    $phpData->useTs($localizable);
-    $phpData->set($export);
-    $ext->builders["$managedName.mgd.php"] = $phpData;
-  }
-
-  private function assertManageableEntity(string $entityName, $id, string $extKey, string $managedName, string $managedFileName): void {
-    $existingMgd = \civicrm_api4('Managed', 'get', [
-      'select' => ['module', 'name', 'id'],
-      'where' => [
-        ['entity_type', '=', $entityName],
-        ['entity_id', '=', $id],
-      ],
-      'checkPermissions' => FALSE,
-    ])->first();
-    if ($existingMgd) {
-      if ($existingMgd['module'] !== $extKey || $existingMgd['name'] !== $managedName) {
-        $this->getIO()->warning([
-          sprintf("Requested entity (%s) is already managed by \"%s\" (#%s). Adding new entity \"%s\" would create conflict.",
-            "$entityName $id",
-            $existingMgd['module'] . ':' . $existingMgd['name'],
-            $existingMgd['id'],
-            "$extKey:$managedName"
-          ),
-        ]);
-      }
-      if (!file_exists($managedFileName)) {
-        $this->getIO()->warning([
-          sprintf('The managed entity (%s) already exists in the database, but the expected file (%s) does not exist.',
-            "$extKey:$managedName",
-            Files::relativize($managedFileName, \CRM\CivixBundle\Application::findExtDir())
-          ),
-          'The new file will be created, but you may have a conflict within this extension.',
-        ]);
-      }
-    }
-  }
-
-  private function exportAfform($afformName, $info, $ext, $ctx) {
-    $basedir = new Path($ctx['basedir']);
-    $ext->builders['dirs']->addPath($basedir->string('ang'));
-
-    $fields = \civicrm_api4('Afform', 'getFields', [
-      'checkPermissions' => FALSE,
-      'where' => [['type', '=', 'Field']],
-    ])->indexBy('name');
-    // Will throw exception if not found
-    $afform = \civicrm_api4('Afform', 'get', [
-      'checkPermissions' => FALSE,
-      'where' => [['name', '=', $afformName]],
-      'select' => ['*', 'search_displays'],
-      'layoutFormat' => 'html',
-    ])->single();
-
-    // An Afform consists of 2 files - a layout file and a meta file
-    $layoutFileName = $basedir->string('ang', "$afformName.aff.html");
-    $metaFileName = $basedir->string('ang', "$afformName.aff.php");
-
-    // Export layout file
-    $ext->builders["$afformName.aff.html"] = new Content($afform['layout'], $layoutFileName, TRUE);
-
-    // Export meta file
-    $meta = $afform;
-    unset($meta['name'], $meta['layout'], $meta['search_displays'], $meta['navigation']);
-    // Simplify meta file by removing values that match the defaults
-    foreach ($meta as $field => $value) {
-      if ($field !== 'type' && $value == $fields[$field]['default_value']) {
-        unset($meta[$field]);
-      }
-    }
-    $phpData = new PhpData($metaFileName);
-    $phpData->useExtensionUtil($info->getExtensionUtilClass());
-    $phpData->useTs($this->localizable);
-    $phpData->set($meta);
-    $ext->builders["$afformName.aff.php"] = $phpData;
-
-    // Export navigation menu item pointing to afform, if present
-    if (!empty($afform['server_route'])) {
-      $navigation = \civicrm_api4('Navigation', 'get', [
-        'checkPermissions' => FALSE,
-        'select' => ['id'],
-        'where' => [['url', '=', $afform['server_route']], ['is_active', '=', TRUE]],
-        // Just the first one; multiple domains are handled by `CRM_Core_ManagedEntities`
-        'orderBy' => ['domain_id' => 'ASC'],
-      ])->first();
-      if ($navigation) {
-        $this->exportMgd('Navigation', $navigation['id'], $info, $ext, $ctx);
-      }
-    }
-
-    // Export embedded search display(s)
-    if (!empty($afform['search_displays'])) {
-      $searchNames = array_map(function ($item) {
-        return explode('.', $item)[0];
-      }, $afform['search_displays']);
-      $searchIds = \civicrm_api4('SavedSearch', 'get', [
-        'checkPermissions' => FALSE,
-        'where' => [['name', 'IN', $searchNames]],
-      ], ['id']);
-      foreach ($searchIds as $id) {
-        $this->exportMgd('SavedSearch', $id, $info, $ext, $ctx);
-      }
-    }
   }
 
 }

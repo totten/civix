@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
+use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\VarExporter\VarExporter;
 
@@ -9,6 +10,8 @@ use Symfony\Component\VarExporter\VarExporter;
  * Write a data file in PHP format
  */
 class PhpData implements Builder {
+
+  const COMMON_LOCALIZBLE = 'title,label,description,text';
 
   /**
    * @var string
@@ -100,6 +103,7 @@ class PhpData implements Builder {
    */
   public function save(&$ctx, OutputInterface $output) {
     $output->writeln("<info>Write</info> " . $this->path);
+    Path::for(dirname($this->path))->mkdir();
 
     $content = "<?php\n";
     if ($this->extensionUtil) {

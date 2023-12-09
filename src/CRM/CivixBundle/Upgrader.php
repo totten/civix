@@ -3,6 +3,9 @@ namespace CRM\CivixBundle;
 
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
+use CRM\CivixBundle\Builder\PhpData;
+use CRM\CivixBundle\Command\Mgd;
+use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -113,6 +116,198 @@ class Upgrader {
     $function($mixins);
     $mixins->save($this->_ctx, $this->output);
     $this->infoXml->save($this->_ctx, $this->output);
+  }
+
+  /**
+   * Update a PHP-style data-file. (If the file is new, create it.)
+   *
+   * Ex: updatePhpData('foobar.mgd.php', \fn(PhpData $data) => $data->set([...]))
+   *
+   * TIP: You may want a more targeted helper like `updateMgdPhp()` or `updateAfformPhp`.
+   *
+   * @param string|Path $path
+   * @param callable $filter
+   *   Function(PhpData $phpData): void
+   *   The callback function defines the actual changes to the mgd.
+   * @return void
+   */
+  public function updatePhpData($path, callable $filter): void {
+    $file = Path::for($path)->string();
+    $ctx = [];
+    $phpData = new PhpData($file);
+    $phpData->loadInit($ctx);
+    $filter($phpData);
+    $phpData->save($ctx, $this->output);
+  }
+
+  /**
+   * Update a managed-entity data-file. (If the file is new, create it.)
+   *
+   * Ex: updateMgdPhp('foobar.mgd.php', \fn(PhpData $data) => $data->set([...]))
+   *
+   * @param string|Path $path
+   * @param callable $filter
+   *   Function(PhpData $phpData): void
+   * @return void
+   */
+  public function updateMgdPhp($path, callable $filter): void {
+    $this->updatePhpData($path, function(PhpData $phpData) use ($filter) {
+      // PhpData handler doesn't know how to read/maintain the `use` and `ts()` parts.
+      // Instead, force-enable for all *.mgd.php.
+      $phpData->useExtensionUtil($this->infoXml->getExtensionUtilClass());
+
+      $filter($phpData);
+
+      $localizable = explode(',', PhpData::COMMON_LOCALIZBLE);
+      // Lookup entity-specific fields that should be wrapped in E::ts()
+      foreach ($phpData->get() as $item) {
+        $fields = (array) \civicrm_api4($item['entity'], 'getFields', [
+          'checkPermissions' => FALSE,
+          'where' => [['localizable', '=', TRUE]],
+        ], ['name']);
+        $localizable = array_merge($localizable, $fields);
+      }
+      $phpData->useTs($localizable);
+    });
+  }
+
+  /**
+   * Update an afform metadata-file (PHP-style). (If the file is new, create it.)
+   *
+   * Ex: updateAfformPhp('foobar.aff.php', \fn(PhpData $data) => $data->set([...]))
+   *
+   * @param string|Path $path
+   * @param callable $filter
+   *   Function(PhpData $phpData): void
+   * @return void
+   */
+  public function updateAfformPhp($path, callable $filter): void {
+    $this->updatePhpData($path, function(PhpData $phpData) use ($filter) {
+      // PhpData handler doesn't know how to read/maintain the `use` and `ts()` parts.
+      // Instead, force-enable for all *.aff.php.
+      $phpData->useExtensionUtil($this->infoXml->getExtensionUtilClass());
+      $filter($phpData);
+      $phpData->useTs(explode(',', PhpData::COMMON_LOCALIZBLE));
+    });
+  }
+
+  /**
+   * Read some entity/entities from the database and write them to an '*.mgd.php' file.
+   *
+   * @param string $entityName
+   * @param scalar $id
+   */
+  public function exportMgd($entityName, $id): void {
+    $export = (array) \civicrm_api4($entityName, 'export', [
+      'checkPermissions' => FALSE,
+      'id' => $id,
+    ]);
+    if (!$export) {
+      throw new \Exception("$entityName $id not found.");
+    }
+
+    $managedName = $export[0]['name'];
+    $managedFileName = $this->baseDir->string('managed', "$managedName.mgd.php");
+    Mgd::assertManageableEntity($entityName, $id, $this->infoXml->getKey(), $managedName, $managedFileName, $this->io);
+    $this->updateMgdPhp($managedFileName, function(PhpData $data) use ($export) {
+      $data->set($export);
+    });
+  }
+
+  /**
+   * Write the 'ang/*.aff.html' and 'ang/*.aff.php' files based on the live/effective definition
+   * of the form. (*This basically copies from `[civicrm.files]/ang/XXX` and adds any searchkit dependencies.*)
+   *
+   * @param string $afformName
+   * @return void
+   * @throws \Exception
+   */
+  public function exportAfform(string $afformName) {
+    $angPath = Path::for($this->baseDir, 'ang');
+    $angPath->mkdir();
+
+    // Will throw exception if not found
+    $afform = \civicrm_api4('Afform', 'get', [
+      'checkPermissions' => FALSE,
+      'where' => [['name', '=', $afformName]],
+      'select' => ['*', 'search_displays'],
+      'layoutFormat' => 'html',
+    ])->single();
+
+    // An Afform consists of 2 files - a layout file and a meta file
+    $layoutFileName = $angPath->string("$afformName.aff.html");
+    $metaFileName = $angPath->string("$afformName.aff.php");
+
+    // Export layout file
+    $this->writeTextFile($layoutFileName, $afform['layout'], 'overwrite');
+
+    // Export meta file
+    $this->updateAfformPhp($metaFileName, function(PhpData $phpData) use ($afform) {
+      $fields = \civicrm_api4('Afform', 'getFields', [
+        'checkPermissions' => FALSE,
+        'where' => [['type', '=', 'Field']],
+      ])->indexBy('name');
+
+      $meta = $afform;
+      unset($meta['name'], $meta['layout'], $meta['search_displays'], $meta['navigation']);
+      // Simplify meta file by removing values that match the defaults
+      foreach ($meta as $field => $value) {
+        if ($field !== 'type' && $value == $fields[$field]['default_value']) {
+          unset($meta[$field]);
+        }
+      }
+
+      $phpData->set($meta);
+    });
+
+    // Export navigation menu item pointing to afform, if present
+    if (!empty($afform['server_route'])) {
+      $navigation = \civicrm_api4('Navigation', 'get', [
+        'checkPermissions' => FALSE,
+        'select' => ['id'],
+        'where' => [['url', '=', $afform['server_route']], ['is_active', '=', TRUE]],
+        // Just the first one; multiple domains are handled by `CRM_Core_ManagedEntities`
+        'orderBy' => ['domain_id' => 'ASC'],
+      ])->first();
+      if ($navigation) {
+        $this->exportMgd('Navigation', $navigation['id']);
+      }
+    }
+
+    // Export embedded search display(s)
+    if (!empty($afform['search_displays'])) {
+      $searchNames = array_map(function ($item) {
+        return explode('.', $item)[0];
+      }, $afform['search_displays']);
+      $searchIds = \civicrm_api4('SavedSearch', 'get', [
+        'checkPermissions' => FALSE,
+        'where' => [['name', 'IN', $searchNames]],
+      ], ['id']);
+      foreach ($searchIds as $id) {
+        $this->exportMgd('SavedSearch', $id);
+      }
+    }
+  }
+
+  /**
+   * @param $path
+   * @param string $content
+   * @param string|bool $overwrite
+   *   One of: 'overwrite', 'skip', 'abort', 'ask', 'if-forced'
+   * @return void
+   */
+  public function writeTextFile($path, string $content, $overwrite) {
+    $file = Path::for($path)->string();
+    Path::for(dirname($file))->mkdir();
+    $relPath = Files::relativize($file, getcwd());
+
+    if ('keep' === $this->checkOverwrite($file, $overwrite)) {
+      return;
+    }
+    $this->output->writeln("<info>Write</info> " . $relPath);
+    if (!file_put_contents($file, $content)) {
+      throw new \RuntimeException("Failed to write $file");
+    }
   }
 
   /**
@@ -408,6 +603,9 @@ class Upgrader {
     $classFile = $tplData['classFile'];
     $className = $tplData['className'];
 
+    if ('keep' === $this->checkOverwrite($classFile, 'ask')) {
+      return;
+    }
     if (file_exists($classFile)) {
       $forced = $this->input->hasOption('force') && $this->input->getOption('force');
       if (!$forced && !$this->io->confirm("Class $className already exists. Overwrite?")) {
@@ -458,6 +656,68 @@ class Upgrader {
 
   // -------------------------------------------------
   // These are some helper utilities.
+
+  /**
+   * Determine whether file is writable.
+   *
+   * @param string|Path $path
+   * @param string|bool $mode
+   *   What to do if the file already exists
+   *   'overwrite': Always overwrite
+   *   'keep': Never overwrite
+   *   'ignore': Never overwrite (alias for 'keep')
+   *   'abort': Throw an exception to abort
+   *   'ask': Check user-input to decide whether to overwrite. (Either --force` or interactive prompt.)
+   *   'if-forced': Only overwrite if the `--force` flag is set
+   *   TRUE: Always overwrite
+   *   FALSE: Never overwrite
+   *
+   * @return string
+   *   'write' if you should proceed with (over)writing.
+   *   'keep' if you should skip generating this file.
+   */
+  public function checkOverwrite($path, $mode): string {
+    $file = Path::for($path)->string();
+    if (!file_exists($file)) {
+      return 'write';
+    }
+
+    if ($mode === 'overwrite' || $mode === TRUE) {
+      return 'write';
+    }
+    if ($mode === 'keep'|| $mode === FALSE) {
+      $this->io->warning("Skip $file: file already exists");
+      return 'keep';
+    }
+    if ($mode === 'abort') {
+      throw new \RuntimeException("Abort: $file already exists.)");
+    }
+    if ($mode === 'ask' && $this->input->isInteractive()) {
+      $relPath = Files::relativize($file, $this->baseDir->string());
+      $action = mb_strtolower($this->io->choice("File $relPath already exists. What should we do?", [
+        'o' => '[O]verwrite the file',
+        'k' => '[K]eep the current file',
+        'a' => '[A]bort the process',
+      ]));
+      if ($action === 'o') {
+        return 'write';
+      }
+      elseif ($action === 'k') {
+        return 'keep';
+      }
+      else {
+        throw new \RuntimeException("File $relPath already exists. Operation aborted");
+      }
+    }
+    if ($mode === 'ask' || $mode === 'if-forced') {
+      if ($this->input->hasOption('force') && $this->input->getOption('force')) {
+        $this->io->note("Overwrite $file in --force mode");
+        return 'write';
+      }
+    }
+
+    throw new \RuntimeException("Invalid argument checkOverwrite(...$mode)");
+  }
 
   /**
    * Re-read the `info.xml` file.
