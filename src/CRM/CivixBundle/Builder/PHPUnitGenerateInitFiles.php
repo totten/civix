@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PHPUnitGenerateInitFiles {
@@ -18,12 +19,12 @@ class PHPUnitGenerateInitFiles {
       ]);
       $dirs->save($ctx, $output);
 
-      $output->writeln(sprintf('<info>Write</info> %s', $bootstrapFile));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($bootstrapFile)));
       file_put_contents($bootstrapFile, Services::templating()
         ->render('phpunit-boot-cv.php.php', $ctx));
     }
     else {
-      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', $bootstrapFile));
+      $output->writeln(sprintf('<comment>Skip %s: file already exists</comment>', Files::relativize($bootstrapFile)));
     }
   }
 

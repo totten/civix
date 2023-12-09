@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -68,7 +69,7 @@ class Ini implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
-    $output->writeln("<info>Write</info> " . $this->path);
+    $output->writeln("<info>Write</info> " . Files::relativize($this->path));
 
     $content = '';
     foreach ($this->data as $topKey => $data) {

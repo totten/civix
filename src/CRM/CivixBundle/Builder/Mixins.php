@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Versioning;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -176,7 +177,7 @@ class Mixins implements Builder {
     if (!is_dir(dirname($file))) {
       mkdir(dirname($file), Dirs::MODE, TRUE);
     }
-    $output->writeln("<info>Write</info> $file");
+    $output->writeln("<info>Write</info> " . Files::relativize($file));
     file_put_contents($file, $mixin['src']);
   }
 

@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -47,15 +48,14 @@ class CopyClass implements Builder {
   public function save(&$ctx, OutputInterface $output) {
     // NOTE: assume classloaders, etal, are already setup
     $clazz = new \ReflectionClass($this->srcClassName);
-
     if (file_exists($this->tgtFile) && $this->overwrite == 'ignore') {
       // do nothing
     }
     elseif (file_exists($this->tgtFile) && !$this->overwrite) {
-      $output->writeln("<error>Skip " . $this->tgtFile . ": file already exists</error>");
+      $output->writeln("<error>Skip " . Files::relativize($this->tgtFile) . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write</info> " . $this->tgtFile);
+      $output->writeln("<info>Write</info> " . Files::relativize($this->tgtFile));
       $content = file_get_contents($clazz->getFileName(), TRUE);
       // FIXME parser
       $content = strtr($content, [
