@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -101,12 +102,12 @@ action names.
     $dirs->save($ctx, $output);
 
     if (!file_exists($ctx['apiFile'])) {
-      $output->writeln(sprintf('<info>Write</info> %s', $ctx['apiFile']));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($ctx['apiFile'])));
       file_put_contents($ctx['apiFile'], Services::templating()
         ->render('api.php.php', $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiFile']));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiFile'])));
     }
 
     if ($input->getOption('schedule')) {
@@ -138,7 +139,7 @@ action names.
         $mgdBuilder->save($ctx, $output);
       }
       else {
-        $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiCronFile']));
+        $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiCronFile'])));
       }
     }
 
@@ -147,12 +148,12 @@ action names.
     ]);
     $test_dirs->save($ctx, $output);
     if (!file_exists($ctx['apiTestFile'])) {
-      $output->writeln(sprintf('<info>Write</info> %s', $ctx['apiTestFile']));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($ctx['apiTestFile'])));
       file_put_contents($ctx['apiTestFile'], Services::templating()
         ->render('test-api.php.php', $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $ctx['apiTestFile']));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiTestFile'])));
     }
 
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();

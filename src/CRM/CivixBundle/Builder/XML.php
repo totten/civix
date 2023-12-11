@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
+use CRM\CivixBundle\Utils\Files;
 use SimpleXMLElement;
 use DOMDocument;
 use CRM\CivixBundle\Builder;
@@ -59,7 +60,7 @@ class XML implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
-    $output->writeln("<info>Write</info> " . $this->path);
+    $output->writeln("<info>Write</info> " . Files::relativize($this->path));
 
     // force pretty printing with encode/decode cycle
     $outXML = $this->get()->saveXML();

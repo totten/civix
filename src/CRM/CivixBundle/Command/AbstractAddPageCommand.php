@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Services;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,21 +69,21 @@ abstract class AbstractAddPageCommand extends AbstractCommand {
     }
 
     if (!file_exists($phpFile)) {
-      $output->writeln(sprintf('<info>Write</info> %s', $phpFile));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
       file_put_contents($phpFile, Services::templating()
         ->render($this->getPhpTemplate($input), $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $phpFile));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($phpFile)));
     }
 
     if (!file_exists($tplFile)) {
-      $output->writeln(sprintf('<info>Write</info> %s', $tplFile));
+      $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($tplFile)));
       file_put_contents($tplFile, Services::templating()
         ->render($this->getTplTemplate($input), $ctx));
     }
     else {
-      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', $tplFile));
+      $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($tplFile)));
     }
 
     $module = new Module(Services::templating());

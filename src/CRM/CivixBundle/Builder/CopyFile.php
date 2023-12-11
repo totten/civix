@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -41,10 +42,10 @@ class CopyFile implements Builder {
       // do nothing
     }
     elseif (file_exists($this->to) && !$this->overwrite) {
-      $output->writeln("<error>Skip " . $this->to . ": file already exists</error>");
+      $output->writeln("<error>Skip " . Files::relativize($this->to) . ": file already exists</error>");
     }
     else {
-      $output->writeln("<info>Write</info> " . $this->to);
+      $output->writeln("<info>Write</info> " . Files::relativize($this->to));
       $content = file_get_contents($this->from, TRUE);
       file_put_contents($this->to, $content);
     }
