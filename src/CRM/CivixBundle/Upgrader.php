@@ -249,10 +249,12 @@ class Upgrader {
       ])->indexBy('name');
 
       $meta = $afform;
-      unset($meta['name'], $meta['layout'], $meta['search_displays'], $meta['navigation']);
-      // Simplify meta file by removing values that match the defaults
+      unset($meta['name'], $meta['layout'], $meta['navigation']);
+      // Simplify meta file by removing readonly fields and values that match the defaults
       foreach ($meta as $field => $value) {
-        if ($field !== 'type' && $value == $fields[$field]['default_value']) {
+        if ($fields[$field]['readonly'] ||
+          ($field !== 'type' && $value == $fields[$field]['default_value'])
+        ) {
           unset($meta[$field]);
         }
       }
