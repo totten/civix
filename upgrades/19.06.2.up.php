@@ -16,15 +16,15 @@
  * To be consistent and forward-compatible, you should consider updating your
  * existing unit-tests to use the name base-classes.
  */
-return function (\CRM\CivixBundle\Generator $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
   $io = \Civix::io();
 
-  $testFiles = \CRM\CivixBundle\Utils\Files::findFiles($upgrader->baseDir->string('tests'), '*.php');
-  $upgrader->updateTextFiles($testFiles, function(string $file, string $content) use ($io, $upgrader) {
+  $testFiles = \CRM\CivixBundle\Utils\Files::findFiles($gen->baseDir->string('tests'), '*.php');
+  $gen->updateTextFiles($testFiles, function(string $file, string $content) use ($io, $gen) {
     $old = 'PHPUnit_Framework_TestCase';
     $new = 'PHPUnit\Framework\TestCase';
-    $relFile = \CRM\CivixBundle\Utils\Files::relativize($file, $upgrader->baseDir->string() . '/');
+    $relFile = \CRM\CivixBundle\Utils\Files::relativize($file, $gen->baseDir->string() . '/');
 
     if (strpos($content, $old) === FALSE) {
       return $content;

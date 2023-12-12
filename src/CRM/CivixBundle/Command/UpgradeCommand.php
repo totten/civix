@@ -73,10 +73,10 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->section("Upgrade <info>v{$lastVersion}</info> => <info>v{$upgradeVersion}</info>");
       $io->writeln("<info>Executing upgrade script</info> $upgradeFile");
 
-      $upgrader = Civix::generator();
+      $gen = Civix::generator();
       $func = require $upgradeFile;
-      $func($upgrader);
-      $upgrader->updateFormatVersion($upgradeVersion);
+      $func($gen);
+      $gen->updateFormatVersion($upgradeVersion);
       $lastVersion = $upgradeVersion;
     }
   }
@@ -85,10 +85,10 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $io = \Civix::io();
     $io->title('General upgrade');
 
-    $upgrader = Civix::generator();
-    $upgrader->cleanEmptyHooks();
-    $upgrader->cleanEmptyLines();
-    $upgrader->reconcileMixins();
+    $gen = Civix::generator();
+    $gen->cleanEmptyHooks();
+    $gen->cleanEmptyLines();
+    $gen->reconcileMixins();
 
     /**
      * @var \CRM\CivixBundle\Builder\Info $info

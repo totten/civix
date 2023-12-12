@@ -3,11 +3,11 @@
 /**
  * Upgrade hook_civicrm_entityTypes to use mixin
  */
-return function (\CRM\CivixBundle\Generator $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
 
-  $prefix = $upgrader->infoXml->getFile();
+  $prefix = $gen->infoXml->getFile();
 
-  if (is_dir($upgrader->baseDir->string('xml/schema/CRM'))) {
+  if (is_dir($gen->baseDir->string('xml/schema/CRM'))) {
     \Civix::io()->note([
       'Civix 23.02 removes `*_civix_civicrm_entityTypes` in favor of a mixin `entity-types-php@1.0`.',
       'This reduces code-duplication and will enable easier updates in the future.',
@@ -17,10 +17,10 @@ return function (\CRM\CivixBundle\Generator $upgrader) {
       throw new \RuntimeException('User stopped upgrade');
     }
 
-    $upgrader->addMixins(['entity-types-php@1.0']);
+    $gen->addMixins(['entity-types-php@1.0']);
   }
 
-  $upgrader->removeHookDelegation([
+  $gen->removeHookDelegation([
     "_{$prefix}_civix_civicrm_entityTypes",
   ]);
 

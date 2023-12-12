@@ -23,11 +23,11 @@ class AddServiceCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $up = \Civix::generator();
-    $up->addMixins(['scan-classes@1.0']);
+    $gen = \Civix::generator();
+    $gen->addMixins(['scan-classes@1.0']);
 
-    $servicePrefix = $up->infoXml->getFile();
-    $namespace = Naming::coerceNamespace($up->infoXml->getNamespace(), $input->getOption('naming'));
+    $servicePrefix = $gen->infoXml->getFile();
+    $namespace = Naming::coerceNamespace($gen->infoXml->getNamespace(), $input->getOption('naming'));
 
     if ($input->isInteractive()) {
       $defaultName = $input->getArgument('name') ?? Naming::createServiceName($servicePrefix, 'myService');
@@ -54,7 +54,7 @@ class AddServiceCommand extends AbstractCommand {
     $baseNameParts = array_map('ucfirst', explode('.', $baseName));
     $className = Naming::createClassName($namespace, ...$baseNameParts);
 
-    $up->addClass($className, 'service.php.php', [
+    $gen->addClass($className, 'service.php.php', [
       'service' => $serviceName,
     ]);
   }

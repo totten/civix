@@ -5,9 +5,9 @@
  * However, as older extensions adopt newer technologies (like `Civi\Api4`), it helps
  * to add a similar to them.
  */
-return function (\CRM\CivixBundle\Generator $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
 
-  $upgrader->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($upgrader) {
+  $gen->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($gen) {
     /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
     $io = \Civix::io();
 

@@ -197,7 +197,7 @@ trait CivixProjectTestTrait {
    *
    * @return \CRM\CivixBundle\Generator
    */
-  public function civixUpgradeHelper(): Generator {
+  public function civixGeneratorHelper(): Generator {
     $input = new ArrayInput([]);
     $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
     \Civix::ioStack()->push($input, $output);

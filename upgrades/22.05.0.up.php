@@ -1,9 +1,9 @@
 <?php
 
-return function (\CRM\CivixBundle\Generator $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
   $io = \Civix::io();
-  $prefix = $upgrader->infoXml->getFile();
+  $prefix = $gen->infoXml->getFile();
 
   $io->note([
     "Civix v22.05 converts several functions to mixins. This reduces code-duplication and will enable easier updates in the future.",
@@ -32,8 +32,8 @@ return function (\CRM\CivixBundle\Generator $upgrader) {
     'glob:*.theme.php' => 'theme-php@1.0.0',
   ];
   $mixins = array_filter($filePatterns,
-    function (string $mixin, string $pattern) use ($upgrader, $io) {
-      $flagFiles = $upgrader->baseDir->search($pattern);
+    function (string $mixin, string $pattern) use ($gen, $io) {
+      $flagFiles = $gen->baseDir->search($pattern);
       $io->note($flagFiles
         ? "Enable \"$mixin\". There are files matching pattern \"$pattern\"."
         : "Skip \"$mixin\". There are no files matching pattern \"$pattern\"."
@@ -42,9 +42,9 @@ return function (\CRM\CivixBundle\Generator $upgrader) {
     },
     ARRAY_FILTER_USE_BOTH
   );
-  $upgrader->addMixins($mixins);
+  $gen->addMixins($mixins);
 
-  $upgrader->removeHookDelegation([
+  $gen->removeHookDelegation([
     "_{$prefix}_civix_civicrm_angularModules",
     "_{$prefix}_civix_civicrm_managed",
     "_{$prefix}_civix_civicrm_alterSettingsFolders",

@@ -5,18 +5,18 @@
  *
  * At some point in the future, this step could be removed if we configure `info.xml`'s `<upgrader>` option.
  */
-return function (\CRM\CivixBundle\Generator $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
   $io = \Civix::io();
 
-  if (!empty($upgrader->infoXml->get()->upgrader)) {
+  if (!empty($gen->infoXml->get()->upgrader)) {
     $io->note("Found <upgrader> tag. Skip hook_postInstall.");
     return;
   }
 
   // Give a notice if the new `CRM/*/Upgrader/Base` has a substantive change.
   // Note: The change is actually done in the generic regen. This is just a notice.
-  $phpBaseClass = \CRM\CivixBundle\Utils\Naming::createClassName($upgrader->infoXml->getNamespace(), 'Upgrader', 'Base');
-  $phpBaseFile = \CRM\CivixBundle\Utils\Naming::createClassFile($upgrader->infoXml->getNamespace(), 'Upgrader', 'Base');
+  $phpBaseClass = \CRM\CivixBundle\Utils\Naming::createClassName($gen->infoXml->getNamespace(), 'Upgrader', 'Base');
+  $phpBaseFile = \CRM\CivixBundle\Utils\Naming::createClassFile($gen->infoXml->getNamespace(), 'Upgrader', 'Base');
   if (file_exists($phpBaseFile)) {
     $content = file_get_contents($phpBaseFile);
     if (preg_match('|CRM_Core_BAO_Setting::setItem\(.revision, *.Extension.|', $content)) {
@@ -31,11 +31,11 @@ return function (\CRM\CivixBundle\Generator $upgrader) {
       }
     }
 
-    $upgrader->addHookDelegation('civicrm_postInstall', '',
+    $gen->addHookDelegation('civicrm_postInstall', '',
       "This hook is important for supporting the new version of $phpBaseClass.");
   }
   else {
-    $upgrader->addHookDelegation('civicrm_postInstall', '',
+    $gen->addHookDelegation('civicrm_postInstall', '',
       'If you use civix to facilitate database upgrades ("civix generate:upgrader"), then you should enable this stub. Otherwise, it is not needed.');
   }
 

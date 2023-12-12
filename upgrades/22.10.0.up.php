@@ -7,15 +7,15 @@
  *
  * Just add the '<psr0>` bit to everything.
  */
-return function (\CRM\CivixBundle\Generator $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
 
-  $upgrader->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($upgrader) {
+  $gen->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($gen) {
     /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
     $io = \Civix::io();
 
     $loaders = $info->getClassloaders();
     $prefixes = array_column($loaders, 'prefix');
-    if (file_exists($upgrader->baseDir->string('CRM')) && !in_array('CRM_', $prefixes)) {
+    if (file_exists($gen->baseDir->string('CRM')) && !in_array('CRM_', $prefixes)) {
       $io->section('"CRM" Class-loader');
       $io->note([
         'Older templates enabled class-loading via "hook_config" and "include_path".',
