@@ -5,7 +5,7 @@
  * However, as older extensions adopt newer technologies (like `Civi\Api4`), it helps
  * to add a similar to them.
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
 
   $upgrader->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($upgrader) {
     /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */

@@ -13,7 +13,7 @@ class CRMNamingTest extends \PHPUnit\Framework\TestCase {
   public static $key = 'civix_crmnaming';
 
   /**
-   * @var \CRM\CivixBundle\Upgrader
+   * @var \CRM\CivixBundle\Generator
    */
   protected $upgrader;
 
@@ -30,7 +30,7 @@ class CRMNamingTest extends \PHPUnit\Framework\TestCase {
     ]);
 
     \Civix::ioStack()->push(new ArgvInput(), new NullOutput());
-    $this->upgrader = \Civix::upgrader(static::getExtPath());
+    $this->upgrader = \Civix::generator(static::getExtPath());
     $this->upgrader->updateInfo(function(Info $info) {
       // FIXME: Allow "_" instead of "/"
       $info->get()->civix->namespace = 'CRM/NamingTest';

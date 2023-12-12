@@ -7,7 +7,7 @@
  *
  * Just add the '<psr0>` bit to everything.
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
 
   $upgrader->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($upgrader) {
     /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */

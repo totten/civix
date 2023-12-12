@@ -3,7 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Module;
 use Civix;
-use CRM\CivixBundle\Upgrader;
+use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +39,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
       $verAliases = ['0' => '13.10.0'];
-      Civix::upgrader()->updateFormatVersion($verAliases[$startVer] ?? $startVer);
+      Civix::generator()->updateFormatVersion($verAliases[$startVer] ?? $startVer);
     }
 
     $this->executeIncrementalUpgrades();
@@ -73,7 +73,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->section("Upgrade <info>v{$lastVersion}</info> => <info>v{$upgradeVersion}</info>");
       $io->writeln("<info>Executing upgrade script</info> $upgradeFile");
 
-      $upgrader = Civix::upgrader();
+      $upgrader = Civix::generator();
       $func = require $upgradeFile;
       $func($upgrader);
       $upgrader->updateFormatVersion($upgradeVersion);
@@ -85,7 +85,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $io = \Civix::io();
     $io->title('General upgrade');
 
-    $upgrader = Civix::upgrader();
+    $upgrader = Civix::generator();
     $upgrader->cleanEmptyHooks();
     $upgrader->cleanEmptyLines();
     $upgrader->reconcileMixins();

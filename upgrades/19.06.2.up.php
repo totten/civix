@@ -16,7 +16,7 @@
  * To be consistent and forward-compatible, you should consider updating your
  * existing unit-tests to use the name base-classes.
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
   $io = \Civix::io();
 

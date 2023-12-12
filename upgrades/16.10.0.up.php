@@ -5,7 +5,7 @@
  *
  * At some point in the future, this step could be removed if we configure `info.xml`'s `<upgrader>` option.
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
   $io = \Civix::io();
 
   if (!empty($upgrader->infoXml->get()->upgrader)) {

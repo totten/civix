@@ -3,7 +3,7 @@
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Utils\EvilEx;
 
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
   $mixins = new Mixins($upgrader->infoXml, $upgrader->baseDir->string('mixin'));
   $declared = $mixins->getDeclaredMixinConstraints();
   $hasSettingMixin = (bool) preg_grep('/^setting-php@/', $declared);

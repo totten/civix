@@ -1,7 +1,7 @@
 <?php
 use CRM\CivixBundle\Utils\Formatting;
 
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
   $io = \Civix::io();
 

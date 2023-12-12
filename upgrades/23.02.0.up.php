@@ -3,7 +3,7 @@
 /**
  * Upgrade hook_civicrm_entityTypes to use mixin
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
 
   $prefix = $upgrader->infoXml->getFile();
 

@@ -4,7 +4,7 @@
  * If you have a generated `phpunit.xml` or `phpunit.xml.dist` file, it may include the old option `syntaxCheck="false"`.
  * You can remove this.  The option has been inert and will raise errors in newer versions of PHPUnit.
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
   $io = \Civix::io();
 

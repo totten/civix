@@ -11,7 +11,7 @@ use CRM\CivixBundle\Utils\Naming;
  * - Use core's base class
  * - Remove old base class
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $upgrader) {
   $io = \Civix::io();
   $io->section('Lifecycle Hooks: Install, Upgrade, etc');
 

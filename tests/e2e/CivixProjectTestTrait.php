@@ -3,7 +3,7 @@
 namespace E2E;
 
 use CRM\CivixBundle\Application;
-use CRM\CivixBundle\Upgrader;
+use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
 use ProcessHelper\ProcessHelper as PH;
@@ -195,14 +195,14 @@ trait CivixProjectTestTrait {
   /**
    * Get the upgrade-utility/helper.
    *
-   * @return \CRM\CivixBundle\Upgrader
+   * @return \CRM\CivixBundle\Generator
    */
-  public function civixUpgradeHelper(): Upgrader {
+  public function civixUpgradeHelper(): Generator {
     $input = new ArrayInput([]);
     $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
     \Civix::ioStack()->push($input, $output);
     try {
-      return \Civix::upgrader(static::getExtPath());
+      return \Civix::generator(static::getExtPath());
     }
     finally {
       \Civix::ioStack()->pop();
