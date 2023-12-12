@@ -202,7 +202,7 @@ trait CivixProjectTestTrait {
     $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
     \Civix::ioStack()->push($input, $output);
     try {
-      return new Upgrader(static::getExtPath());
+      return \Civix::upgrader(static::getExtPath());
     }
     finally {
       \Civix::ioStack()->pop();

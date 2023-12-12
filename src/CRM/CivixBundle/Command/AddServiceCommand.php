@@ -23,7 +23,7 @@ class AddServiceCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $up = $this->getUpgrader();
+    $up = \Civix::upgrader();
     $up->addMixins(['scan-classes@1.0']);
 
     $servicePrefix = $up->infoXml->getFile();

@@ -39,8 +39,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
       $verAliases = ['0' => '13.10.0'];
-      $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
-      $upgrader->updateFormatVersion($verAliases[$startVer] ?? $startVer);
+      Civix::upgrader()->updateFormatVersion($verAliases[$startVer] ?? $startVer);
     }
 
     $this->executeIncrementalUpgrades();
@@ -74,7 +73,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->section("Upgrade <info>v{$lastVersion}</info> => <info>v{$upgradeVersion}</info>");
       $io->writeln("<info>Executing upgrade script</info> $upgradeFile");
 
-      $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $upgrader = Civix::upgrader();
       $func = require $upgradeFile;
       $func($upgrader);
       $upgrader->updateFormatVersion($upgradeVersion);
@@ -86,7 +85,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $io = \Civix::io();
     $io->title('General upgrade');
 
-    $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
+    $upgrader = Civix::upgrader();
     $upgrader->cleanEmptyHooks();
     $upgrader->cleanEmptyLines();
     $upgrader->reconcileMixins();
