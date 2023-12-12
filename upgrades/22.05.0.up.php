@@ -2,7 +2,7 @@
 
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
-  $io = $upgrader->io;
+  $io = \Civix::io();
   $prefix = $upgrader->infoXml->getFile();
 
   $io->note([

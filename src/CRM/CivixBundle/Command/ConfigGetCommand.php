@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +17,7 @@ class ConfigGetCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config = Services::config();
+    $config = Civix::config();
     foreach ($this->getInterestingParameters() as $key) {
       printf("%-40s \"%s\"\n", $key, @$config['parameters'][$key]);
     }

@@ -6,7 +6,7 @@
  */
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
-  $io = $upgrader->io;
+  $io = \Civix::io();
 
   $files = array_filter([
     $upgrader->baseDir->string('phpunit.xml'),

@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
-use CRM\CivixBundle\Services;
+use Civix;
 
 /**
  * Build/update a file based on a template
@@ -23,7 +23,7 @@ class Template extends Content {
     $this->template = $template;
     $this->path = $path;
     $this->overwrite = $overwrite;
-    $this->templateEngine = $templateEngine ?: Services::templating();
+    $this->templateEngine = $templateEngine ?: Civix::templating();
   }
 
   protected function getContent($ctx): string {

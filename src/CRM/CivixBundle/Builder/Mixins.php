@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Builder;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Versioning;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,7 +55,7 @@ class Mixins implements Builder {
     $this->outputDir = $outputDir;
     $this->newConstraints = (array) $newConstraints;
     $this->removals = [];
-    $this->allBackports = Services::mixinBackports();
+    $this->allBackports = Civix::mixinBackports();
   }
 
   public function loadInit(&$ctx) {
@@ -124,7 +124,7 @@ class Mixins implements Builder {
 
     // Let's clarify the versions we want.
     $actualDeclarations = array_merge($this->getDeclaredMixinConstraints(), $this->newConstraints);
-    $expectedDeclarations = array_column(Services::mixlib()->resolve($actualDeclarations), 'mixinConstraint');
+    $expectedDeclarations = array_column(Civix::mixlib()->resolve($actualDeclarations), 'mixinConstraint');
     foreach ($expectedDeclarations as $newMixin) {
       $this->addMixinToXml($newMixin);
     }
@@ -151,7 +151,7 @@ class Mixins implements Builder {
     $extraBackports = array_diff($existingBackports, $expectedBackports);
 
     foreach ($missingBackports as $mixinName) {
-      $mixinSpec = Services::mixlib()->get($mixinName);
+      $mixinSpec = Civix::mixlib()->get($mixinName);
       $this->createBackportFile($output, $mixinSpec);
     }
 

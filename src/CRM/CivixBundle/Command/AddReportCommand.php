@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -98,8 +98,8 @@ class AddReportCommand extends AbstractCommand {
     // Create .php & .tpl by either copying from core source tree or using a civix template
     if ($srcClassName = $input->getOption('copy')) {
       // To locate the original file, we need to bootstrap Civi and search the include path
-      Services::boot(['output' => $output]);
-      $civicrm_api3 = Services::api3();
+      Civix::boot(['output' => $output]);
+      $civicrm_api3 = Civix::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
         return;
@@ -110,8 +110,8 @@ class AddReportCommand extends AbstractCommand {
       $ext->builders['page.tpl.php'] = new CopyFile($origTplFile, $ctx['reportTplFile'], FALSE);
     }
     else {
-      $ext->builders['report.php'] = new Template('report.php.php', $ctx['reportClassFile'], FALSE, Services::templating());
-      $ext->builders['page.tpl.php'] = new Template('report.tpl.php', $ctx['reportTplFile'], FALSE, Services::templating());
+      $ext->builders['report.php'] = new Template('report.php.php', $ctx['reportClassFile'], FALSE, Civix::templating());
+      $ext->builders['page.tpl.php'] = new Template('report.tpl.php', $ctx['reportTplFile'], FALSE, Civix::templating());
     }
 
     $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);

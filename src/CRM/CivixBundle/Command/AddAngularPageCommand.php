@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -75,9 +75,9 @@ For more, see https://docs.angularjs.org/guide');
       dirname($ctx['hlpPath']),
     ]);;
 
-    $ext->builders['ctrl.js'] = new Template('angular-page.js.php', $ctx['jsPath'], FALSE, Services::templating());
-    $ext->builders['html'] = new Template('angular-page.html.php', $ctx['htmlPath'], FALSE, Services::templating());
-    $ext->builders['hlp'] = new Template('angular-page.hlp.php', $ctx['hlpPath'], FALSE, Services::templating());
+    $ext->builders['ctrl.js'] = new Template('angular-page.js.php', $ctx['jsPath'], FALSE, Civix::templating());
+    $ext->builders['html'] = new Template('angular-page.html.php', $ctx['htmlPath'], FALSE, Civix::templating());
+    $ext->builders['hlp'] = new Template('angular-page.hlp.php', $ctx['hlpPath'], FALSE, Civix::templating());
 
     $ext->init($ctx);
     $ext->save($ctx, $output);

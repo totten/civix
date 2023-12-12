@@ -12,7 +12,7 @@ use CRM\CivixBundle\Utils\Naming;
  * - Remove old base class
  */
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
-  $io = $upgrader->io;
+  $io = \Civix::io();
   $io->section('Lifecycle Hooks: Install, Upgrade, etc');
 
   $info = $upgrader->infoXml;

@@ -20,8 +20,8 @@ assertNotMatch('src/CRM/CivixBundle/Command/AddPageCommand.php', ';^namespace Ci
 assertNotMatch('vendor/symfony/console/Input/InputInterface.php', ';^namespace Symfony;');
 assertMatch('vendor/symfony/console/Input/InputInterface.php', ';^namespace CivixPhar.Symfony;');
 
-assertMatch('src/CRM/CivixBundle/Services.php', ';civicrm_api3;');
-assertNotMatch('src/CRM/CivixBundle/Services.php', ';CivixPhar.civicrm_api3;');
+assertMatch('src/Civix.php', ';civicrm_api3;');
+assertNotMatch('src/Civix.php', ';CivixPhar.civicrm_api3;');
 
 assertMatch('vendor/civicrm/cv-lib/src/CmsBootstrap.php', ';JFactory::;');
 assertMatch('vendor/civicrm/cv-lib/src/CmsBootstrap.php', ';Drupal::;');

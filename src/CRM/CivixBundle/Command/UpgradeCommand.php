@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Module;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Upgrader;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
@@ -10,12 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Utils\Path;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class UpgradeCommand extends AbstractCommand {
 
   protected function configure() {
-    Services::templating();
+    Civix::templating();
     $this
       ->setName('upgrade')
       ->setDescription('Apply upgrades to the layout of the codebase')
@@ -40,17 +39,17 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
       $verAliases = ['0' => '13.10.0'];
-      $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
       $upgrader->updateFormatVersion($verAliases[$startVer] ?? $startVer);
     }
 
-    $this->executeIncrementalUpgrades($input, $output);
-    $this->executeGenericUpgrade($input, $output);
+    $this->executeIncrementalUpgrades();
+    $this->executeGenericUpgrade();
     return 0;
   }
 
-  protected function executeIncrementalUpgrades(InputInterface $input, OutputInterface $output) {
-    $io = new SymfonyStyle($input, $output);
+  protected function executeIncrementalUpgrades() {
+    $io = \Civix::io();
     $io->title('Incremental upgrades');
 
     [$ctx, $info] = $this->loadCtxInfo();
@@ -64,7 +63,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->writeln("Current civix format is <info>v{$startVersion}</info>.");
     }
 
-    $upgrades = Services::upgradeList()->findUpgrades($startVersion);
+    $upgrades = Civix::upgradeList()->findUpgrades($startVersion);
     if (empty($upgrades)) {
       $io->writeln("No incremental upgrades required.");
       return 0;
@@ -75,7 +74,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->section("Upgrade <info>v{$lastVersion}</info> => <info>v{$upgradeVersion}</info>");
       $io->writeln("<info>Executing upgrade script</info> $upgradeFile");
 
-      $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
       $func = require $upgradeFile;
       $func($upgrader);
       $upgrader->updateFormatVersion($upgradeVersion);
@@ -83,11 +82,11 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     }
   }
 
-  protected function executeGenericUpgrade(InputInterface $input, OutputInterface $output): void {
-    $io = new SymfonyStyle($input, $output);
+  protected function executeGenericUpgrade(): void {
+    $io = \Civix::io();
     $io->title('General upgrade');
 
-    $upgrader = new Upgrader($input, $output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+    $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
     $upgrader->cleanEmptyHooks();
     $upgrader->cleanEmptyLines();
     $upgrader->reconcileMixins();
@@ -98,15 +97,15 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     [$ctx, $info] = $this->loadCtxInfo();
     $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
 
-    $module = new Module(Services::templating());
+    $module = new Module(Civix::templating());
     $module->loadInit($ctx);
-    $module->save($ctx, $output);
+    $module->save($ctx, \Civix::output());
 
     if ($ctx['namespace']) {
       $phpFile = $basedir->string(Naming::createClassFile($ctx['namespace'], 'Upgrader', 'Base.php'));
       if (file_exists($phpFile)) {
-        $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
-        file_put_contents($phpFile, Services::templating()->render('upgrader-base.php.php', $ctx));
+        \Civix::output()->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
+        file_put_contents($phpFile, Civix::templating()->render('upgrader-base.php.php', $ctx));
       }
     }
   }

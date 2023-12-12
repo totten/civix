@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,8 +51,8 @@ action names.
     $io = new SymfonyStyle($input, $output);
 
     // load Civi to get access to civicrm_api_get_function_name
-    Services::boot(['output' => $output]);
-    $civicrm_api3 = Services::api3();
+    Civix::boot(['output' => $output]);
+    $civicrm_api3 = Civix::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return;
@@ -103,7 +103,7 @@ action names.
 
     if (!file_exists($ctx['apiFile'])) {
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($ctx['apiFile'])));
-      file_put_contents($ctx['apiFile'], Services::templating()
+      file_put_contents($ctx['apiFile'], Civix::templating()
         ->render('api.php.php', $ctx));
     }
     else {
@@ -149,7 +149,7 @@ action names.
     $test_dirs->save($ctx, $output);
     if (!file_exists($ctx['apiTestFile'])) {
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($ctx['apiTestFile'])));
-      file_put_contents($ctx['apiTestFile'], Services::templating()
+      file_put_contents($ctx['apiTestFile'], Civix::templating()
         ->render('test-api.php.php', $ctx));
     }
     else {

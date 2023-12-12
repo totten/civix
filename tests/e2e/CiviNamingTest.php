@@ -31,11 +31,17 @@ class CiviNamingTest extends \PHPUnit\Framework\TestCase {
       'civix_civinaming.civix.php' => 1,
     ]);
 
-    $this->upgrader = new Upgrader(new ArgvInput(), new NullOutput(), new Path(static::getExtPath()));
+    \Civix::ioStack()->push(new ArgvInput(), new NullOutput());
+    $this->upgrader = new Upgrader(new Path(static::getExtPath()));
     $this->upgrader->updateInfo(function(Info $info) {
       // FIXME: Allow "\" instead of "/"
       $info->get()->civix->namespace = 'Civi/NamingTest';
     });
+  }
+
+  protected function tearDown(): void {
+    parent::tearDown();
+    \Civix::ioStack()->reset();
   }
 
   public function testNaming_OnePart(): void {

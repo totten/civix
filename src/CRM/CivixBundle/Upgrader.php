@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle;
 
+use Civix;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\PhpData;
@@ -19,19 +20,19 @@ class Upgrader {
    * @var \Symfony\Component\Console\Input\InputInterface
    * @readonly
    */
-  public $input;
+  private $input;
 
   /**
    * @var \Symfony\Component\Console\Output\OutputInterface
    * @readonly
    */
-  public $output;
+  private $output;
 
   /**
    * @var \Symfony\Component\Console\Style\SymfonyStyle
    * @readonly
    */
-  public $io;
+  private $io;
 
   /**
    * @var \CRM\CivixBundle\Utils\Path
@@ -47,18 +48,14 @@ class Upgrader {
    */
   public $infoXml;
 
-  private $_ctx;
-
   /**
-   * @param \Symfony\Component\Console\Input\InputInterface $input
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
    * @param \CRM\CivixBundle\Utils\Path $baseDir
    *   The folder that contains the extension.
    */
-  public function __construct(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output, Path $baseDir) {
-    $this->input = $input;
-    $this->output = $output;
-    $this->io = new SymfonyStyle($input, $output);
+  public function __construct(Path $baseDir) {
+    $this->input = \Civix::input();
+    $this->output = \Civix::output();
+    $this->io = \Civix::io();
     $this->baseDir = $baseDir;
     $this->reloadInfo();
   }
@@ -92,7 +89,8 @@ class Upgrader {
    */
   public function updateInfo(callable $function): void {
     $function($this->infoXml);
-    $this->infoXml->save($this->_ctx, $this->output);
+    $ctx = $this->createDefaultCtx();
+    $this->infoXml->save($ctx, $this->output);
   }
 
   /**
@@ -114,8 +112,9 @@ class Upgrader {
   public function updateMixins(callable $function): void {
     $mixins = new Mixins($this->infoXml, $this->baseDir->string('mixin'));
     $function($mixins);
-    $mixins->save($this->_ctx, $this->output);
-    $this->infoXml->save($this->_ctx, $this->output);
+    $ctx = $this->createDefaultCtx();
+    $mixins->save($ctx, $this->output);
+    $this->infoXml->save($ctx, $this->output);
   }
 
   /**
@@ -133,7 +132,7 @@ class Upgrader {
    */
   public function updatePhpData($path, callable $filter): void {
     $file = Path::for($path)->string();
-    $ctx = [];
+    $ctx = $this->createDefaultCtx();
     $phpData = new PhpData($file);
     $phpData->loadInit($ctx);
     $filter($phpData);
@@ -208,7 +207,7 @@ class Upgrader {
 
     $managedName = $export[0]['name'];
     $managedFileName = $this->baseDir->string('managed', "$managedName.mgd.php");
-    Mgd::assertManageableEntity($entityName, $id, $this->infoXml->getKey(), $managedName, $managedFileName, $this->io);
+    Mgd::assertManageableEntity($entityName, $id, $this->infoXml->getKey(), $managedName, $managedFileName);
     $this->updateMgdPhp($managedFileName, function(PhpData $data) use ($export) {
       $data->set($export);
     });
@@ -616,7 +615,7 @@ class Upgrader {
     }
 
     $this->io->note("Write " . Files::relativize($classFile, getcwd()));
-    $rendered = Services::templating()->render($template, $tplData);
+    $rendered = Civix::templating()->render($template, $tplData);
     Path::for(dirname($classFile))->mkdir();
     file_put_contents($classFile, $rendered);
   }
@@ -724,15 +723,13 @@ class Upgrader {
   /**
    * Re-read the `info.xml` file.
    *
-   * @return array
+   * @return \CRM\CivixBundle\Builder\Info
    */
-  public function reloadInfo(): array {
-    $this->_ctx = [];
-    $this->_ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
-    $this->_ctx['type'] = 'module';
+  public function reloadInfo() {
+    $ctx = $this->createDefaultCtx();
     $this->infoXml = new Info($this->baseDir->string('info.xml'));
-    $this->infoXml->load($this->_ctx);
-    return [$this->infoXml, $this->_ctx];
+    $this->infoXml->load($ctx);
+    return $this->infoXml;
   }
 
   /**
@@ -778,6 +775,13 @@ class Upgrader {
         $this->io->writeln($lines[$i], SymfonyStyle::OUTPUT_RAW);
       }
     }
+  }
+
+  protected function createDefaultCtx(): array {
+    $ctx = [];
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
+    $ctx['type'] = 'module';
+    return $ctx;
   }
 
 }

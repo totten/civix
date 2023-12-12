@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -89,8 +89,8 @@ $ civix generate:theme foobar
       $ext->builders['theme.php']->set($themeMeta);
     }
 
-    $ext->builders['civicrm.css'] = new Template('civicrm.css.php', $ctx['themeCivicrmCss'], FALSE, Services::templating());
-    $ext->builders['bootstrap.css'] = new Template('bootstrap.css.php', $ctx['themeBootstrapCss'], FALSE, Services::templating());
+    $ext->builders['civicrm.css'] = new Template('civicrm.css.php', $ctx['themeCivicrmCss'], FALSE, Civix::templating());
+    $ext->builders['bootstrap.css'] = new Template('bootstrap.css.php', $ctx['themeBootstrapCss'], FALSE, Civix::templating());
 
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);

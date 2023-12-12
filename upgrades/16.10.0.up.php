@@ -6,7 +6,7 @@
  * At some point in the future, this step could be removed if we configure `info.xml`'s `<upgrader>` option.
  */
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
-  $io = $upgrader->io;
+  $io = \Civix::io();
 
   if (!empty($upgrader->infoXml->get()->upgrader)) {
     $io->note("Found <upgrader> tag. Skip hook_postInstall.");

@@ -1,10 +1,9 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Builder\CopyFile;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Template;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +21,7 @@ class InitCommand extends AbstractCommand {
   protected $defaultMixins = ['setting-php@1', 'mgd-php@1', 'smarty-v2@1'];
 
   protected function configure() {
-    Services::templating();
+    Civix::templating();
     $this
       ->setName('generate:module')
       ->setDescription('Create a new CiviCRM Module-Extension (Regenerate module.civix.php if \"key\" not specified)')
@@ -57,7 +56,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    Services::boot(['output' => $output]);
+    Civix::boot(['output' => $output]);
 
     $ctx = [];
     $ctx['type'] = 'module';
@@ -148,9 +147,9 @@ class InitCommand extends AbstractCommand {
     ]);
     $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
     $ext->builders['info'] = $info;
-    $ext->builders['module'] = new Module(Services::templating());
+    $ext->builders['module'] = new Module(Civix::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
-    $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Services::templating());
+    $ext->builders['readme'] = new Template('readme.md.php', $basedir->string('README.md'), FALSE, Civix::templating());
     $ext->loadInit($ctx);
     $ext->save($ctx, $output);
 
@@ -164,8 +163,8 @@ class InitCommand extends AbstractCommand {
    * @return bool TRUE on success; FALSE if there's no site or if there's an error
    */
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
-    Services::boot(['output' => $output]);
-    $civicrm_api3 = Services::api3();
+    Civix::boot(['output' => $output]);
+    $civicrm_api3 = Civix::api3();
 
     if ($civicrm_api3 && $civicrm_api3->local) {
       $siteName = \CRM_Utils_System::baseURL();
@@ -194,7 +193,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function getDefaultLicense() {
-    $config = Services::config();
+    $config = Civix::config();
     $license = NULL;
     if (!empty($config['parameters']['license'])) {
       $license = $config['parameters']['license'];
@@ -203,7 +202,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function getDefaultEmail() {
-    $config = Services::config();
+    $config = Civix::config();
     $value = NULL;
     if (!empty($config['parameters']['email'])) {
       $value = $config['parameters']['email'];
@@ -212,7 +211,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function getDefaultAuthor() {
-    $config = Services::config();
+    $config = Civix::config();
     $value = NULL;
     if (!empty($config['parameters']['author'])) {
       $value = $config['parameters']['author'];

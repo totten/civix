@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,7 +40,7 @@ class TestRunCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    Services::boot(['output' => $output]);
+    Civix::boot(['output' => $output]);
     $basedir = new Path(getcwd());
 
     $output->writeln("<comment>Warning: 'civix test' deprecated.  Run phpunit4 directly from the extension directory instead.</comment>");
@@ -54,7 +54,7 @@ class TestRunCommand extends Command {
     }
 
     // Find the main phpunit
-    $civicrm_api3 = Services::api3();
+    $civicrm_api3 = Civix::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>'test' requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return 1;
@@ -179,7 +179,7 @@ class TestRunCommand extends Command {
    * @return string temp file path
    */
   protected function getBootstrapFile($key, $clear = FALSE) {
-    $cacheDir = Services::cacheDir();
+    $cacheDir = Civix::cacheDir();
     $file = $cacheDir->string("civix-phpunit.{$key}.php");
     if ($clear || !file_exists($file) || filemtime($file) < time() - self::BOOTSTRAP_TTL) {
       $template_vars = [];
@@ -192,7 +192,7 @@ class TestRunCommand extends Command {
       $template_vars['civicrm_setting']['URL Preferences']['extensionsURL'] = \CRM_Core_BAO_Setting::getItem('URL Preferences', 'extensionsURL');
       $template_vars['civicrm_setting']['Test']['test_extensions'] = array_keys(\CRM_Core_PseudoConstant::getExtensions());
 
-      file_put_contents($file, Services::templating()
+      file_put_contents($file, Civix::templating()
         ->render('phpunit-boot.php.php', $template_vars));
     }
     return $file;

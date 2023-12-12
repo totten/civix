@@ -31,12 +31,17 @@ class CRMNamingTest extends \PHPUnit\Framework\TestCase {
       'civix_crmnaming.civix.php' => 1,
     ]);
 
-    $this->upgrader = new Upgrader(new ArgvInput(), new NullOutput(), new Path(static::getExtPath()));
+    \Civix::ioStack()->push(new ArgvInput(), new NullOutput());
+    $this->upgrader = new Upgrader(new Path(static::getExtPath()));
     $this->upgrader->updateInfo(function(Info $info) {
       // FIXME: Allow "_" instead of "/"
       $info->get()->civix->namespace = 'CRM/NamingTest';
     });
+  }
 
+  protected function tearDown(): void {
+    parent::tearDown();
+    \Civix::ioStack()->reset();
   }
 
   public function testNaming_OnePart(): void {
