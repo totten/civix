@@ -724,15 +724,15 @@ class Upgrader {
   /**
    * Re-read the `info.xml` file.
    *
-   * @return array
+   * @return \CRM\CivixBundle\Builder\Info
    */
-  public function reloadInfo(): array {
+  public function reloadInfo() {
     $this->_ctx = [];
     $this->_ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
     $this->_ctx['type'] = 'module';
     $this->infoXml = new Info($this->baseDir->string('info.xml'));
     $this->infoXml->load($this->_ctx);
-    return [$this->infoXml, $this->_ctx];
+    return $this->infoXml;
   }
 
   /**
