@@ -49,15 +49,13 @@ class Upgrader {
   public $infoXml;
 
   /**
-   * @param \Symfony\Component\Console\Input\InputInterface $input
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
    * @param \CRM\CivixBundle\Utils\Path $baseDir
    *   The folder that contains the extension.
    */
-  public function __construct(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output, Path $baseDir) {
-    $this->input = $input;
-    $this->output = $output;
-    $this->io = new SymfonyStyle($input, $output);
+  public function __construct(Path $baseDir) {
+    $this->input = \Civix::input();
+    $this->output = \Civix::output();
+    $this->io = \Civix::io();
     $this->baseDir = $baseDir;
     $this->reloadInfo();
   }

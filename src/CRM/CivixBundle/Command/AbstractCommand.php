@@ -31,7 +31,7 @@ abstract class AbstractCommand extends Command {
 
   protected function getUpgrader(): Upgrader {
     if ($this->upgrader === NULL) {
-      $this->upgrader = new Upgrader(Civix::input(), Civix::output(), new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $this->upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
     }
     return $this->upgrader;
   }

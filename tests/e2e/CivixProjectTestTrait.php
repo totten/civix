@@ -200,7 +200,8 @@ trait CivixProjectTestTrait {
   public function civixUpgradeHelper(): Upgrader {
     $input = new ArrayInput([]);
     $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
-    return new Upgrader($input, $output, static::getExtPath());
+    \Civix::setIO($input, $output);
+    return new Upgrader(static::getExtPath());
   }
 
   /**
