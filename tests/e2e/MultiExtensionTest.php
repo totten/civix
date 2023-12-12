@@ -37,6 +37,7 @@ class MultiExtensionTest extends \PHPUnit\Framework\TestCase {
   protected function tearDown(): void {
     chdir(static::getWorkspacePath());
     PH::runOk('civibuild restore');
+    \Civix::ioStack()->reset();
   }
 
   public function testAddPage(): void {

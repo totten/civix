@@ -17,6 +17,16 @@ abstract class AbstractCommand extends Command {
     $this->addOption('yes', NULL, InputOption::VALUE_NONE, 'Answer yes to any questions');
   }
 
+  public function run(InputInterface $input, OutputInterface $output) {
+    try {
+      \Civix::ioStack()->push($input, $output);
+      return parent::run($input, $output);
+    }
+    finally {
+      \Civix::ioStack()->pop();
+    }
+  }
+
   /**
    * @var \CRM\CivixBundle\Upgrader
    */

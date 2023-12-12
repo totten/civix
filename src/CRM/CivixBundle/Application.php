@@ -28,8 +28,6 @@ use CRM\CivixBundle\Command\MixinCommand;
 use CRM\CivixBundle\Command\PingCommand;
 use CRM\CivixBundle\Command\TestRunCommand;
 use CRM\CivixBundle\Command\UpgradeCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends \Symfony\Component\Console\Application {
 
@@ -82,11 +80,6 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new InfoGetCommand();
     $commands[] = new InfoSetCommand();
     return $commands;
-  }
-
-  protected function configureIO(InputInterface $input, OutputInterface $output) {
-    parent::configureIO($input, $output);
-    \Civix::setIO($input, $output);
   }
 
   /**

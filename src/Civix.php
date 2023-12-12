@@ -2,7 +2,6 @@
 
 use Civi\Cv\Bootstrap;
 use CRM\CivixBundle\Utils\Path;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
@@ -11,22 +10,28 @@ class Civix {
 
   protected static $cache = [];
 
-  public static function setIO(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output): void {
-    static::$cache['input'] = $input;
-    static::$cache['output'] = $output;
-    static::$cache['io'] = new SymfonyStyle($input, $output);
+  /**
+   * Get a list of input/output objects for pending commands.
+   *
+   * @return \CRM\CivixBundle\Utils\IOStack
+   */
+  public static function ioStack(): \CRM\CivixBundle\Utils\IOStack {
+    if (!isset(static::$cache[__FUNCTION__])) {
+      static::$cache[__FUNCTION__] = new \CRM\CivixBundle\Utils\IOStack();
+    }
+    return static::$cache[__FUNCTION__];
   }
 
   public static function input(): \Symfony\Component\Console\Input\InputInterface {
-    return static::$cache['input'];
+    return static::ioStack()->current('input');
   }
 
   public static function output(): \Symfony\Component\Console\Output\OutputInterface {
-    return static::$cache['output'];
+    return static::ioStack()->current('output');
   }
 
   public static function io(): \Symfony\Component\Console\Style\StyleInterface {
-    return static::$cache['io'];
+    return static::ioStack()->current('io');
   }
 
   public static function boot($options = []) {
