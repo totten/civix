@@ -98,8 +98,12 @@ class Application extends \Symfony\Component\Console\Application {
     }
   }
 
+  /**
+   * @return string
+   * @deprecated
+   */
   public static function findCivixDir(): string {
-    return dirname(__DIR__, 3);
+    return (string) \Civix::appDir();
   }
 
 }

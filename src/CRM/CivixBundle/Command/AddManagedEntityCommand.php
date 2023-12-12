@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +40,7 @@ with most existing extensions+generators.
     $entityId = $input->getArgument('<EntityId>');
 
     // Boot CiviCRM to use api4
-    Services::boot(['output' => $output]);
+    Civix::boot(['output' => $output]);
 
     $upgrader = $this->getUpgrader();
     $upgrader->addMixins(['mgd-php@1.0']);

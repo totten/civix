@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Versioning;
 use LicenseData\Repository;
 use SimpleXMLElement;
@@ -67,7 +67,7 @@ class Info extends XML {
     if (isset($ctx['namespace'])) {
       $civix->addChild('namespace', $ctx['namespace']);
     }
-    $civix->addChild('format', $ctx['civixFormat'] ?? Services::upgradeList()->getHeadVersion());
+    $civix->addChild('format', $ctx['civixFormat'] ?? Civix::upgradeList()->getHeadVersion());
     if (isset($ctx['angularModuleName'])) {
       $civix->addChild('angularModule', $ctx['angularModuleName']);
     }

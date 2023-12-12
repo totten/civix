@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Application;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,7 +48,7 @@ class AddUpgraderCommand extends AbstractCommand {
     $phpFile = $basedir->string($ctx['namespace'], 'Upgrader.php');
     if (!file_exists($phpFile)) {
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
-      file_put_contents($phpFile, Services::templating()
+      file_put_contents($phpFile, Civix::templating()
         ->render('upgrader.php.php', $ctx));
     }
     else {
@@ -61,7 +61,7 @@ class AddUpgraderCommand extends AbstractCommand {
     $info->raiseCompatibilityMinimum('5.38');
     $info->save($ctx, $output);
 
-    $module = new Module(Services::templating());
+    $module = new Module(Civix::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
 

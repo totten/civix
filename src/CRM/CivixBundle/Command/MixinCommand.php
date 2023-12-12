@@ -3,7 +3,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class MixinCommand extends AbstractCommand {
 
   protected function configure() {
-    Services::templating();
+    Civix::templating();
     $this
       ->setName('mixin')
       ->setDescription('Inspect and update list of mixins')
@@ -106,8 +106,8 @@ class MixinCommand extends AbstractCommand {
   }
 
   protected function showList(SymfonyStyle $io, Mixins $mixins) {
-    $mixlib = Services::mixlib();
-    $mixinBackports = preg_grep(';@;', array_keys(Services::mixinBackports()));
+    $mixlib = Civix::mixlib();
+    $mixinBackports = preg_grep(';@;', array_keys(Civix::mixinBackports()));
 
     $toNameMajor = function($mixinConstraint) {
       [$mixinName, $mixinVersion] = explode('@', $mixinConstraint);
@@ -160,8 +160,8 @@ class MixinCommand extends AbstractCommand {
 
   protected function findAllMixins(): iterable {
     yield from [];
-    $mixlib = Services::mixlib();
-    $mixinBackports = preg_grep(';@;', array_keys(Services::mixinBackports()));
+    $mixlib = Civix::mixlib();
+    $mixinBackports = preg_grep(';@;', array_keys(Civix::mixinBackports()));
     sort($mixinBackports);
     foreach ($mixinBackports as $id) {
       yield $mixlib->get($id);

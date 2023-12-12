@@ -2,7 +2,7 @@
 
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class AddServiceCommand extends AbstractCommand {
 
   protected function configure() {
-    Services::templating();
+    Civix::templating();
     $this
       ->setName('generate:service')
       ->setDescription('Create a new service')

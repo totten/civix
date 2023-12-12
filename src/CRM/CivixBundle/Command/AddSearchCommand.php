@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -77,8 +77,8 @@ class AddSearchCommand extends AbstractCommand {
 
     if ($srcClassName = $input->getOption('copy')) {
       // we need bootstrap to set up include path to locate file -- but that's it
-      Services::boot(['output' => $output]);
-      $civicrm_api3 = Services::api3();
+      Civix::boot(['output' => $output]);
+      $civicrm_api3 = Civix::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
         return;
@@ -105,8 +105,8 @@ class AddSearchCommand extends AbstractCommand {
       }
     }
     else {
-      $ext->builders['search.php'] = new Template('search.php.php', $ctx['searchClassFile'], FALSE, Services::templating());
-      // $ext->builders['page.tpl.php'] = new Template('search.tpl.php', $ctx['searchTplFile'], FALSE, Services::templating());
+      $ext->builders['search.php'] = new Template('search.php.php', $ctx['searchClassFile'], FALSE, Civix::templating());
+      // $ext->builders['page.tpl.php'] = new Template('search.tpl.php', $ctx['searchTplFile'], FALSE, Civix::templating());
     }
 
     $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);

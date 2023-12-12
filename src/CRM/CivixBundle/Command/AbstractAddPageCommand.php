@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,7 +70,7 @@ abstract class AbstractAddPageCommand extends AbstractCommand {
 
     if (!file_exists($phpFile)) {
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
-      file_put_contents($phpFile, Services::templating()
+      file_put_contents($phpFile, Civix::templating()
         ->render($this->getPhpTemplate($input), $ctx));
     }
     else {
@@ -79,14 +79,14 @@ abstract class AbstractAddPageCommand extends AbstractCommand {
 
     if (!file_exists($tplFile)) {
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($tplFile)));
-      file_put_contents($tplFile, Services::templating()
+      file_put_contents($tplFile, Civix::templating()
         ->render($this->getTplTemplate($input), $ctx));
     }
     else {
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($tplFile)));
     }
 
-    $module = new Module(Services::templating());
+    $module = new Module(Civix::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
 

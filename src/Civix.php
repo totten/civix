@@ -1,17 +1,12 @@
 <?php
-namespace CRM\CivixBundle;
 
 use Civi\Cv\Bootstrap;
 use CRM\CivixBundle\Utils\Path;
-use Mixlib;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 
-
-class Services {
+class Civix {
 
   protected static $cache;
 
@@ -55,11 +50,11 @@ class Services {
   }
 
   /**
-   * @return EngineInterface
+   * @return \Symfony\Component\Templating\EngineInterface
    */
   public static function templating() {
     if (!isset(self::$cache['templating'])) {
-      $loader = new FilesystemLoader(__DIR__ . '/Resources/views/Code/%name%');
+      $loader = new FilesystemLoader(static::appDir('/src/CRM/CivixBundle/Resources/views/Code/%name%'));
       self::$cache['templating'] = new PhpEngine(new TemplateNameParser(), $loader);
     }
     return self::$cache['templating'];
@@ -84,13 +79,27 @@ class Services {
   }
 
   /**
-   * @return Path
+   * Get the root path of the civix application.
+   *
+   * @param array $parts
+   *   Optional list of sub-paths
+   *   Ex: ['src', 'CRM', 'CivixBundle']
+   * @return \CRM\CivixBundle\Utils\Path
+   *   Ex: '/home/myuser/src/civix'
+   *   Ex: 'phar://usr/local/bin/civix.phar'
+   */
+  public static function appDir(...$parts): Path {
+    return Path::for(dirname(__DIR__), ...$parts);
+  }
+
+  /**
+   * @return \CRM\CivixBundle\Utils\Path
    */
   public static function configDir() {
     if (!isset(self::$cache['configDir'])) {
       $homes = [
-        getenv('HOME'), // Unix
-        getenv('USERPROFILE'), // Windows
+        getenv('HOME'), /* Unix */
+        getenv('USERPROFILE'), /* Windows */
       ];
       foreach ($homes as $home) {
         if (!empty($home)) {
@@ -106,7 +115,7 @@ class Services {
   }
 
   /**
-   * @return Path
+   * @return \CRM\CivixBundle\Utils\Path
    */
   public static function cacheDir() {
     if (!isset(self::$cache['cacheDir'])) {
@@ -122,9 +131,9 @@ class Services {
     if (!isset(self::$cache[__FUNCTION__])) {
       if (!class_exists('Mixlib')) {
         // For some reason, autoloading rule doesn't for this doesn't survive box/php-scoper/phar transofrmation.
-        require_once dirname(__DIR__, 3) . '/extern/src/Mixlib.php';
+        require_once static::appDir('extern/src/Mixlib.php');
       }
-      self::$cache[__FUNCTION__] = new Mixlib(dirname(__DIR__, 3) . '/extern/mixin');
+      self::$cache[__FUNCTION__] = new Mixlib(static::appDir('extern/mixin'));
     }
     return self::$cache[__FUNCTION__];
   }
@@ -134,7 +143,7 @@ class Services {
    */
   public static function mixinBackports(): array {
     if (!isset(self::$cache[__FUNCTION__])) {
-      self::$cache[__FUNCTION__] = require Application::findCivixDir() . '/mixin-backports.php';
+      self::$cache[__FUNCTION__] = require \CRM\CivixBundle\Application::findCivixDir() . '/mixin-backports.php';
     }
     return self::$cache[__FUNCTION__];
   }
@@ -142,9 +151,9 @@ class Services {
   /**
    * @return \CRM\CivixBundle\UpgradeList
    */
-  public static function upgradeList(): UpgradeList {
+  public static function upgradeList(): \CRM\CivixBundle\UpgradeList {
     if (!isset(self::$cache[__FUNCTION__])) {
-      self::$cache[__FUNCTION__] = new UpgradeList();
+      self::$cache[__FUNCTION__] = new \CRM\CivixBundle\UpgradeList();
     }
     return self::$cache[__FUNCTION__];
   }

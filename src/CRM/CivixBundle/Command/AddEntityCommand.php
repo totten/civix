@@ -3,7 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,8 +42,8 @@ explicity.');
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     // load Civi to get access to civicrm_api_get_function_name
-    Services::boot(['output' => $output]);
-    $civicrm_api3 = Services::api3();
+    Civix::boot(['output' => $output]);
+    $civicrm_api3 = Civix::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>Require access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
       return 1;
@@ -110,14 +110,14 @@ explicity.');
     $ext->builders['dirs']->save($ctx, $output);
 
     if (in_array('3', $apiVersions)) {
-      $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Services::templating());
-      $ext->builders['test.php'] = new Template('entity-api3-test.php.php', $ctx['testApi3ClassFile'], FALSE, Services::templating());
+      $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Civix::templating());
+      $ext->builders['test.php'] = new Template('entity-api3-test.php.php', $ctx['testApi3ClassFile'], FALSE, Civix::templating());
     }
     if (in_array('4', $apiVersions)) {
-      $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Services::templating());
+      $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Civix::templating());
     }
-    $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Services::templating());
-    $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Services::templating());
+    $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Civix::templating());
+    $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
       $mgdEntities = [

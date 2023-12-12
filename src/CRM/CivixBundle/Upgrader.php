@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle;
 
+use Civix;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\PhpData;
@@ -616,7 +617,7 @@ class Upgrader {
     }
 
     $this->io->note("Write " . Files::relativize($classFile, getcwd()));
-    $rendered = Services::templating()->render($template, $tplData);
+    $rendered = Civix::templating()->render($template, $tplData);
     Path::for(dirname($classFile))->mkdir();
     file_put_contents($classFile, $rendered);
   }

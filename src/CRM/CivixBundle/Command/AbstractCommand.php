@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Upgrader;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Command\Command;
@@ -90,7 +90,7 @@ abstract class AbstractCommand extends Command {
   protected function assertCurrentFormat() {
     $info = $this->getModuleInfo($ctx);
     $actualVersion = $info->detectFormat();
-    $expectedVersion = Services::upgradeList()->getHeadVersion();
+    $expectedVersion = Civix::upgradeList()->getHeadVersion();
     if (version_compare($actualVersion, $expectedVersion, '<')) {
       throw new \Exception("This extension requires an upgrade for the file-format (current=$actualVersion; expected=$expectedVersion). Please run 'civix upgrade' before generating code.");
     }

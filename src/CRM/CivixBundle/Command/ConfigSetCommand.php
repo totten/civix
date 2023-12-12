@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +24,7 @@ class ConfigSetCommand extends AbstractCommand {
     $ext = new Collection();
 
     $output->writeln("<info></info>");
-    $configDir = Services::configDir();
+    $configDir = Civix::configDir();
     $configDir->mkdir();
     $ext->builders['ini'] = new Ini($configDir->string('civix.ini'));
 

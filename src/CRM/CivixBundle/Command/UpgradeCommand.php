@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Module;
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Upgrader;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class UpgradeCommand extends AbstractCommand {
 
   protected function configure() {
-    Services::templating();
+    Civix::templating();
     $this
       ->setName('upgrade')
       ->setDescription('Apply upgrades to the layout of the codebase')
@@ -64,7 +64,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->writeln("Current civix format is <info>v{$startVersion}</info>.");
     }
 
-    $upgrades = Services::upgradeList()->findUpgrades($startVersion);
+    $upgrades = Civix::upgradeList()->findUpgrades($startVersion);
     if (empty($upgrades)) {
       $io->writeln("No incremental upgrades required.");
       return 0;
@@ -98,7 +98,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     [$ctx, $info] = $this->loadCtxInfo();
     $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
 
-    $module = new Module(Services::templating());
+    $module = new Module(Civix::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
 
@@ -106,7 +106,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $phpFile = $basedir->string(Naming::createClassFile($ctx['namespace'], 'Upgrader', 'Base.php'));
       if (file_exists($phpFile)) {
         $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($phpFile)));
-        file_put_contents($phpFile, Services::templating()->render('upgrader-base.php.php', $ctx));
+        file_put_contents($phpFile, Civix::templating()->render('upgrader-base.php.php', $ctx));
       }
     }
   }

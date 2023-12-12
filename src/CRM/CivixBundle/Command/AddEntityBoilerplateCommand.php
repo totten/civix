@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,8 +33,8 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
    * then...
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    Services::boot(['output' => $output]);
-    $civicrm_api3 = Services::api3();
+    Civix::boot(['output' => $output]);
+    $civicrm_api3 = Civix::api3();
 
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>Require access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
@@ -140,7 +140,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
     $createSql('generateCreateSql', 'auto_install.sql');
     $createSql('generateDropSql', 'auto_uninstall.sql');
 
-    $module = new Module(Services::templating());
+    $module = new Module(Civix::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
     $upgraderClass = str_replace('/', '_', $ctx['namespace']) . '_Upgrader';

@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -124,7 +124,7 @@ as separate groups:
 
     if (!file_exists($testPath)) {
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($testPath)));
-      file_put_contents($testPath, Services::templating()
+      file_put_contents($testPath, Civix::templating()
         ->render($templateName, $ctx));
     }
     else {

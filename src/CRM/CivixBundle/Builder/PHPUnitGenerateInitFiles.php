@@ -1,7 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
-use CRM\CivixBundle\Services;
+use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,7 +21,7 @@ class PHPUnitGenerateInitFiles {
       $dirs->save($ctx, $output);
 
       $output->writeln(sprintf('<info>Write</info> %s', Files::relativize($bootstrapFile)));
-      file_put_contents($bootstrapFile, Services::templating()
+      file_put_contents($bootstrapFile, Civix::templating()
         ->render('phpunit-boot-cv.php.php', $ctx));
     }
     else {

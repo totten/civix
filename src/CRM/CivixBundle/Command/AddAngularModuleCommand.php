@@ -2,7 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Services;
+use Civix;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,8 +68,8 @@ class AddAngularModuleCommand extends AbstractCommand {
       $ext->builders['ang.php']->set($angModMeta);
     }
 
-    $ext->builders['js'] = new Template('angular-module.js.php', $ctx['angularModuleJs'], FALSE, Services::templating());
-    $ext->builders['css'] = new Template('angular-module.css.php', $ctx['angularModuleCss'], FALSE, Services::templating());
+    $ext->builders['js'] = new Template('angular-module.js.php', $ctx['angularModuleJs'], FALSE, Civix::templating());
+    $ext->builders['css'] = new Template('angular-module.css.php', $ctx['angularModuleCss'], FALSE, Civix::templating());
 
     $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['ang-php@1.0']);
     $ext->builders['info'] = $info;
