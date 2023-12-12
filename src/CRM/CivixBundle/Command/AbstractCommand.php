@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class AbstractCommand extends Command {
 
@@ -19,46 +18,20 @@ abstract class AbstractCommand extends Command {
   }
 
   /**
-   * @var \Symfony\Component\Console\Style\StyleInterface
-   */
-  private $io;
-
-  /**
-   * @var Symfony\Component\Console\Input\InputInterface
-   */
-  private $input;
-
-  /**
-   * @var Symfony\Component\Console\Output\OutputInterface
-   */
-  private $output;
-
-  /**
    * @var \CRM\CivixBundle\Upgrader
    */
   private $upgrader;
 
   /**
-   * @param \Symfony\Component\Console\Input\InputInterface $input
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
-   */
-  protected function initialize(InputInterface $input, OutputInterface $output) {
-    parent::initialize($input, $output);
-    $this->io = new SymfonyStyle($input, $output);
-    $this->input = $input;
-    $this->output = $output;
-  }
-
-  /**
    * @return \Symfony\Component\Console\Style\StyleInterface
    */
   protected function getIO() {
-    return $this->io;
+    return Civix::io();
   }
 
   protected function getUpgrader(): Upgrader {
     if ($this->upgrader === NULL) {
-      $this->upgrader = new Upgrader($this->input, $this->output, new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $this->upgrader = new Upgrader(Civix::input(), Civix::output(), new Path(\CRM\CivixBundle\Application::findExtDir()));
     }
     return $this->upgrader;
   }

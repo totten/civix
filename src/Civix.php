@@ -2,13 +2,32 @@
 
 use Civi\Cv\Bootstrap;
 use CRM\CivixBundle\Utils\Path;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 
 class Civix {
 
-  protected static $cache;
+  protected static $cache = [];
+
+  public static function setIO(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output): void {
+    static::$cache['input'] = $input;
+    static::$cache['output'] = $output;
+    static::$cache['io'] = new SymfonyStyle($input, $output);
+  }
+
+  public static function input(): \Symfony\Component\Console\Input\InputInterface {
+    return static::$cache['input'];
+  }
+
+  public static function output(): \Symfony\Component\Console\Output\OutputInterface {
+    return static::$cache['output'];
+  }
+
+  public static function io(): \Symfony\Component\Console\Style\StyleInterface {
+    return static::$cache['io'];
+  }
 
   public static function boot($options = []) {
     if (!isset(self::$cache['boot'])) {
