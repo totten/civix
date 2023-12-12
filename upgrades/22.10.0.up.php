@@ -11,7 +11,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
 
   $upgrader->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($upgrader) {
     /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
-    $io = $upgrader->io;
+    $io = \Civix::io();
 
     $loaders = $info->getClassloaders();
     $prefixes = array_column($loaders, 'prefix');

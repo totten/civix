@@ -20,19 +20,19 @@ class Upgrader {
    * @var \Symfony\Component\Console\Input\InputInterface
    * @readonly
    */
-  public $input;
+  private $input;
 
   /**
    * @var \Symfony\Component\Console\Output\OutputInterface
    * @readonly
    */
-  public $output;
+  private $output;
 
   /**
    * @var \Symfony\Component\Console\Style\SymfonyStyle
    * @readonly
    */
-  public $io;
+  private $io;
 
   /**
    * @var \CRM\CivixBundle\Utils\Path
@@ -207,7 +207,7 @@ class Upgrader {
 
     $managedName = $export[0]['name'];
     $managedFileName = $this->baseDir->string('managed', "$managedName.mgd.php");
-    Mgd::assertManageableEntity($entityName, $id, $this->infoXml->getKey(), $managedName, $managedFileName, $this->io);
+    Mgd::assertManageableEntity($entityName, $id, $this->infoXml->getKey(), $managedName, $managedFileName);
     $this->updateMgdPhp($managedFileName, function(PhpData $data) use ($export) {
       $data->set($export);
     });

@@ -18,7 +18,7 @@
  */
 return function (\CRM\CivixBundle\Upgrader $upgrader) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
-  $io = $upgrader->io;
+  $io = \Civix::io();
 
   $testFiles = \CRM\CivixBundle\Utils\Files::findFiles($upgrader->baseDir->string('tests'), '*.php');
   $upgrader->updateTextFiles($testFiles, function(string $file, string $content) use ($io, $upgrader) {

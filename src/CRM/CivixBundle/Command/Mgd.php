@@ -3,11 +3,11 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Utils\Files;
-use Symfony\Component\Console\Style\StyleInterface;
 
 class Mgd {
 
-  public static function assertManageableEntity(string $entityName, $id, string $extKey, string $managedName, string $managedFileName, StyleInterface $io): void {
+  public static function assertManageableEntity(string $entityName, $id, string $extKey, string $managedName, string $managedFileName): void {
+    $io = \Civix::io();
     $existingMgd = \civicrm_api4('Managed', 'get', [
       'select' => ['module', 'name', 'id'],
       'where' => [

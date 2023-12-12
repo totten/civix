@@ -25,7 +25,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
 
     $newContent = EvilEx::rewriteMultilineChunk($content, $hookBody, function(array $matchLines) use ($hookFunc, $content, $upgrader, $hasSettingMixin, &$action) {
       /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
-      $io = $upgrader->io;
+      $io = \Civix::io();
       $matchLineKeys = array_keys($matchLines);
       $allLines = explode("\n", $content);
       $focusStart = min($matchLineKeys);
