@@ -47,8 +47,6 @@ class Upgrader {
    */
   public $infoXml;
 
-  private $_ctx;
-
   /**
    * @param \Symfony\Component\Console\Input\InputInterface $input
    * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -92,7 +90,8 @@ class Upgrader {
    */
   public function updateInfo(callable $function): void {
     $function($this->infoXml);
-    $this->infoXml->save($this->_ctx, $this->output);
+    $ctx = $this->createDefaultCtx();
+    $this->infoXml->save($ctx, $this->output);
   }
 
   /**
@@ -114,8 +113,9 @@ class Upgrader {
   public function updateMixins(callable $function): void {
     $mixins = new Mixins($this->infoXml, $this->baseDir->string('mixin'));
     $function($mixins);
-    $mixins->save($this->_ctx, $this->output);
-    $this->infoXml->save($this->_ctx, $this->output);
+    $ctx = $this->createDefaultCtx();
+    $mixins->save($ctx, $this->output);
+    $this->infoXml->save($ctx, $this->output);
   }
 
   /**
@@ -133,7 +133,7 @@ class Upgrader {
    */
   public function updatePhpData($path, callable $filter): void {
     $file = Path::for($path)->string();
-    $ctx = [];
+    $ctx = $this->createDefaultCtx();
     $phpData = new PhpData($file);
     $phpData->loadInit($ctx);
     $filter($phpData);
@@ -727,11 +727,9 @@ class Upgrader {
    * @return \CRM\CivixBundle\Builder\Info
    */
   public function reloadInfo() {
-    $this->_ctx = [];
-    $this->_ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
-    $this->_ctx['type'] = 'module';
+    $ctx = $this->createDefaultCtx();
     $this->infoXml = new Info($this->baseDir->string('info.xml'));
-    $this->infoXml->load($this->_ctx);
+    $this->infoXml->load($ctx);
     return $this->infoXml;
   }
 
@@ -778,6 +776,13 @@ class Upgrader {
         $this->io->writeln($lines[$i], SymfonyStyle::OUTPUT_RAW);
       }
     }
+  }
+
+  protected function createDefaultCtx(): array {
+    $ctx = [];
+    $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();
+    $ctx['type'] = 'module';
+    return $ctx;
   }
 
 }
