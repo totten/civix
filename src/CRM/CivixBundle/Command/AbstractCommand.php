@@ -32,13 +32,6 @@ abstract class AbstractCommand extends Command {
    */
   private $upgrader;
 
-  /**
-   * @return \Symfony\Component\Console\Style\StyleInterface
-   */
-  protected function getIO() {
-    return Civix::io();
-  }
-
   protected function getUpgrader(): Upgrader {
     if ($this->upgrader === NULL) {
       $this->upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
