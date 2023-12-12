@@ -1,7 +1,6 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Builder\CopyFile;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Template;
 use Civix;
