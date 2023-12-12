@@ -81,7 +81,7 @@ class Civix {
   /**
    * Get the root path of the civix application.
    *
-   * @param array $parts
+   * @param string[] $parts
    *   Optional list of sub-paths
    *   Ex: ['src', 'CRM', 'CivixBundle']
    * @return \CRM\CivixBundle\Utils\Path
@@ -93,9 +93,10 @@ class Civix {
   }
 
   /**
+   * @param string[] $parts
    * @return \CRM\CivixBundle\Utils\Path
    */
-  public static function configDir() {
+  public static function configDir(...$parts): Path {
     if (!isset(self::$cache['configDir'])) {
       $homes = [
         getenv('HOME'), /* Unix */
@@ -111,17 +112,38 @@ class Civix {
         throw new \RuntimeException('Failed to locate home directory. Please set HOME (Unix) or USERPROFILE (Windows).');
       }
     }
-    return self::$cache['configDir'];
+    return Path::for(self::$cache['configDir'], ...$parts);
   }
 
   /**
+   * @param string[] $parts
    * @return \CRM\CivixBundle\Utils\Path
    */
-  public static function cacheDir() {
+  public static function cacheDir(...$parts): Path {
     if (!isset(self::$cache['cacheDir'])) {
       self::$cache['cacheDir'] = self::configDir()->path('cache');
     }
-    return self::$cache['cacheDir'];
+    return Path::for(self::$cache['cacheDir'], ...$parts);
+  }
+
+  /**
+   * Get the root path of the extension being developed.
+   *
+   * @param string[] $parts
+   *   Optional list of sub-paths
+   *   Ex: ['xml', 'Menu', 'foo.xml']
+   * @return \CRM\CivixBundle\Utils\Path
+   *   Ex: '/var/www/example.com/files/civicrm/ext/foobar'
+   */
+  public static function extDir(...$parts): Path {
+    $cwd = rtrim(getcwd(), '/');
+    if (file_exists("$cwd/info.xml")) {
+      return Path::for($cwd, ...$parts);
+    }
+    else {
+      throw new \RuntimeException("Failed to find \"info.xml\" ($cwd/). Are you running in the right directory?");
+    }
+
   }
 
   /**
