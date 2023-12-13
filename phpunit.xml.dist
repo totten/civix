@@ -29,4 +29,10 @@
       </exclude>
     </whitelist>
   </filter>
+
+  <listeners>
+    <listener class="CRM\CivixBundle\CivixTestListener">
+      <arguments/>
+    </listener>
+  </listeners>
 </phpunit>

@@ -3,8 +3,6 @@
 namespace E2E;
 
 use CRM\CivixBundle\Builder\Info;
-use CRM\CivixBundle\Upgrader;
-use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\NullOutput;
 
@@ -15,7 +13,7 @@ class CiviNamingTest extends \PHPUnit\Framework\TestCase {
   public static $key = 'civix_civinaming';
 
   /**
-   * @var \CRM\CivixBundle\Upgrader
+   * @var \CRM\CivixBundle\Generator
    */
   protected $upgrader;
 
@@ -32,7 +30,7 @@ class CiviNamingTest extends \PHPUnit\Framework\TestCase {
     ]);
 
     \Civix::ioStack()->push(new ArgvInput(), new NullOutput());
-    $this->upgrader = new Upgrader(new Path(static::getExtPath()));
+    $this->upgrader = \Civix::generator(static::getExtPath());
     $this->upgrader->updateInfo(function(Info $info) {
       // FIXME: Allow "\" instead of "/"
       $info->get()->civix->namespace = 'Civi/NamingTest';

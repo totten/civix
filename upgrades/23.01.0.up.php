@@ -1,7 +1,7 @@
 <?php
 use CRM\CivixBundle\Utils\Formatting;
 
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
   /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
   $io = \Civix::io();
 
@@ -13,8 +13,8 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
     'find:*.tpl' => 'smarty-v2@1.0.0',
   ];
   $mixins = array_filter($filePatterns,
-    function (string $mixin, string $pattern) use ($upgrader, $io, &$previewChanges) {
-      $flagFiles = $upgrader->baseDir->search($pattern);
+    function (string $mixin, string $pattern) use ($gen, $io, &$previewChanges) {
+      $flagFiles = $gen->baseDir->search($pattern);
       $previewChanges[] = [
         'info.xml',
         $flagFiles ? "Enable $mixin" : "Skip $mixin. (No files match \"$pattern\")",
@@ -40,6 +40,6 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
     throw new \RuntimeException('User stopped upgrade');
   }
 
-  $upgrader->addMixins($mixins);
+  $gen->addMixins($mixins);
 
 };

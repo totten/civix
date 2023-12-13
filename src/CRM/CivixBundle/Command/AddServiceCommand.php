@@ -23,20 +23,20 @@ class AddServiceCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $up = $this->getUpgrader();
-    $up->addMixins(['scan-classes@1.0']);
+    $gen = \Civix::generator();
+    $gen->addMixins(['scan-classes@1.0']);
 
-    $servicePrefix = $up->infoXml->getFile();
-    $namespace = Naming::coerceNamespace($up->infoXml->getNamespace(), $input->getOption('naming'));
+    $servicePrefix = $gen->infoXml->getFile();
+    $namespace = Naming::coerceNamespace($gen->infoXml->getNamespace(), $input->getOption('naming'));
 
     if ($input->isInteractive()) {
       $defaultName = $input->getArgument('name') ?? Naming::createServiceName($servicePrefix, 'myService');
-      $this->getIO()->note([
+      Civix::io()->note([
         'The service name is a short machine name. It may appear in contexts like:',
         sprintf('Civi::service("%s")->doSomething()', $defaultName),
         sprintf('It is recommended to always have a naming prefix (such as "%s").', $servicePrefix),
       ]);
-      $serviceName = $this->getIO()->ask('Service name', $defaultName, function ($answer) {
+      $serviceName = Civix::io()->ask('Service name', $defaultName, function ($answer) {
         if ('' === trim($answer)) {
           throw new \Exception('Service name cannot be empty');
         }
@@ -54,7 +54,7 @@ class AddServiceCommand extends AbstractCommand {
     $baseNameParts = array_map('ucfirst', explode('.', $baseName));
     $className = Naming::createClassName($namespace, ...$baseNameParts);
 
-    $up->addClass($className, 'service.php.php', [
+    $gen->addClass($className, 'service.php.php', [
       'service' => $serviceName,
     ]);
   }

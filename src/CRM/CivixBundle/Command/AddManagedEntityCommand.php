@@ -42,13 +42,13 @@ with most existing extensions+generators.
     // Boot CiviCRM to use api4
     Civix::boot(['output' => $output]);
 
-    $upgrader = $this->getUpgrader();
-    $upgrader->addMixins(['mgd-php@1.0']);
+    $gen = \Civix::generator();
+    $gen->addMixins(['mgd-php@1.0']);
     if ($entityName === 'Afform') {
-      $upgrader->exportAfform($entityId);
+      $gen->exportAfform($entityId);
     }
     else {
-      $upgrader->exportMgd($entityName, $entityId);
+      $gen->exportMgd($entityName, $entityId);
     }
 
     return 0;

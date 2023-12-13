@@ -12,9 +12,9 @@ use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * The "Upgrader" class is a utility provided to various upgrade-scripts.
+ * The "Generator" class is a utility provided to various upgrade-scripts.
  */
-class Upgrader {
+class Generator {
 
   /**
    * @var \Symfony\Component\Console\Input\InputInterface

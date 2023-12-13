@@ -3,7 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Module;
 use Civix;
-use CRM\CivixBundle\Upgrader;
+use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,8 +39,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
       $verAliases = ['0' => '13.10.0'];
-      $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
-      $upgrader->updateFormatVersion($verAliases[$startVer] ?? $startVer);
+      Civix::generator()->updateFormatVersion($verAliases[$startVer] ?? $startVer);
     }
 
     $this->executeIncrementalUpgrades();
@@ -74,10 +73,10 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
       $io->section("Upgrade <info>v{$lastVersion}</info> => <info>v{$upgradeVersion}</info>");
       $io->writeln("<info>Executing upgrade script</info> $upgradeFile");
 
-      $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
+      $gen = Civix::generator();
       $func = require $upgradeFile;
-      $func($upgrader);
-      $upgrader->updateFormatVersion($upgradeVersion);
+      $func($gen);
+      $gen->updateFormatVersion($upgradeVersion);
       $lastVersion = $upgradeVersion;
     }
   }
@@ -86,10 +85,10 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $io = \Civix::io();
     $io->title('General upgrade');
 
-    $upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
-    $upgrader->cleanEmptyHooks();
-    $upgrader->cleanEmptyLines();
-    $upgrader->reconcileMixins();
+    $gen = Civix::generator();
+    $gen->cleanEmptyHooks();
+    $gen->cleanEmptyLines();
+    $gen->reconcileMixins();
 
     /**
      * @var \CRM\CivixBundle\Builder\Info $info

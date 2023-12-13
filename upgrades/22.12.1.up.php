@@ -11,15 +11,15 @@ use CRM\CivixBundle\Utils\Naming;
  * - Use core's base class
  * - Remove old base class
  */
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
+return function (\CRM\CivixBundle\Generator $gen) {
   $io = \Civix::io();
   $io->section('Lifecycle Hooks: Install, Upgrade, etc');
 
-  $info = $upgrader->infoXml;
+  $info = $gen->infoXml;
   $MIN_COMPAT = '5.38';
   $oldCompat = $info->getCompatibilityVer();
   $nameSpace = $info->getNamespace();
-  $mainFile = $upgrader->baseDir->string($info->getFile() . '.php');
+  $mainFile = $gen->baseDir->string($info->getFile() . '.php');
   $upgraderClass = Naming::createClassName($nameSpace, 'Upgrader');
   $upgraderFile = Naming::createClassFile($nameSpace, 'Upgrader');
   $upgraderBaseClass = Naming::createClassName($nameSpace, 'Upgrader', 'Base');
@@ -70,7 +70,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
   }
 
   $prefix = $info->getFile();
-  $upgrader->removeHookDelegation([
+  $gen->removeHookDelegation([
     "_{$prefix}_civix_civicrm_postInstall",
     "_{$prefix}_civix_civicrm_uninstall",
     "_{$prefix}_civix_civicrm_disable",
@@ -78,7 +78,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
   ]);
 
   if ($hasUpgrader) {
-    $upgrader->updateInfo(function(\CRM\CivixBundle\Builder\Info $info) use ($MIN_COMPAT, $upgraderClass) {
+    $gen->updateInfo(function(\CRM\CivixBundle\Builder\Info $info) use ($MIN_COMPAT, $upgraderClass) {
       $info->raiseCompatibilityMinimum($MIN_COMPAT);
       // Add <upgrader> tag
       if (!$info->get()->xpath('upgrader')) {
@@ -86,7 +86,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
       }
     });
     // Switch base class
-    $upgrader->updateTextFiles([$upgraderFile], function(string $file, string $content) use ($upgraderBaseClass) {
+    $gen->updateTextFiles([$upgraderFile], function(string $file, string $content) use ($upgraderBaseClass) {
       return str_replace($upgraderBaseClass, 'CRM_Extension_Upgrader_Base', $content);
     });
   }

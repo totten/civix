@@ -3,14 +3,14 @@
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Utils\EvilEx;
 
-return function (\CRM\CivixBundle\Upgrader $upgrader) {
-  $mixins = new Mixins($upgrader->infoXml, $upgrader->baseDir->string('mixin'));
+return function (\CRM\CivixBundle\Generator $gen) {
+  $mixins = new Mixins($gen->infoXml, $gen->baseDir->string('mixin'));
   $declared = $mixins->getDeclaredMixinConstraints();
   $hasSettingMixin = (bool) preg_grep('/^setting-php@/', $declared);
   $action = NULL;
 
-  $upgrader->updateModulePhp(function (\CRM\CivixBundle\Builder\Info $info, string $content) use ($upgrader, $hasSettingMixin, &$action) {
-    $prefix = $upgrader->infoXml->getFile();
+  $gen->updateModulePhp(function (\CRM\CivixBundle\Builder\Info $info, string $content) use ($gen, $hasSettingMixin, &$action) {
+    $prefix = $gen->infoXml->getFile();
     $hookFunc = "{$prefix}_civicrm_alterSettingsFolders";
     $hookBody = [
       'static $configured = FALSE;',
@@ -23,7 +23,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
       '}',
     ];
 
-    $newContent = EvilEx::rewriteMultilineChunk($content, $hookBody, function(array $matchLines) use ($hookFunc, $content, $upgrader, $hasSettingMixin, &$action) {
+    $newContent = EvilEx::rewriteMultilineChunk($content, $hookBody, function(array $matchLines) use ($hookFunc, $content, $gen, $hasSettingMixin, &$action) {
       /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
       $io = \Civix::io();
       $matchLineKeys = array_keys($matchLines);
@@ -32,7 +32,7 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
       $focusEnd = max($matchLineKeys);
 
       $io->note("The following chunk resembles an older template for \"{$hookFunc}()\".");
-      $upgrader->showCode($allLines, $focusStart - 4, $focusEnd + 4, $focusStart, $focusEnd);
+      $gen->showCode($allLines, $focusStart - 4, $focusEnd + 4, $focusStart, $focusEnd);
 
       if ($hasSettingMixin) {
         $io->note([
@@ -55,12 +55,12 @@ return function (\CRM\CivixBundle\Upgrader $upgrader) {
     });
 
     if ($action === 'm' && !$hasSettingMixin) {
-      $upgrader->updateMixins(function (Mixins $mixins) {
+      $gen->updateMixins(function (Mixins $mixins) {
         $mixins->addMixin('setting-php@1.0.0');
       });
     }
     elseif ($action === 'b' && $hasSettingMixin) {
-      $upgrader->updateMixins(function (Mixins $mixins) {
+      $gen->updateMixins(function (Mixins $mixins) {
         $mixins->removeMixin('setting-php');
       });
     }

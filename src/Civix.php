@@ -195,6 +195,24 @@ class Civix {
   }
 
   /**
+   * Get the generator-object for manipulating the extension.
+   *
+   * @param string|Path|null $extDir
+   *   Base path of the extension that we wish to manipulate.
+   *   If null, use the default (per CWD).
+   *
+   * @return \CRM\CivixBundle\Generator
+   */
+  public static function generator($extDir = NULL): \CRM\CivixBundle\Generator {
+    $extDir = ($extDir === NULL) ? Civix::extdir() : Path::for($extDir);
+    $cacheKey = (string) $extDir;
+    if (!isset(self::$cache[__FUNCTION__][$cacheKey])) {
+      self::$cache[__FUNCTION__][$cacheKey] = new \CRM\CivixBundle\Generator($extDir);
+    }
+    return self::$cache[__FUNCTION__][$cacheKey];
+  }
+
+  /**
    * @return \CRM\CivixBundle\UpgradeList
    */
   public static function upgradeList(): \CRM\CivixBundle\UpgradeList {
@@ -202,6 +220,14 @@ class Civix {
       self::$cache[__FUNCTION__] = new \CRM\CivixBundle\UpgradeList();
     }
     return self::$cache[__FUNCTION__];
+  }
+
+  public static function reset(): void {
+    $new = [];
+    if (isset(static::$cache['boot'])) {
+      $new['boot'] = static::$cache['boot'];
+    }
+    static::$cache = $new;
   }
 
 }

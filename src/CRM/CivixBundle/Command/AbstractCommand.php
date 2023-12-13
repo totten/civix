@@ -3,7 +3,6 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Info;
 use Civix;
-use CRM\CivixBundle\Upgrader;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,25 +24,6 @@ abstract class AbstractCommand extends Command {
     finally {
       \Civix::ioStack()->pop();
     }
-  }
-
-  /**
-   * @var \CRM\CivixBundle\Upgrader
-   */
-  private $upgrader;
-
-  /**
-   * @return \Symfony\Component\Console\Style\StyleInterface
-   */
-  protected function getIO() {
-    return Civix::io();
-  }
-
-  protected function getUpgrader(): Upgrader {
-    if ($this->upgrader === NULL) {
-      $this->upgrader = new Upgrader(new Path(\CRM\CivixBundle\Application::findExtDir()));
-    }
-    return $this->upgrader;
   }
 
   protected function confirm(InputInterface $input, OutputInterface $output, $message, $default = TRUE) {
