@@ -204,4 +204,12 @@ class Civix {
     return self::$cache[__FUNCTION__];
   }
 
+  public static function reset(): void {
+    $new = [];
+    if (isset(static::$cache['boot'])) {
+      $new['boot'] = static::$cache['boot'];
+    }
+    static::$cache = $new;
+  }
+
 }
