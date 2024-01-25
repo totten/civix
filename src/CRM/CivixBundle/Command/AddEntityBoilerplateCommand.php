@@ -191,16 +191,9 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
     foreach ($tables as &$table) {
       if (isset($table['foreignKey'])) {
         foreach ($table['foreignKey'] as &$key) {
-          if (isset($tables[$key['table']])) {
-            $key['className'] = $tables[$key['table']]['className'];
-            $key['fileName'] = $tables[$key['table']]['fileName'];
-            $table['fields'][$key['name']]['FKClassName'] = $key['className'];
-          }
-          else {
-            $key['className'] = \CRM_Core_DAO_AllCoreTables::getClassForTable($key['table']);
-            $key['fileName'] = $key['className'] . '.php';
-            $table['fields'][$key['name']]['FKClassName'] = $key['className'];
-          }
+          $key['className'] = $tables[$key['table']]['className'] ?? \CRM_Core_DAO_AllCoreTables::getClassForTable($key['table']);
+          $table['fields'][$key['name']]['FKClassName'] = $key['className'];
+          $table['fields'][$key['name']]['FKColumnName'] = $key['key'];
         }
       }
     }
