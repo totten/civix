@@ -218,12 +218,12 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
     return [
       'name' => '',
       'attributes' => '',
-      'tableAttributes_modern' => 'ENGINE=InnoDB',
+      // These are the attributes used by the vast majority of tables in CiviCRM core (except maybe log or archive tables).
+      // FIXME: It's not great that this is hard-coded here, but the alternative of leaving this out would be worse
+      // as the default collation setting in MySQL could be anything & we'd rather be consistent with Civi core tables.
+      'tableAttributes_modern' => 'ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC',
+      // Probably unused
       'tableAttributes_simple' => 'ENGINE=InnoDB',
-      // ^^ Set very limited defaults.
-      // Existing deployments may be inconsistent with respect to charsets and collations, and
-      // it's hard to attune with static code. This represents a compromise (until we can
-      // rework the process in a way that clearly addresses the inconsistencies among deployments).
       'comment' => '',
     ];
   }
