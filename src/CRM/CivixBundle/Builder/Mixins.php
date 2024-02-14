@@ -28,11 +28,13 @@ class Mixins implements Builder {
 
   /**
    * @var string[]
+   *   Ex: ['smarty@1.0']
    */
   protected $newConstraints;
 
   /**
    * @var string[]
+   *   Ex: ['smarty-v2']
    */
   protected $removals;
 
@@ -74,6 +76,39 @@ class Mixins implements Builder {
   public function removeMixin(string $mixinNameOrConstraint) {
     [$mixinName] = explode('@', $mixinNameOrConstraint);
     $this->removals[] = $mixinName;
+
+    $regex = ';^' . preg_quote($mixinName, ';') . '@;';
+    $this->newConstraints = preg_grep($regex, $this->newConstraints, PREG_GREP_INVERT);
+  }
+
+  /**
+   * Lookup the existing constraint
+   * @param string $mixin
+   *   Ex: 'smarty-v2'
+   * @param bool $checkPending
+   *   TRUE if you want to check the *effective* value, with any pending updates.
+   *   FALSE if you want to check the *pre-existing* value, before pending updates.
+   * @return string|null
+   *   Ex: '1.0.0'
+   */
+  public function findMixinConstraint(string $mixin, bool $checkPending = TRUE) {
+    if ($checkPending) {
+      if (in_array($mixin, $this->removals)) {
+        return NULL;
+      }
+      foreach ($this->newConstraints as $newConstraint) {
+        if (strpos($newConstraint, "$mixin@") === 0) {
+          return explode('@', $newConstraint)[1];
+        }
+      }
+    }
+
+    $nodes = $this->info->get()->xpath('mixins/mixin[starts-with(text(), "' . $mixin . '@")]');
+    foreach ($nodes as $existingMixinXml) {
+      return explode('@', (string) $existingMixinXml)[1];
+    }
+
+    return NULL;
   }
 
   public function removeAllMixins() {
@@ -114,6 +149,8 @@ class Mixins implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
+    $this->reconcileSmarty($output);
+
     foreach ($this->removals as $removedMixin) {
       $nodes = $this->info->get()->xpath('mixins/mixin[starts-with(text(), "' . $removedMixin . '@")]');
       foreach ($nodes as $existingMixinXml) {
@@ -131,6 +168,26 @@ class Mixins implements Builder {
 
     $this->reconcileMinimums($output);
     $this->reconcileBackports($output);
+  }
+
+  public function reconcileSmarty(OutputInterface $output) {
+    // Re:Smarty -- As of 5.71, the preferred name of the upstream-provided mixin changed.
+    // Was: "smarty-v2". Now: "smarty". This normalization means that we minimize the #backports.
+    if (version_compare($this->info->getCompatibilityVer(), '5.71', '<')) {
+      $badSmarty = 'smarty';
+      $goodSmarty = 'smarty-v2@1.0.1';
+    }
+    else {
+      $badSmarty = 'smarty-v2';
+      $goodSmarty = 'smarty@1.0.0';
+    }
+    if ($constraint = $this->findMixinConstraint($badSmarty)) {
+      $output->writeln(sprintf('<info>Smarty substitution</info>: Given the target version <comment>%s</comment>, we will swap out <comment>%s</comment> in favor of <comment>%s</comment>.',
+        $this->info->getCompatibilityVer(), $badSmarty . '@' . $constraint, $goodSmarty
+      ));
+      $this->addMixin("$goodSmarty");
+      $this->removeMixin("$badSmarty");
+    }
   }
 
   /**
