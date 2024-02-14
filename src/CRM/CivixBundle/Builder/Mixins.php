@@ -146,6 +146,8 @@ class Mixins implements Builder {
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
+    $this->reconcileSmarty($output);
+
     foreach ($this->removals as $removedMixin) {
       $nodes = $this->info->get()->xpath('mixins/mixin[starts-with(text(), "' . $removedMixin . '@")]');
       foreach ($nodes as $existingMixinXml) {
@@ -163,6 +165,26 @@ class Mixins implements Builder {
 
     $this->reconcileMinimums($output);
     $this->reconcileBackports($output);
+  }
+
+  public function reconcileSmarty(OutputInterface $output) {
+    // Re:Smarty -- As of 5.71, the preferred name of the upstream-provided mixin changed.
+    // Was: "smarty-v2". Now: "smarty". This normalization means that we minimize the #backports.
+    if (version_compare($this->info->getCompatibilityVer(), '5.71', '<')) {
+      $badSmarty = 'smarty';
+      $goodSmarty = 'smarty-v2@1.0.1';
+    }
+    else {
+      $badSmarty = 'smarty-v2';
+      $goodSmarty = 'smarty@1.0.0';
+    }
+    if ($constraint = $this->findMixinConstraint($badSmarty)) {
+      $output->writeln(sprintf('<info>Smarty substitution</info>: Given the target version <comment>%s</comment>, we will swap out <comment>%s</comment> in favor of <comment>%s</comment>.',
+        $this->info->getCompatibilityVer(), $badSmarty . '@' . $constraint, $goodSmarty
+      ));
+      $this->addMixin("$goodSmarty");
+      $this->removeMixin("$badSmarty");
+    }
   }
 
   /**
