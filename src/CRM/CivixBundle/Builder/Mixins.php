@@ -76,6 +76,9 @@ class Mixins implements Builder {
   public function removeMixin(string $mixinNameOrConstraint) {
     [$mixinName] = explode('@', $mixinNameOrConstraint);
     $this->removals[] = $mixinName;
+
+    $regex = ';^' . preg_quote($mixinName, ';') . '@;';
+    $this->newConstraints = preg_grep($regex, $this->newConstraints, PREG_GREP_INVERT);
   }
 
   /**
