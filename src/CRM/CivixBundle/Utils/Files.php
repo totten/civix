@@ -4,6 +4,39 @@ namespace CRM\CivixBundle\Utils;
 
 class Files {
 
+  public static function isIdenticalFile(string $a, string $b): bool {
+    if (!file_exists($a) || !file_exists($b) || filesize($a) !== filesize($b)) {
+      return FALSE;
+    }
+
+    $handleA = fopen($a, 'rb');
+    $handleB = fopen($b, 'rb');
+    if (!$handleA || !$handleB) {
+      return FALSE;
+    }
+
+    $result = TRUE;
+    while (!feof($handleA) && !feof($handleB)) {
+      $chunkA = fread($handleA, 4096); // Read a chunk from file A
+      $chunkB = fread($handleB, 4096); // Read a chunk from file B
+
+      if ($chunkA !== $chunkB) {
+        $result = FALSE; // Files are not identical
+        break;
+      }
+    }
+
+    // Check if both files reached the end simultaneously
+    if (!feof($handleA) || !feof($handleB)) {
+      $result = FALSE; // Files have different lengths
+    }
+
+    fclose($handleA);
+    fclose($handleB);
+
+    return $result;
+  }
+
   /**
    * @param $dir
    * @param $pattern
