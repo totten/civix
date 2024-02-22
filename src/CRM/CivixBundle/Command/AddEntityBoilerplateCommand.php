@@ -19,7 +19,7 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       ->setName('generate:entity-boilerplate')
       ->setDescription('Generates boilerplate code for entities based on xml schema definition files (*EXPERIMENTAL AND INCOMPLETE*)')
       ->setHelp(
-        "Creates DAOs, mysql install and uninstall instructions.\n" .
+        "Creates DAOs based on XML files.\n" .
         "\n" .
         "Typically you will run this command after creating or updating one or more\n" .
         "xml/schema/CRM/NameSpace/EntityName.xml files.\n"
@@ -94,7 +94,6 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
 
     $config->tables = $tables;
     $_namespace = ' ' . preg_replace(':/:', '_', $ctx['namespace']);
-    $this->orderTables($tables, $output);
     $this->resolveForeignKeys($tables);
     $config->tables = $tables;
 
@@ -108,83 +107,16 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
       $output->writeln("<info>Write</info>" . Files::relativize($daoFileName));
     }
 
-    $schema = new \CRM_Core_CodeGen_Schema($config);
-    \CRM_Core_CodeGen_Util_File::createDir($config->sqlCodePath);
-
-    /**
-     * @param string $generator
-     *   The desired $schema->$generator() function which will produce the file.
-     * @param string $fileName
-     *   The desired basename of the SQL file.
-     */
-    $createSql = function($generator, $fileName) use ($output, $schema, $config) {
-      $filePath = $config->sqlCodePath . $fileName;
-      // We're poking into an internal class+function (`$schema->$generator()`) that changed in v5.23.
-      // Beginning in 5.23: $schema->$function() returns an array with file content.
-      // Before 5.23: $schema->$function($fileName) creates $fileName and returns void.
-      $output->writeln("<info>Write</info> " . Files::relativize($filePath));
-      if (version_compare(\CRM_Utils_System::version(), '5.23.alpha1', '>=')) {
-        $data = $schema->$generator();
-        if (!file_put_contents($filePath, reset($data))) {
-          $output->writeln("<error>Failed to write data to {$filePath}</error>");
-        }
-      }
-      else {
-        $output->writeln("<error>WARNING</error>: Support for generating entities on <5.23 is deprecated.");
-        // Don't display gencode's output
-        ob_start();
-        $schema->$generator($fileName);
-        ob_end_clean();
-      }
-    };
-    $createSql('generateCreateSql', 'auto_install.sql');
-    $createSql('generateDropSql', 'auto_uninstall.sql');
-
     $module = new Module(Civix::templating());
     $module->loadInit($ctx);
     $module->save($ctx, $output);
     $upgraderClass = str_replace('/', '_', $ctx['namespace']) . '_Upgrader';
 
     if (!class_exists($upgraderClass)) {
-      $output->writeln('<comment>You are missing an upgrader class. Your generated SQL files will not be executed on enable and uninstall. Fix this by running `civix generate:upgrader`.</comment>');
+      $output->writeln('<comment>You are missing an upgrader class. You will not be able to add install/upgrade steps. Fix this by running `civix generate:upgrader`.</comment>');
     }
 
     return 0;
-  }
-
-  private function orderTables(&$tables, $output) {
-
-    $ordered = [];
-    $abort = count($tables);
-
-    while (count($tables)) {
-      // Safety valve
-      if ($abort-- == 0) {
-        $output->writeln("<error>Cannot determine FK ordering of tables.</error>  Do you have circular Foreign Keys?  Change your FK's or fix your auto_install.sql");
-        break;
-      }
-      // Consider each table
-      foreach ($tables as $k => $table) {
-        // No FK's? Easy - add now
-        if (!isset($table['foreignKey'])) {
-          $ordered[$k] = $table;
-          unset($tables[$k]);
-        }
-        if (isset($table['foreignKey'])) {
-          // If any FK references a table still in our list (but is not a self-reference),
-          // skip this table for now
-          foreach ($table['foreignKey'] as $fKey) {
-            if (in_array($fKey['table'], array_keys($tables)) && $fKey['table'] != $table['name']) {
-              continue 2;
-            }
-          }
-          // If we get here, all FK's reference already added tables or external tables so add now
-          $ordered[$k] = $table;
-          unset($tables[$k]);
-        }
-      }
-    }
-    $tables = $ordered;
   }
 
   private function resolveForeignKeys(&$tables) {
