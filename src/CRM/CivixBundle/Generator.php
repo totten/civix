@@ -7,6 +7,7 @@ use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Command\Mgd;
 use CRM\CivixBundle\Utils\Files;
+use CRM\CivixBundle\Utils\MixinLibraries;
 use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Path;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -49,6 +50,11 @@ class Generator {
   public $infoXml;
 
   /**
+   * @var \CRM\CivixBundle\Utils\MixinLibraries
+   */
+  public $mixinLibraries;
+
+  /**
    * @param \CRM\CivixBundle\Utils\Path $baseDir
    *   The folder that contains the extension.
    */
@@ -57,6 +63,7 @@ class Generator {
     $this->output = \Civix::output();
     $this->io = \Civix::io();
     $this->baseDir = $baseDir;
+    $this->mixinLibraries = new MixinLibraries($baseDir->path('mixin/lib'), \Civix::appDir('lib'));
     $this->reloadInfo();
   }
 
@@ -115,6 +122,16 @@ class Generator {
     $ctx = $this->createDefaultCtx();
     $mixins->save($ctx, $this->output);
     $this->infoXml->save($ctx, $this->output);
+  }
+
+  /**
+   * Apply a filter to the "mixin/lib" (Mixin Libraries).
+   *
+   * @param callable $function
+   *   signature: `function(MixinLibraries $mixinLibraries): void`
+   */
+  public function updateMixinLibraries(callable $function): void {
+    $function($this->mixinLibraries);
   }
 
   /**
