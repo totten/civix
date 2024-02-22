@@ -1,6 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
+use CRM\CivixBundle\Utils\MixinLibraries;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Utils\Path;
@@ -22,6 +23,13 @@ class Module implements Builder {
 
   public function save(&$ctx, OutputInterface $output) {
     $basedir = new Path($ctx['basedir']);
+
+    \Civix::generator()->updateMixinLibraries(function(MixinLibraries $libs) {
+      $useSchema = \Civix::checker()->hasUpgrader()
+        && !\Civix::checker()->coreProvidesLibrary('civimix-schema@5');
+      $libs->toggle('civimix-schema@5', $useSchema);
+    });
+
     $module = new Template(
       'module.php.php',
       $basedir->string($ctx['mainFile'] . '.php'),
