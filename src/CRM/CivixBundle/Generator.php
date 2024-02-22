@@ -132,6 +132,12 @@ class Generator {
    */
   public function updateMixinLibraries(callable $function): void {
     $function($this->mixinLibraries);
+    if (\Civix::checker()->hasMixinLibrary() && !\Civix::checker()->coreHasPathload()) {
+      $this->copyFile(Civix::appDir('lib/pathload-0.php'), Civix::extDir('mixin/lib/pathload-0.php'));
+    }
+    else {
+      $this->removeFile(Civix::extDir('mixin/lib/pathload-0.php'));
+    }
   }
 
   /**
@@ -325,6 +331,35 @@ class Generator {
     $this->output->writeln("<info>Write</info> " . $relPath);
     if (!file_put_contents($file, $content)) {
       throw new \RuntimeException("Failed to write $file");
+    }
+  }
+
+  /**
+   * Create or update an exact copy of a file.
+   *
+   * If the file is the same, do nothing.
+   *
+   * @param string $src
+   * @param string $dest
+   */
+  public function copyFile(string $src, string $dest) {
+    if (!Files::isIdenticalFile($src, $dest)) {
+      $relPath = Files::relativize($dest, getcwd());
+      $this->output->writeln("<info>Write</info> " . $relPath);
+      copy($src, $dest);
+    }
+  }
+
+  /**
+   * Remove a file (if it exists).
+   *
+   * @param string $file
+   */
+  public function removeFile(string $file) {
+    if (file_exists($file)) {
+      $relPath = Files::relativize($file, getcwd());
+      $this->output->writeln("<info>Remove</info> " . $relPath);
+      unlink($file);
     }
   }
 
