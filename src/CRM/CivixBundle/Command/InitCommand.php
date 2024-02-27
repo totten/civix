@@ -135,6 +135,7 @@ class InitCommand extends AbstractCommand {
     $output->writeln("<info>Initalize module</info> " . $ctx['fullName']);
 
     $basedir = new Path($ctx['basedir']);
+    \Civix::$extDir = $basedir->string();
 
     $info = new Info($basedir->string('info.xml'));
 

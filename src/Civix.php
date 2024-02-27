@@ -10,6 +10,8 @@ class Civix {
 
   protected static $cache = [];
 
+  public static $extDir = NULL;
+
   /**
    * Get a list of input/output objects for pending commands.
    *
@@ -160,6 +162,9 @@ class Civix {
    *   Ex: '/var/www/example.com/files/civicrm/ext/foobar'
    */
   public static function extDir(...$parts): Path {
+    if (static::$extDir !== NULL) {
+      return Path::for(static::$extDir, ...$parts);
+    }
     $cwd = rtrim(getcwd(), '/');
     if (file_exists("$cwd/info.xml")) {
       return Path::for($cwd, ...$parts);
