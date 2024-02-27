@@ -150,6 +150,15 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
+  public function civixGenerateUpgrader(array $options = []): CommandTester {
+    $tester = static::civix('generate:upgrader');
+    $tester->execute($options);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to generate upgrader (%s)", static::getKey()));
+    }
+    return $tester;
+  }
+
   /**
    * Get a value from "info.xml" by calling "civix info:get"
    *
