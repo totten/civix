@@ -19,6 +19,6 @@ if [ ! -d "$TMPDIR" ]; then mkdir "$TMPDIR"  ; fi
 
 pushd "$PRJDIR" >> /dev/null
   composer install --prefer-dist --no-progress --no-suggest --no-dev
-  box compile -v
+  nix-shell --run 'box compile -v'
   php scripts/check-phar.php "$OUTFILE"
 popd >> /dev/null
