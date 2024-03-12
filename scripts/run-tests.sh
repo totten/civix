@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-## Run PHPUnit tests. This is a small wrapper for `phpunit8` which does some setup for the E2E enviroment.
+## Run PHPUnit tests. This is a small wrapper for `phpunit` which does some setup for the E2E enviroment.
 
 ################################################
 ## Didn't set a workspace? Educated guess...
@@ -18,4 +18,4 @@ fi
 [ ! -d "$CIVIX_WORKSPACE" ] && mkdir -p "$CIVIX_WORKSPACE" || echo ''
 (cd "$CIVIX_WORKSPACE" && civibuild restore)
 
-phpunit8 "$@"
+phpunit9 "$@"
