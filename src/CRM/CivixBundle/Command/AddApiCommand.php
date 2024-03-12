@@ -15,6 +15,9 @@ use CRM\CivixBundle\Utils\Path;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated
+ */
 class AddApiCommand extends AbstractCommand {
   const API_VERSION = 3;
 
@@ -25,7 +28,7 @@ class AddApiCommand extends AbstractCommand {
   protected function configure() {
     $this
       ->setName('generate:api')
-      ->setDescription('Add a new API function to a CiviCRM Module-Extension')
+      ->setDescription('Add APIv3 function (DEPRECATED)')
       ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The entity against which the action runs (eg "Contact", "MyEntity")')
       ->addArgument('<actionname>', InputArgument::REQUIRED, 'The action which will be created (eg "create", "myaction")')
       ->addOption('schedule', NULL, InputOption::VALUE_OPTIONAL, 'Schedule this action as a recurring cron job (' . implode(', ', self::getSchedules()) . ') [For CiviCRM 4.3+]')
