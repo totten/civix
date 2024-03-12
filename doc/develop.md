@@ -1,5 +1,15 @@
 # Development
 
+## Run
+
+You can run civix directly from source, by calling `~/path/to/civix/bin/civix`.
+
+To shorten this to the familiar `civix` command, you can export the path, e.g.
+
+```bash
+export PATH="$HOME/path/to/civix/bin:$PATH"
+```
+
 ## Build PHAR
 
 `civix.phar` is usually compiled inside a [nix](https://nixos.org/download.html) shell, i.e.
