@@ -2,8 +2,6 @@
 namespace CRM\CivixBundle\Builder;
 
 use CRM\CivixBundle\Utils\Files;
-use SimpleXMLElement;
-use DOMDocument;
 use CRM\CivixBundle\Builder;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,7 +13,26 @@ class License implements Builder {
   protected $name;
 
   /**
-   * @param $overwrite scalar; TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+   * @var \LicenseData\License
+   */
+  protected $license;
+
+  /**
+   * @var string
+   */
+  protected $path;
+
+  /**
+   * @var bool|string
+   *   TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
+   */
+  protected $overwrite;
+
+  /**
+   * @param \LicenseData\License $license
+   * @param string $path
+   * @param bool|string $overwrite
+   *   TRUE (always overwrite), FALSE (preserve with error), 'ignore' (preserve quietly)
    */
   public function __construct(\LicenseData\License $license, $path, $overwrite) {
     $this->license = $license;
