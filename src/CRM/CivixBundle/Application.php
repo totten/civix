@@ -1,34 +1,6 @@
 <?php
 namespace CRM\CivixBundle;
 
-use CRM\CivixBundle\Command\AddAngularDirectiveCommand;
-use CRM\CivixBundle\Command\AddAngularModuleCommand;
-use CRM\CivixBundle\Command\AddAngularPageCommand;
-use CRM\CivixBundle\Command\AddApiCommand;
-use CRM\CivixBundle\Command\AddCaseTypeCommand;
-use CRM\CivixBundle\Command\AddCustomDataCommand;
-use CRM\CivixBundle\Command\AddEntityCommand;
-use CRM\CivixBundle\Command\AddEntityBoilerplateCommand;
-use CRM\CivixBundle\Command\AddFormCommand;
-use CRM\CivixBundle\Command\AddManagedEntityCommand;
-use CRM\CivixBundle\Command\AddPageCommand;
-use CRM\CivixBundle\Command\AddReportCommand;
-use CRM\CivixBundle\Command\AddSearchCommand;
-use CRM\CivixBundle\Command\AddServiceCommand;
-use CRM\CivixBundle\Command\AddTestCommand;
-use CRM\CivixBundle\Command\AddThemeCommand;
-use CRM\CivixBundle\Command\AddUpgraderCommand;
-use CRM\CivixBundle\Command\BuildCommand;
-use CRM\CivixBundle\Command\ConfigGetCommand;
-use CRM\CivixBundle\Command\ConfigSetCommand;
-use CRM\CivixBundle\Command\InfoGetCommand;
-use CRM\CivixBundle\Command\InfoSetCommand;
-use CRM\CivixBundle\Command\InitCommand;
-use CRM\CivixBundle\Command\MixinCommand;
-use CRM\CivixBundle\Command\PingCommand;
-use CRM\CivixBundle\Command\TestRunCommand;
-use CRM\CivixBundle\Command\UpgradeCommand;
-
 class Application extends \Symfony\Component\Console\Application {
 
   /**
@@ -52,33 +24,33 @@ class Application extends \Symfony\Component\Console\Application {
    */
   public function createCommands($context = 'default') {
     $commands = [];
-    $commands[] = new AddAngularDirectiveCommand();
-    $commands[] = new AddAngularModuleCommand();
-    $commands[] = new AddAngularPageCommand();
-    $commands[] = new AddApiCommand();
-    $commands[] = new AddCaseTypeCommand();
-    $commands[] = new AddCustomDataCommand();
-    $commands[] = new AddEntityCommand();
-    $commands[] = new AddEntityBoilerplateCommand();
-    $commands[] = new AddFormCommand();
-    $commands[] = new AddManagedEntityCommand();
-    $commands[] = new AddPageCommand();
-    $commands[] = new AddReportCommand();
-    $commands[] = new AddSearchCommand();
-    $commands[] = new AddServiceCommand();
-    $commands[] = new AddTestCommand();
-    $commands[] = new AddThemeCommand();
-    $commands[] = new AddUpgraderCommand();
-    $commands[] = new BuildCommand();
-    $commands[] = new ConfigGetCommand();
-    $commands[] = new ConfigSetCommand();
-    $commands[] = new InitCommand();
-    $commands[] = new MixinCommand();
-    $commands[] = new PingCommand();
-    $commands[] = new TestRunCommand();
-    $commands[] = new UpgradeCommand();
-    $commands[] = new InfoGetCommand();
-    $commands[] = new InfoSetCommand();
+    $commands[] = new Command\AddAngularDirectiveCommand();
+    $commands[] = new Command\AddAngularModuleCommand();
+    $commands[] = new Command\AddAngularPageCommand();
+    $commands[] = new Command\AddApiCommand();
+    $commands[] = new Command\AddCaseTypeCommand();
+    $commands[] = new Command\AddCustomDataCommand();
+    $commands[] = new Command\AddEntityCommand();
+    $commands[] = new Command\AddEntityBoilerplateCommand();
+    $commands[] = new Command\AddFormCommand();
+    $commands[] = new Command\AddManagedEntityCommand();
+    $commands[] = new Command\AddPageCommand();
+    $commands[] = new Command\AddReportCommand();
+    $commands[] = new Command\AddSearchCommand();
+    $commands[] = new Command\AddServiceCommand();
+    $commands[] = new Command\AddTestCommand();
+    $commands[] = new Command\AddThemeCommand();
+    $commands[] = new Command\AddUpgraderCommand();
+    $commands[] = new Command\BuildCommand();
+    $commands[] = new Command\ConfigGetCommand();
+    $commands[] = new Command\ConfigSetCommand();
+    $commands[] = new Command\InitCommand();
+    $commands[] = new Command\MixinCommand();
+    $commands[] = new Command\PingCommand();
+    $commands[] = new Command\TestRunCommand();
+    $commands[] = new Command\UpgradeCommand();
+    $commands[] = new Command\InfoGetCommand();
+    $commands[] = new Command\InfoSetCommand();
     return $commands;
   }
 
