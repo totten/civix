@@ -2,7 +2,6 @@
 namespace CRM\CivixBundle\Builder;
 
 use SimpleXMLElement;
-use CRM\CivixBundle\Builder\XML;
 
 /**
  * Build/update info.xml
@@ -22,13 +21,17 @@ class PhpUnitXML extends XML {
     $xml->addAttribute('stopOnFailure', 'false');
     $xml->addAttribute('cacheResult', 'false');
     $xml->addAttribute('bootstrap', 'tests/phpunit/bootstrap.php');
+
+    $xml->registerXPathNamespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+    $xml->addAttribute('xsi:noNamespaceSchemaLocation', 'https://schema.phpunit.de/9.3/phpunit.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
+
     $this->set($xml);
 
     $this->addTestSuite('My Test Suite', ['./tests/phpunit']);
 
     $this->get()
-      ->addChild('filter')
-      ->addChild('whitelist')
+      ->addChild('coverage')
+      ->addChild('include')
       ->addChild('directory', './')
       ->addAttribute('suffix', '.php');
 
@@ -42,7 +45,7 @@ class PhpUnitXML extends XML {
    * @param array $dirs
    */
   public function addTestSuite($name, $dirs) {
-    $testsuites = $this->get()->addChild('testsuites'); // FIXME: find/load
+    $testsuites = $this->get()->addChild('testsuites'); /* FIXME: find/load */
     $testsuite = $testsuites->addChild('testsuite');
     $testsuite->addAttribute('name', $name);
     foreach ($dirs as $dir) {
