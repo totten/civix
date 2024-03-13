@@ -163,7 +163,7 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
     $this->assertTrue((bool) preg_match('/^found/', $classExists->getOutput()), 'Class should be loadable/parsable.');
 
     $httpGet = PH::runOk('cv en authx && cv http -LU admin civicrm/my-page');
-    $this->assertRegExp(';The current time is;', $httpGet->getOutput());
+    $this->assertMatchesRegularExpression(';The current time is;', $httpGet->getOutput());
   }
 
   public function checkSnapshot_svc(): void {

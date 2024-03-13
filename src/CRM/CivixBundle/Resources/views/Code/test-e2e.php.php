@@ -56,14 +56,14 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements En
    */
   public function testWellFormedVersion(): void {
     $this->assertNotEmpty(E::SHORT_NAME);
-    $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
+    $this->assertMatchesRegularExpression('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
 
   /**
    * Example: Test that we're using a real CMS (Drupal, WordPress, etc).
    */
   public function testWellFormedUF(): void {
-    $this->assertRegExp('/^(Drupal|Backdrop|WordPress|Joomla)/', CIVICRM_UF);
+    $this->assertMatchesRegularExpression('/^(Drupal|Backdrop|WordPress|Joomla)/', CIVICRM_UF);
   }
 
 }

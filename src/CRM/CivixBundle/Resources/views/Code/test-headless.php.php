@@ -59,7 +59,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements He
    */
   public function testWellFormedVersion():void {
     $this->assertNotEmpty(E::SHORT_NAME);
-    $this->assertRegExp('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
+    $this->assertMatchesRegularExpression('/^([0-9\.]|alpha|beta)*$/', \CRM_Utils_System::version());
   }
 
   /**

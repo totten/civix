@@ -140,8 +140,8 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     ]);
 
     $content = file_get_contents('civix_mixinrec.civix.php');
-    $this->assertRegExp('|function _civix_mixinrec_civix_mixin_polyfill\(\) \{|', $content);
-    $this->assertRegExp('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
+    $this->assertMatchesRegularExpression('|function _civix_mixinrec_civix_mixin_polyfill\(\) \{|', $content);
+    $this->assertMatchesRegularExpression('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
   }
 
   public function testAddPageFor545(): void {
@@ -163,8 +163,8 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     ]);
 
     $content = file_get_contents('civix_mixinrec.civix.php');
-    $this->assertNotRegExp('|function _civix_mixinrec_civix_mixin_polyfill\(\) \{|', $content);
-    $this->assertNotRegExp('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
+    $this->assertDoesNotMatchRegularExpression('|function _civix_mixinrec_civix_mixin_polyfill\(\) \{|', $content);
+    $this->assertDoesNotMatchRegularExpression('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
   }
 
 }
