@@ -30,7 +30,6 @@ class AddEntityCommand extends AbstractCommand {
       ->addOption('table-name', NULL, InputOption::VALUE_OPTIONAL, 'The SQL table name. (see usage)')
       ->addOption('api-version', 'A', InputOption::VALUE_REQUIRED, 'Comma-separated list of versions (3,4)', '4')
       ->setHelp('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension.
-This command is experimental. Developer discretion is advised.
 
 In most cases generate:entity is able to derive a suitable snake_case table name
 from The CamelCase <EntityName>. However, in some instances (notably when the
@@ -82,18 +81,16 @@ explicity.');
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
 
-    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@1.0']);
+    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@2']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
 
+    $entityTypeFileName = $input->getArgument('<EntityName>') . '.entityType.php';
+
     $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'] . '.php');
     $ctx['api4File'] = $basedir->string('Civi', 'Api4', $ctx['entityNameCamel'] . '.php');
-    $ctx['daoClassName'] = strtr($ctx['namespace'], '/', '_') . '_DAO_' . $input->getArgument('<EntityName>');
-    $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
-    $ctx['baoClassName'] = strtr($ctx['namespace'], '/', '_') . '_BAO_' . $input->getArgument('<EntityName>');
-    $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
     $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
-    $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
+    $ctx['entityTypeFile'] = $basedir->string('schema', $entityTypeFileName);
     $ctx['extensionName'] = $info->getExtensionName();
     $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
     $ctx['testApi3ClassFile'] = $basedir->string('tests', 'phpunit', strtr($ctx['testApi3ClassName'], '_', '/') . '.php');
@@ -102,8 +99,6 @@ explicity.');
     $ext->builders['dirs'] = new Dirs([
       dirname($ctx['apiFile']),
       dirname($ctx['api4File']),
-      dirname($ctx['daoClassFile']),
-      dirname($ctx['baoClassFile']),
       dirname($ctx['schemaFile']),
       dirname($ctx['testApi3ClassFile']),
     ]);
@@ -116,21 +111,30 @@ explicity.');
     if (in_array('4', $apiVersions)) {
       $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Civix::templating());
     }
-    $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Civix::templating());
-    $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
-      $mgdEntities = [
-        [
-          'name' => $ctx['entityNameCamel'],
-          'class' => $ctx['daoClassName'],
-          'table' => $ctx['tableName'],
+      $entityDefn = [
+        'name' => $ctx['entityNameCamel'],
+        'class' => NULL,
+        'table' => $ctx['tableName'],
+        'getPaths' => [],
+        'getFields' => [
+          'id' => [
+            'title' => 'ID',
+            'sql_type' => 'int unsigned',
+            'input_type' => 'Number',
+            'required' => TRUE,
+            'primary_key' => TRUE,
+            'auto_increment' => TRUE,
+          ],
         ],
+        'getIndices' => [],
       ];
-      $header = "// This file declares a new entity type. For more details, see \"hook_civicrm_entityTypes\" at:\n"
-        . "// https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes";
-      $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile'], $header);
-      $ext->builders['entityType.php']->set($mgdEntities);
+      $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile']);
+      $ext->builders['entityType.php']->useExtensionUtil($info->getExtensionUtilClass());
+      $ext->builders['entityType.php']->useTs(['title', 'label', 'description']);
+      $ext->builders['entityType.php']->setCallbacks(['getPaths', 'getFields', 'getIndices']);
+      $ext->builders['entityType.php']->set($entityDefn);
     }
 
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
@@ -150,7 +154,7 @@ explicity.');
       $output->writeln('<comment>Generated API skeletons for APIv4. To generate APIv3, specify <info>--api-version=3</info></comment>');
     }
 
-    $output->writeln('<comment>You should now make any changes to the entity xml file and run `civix generate:entity-boilerplate` to generate necessary boilerplate.</comment>');
+    $output->writeln("<comment>You can add fields by editing the file $entityTypeFileName.</comment>");
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
 
     return 0;
