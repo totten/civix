@@ -93,7 +93,7 @@ explicity.');
     $ctx['baoClassName'] = strtr($ctx['namespace'], '/', '_') . '_BAO_' . $input->getArgument('<EntityName>');
     $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
     $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
-    $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
+    $ctx['entityTypeFile'] = $basedir->string('schema', $input->getArgument('<EntityName>') . '.entityType.php');
     $ctx['extensionName'] = $info->getExtensionName();
     $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
     $ctx['testApi3ClassFile'] = $basedir->string('tests', 'phpunit', strtr($ctx['testApi3ClassName'], '_', '/') . '.php');
@@ -120,17 +120,19 @@ explicity.');
     $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
-      $mgdEntities = [
-        [
-          'name' => $ctx['entityNameCamel'],
-          'class' => $ctx['daoClassName'],
-          'table' => $ctx['tableName'],
-        ],
+      $entityDefn = [
+        'name' => $ctx['entityNameCamel'],
+        'class' => $ctx['daoClassName'],
+        'table' => $ctx['tableName'],
+        'getPaths' => [],
+        'getFields' => [],
+        'getIndices' => [],
       ];
-      $header = "// This file declares a new entity type. For more details, see \"hook_civicrm_entityTypes\" at:\n"
-        . "// https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes";
-      $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile'], $header);
-      $ext->builders['entityType.php']->set($mgdEntities);
+      $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile']);
+      $ext->builders['entityType.php']->useExtensionUtil($info->getExtensionUtilClass());
+      $ext->builders['entityType.php']->useTs(['title', 'label', 'description']);
+      $ext->builders['entityType.php']->setCallbacks(['getPaths', 'getFields', 'getIndices']);
+      $ext->builders['entityType.php']->set($entityDefn);
     }
 
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
