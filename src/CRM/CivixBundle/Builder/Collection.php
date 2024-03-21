@@ -8,6 +8,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  * A collection of builders
  */
 class Collection implements Builder {
+
+  /**
+   * @var array
+   */
+  public $builders;
+
   public function __construct($builders = []) {
     $this->builders = $builders;
   }
