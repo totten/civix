@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
-            "version": "v0.18",
+            "version": "v0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/composer-compile-plugin.git",
-                "reference": "158be6061320c2f481e1aa8f821be5c7e0eea220"
+                "reference": "0933ff53cd720ddcb24bdc5984879673ea1e0cbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/civicrm/composer-compile-plugin/zipball/158be6061320c2f481e1aa8f821be5c7e0eea220",
-                "reference": "158be6061320c2f481e1aa8f821be5c7e0eea220",
+                "url": "https://api.github.com/repos/civicrm/composer-compile-plugin/zipball/0933ff53cd720ddcb24bdc5984879673ea1e0cbe",
+                "reference": "0933ff53cd720ddcb24bdc5984879673ea1e0cbe",
                 "shasum": ""
             },
             "require": {
@@ -51,9 +51,9 @@
             "description": "Define a 'compile' event for all packages in the dependency-graph",
             "support": {
                 "issues": "https://github.com/civicrm/composer-compile-plugin/issues",
-                "source": "https://github.com/civicrm/composer-compile-plugin/tree/v0.18"
+                "source": "https://github.com/civicrm/composer-compile-plugin/tree/v0.20"
             },
-            "time": "2022-04-01T08:01:29+00:00"
+            "time": "2023-03-01T06:55:29+00:00"
         },
         {
             "name": "civicrm/composer-downloads-plugin",

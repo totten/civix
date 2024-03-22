@@ -3,8 +3,6 @@
 namespace E2E;
 
 use CRM\CivixBundle\Builder\Info;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\NullOutput;
 
 class CRMNamingTest extends \PHPUnit\Framework\TestCase {
 
@@ -29,7 +27,7 @@ class CRMNamingTest extends \PHPUnit\Framework\TestCase {
       'civix_crmnaming.civix.php' => 1,
     ]);
 
-    \Civix::ioStack()->push(new ArgvInput(), new NullOutput());
+    \Civix::ioStack()->push(...$this->createInputOutput());
     $this->upgrader = \Civix::generator(static::getExtPath());
     $this->upgrader->updateInfo(function(Info $info) {
       // FIXME: Allow "_" instead of "/"

@@ -7,6 +7,11 @@ use CRM\CivixBundle\Utils\Path;
 
 class Module implements Builder {
 
+  /**
+   * @var \Symfony\Component\Templating\EngineInterface
+   */
+  public $templateEngine;
+
   public function __construct($templateEngine) {
     $this->templateEngine = $templateEngine;
   }

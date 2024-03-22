@@ -7,7 +7,9 @@ use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
 use ProcessHelper\ProcessHelper as PH;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -349,6 +351,17 @@ trait CivixProjectTestTrait {
       $lastPos = $pos;
     }
     $this->assertTrue($lastPos > 0, 'Should have found multiple lines.');
+  }
+
+  /**
+   * @return array
+   *   [0 => InputInterface, 1 => OutputInterface]
+   */
+  protected function createInputOutput(array $argv = NULL): array {
+    $input = new ArgvInput($argv);
+    $input->setInteractive(FALSE);
+    $output = new NullOutput();
+    return [$input, $output];
   }
 
 }

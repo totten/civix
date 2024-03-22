@@ -48,7 +48,7 @@ For example:
 ```bash
 export CIVIX_WORKSPACE=$HOME/buildkit/build/dmaster/web/sites/all/modules/civicrm/ext/civixtest
 civibuild restore dmaster
-phpunit8
+phpunit9
 ```
 
 The helper `./scripts/run-tests.sh` is a small wrapper which does the above.

@@ -141,9 +141,8 @@ function build_snapshot() {
       cv en "$EXMODULE"
       find tests -name '*.php' | xargs civilint
       if [ -e 'tests/phpunit' ]; then
-        ## FIXME: phpunit8; but some tests need updating?
-        phpunit8 --group headless
-        phpunit8 --group e2e
+        phpunit9 --group headless
+        phpunit9 --group e2e
       fi
     popd
   fi

@@ -1,4 +1,6 @@
-<phpunit backupGlobals="false"
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         backupGlobals="false"
          backupStaticAttributes="false"
          colors="true"
          convertErrorsToExceptions="true"
@@ -9,7 +11,17 @@
          stopOnFailure="false"
          bootstrap="tests/bootstrap.php"
          cacheResult="false"
->
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <directory>src/*Bundle/Resources</directory>
+      <directory>src/*/*Bundle/Resources</directory>
+      <directory>src/*/Bundle/*Bundle/Resources</directory>
+    </exclude>
+  </coverage>
   <testsuites>
     <testsuite name="unit">
       <directory>./src/</directory>
@@ -18,18 +30,6 @@
       <directory>./tests/e2e/</directory>
     </testsuite>
   </testsuites>
-
-  <filter>
-    <whitelist>
-      <directory suffix=".php">./src</directory>
-      <exclude>
-        <directory>src/*Bundle/Resources</directory>
-        <directory>src/*/*Bundle/Resources</directory>
-        <directory>src/*/Bundle/*Bundle/Resources</directory>
-      </exclude>
-    </whitelist>
-  </filter>
-
   <listeners>
     <listener class="CRM\CivixBundle\CivixTestListener">
       <arguments/>

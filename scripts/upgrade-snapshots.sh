@@ -33,4 +33,4 @@ fi
 ################################################
 export SNAPSHOT_SAVE=1
 export SNAPSHOT_FILTER="$1"
-phpunit8 tests/e2e/SnapshotUpgradeTest.php --debug
+phpunit9 tests/e2e/SnapshotUpgradeTest.php --debug

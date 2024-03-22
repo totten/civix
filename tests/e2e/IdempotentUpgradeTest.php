@@ -36,7 +36,7 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
       'General upgrade',
     ];
     $this->assertStringSequence($expectLines, $result);
-    $this->assertNotRegExp(';Upgrade v([\d\.]+) => v([\d\.]+);', $result);
+    $this->assertDoesNotMatchRegularExpression(';Upgrade v([\d\.]+) => v([\d\.]+);', $result);
 
     // Compare before+after
     $end = $this->getExtSnapshot();

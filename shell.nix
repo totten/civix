@@ -25,6 +25,7 @@ in
       buildkit.pkgs.composer
       buildkit.pkgs.pogo
       buildkit.pkgs.phpunit8
+      buildkit.pkgs.phpunit9
 
       pkgs.bash-completion
     ];
