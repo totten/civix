@@ -5,6 +5,7 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Builder\Mixins;
 use Civix;
 use CRM\CivixBundle\Builder\PhpData;
+use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
