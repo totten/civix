@@ -279,7 +279,7 @@ class ConvertEntityCommand extends AbstractCommand {
     }
     foreach ($xml->dynamicForeignKey ?? [] as $dfkXml) {
       if (empty($dfkXml->drop)) {
-        $fieldName = self::toString('idColumn', $fkXml);
+        $fieldName = self::toString('idColumn', $dfkXml);
         $fields[$fieldName]['entity_reference'] = [
           'dynamic_entity' => (string) $dfkXml->typeColumn,
           'key' => (string) ($dfkXml->key ?? 'id'),
