@@ -19,6 +19,7 @@ class ConvertEntityCommand extends AbstractCommand {
     $this
       ->setName('convert-entity')
       ->setDescription('Convert legacy xml entity declarations to newer php format')
+      ->addArgument('xmlFiles', InputArgument::IS_ARRAY)
       ->setHelp(
         "This command will convert entities from legacy xml/schema to current .entityType.php format\n"
       );
@@ -41,16 +42,30 @@ class ConvertEntityCommand extends AbstractCommand {
     //  $mixins->addMixin('entity-types-php@2');
     //  $mixins->save($ctx, $output);
 
-    $xmlFiles = glob($basedir->string('xml/schema/CRM/*/*.xml'));
+    \Civix::io()->note("Finding entities");
 
+    if (empty($input->getArgument('xmlFiles'))) {
+      $xmlFiles = array_merge(
+        (array) glob($basedir->string('xml/schema/CRM/*/*.xml')),
+        (array) glob($basedir->string('xml/schema/CRM/*/*/*.xml'))
+      );
+    }
+    else {
+      $xmlFiles = $input->getArgument('xmlFiles');
+    }
+    $xmlFiles = preg_grep('/files.xml$/', $xmlFiles, PREG_GREP_INVERT);
+    $xmlFiles = preg_grep('/Schema.xml$/', $xmlFiles, PREG_GREP_INVERT);
     $thisTables = self::getTablesForThisExtension($xmlFiles);
+
+    \Civix::io()->note("Found: " . implode(' ', $thisTables));
 
     foreach ($xmlFiles as $fileName) {
       $entity = self::convertXmlToEntity($fileName, $thisTables);
       if (!$entity) {
+        \Civix::io()->writeln("<error>Failed to find entity. Skip file:</error> " . Files::relativize($fileName, getcwd()));
         continue;
       }
-      $entityFile = $basedir->string('schema', $entity['name'] . '.entityType.php');
+      $entityFile = str_replace('.xml', '.entityType.php', preg_replace(';xml/schema/CRM/;', 'schema/', $fileName));
       if (file_exists($entityFile)) {
         // throw new \Exception("File schema/{$entity['name']}.php already exists. Aborting.");
         unlink($entityFile);
@@ -88,9 +103,16 @@ class ConvertEntityCommand extends AbstractCommand {
   }
 
   public static function convertXmlToEntity(string $fileName, $thisTables):? array {
+    \Civix::io()->writeln("<info>Parse</info> " . Files::relativize($fileName, getcwd()));
     [$xml, $error] = \CRM_Utils_XML::parseFile($fileName);
-    if ($error || !empty($xml->drop)) {
+    if ($error) {
+        \Civix::io()->writeln("<error>Failed to parse file: </error>" . Files::relativize($fileName, getcwd()));
+        return NULL;
+    }
+    elseif (!empty($xml->drop)) {
+      \Civix::io()->writeln("<info>Entity was previously dropped. Skipping: </info>" . Files::relativize($fileName, getcwd()));
       return NULL;
+
     }
     $name = self::toString('entity', $xml) ?: self::toString('class', $xml);
     $title = self::toString('title', $xml) ?: \CRM_Utils_Schema::composeTitle($name);
