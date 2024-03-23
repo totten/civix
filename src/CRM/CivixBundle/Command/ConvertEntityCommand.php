@@ -260,7 +260,7 @@ class ConvertEntityCommand extends AbstractCommand {
         $fields[$name]['input_attrs'] = $attributes;
       }
       if (!empty($fieldXml->pseudoconstant)) {
-        $fields[$name]['pseudoconstant'] = self::snakeCaseKeys((array) $fieldXml->pseudoconstant);
+        $fields[$name]['pseudoconstant'] = self::snakeCaseKeys(static::toArray($fieldXml->pseudoconstant));
       }
       if (!empty($fields[$name]['pseudoconstant']['suffixes'])) {
         $fields[$name]['pseudoconstant']['suffixes'] = explode(',', $fields[$name]['pseudoconstant']['suffixes']);
@@ -340,6 +340,15 @@ class ConvertEntityCommand extends AbstractCommand {
       return $value === 'true' || $value === '1';
     }
     return NULL;
+  }
+
+  private static function toArray(\SimpleXMLElement $xml): array {
+    $result = (array) $xml;
+    if (isset($result['comment']) && $result['comment'] instanceof \SimpleXMLElement) {
+      Civix::io()->note("Discarding comment");
+      unset($result['comment']);
+    }
+    return $result;
   }
 
 }
