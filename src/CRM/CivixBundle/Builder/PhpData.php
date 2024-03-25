@@ -187,8 +187,10 @@ class PhpData implements Builder {
    * Wrap strings in E::ts()
    */
   private function translateStrings(string $data, array $keysToTranslate): string {
+    $ts = ($this->extensionUtil) ? 'E::ts' : 'ts';
+
     $keys = implode('|', array_unique($keysToTranslate));
-    $data = preg_replace("/'($keys)' => ('[^']+'),/", "'\$1' => E::ts(\$2),", $data);
+    $data = preg_replace("/'($keys)' => ('[^']+'),/", "'\$1' => $ts(\$2),", $data);
     return $data;
   }
 

@@ -20,6 +20,7 @@ class ConvertEntityCommand extends AbstractCommand {
       ->setName('convert-entity')
       ->setDescription('Convert legacy xml entity declarations to newer php format')
       ->addArgument('xmlFiles', InputArgument::IS_ARRAY)
+      ->addOption('core-style', NULL, InputOption::VALUE_NONE, '(Quick hack) Adjust output format to work in core')
       ->setHelp(
         "This command will convert entities from legacy xml/schema to current .entityType.php format\n"
       );
@@ -71,7 +72,9 @@ class ConvertEntityCommand extends AbstractCommand {
         unlink($entityFile);
       }
       $phpData = new PhpData($entityFile);
-      $phpData->useExtensionUtil($info->getExtensionUtilClass());
+      if (!$input->getOption('core-style')) {
+        $phpData->useExtensionUtil($info->getExtensionUtilClass());
+      }
       $phpData->useTs(['title', 'title_plural', 'label', 'description']);
       $phpData->setLiterals(['serialize', 'data_type']);
       $phpData->setCallbacks(['getInfo', 'getPaths', 'getFields', 'getIndices']);
