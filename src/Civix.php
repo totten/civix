@@ -10,6 +10,8 @@ class Civix {
 
   protected static $cache = [];
 
+  public static $extDir = NULL;
+
   /**
    * Get a list of input/output objects for pending commands.
    *
@@ -160,6 +162,9 @@ class Civix {
    *   Ex: '/var/www/example.com/files/civicrm/ext/foobar'
    */
   public static function extDir(...$parts): Path {
+    if (static::$extDir !== NULL) {
+      return Path::for(static::$extDir, ...$parts);
+    }
     $cwd = rtrim(getcwd(), '/');
     if (file_exists("$cwd/info.xml")) {
       return Path::for($cwd, ...$parts);
@@ -213,6 +218,16 @@ class Civix {
   }
 
   /**
+   * Get the checker for analyzing extension usage/design/requirements.
+   *
+   * @param string|Path|null $extDir
+   * @return \CRM\CivixBundle\Checker
+   */
+  public static function checker($extDir = NULL): \CRM\CivixBundle\Checker {
+    return new \CRM\CivixBundle\Checker(static::generator($extDir));
+  }
+
+  /**
    * @return \CRM\CivixBundle\UpgradeList
    */
   public static function upgradeList(): \CRM\CivixBundle\UpgradeList {
@@ -228,6 +243,7 @@ class Civix {
       $new['boot'] = static::$cache['boot'];
     }
     static::$cache = $new;
+    static::$extDir = NULL;
   }
 
 }

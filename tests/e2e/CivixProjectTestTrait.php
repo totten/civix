@@ -72,6 +72,7 @@ trait CivixProjectTestTrait {
   }
 
   public static function civix(string $command): CommandTester {
+    \Civix::reset();
     $application = new Application();
     $command = $application->find($command);
     return new CommandTester($command);
@@ -124,6 +125,15 @@ trait CivixProjectTestTrait {
     $tester->execute($options + ['name' => $name]);
     if ($tester->getStatusCode() !== 0) {
       throw new \RuntimeException(sprintf("Failed to generate service (%s)", $name));
+    }
+    return $tester;
+  }
+
+  public function civixGenerateUpgrader(array $options = []): CommandTester {
+    $tester = static::civix('generate:upgrader');
+    $tester->execute($options);
+    if ($tester->getStatusCode() !== 0) {
+      throw new \RuntimeException(sprintf("Failed to generate upgrader (%s)", static::getKey()));
     }
     return $tester;
   }
