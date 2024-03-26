@@ -332,7 +332,7 @@ class ConvertEntityCommand extends AbstractCommand {
 
   private static function toString(string $key, \SimpleXMLElement $xml): ?string {
     if (isset($xml->$key)) {
-      return (string) $xml->$key;
+      return preg_replace('/\s+/', ' ', trim((string) $xml->$key));
     }
     return NULL;
   }
