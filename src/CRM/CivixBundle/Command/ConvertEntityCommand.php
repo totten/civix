@@ -273,11 +273,14 @@ class ConvertEntityCommand extends AbstractCommand {
       if (empty($fkXml->drop)) {
         $fkTable = self::toString('table', $fkXml);
         $fieldName = self::toString('name', $fkXml);
+        $onDelete = self::toString('onDelete', $fkXml);
         $fields[$fieldName]['entity_reference'] = [
           'entity' => $thisTables[$fkTable] ?? \CRM_Core_DAO_AllCoreTables::getEntityNameForTable($fkTable),
           'key' => (string) ($fkXml->key ?? 'id'),
-          'on_delete' => strtoupper(self::toString('onDelete', $fkXml) ?? 'SET NULL'),
         ];
+        if ($onDelete) {
+          $fields[$fieldName]['entity_reference']['on_delete'] = $onDelete;
+        }
       }
     }
     foreach ($xml->dynamicForeignKey ?? [] as $dfkXml) {
