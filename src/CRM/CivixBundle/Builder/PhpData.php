@@ -39,9 +39,9 @@ class PhpData implements Builder {
    */
   private $extensionUtil;
 
-  private array $literals = [];
+  private $literals = [];
 
-  private array $useCallbacks = [];
+  private $useCallbacks = [];
 
   public function __construct($path, $header = NULL) {
     $this->path = $path;
