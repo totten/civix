@@ -60,19 +60,27 @@ class ConvertEntityCommand extends AbstractCommand {
 
     \Civix::io()->note("Found: " . implode(' ', $thisTables));
 
+    $isCore = $input->getOption('core-style');
+
     foreach ($xmlFiles as $fileName) {
       $entity = self::convertXmlToEntity($fileName, $thisTables);
       if (!$entity) {
         \Civix::io()->writeln("<error>Failed to find entity. Skip file:</error> " . Files::relativize($fileName, getcwd()));
         continue;
       }
-      $entityFile = str_replace('.xml', '.entityType.php', preg_replace(';xml/schema/CRM/;', 'schema/', $fileName));
+      if ($isCore) {
+        $directory = str_replace('xml/schema/CRM', 'schema', pathinfo($fileName, PATHINFO_DIRNAME));
+      }
+      else {
+        $directory = $basedir->string('schema');
+      }
+      $entityFile = "$directory/{$entity['name']}.entityType.php";
       if (file_exists($entityFile)) {
         // throw new \Exception("File schema/{$entity['name']}.php already exists. Aborting.");
         unlink($entityFile);
       }
       $phpData = new PhpData($entityFile);
-      if (!$input->getOption('core-style')) {
+      if (!$isCore) {
         $phpData->useExtensionUtil($info->getExtensionUtilClass());
       }
       $phpData->useTs(['title', 'title_plural', 'label', 'description']);
