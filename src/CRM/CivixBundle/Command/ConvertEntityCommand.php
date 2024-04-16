@@ -76,7 +76,7 @@ class ConvertEntityCommand extends AbstractCommand {
         $phpData->useExtensionUtil($info->getExtensionUtilClass());
       }
       $phpData->useTs(['title', 'title_plural', 'label', 'description']);
-      $phpData->setLiterals(['serialize', 'data_type']);
+      $phpData->setLiterals(['serialize']);
       $phpData->setCallbacks(['getInfo', 'getPaths', 'getFields', 'getIndices']);
       $phpData->set($entity);
       $phpData->save($ctx, $output);
@@ -193,7 +193,7 @@ class ConvertEntityCommand extends AbstractCommand {
         'input_type' => ((string) $fieldXml->html->type) ?: NULL,
       ];
       if (!empty($fieldXml->crmType)) {
-        $fields[$name]['data_type'] = $typeAttributes['crmType'];
+        $fields[$name]['data_type'] = \CRM_Utils_Type::typeToString(constant($typeAttributes['crmType']));
       }
       $boolValues = [
         'required',
