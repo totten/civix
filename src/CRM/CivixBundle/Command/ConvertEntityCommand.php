@@ -136,9 +136,15 @@ class ConvertEntityCommand extends AbstractCommand {
       'title' => $title,
       'title_plural' => self::toString('titlePlural', $xml) ?: \CRM_Utils_String::pluralize($title),
       'description' => self::toString('description', $xml) ?? self::toString('comment', $xml) ?? 'FIXME',
-      'log' => self::toBool('log', $xml),
-      'add' => self::toString('add', $xml) ?? '1.0',
     ];
+    $log = self::toBool('log', $xml);
+    if (isset($log)) {
+      $info['log'] = $log;
+    }
+    $add = self::toString('add', $xml);
+    if (isset($add)) {
+      $info['add'] = $add;
+    }
     $icon = self::toString('icon', $xml);
     if ($icon) {
       $info['icon'] = $icon;
