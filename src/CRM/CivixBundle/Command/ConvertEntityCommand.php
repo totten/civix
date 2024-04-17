@@ -69,7 +69,7 @@ class ConvertEntityCommand extends AbstractCommand {
         continue;
       }
       if ($isCore) {
-        $directory = str_replace('xml/schema/CRM', 'schema', pathinfo($fileName, PATHINFO_DIRNAME));
+        $directory = str_replace('xml/schema/', 'schema/', pathinfo($fileName, PATHINFO_DIRNAME));
       }
       else {
         $directory = $basedir->string('schema');
