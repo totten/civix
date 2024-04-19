@@ -190,7 +190,7 @@ class PhpData implements Builder {
     $ts = ($this->extensionUtil) ? 'E::ts' : 'ts';
 
     $keys = implode('|', array_unique($keysToTranslate));
-    $data = preg_replace("/'($keys)' => ('[^']+'),/", "'\$1' => $ts(\$2),", $data);
+    $data = preg_replace("/'($keys)' => ('.+'),\\n/", "'\$1' => $ts(\$2),\n", $data);
     return $data;
   }
 

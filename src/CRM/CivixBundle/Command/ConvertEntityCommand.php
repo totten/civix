@@ -45,10 +45,13 @@ class ConvertEntityCommand extends AbstractCommand {
 
     \Civix::io()->note("Finding entities");
 
+    $isCore = $input->getOption('core-style');
+
     if (empty($input->getArgument('xmlFiles'))) {
+      $schemaPath = $isCore ? 'xml/schema' : 'xml/schema/CRM';
       $xmlFiles = array_merge(
-        (array) glob($basedir->string('xml/schema/CRM/*/*.xml')),
-        (array) glob($basedir->string('xml/schema/CRM/*/*/*.xml'))
+        (array) glob($basedir->string("$schemaPath/*/*.xml")),
+        (array) glob($basedir->string("$schemaPath/*/*/*.xml"))
       );
     }
     else {
@@ -60,8 +63,6 @@ class ConvertEntityCommand extends AbstractCommand {
 
     \Civix::io()->note("Found: " . implode(' ', $thisTables));
 
-    $isCore = $input->getOption('core-style');
-
     foreach ($xmlFiles as $fileName) {
       $entity = self::convertXmlToEntity($fileName, $thisTables);
       if (!$entity) {
@@ -69,7 +70,9 @@ class ConvertEntityCommand extends AbstractCommand {
         continue;
       }
       if ($isCore) {
-        $directory = str_replace('xml/schema/', 'schema/', pathinfo($fileName, PATHINFO_DIRNAME));
+        $fileDir = strstr(pathinfo($fileName, PATHINFO_DIRNAME), 'xml/schema/');
+        $fileDir = explode('/', $fileDir)[2];
+        $directory = $basedir->string("schema/$fileDir");
       }
       else {
         $directory = $basedir->string('schema');
@@ -126,7 +129,7 @@ class ConvertEntityCommand extends AbstractCommand {
 
     }
     $name = self::toString('entity', $xml) ?: self::toString('class', $xml);
-    $title = self::toString('title', $xml) ?: \CRM_Utils_Schema::composeTitle($name);
+    $title = self::toString('title', $xml) ?: preg_replace('/([a-z])([A-Z])/', '$1 $2', $name);
     $entity = [
       'name' => $name,
       'table' => self::toString('name', $xml),
