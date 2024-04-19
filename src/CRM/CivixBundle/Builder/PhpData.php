@@ -39,6 +39,10 @@ class PhpData implements Builder {
    */
   private $extensionUtil;
 
+  private $literals = [];
+
+  private $useCallbacks = [];
+
   public function __construct($path, $header = NULL) {
     $this->path = $path;
     $this->header = $header;
@@ -100,6 +104,26 @@ class PhpData implements Builder {
   }
 
   /**
+   * Specify which items should be unwrapped and used literally
+   *
+   * @param string $literals
+   * @return void
+   */
+  public function setLiterals(array $literals) {
+    $this->literals = $literals;
+  }
+
+  /**
+   * Specify which items should be wrapped in an anonymous function
+   *
+   * @param string $callbacks
+   * @return void
+   */
+  public function setCallbacks(array $callbacks) {
+    $this->useCallbacks = $callbacks;
+  }
+
+  /**
    * Write the xml document
    */
   public function save(&$ctx, OutputInterface $output) {
@@ -114,13 +138,25 @@ class PhpData implements Builder {
       $content .= $this->header;
     }
     $content .= "\nreturn ";
-    $data = $this->reduceIndentation(VarExporter::export($this->data));
-    $data = $this->ucConstants($data);
-    if ($this->keysToTranslate) {
-      $data = $this->translateStrings($data, $this->keysToTranslate);
-    }
-    $content .= "$data;\n";
+    $content .= $this->varExport($this->data);
+    $content .= ";\n";
     file_put_contents($this->path, $content);
+  }
+
+  private function varExport($values) {
+    $output = VarExporter::export($values);
+    $output = $this->reduceIndentation($output);
+    $output = $this->ucConstants($output);
+    if ($this->keysToTranslate) {
+      $output = $this->translateStrings($output, $this->keysToTranslate);
+    }
+    foreach ($this->useCallbacks as $key) {
+      $output = str_replace("  '$key' => ", "  '$key' => fn() => ",  $output);
+    }
+    foreach ($this->literals as $key) {
+      $output = preg_replace("/  '$key' => '(.*)',/", "  '$key' => \$1,",  $output);
+    }
+    return $output;
   }
 
   /**
@@ -151,8 +187,10 @@ class PhpData implements Builder {
    * Wrap strings in E::ts()
    */
   private function translateStrings(string $data, array $keysToTranslate): string {
+    $ts = ($this->extensionUtil) ? 'E::ts' : 'ts';
+
     $keys = implode('|', array_unique($keysToTranslate));
-    $data = preg_replace("/'($keys)' => ('[^']+'),/", "'\$1' => E::ts(\$2),", $data);
+    $data = preg_replace("/'($keys)' => ('[^']+'),/", "'\$1' => $ts(\$2),", $data);
     return $data;
   }
 

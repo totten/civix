@@ -46,6 +46,7 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new Command\ConfigSetCommand();
     $commands[] = new Command\InitCommand();
     $commands[] = new Command\MixinCommand();
+    $commands[] = new Command\ConvertEntityCommand();
     $commands[] = new Command\PingCommand();
     $commands[] = new Command\TestRunCommand();
     $commands[] = new Command\UpgradeCommand();
