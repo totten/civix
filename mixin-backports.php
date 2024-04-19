@@ -44,6 +44,14 @@ return [
     'provided-by' => '5.57.beta1',
     'minimum' => '5.45',
   ],
+  'entity-types-php@2' => [
+    'version' => '2.0.0',
+    'sha256' => 'ea98aa9ec3a4ee2c0c2f19cf264f20db344d4d25e2dc714e0ba45cccb1cf6c56',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5d5c59c9453fabf1c3f709c7b8e26c680312d9a8/mixin/entity-types-php@2/mixin.php',
+    'local' => 'extern/mixin/entity-types-php@2/mixin.php',
+    'provided-by' => '5.73',
+    'minimum' => '5.51',
+  ],
   'menu-xml@1' => [
     'version' => '1.0.0',
     'sha256' => '4f5be44d6764816b22d0a5cdc2e047cfd9ec4acf48e548f82bb20c05db933d0e',
