@@ -126,7 +126,7 @@ class ConvertEntityCommand extends AbstractCommand {
 
     }
     $name = self::toString('entity', $xml) ?: self::toString('class', $xml);
-    $title = self::toString('title', $xml) ?: \CRM_Utils_Schema::composeTitle($name);
+    $title = self::toString('title', $xml) ?: preg_replace('/([a-z])([A-Z])/', '$1 $2', $name);
     $entity = [
       'name' => $name,
       'table' => self::toString('name', $xml),
