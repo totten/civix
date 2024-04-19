@@ -16,6 +16,6 @@ fi
 
 ################################################
 [ ! -d "$CIVIX_WORKSPACE" ] && mkdir -p "$CIVIX_WORKSPACE" || echo ''
-(cd "$CIVIX_WORKSPACE" && civibuild restore)
+(cd "$CIVIX_WORKSPACE" && XDEBUG_MODE=off civibuild restore)
 
 phpunit9 "$@"

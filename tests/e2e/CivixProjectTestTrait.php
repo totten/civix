@@ -72,6 +72,7 @@ trait CivixProjectTestTrait {
   }
 
   public static function civix(string $command): CommandTester {
+    \Civix::reset();
     $application = new Application();
     $command = $application->find($command);
     return new CommandTester($command);
