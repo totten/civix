@@ -38,10 +38,10 @@ class ConvertEntityCommand extends AbstractCommand {
     $info = $this->getModuleInfo($ctx);
 
     // Switch mixin from v1 to v2
-    //  $mixins = new Mixins($info, $basedir->string('mixin'));
-    //  $mixins->removeMixin('entity-types-php@1');
-    //  $mixins->addMixin('entity-types-php@2');
-    //  $mixins->save($ctx, $output);
+    $mixins = new Mixins($info, $basedir->string('mixin'));
+    $mixins->removeMixin('entity-types-php@1');
+    $mixins->addMixin('entity-types-php@2');
+    $mixins->save($ctx, $output);
 
     \Civix::io()->note("Finding entities");
 
@@ -94,8 +94,8 @@ class ConvertEntityCommand extends AbstractCommand {
     }
 
     // Cleanup old files
+    array_map('unlink', glob($basedir->string('xml/schema/CRM/*/*.entityType.php')));
     //  array_map('unlink', $xmlFiles);
-    //  array_map('unlink', glob($basedir->string('xml/schema/CRM/*/*.entityType.php')));
     //  unlink($basedir->string('sql/auto_install.sql'));
     //  unlink($basedir->string('sql/auto_uninstall.sql'));
 
