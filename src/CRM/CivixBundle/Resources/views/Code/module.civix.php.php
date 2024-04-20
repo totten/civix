@@ -106,7 +106,7 @@ spl_autoload_register('_<?php echo $mainFile ?>_civix_class_loader', TRUE, TRUE)
 function _<?php echo $mainFile ?>_civix_class_loader($class) {
   // This allows us to tap-in to the installation process (without incurring real file-reads on typical requests).
 <?php $_clPrefix = 'CiviMix\\Schema\\' . \CRM\CivixBundle\Utils\Naming::createCamelName($mainFile) . '\\' ?>
-  if (substr($class, 0, <?php echo strlen($_clPrefix) ?>) === <?php var_export($_clPrefix) ?>) {
+  if (strpos($class, <?php var_export($_clPrefix) ?>) === 0) {
     // civimix-schema@5 is designed for backported use in download/activation workflows,
     // where new revisions may become dynamically available.
     pathload()->loadPackage('civimix-schema@5', TRUE);
