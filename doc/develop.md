@@ -2,6 +2,10 @@
 
 ## Build PHAR
 
+> __TIP__: For day-to-day development, you don't usually need to compile a PHAR. These
+> steps are mostly useful if (a) you are specifically addressing an issue in the PHAR
+> or (b) you are testing on a UF/CMS which is prone to dependency conflicts (such as D9/D10).
+
 `civix.phar` is usually compiled inside a [nix](https://nixos.org/download.html) shell, i.e.
 
 ```bash
