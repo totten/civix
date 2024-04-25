@@ -1,5 +1,29 @@
 # Development
 
+## Prerequisites
+
+* [Install `civix.git` (source) as a standalone project](download.md#src-composer)
+
+## Run
+
+The main executable in the source-tree is `./bin/civix`. You can call this from other folders.
+
+For example, if your `civix` source is in `$HOME/src/civix`, and if your D7 site is in `/var/www/example.com`,
+then you might say:
+
+```bash
+cd /var/www/example.com/sites/default/files/civicrm/ext
+$HOME/src/civix/bin/civix generate:module newmodule
+```
+
+Or:
+
+```bash
+export PATH="$HOME/src/civix/bin:$PATH"
+cd /var/www/example.com/sites/default/files/civicrm/ext
+civix generate:module newmodule
+```
+
 ## Build PHAR
 
 > __TIP__: For day-to-day development, you don't usually need to compile a PHAR. These
