@@ -32,8 +32,7 @@ existing web-project. Below, we give a general download summary and several exam
 There are a few procedures for installing. Here are key differences:
 
 * __Executable binary vs source code__:
-    * __Executable binary (`civix.phar`)__: The PHAR executable is designed to be portable.  It is a single file which can be plugged into many
-      configurations/environments.
+    * __Executable binary (`civix.phar`)__: The PHAR executable is designed to be portable.  It is a single file which can be called in any supported environment.
     * __Source code (`civix.git`)__:  The source-code is used for developing and debugging `civix`.  It requires more tooling and lacks some of the portability
       features in the PHAR.  (However, if there is a compatibility bug, then the source-code may make it easier to diagnose, fix, or work-around.)
 * __Standalone tool vs project tool__:
