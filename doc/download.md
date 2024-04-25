@@ -2,17 +2,19 @@
 
 <!-- The instructions for `cv` and `civix` are nearly identical. Consider updating them in tandem. -->
 
-`civix` is available as an executable binary (`civix.phar`) or source-code (`civix.git`).  It may be deployed as a system-wide tool, or it may be deployed as part of an
-existing web-project. Below, we give general download summary and several example procedures.
+`civix` is available as an executable binary (`civix.phar`) or source-code (`civix.git`).  It may be deployed as a standalone (system-wide) tool, or it may be deployed as part of an
+existing web-project. Below, we give a general download summary and several example procedures.
 
 * [Download URLs for alternate versions](#urls)
 * [Comparison of install options](#comparison)
-* [Install `civix.phar` as system-wide tool (Linux/BSD/macOS)](#phar-unix)
-* [Install `civix.phar` as project tool (composer)](#phar-composer)
-* [Install `civix.phar` as project tool (phive)](#phar-phive)
-* [Install `civix.git` as system-wide tool (Linux/BSD/macOS)](#src-unix)
-* [Install `civix.git` as system-wide tool (Windows)](#src-win)
-* [Install `civix.git` as project tool (composer)](#src-composer)
+* Install `civix` as a system-wide/standalone tool
+    * [Install `civix.phar` (binary) as system-wide tool (Linux/BSD/macOS)](#phar-unix)
+    * [Install `civix.git` (source) as standalone project (Linux/BSD/macOS)](#src-unix)
+    * [Install `civix.git` (source) as standalone project (Windows)](#src-win)
+* Install `civix` as a tool within another project
+    * [Install `civix.phar` (binary) as project tool (composer)](#phar-composer)
+    * [Install `civix.phar` (binary) as project tool (phive)](#phar-phive)
+    * [Install `civix.git` (source) as project tool (composer)](#src-composer)
 
 <a name="urls"></a>
 ## Download URLs for alternate versions
@@ -33,9 +35,9 @@ There are a few procedures for installing. Here are key differences:
     * __Executable binary (`civix.phar`)__: The PHAR executable is designed to be portable.  It is a single file which can be plugged into many
       configurations/environments.
     * __Source code (`civix.git`)__:  The source-code is used for developing and debugging `civix`.  It requires more tooling and lacks some of the portability
-      features in the PHAR.  (However, if there is a compatibility bug, then the source-code may make it easier to work-around or diagnose.)
-* __System-wide tool vs project tool__:
-    * __System-wide tool__: Install one copy of `civix` on each workstation or server. (You may need to re-install for each additional workstation or server.)
+      features in the PHAR.  (However, if there is a compatibility bug, then the source-code may make it easier to diagnose, fix, or work-around.)
+* __Standalone tool vs project tool__:
+    * __Standalone tool__: Install one standalone (system-wide) copy of `civix` on each workstation or server. (You may need to re-install for each additional workstation or server.)
     * __Project tool__: Include a copy of `civix` with each web-project that you develop. (You may need to re-install for each additional project or site.)
 
 <a name="phar-unix"></a>
@@ -83,31 +85,24 @@ That is the quickest procedure, but it does not defend against supply-chain atta
 <a name="phar-composer"></a>
 ## Install `civix.phar` as project tool (composer)
 
-If you have are developing a web-project with [`composer`](https://getcomposer.org) (e.g.  Drupal 8/9/10/11) and wish to add `civix.phar` to your project,
-then use the [composer-downloads-plugin](https://github.com/civicrm/composer-downloads-plugin).
+If you are developing a web-project with [`composer`](https://getcomposer.org) (e.g.  Drupal 8/9/10/11) and wish to add `civix.phar` to your project,
+then use [civicrm/cli-tools](https://github.com/totten/civicrm-cli-tools).
 
 ```bash
-composer require civicrm/composer-downloads-plugin
+composer require civicrm/cli-tools
 ```
 
-Add the binary URL to your top-level `composer.json`:
+The CLI tools will be placed in [composer's `vendor/bin` folder](https://getcomposer.org/doc/articles/vendor-binaries.md).
 
-```javascript
-{
-  "extra": {
-    "downloads": {
-      "civix": {"url": "https://download.civicrm.org/civix/civix-X.Y.Z.phar", "path": "bin/civix", "type": "phar"}
-    }
-  }
-}
-```
-
-And finally run `composer` to download the file. Either of these commands will work:
+To enable easy/fluid CLI usage, add this folder to your `PATH`:
 
 ```bash
-composer install
-composer update --lock
+PATH="/path/to/vendor/bin:$PATH"
+civix --version
 ```
+
+(*Alternatively, if you prefer to pick a specific version of each tool, then use [composer-downloads-plugin](https://github.com/civicrm/composer-downloads-plugin)
+to download the specific PHAR release.*)
 
 <a name="phar-phive"></a>
 ## Install `civix.phar` as project tool (phive)
@@ -122,7 +117,7 @@ phive install totten/civix
 By default, this will download the latest binary in `./tools/civix` and update the settings in `.phive/`.
 
 <a name="src-unix"></a>
-## Install `civix.git` as system-wide tool (Linux/BSD/macOS)
+## Install `civix.git` as standalone tool (Linux/BSD/macOS)
 
 To download the source tree and all dependencies, use [`git`](https://git-scm.com) and [`composer`](https://getcomposer.org/).
 For example, you might download to `$HOME/src/civix`:
@@ -131,7 +126,7 @@ For example, you might download to `$HOME/src/civix`:
 git clone https://github.com/totten/civix $HOME/src/civix
 cd $HOME/src/civix
 composer install
-./bin/civix --help
+./bin/civix --version
 ```
 
 You may then add `$HOME/src/civix/bin` to your `PATH`. The command will be available in other folders:
@@ -139,13 +134,13 @@ You may then add `$HOME/src/civix/bin` to your `PATH`. The command will be avail
 ```bash
 export PATH="$HOME/src/civix/bin:$PATH"
 cd /var/www/example.com/sites/default/files/civicrm/ext
-civix generate:module mystuff
+civix --version
 ```
 
 __TIP__: If your web-site uses Symfony components (as in D8/9/10/11), then you may see dependency-conflicts. You can resolve these by [building a custom PHAR](develop.md).
 
 <a name="src-win"></a>
-## Install `civix.git` as system-wide tool (Windows)
+## Install `civix.git` as standalone tool (Windows)
 
 ```
 # Install composer
@@ -187,7 +182,7 @@ Start Menu -> Control Panel -> System -> Advanced -> Environment Variables
 ## Install `civix.git` as project tool (composer)
 
 If you have are developing a web-project with [`composer`](https://getcomposer.org) (e.g.  Drupal 8/9/10/11) and wish to add the `civix.git` source-code` to your project,
-then use `composer require`:
+then can try to use `composer require`:
 
 ```bash
 cd /var/www/example.com
@@ -196,5 +191,7 @@ composer require civicrm/civix
 
 By default, this will create the command `./vendor/bin/civix`.
 
-__TIP__: If your web-site uses Symfony components (as in D8/9/10/11), then `composer` will attempt to reconcile the versions.  However, this is a
+__Warning__: If your web-project uses Symfony components (as in D8/9/10/11), then `composer` will attempt to reconcile the versions.  However, this is a
 moving target, and the results may differ from the standard binaries.  It may occasionally require overrides or patches for compatibility.
+
+__Tip__: You may have better experience with [installing `civix.phar` (binary) via composer)(#phar-composer).
