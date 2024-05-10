@@ -283,6 +283,10 @@ class ConvertEntityCommand extends AbstractCommand {
       if (!empty($attributes['label']) && !is_string($attributes['label'])) {
         $attributes['label'] = ((array) $attributes['label'])[0];
       }
+      // Ensure 'filter' is an array
+      if (!empty($attributes['filter'])) {
+        $attributes['filter'] = (array) $attributes['filter'];
+      }
       if ($attributes) {
         foreach (['rows', 'cols'] as $intKey) {
           if (isset($attributes[$intKey])) {
