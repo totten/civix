@@ -152,9 +152,17 @@ class ConvertEntityCommand extends AbstractCommand {
     if ($icon) {
       $info['icon'] = $icon;
     }
+    $entityFields = self::getFieldsFromXml($xml, $thisTables);
     $labelField = self::toString('labelField', $xml);
     if ($labelField) {
       $info['label_field'] = $labelField;
+    }
+    // Default label field
+    elseif (isset($entityFields['title'])) {
+      $info['label_field'] = 'title';
+    }
+    elseif (isset($entityFields['label'])) {
+      $info['label_field'] = 'label';
     }
     $entity['getInfo'] = $info;
     if (isset($xml->paths)) {
@@ -163,7 +171,7 @@ class ConvertEntityCommand extends AbstractCommand {
     if (isset($xml->index)) {
       $entity['getIndices'] = self::getIndicesFromXml($xml);
     }
-    $entity['getFields'] = self::getFieldsFromXml($xml, $thisTables);
+    $entity['getFields'] = $entityFields;
     return $entity;
   }
 
