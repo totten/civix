@@ -279,6 +279,10 @@ class ConvertEntityCommand extends AbstractCommand {
       if (!empty($fieldXml->length)) {
         $attributes['maxlength'] = (int) $fieldXml->length;
       }
+      // Fix if xml erroneously includes multiple labels
+      if (!empty($attributes['label']) && !is_string($attributes['label'])) {
+        $attributes['label'] = ((array) $attributes['label'])[0];
+      }
       if ($attributes) {
         foreach (['rows', 'cols'] as $intKey) {
           if (isset($attributes[$intKey])) {
