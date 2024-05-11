@@ -152,9 +152,17 @@ class ConvertEntityCommand extends AbstractCommand {
     if ($icon) {
       $info['icon'] = $icon;
     }
+    $entityFields = self::getFieldsFromXml($xml, $thisTables);
     $labelField = self::toString('labelField', $xml);
     if ($labelField) {
       $info['label_field'] = $labelField;
+    }
+    // Default label field
+    elseif (isset($entityFields['title'])) {
+      $info['label_field'] = 'title';
+    }
+    elseif (isset($entityFields['label'])) {
+      $info['label_field'] = 'label';
     }
     $entity['getInfo'] = $info;
     if (isset($xml->paths)) {
@@ -163,7 +171,7 @@ class ConvertEntityCommand extends AbstractCommand {
     if (isset($xml->index)) {
       $entity['getIndices'] = self::getIndicesFromXml($xml);
     }
-    $entity['getFields'] = self::getFieldsFromXml($xml, $thisTables);
+    $entity['getFields'] = $entityFields;
     return $entity;
   }
 
@@ -268,8 +276,16 @@ class ConvertEntityCommand extends AbstractCommand {
       }
       $attributes = isset($fieldXml->html) ? self::snakeCaseKeys((array) $fieldXml->html) : [];
       unset($attributes['type']);
-      if (!empty($fieldXml->length)) {
-        $attributes['maxlength'] = (int) $fieldXml->length;
+      if (!empty($typeAttributes['length'])) {
+        $attributes['maxlength'] = (int) $typeAttributes['length'];
+      }
+      // Fix if xml erroneously includes multiple labels
+      if (!empty($attributes['label']) && !is_string($attributes['label'])) {
+        $attributes['label'] = ((array) $attributes['label'])[0];
+      }
+      // Ensure 'filter' is an array
+      if (!empty($attributes['filter'])) {
+        $attributes['filter'] = (array) $attributes['filter'];
       }
       if ($attributes) {
         foreach (['rows', 'cols'] as $intKey) {
