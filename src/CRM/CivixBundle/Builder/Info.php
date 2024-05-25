@@ -25,10 +25,12 @@ class Info extends XML {
     $xml->addChild('name', $ctx['fullName']);
     $xml->addChild('description', 'FIXME');
     // urls
-    $xml->addChild('license', isset($ctx['license']) ? $ctx['license'] : 'FIXME');
-    $maint = $xml->addChild('maintainer');
-    $maint->addChild('author', isset($ctx['author']) ? $ctx['author'] : 'FIXME');
-    $maint->addChild('email', isset($ctx['email']) ? $ctx['email'] : 'FIXME@example.com');
+    $xml->addChild('license', $ctx['license'] ?? 'FIXME');
+    $authors = $xml->addChild('authors');
+    $maint = $authors->addChild('author');
+    $maint->addChild('name', $ctx['author'] ?? 'FIXME');
+    $maint->addChild('email', $ctx['email'] ?? 'FIXME@example.com');
+    $maint->addChild('role', 'Maintainer');
 
     $urls = $xml->addChild('urls');
     $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Main Extension Page');
