@@ -49,7 +49,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
    * of the polyfill and the mixins.
    */
   public function testEnableSomeDisableAll(): void {
-    $this->assertEquals('5.27', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
+    $this->assertEquals('5.36', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
     $this->assertFileGlobs(['mixin/polyfill.php' => 1]);
     $this->assertMixinStatuses([
       'setting-php@1' => 'on+backport',
@@ -60,7 +60,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $enableAll = $this->civix('mixin');
     $this->assertEquals(0, $enableAll->execute(['--enable' => 'menu-xml@1.0.0,mgd-php@1.0.0']));
 
-    $this->assertEquals('5.27', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
+    $this->assertEquals('5.36', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
     $this->assertFileGlobs(['mixin/polyfill.php' => 1]);
     $this->assertMixinStatuses([
       'setting-php@1' => 'on+backport',
@@ -72,7 +72,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $disableAll = $this->civix('mixin');
     $this->assertEquals(0, $disableAll->execute(['--disable-all' => TRUE]));
 
-    $this->assertEquals('5.27', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
+    $this->assertEquals('5.36', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
     $this->assertFileGlobs(['mixin/polyfill.php' => 1]);
     $this->assertMixinStatuses([
       'setting-php@1' => 'off',
@@ -87,7 +87,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
    * and the set of backports.
    */
   public function testEnableAllDisableAll(): void {
-    $this->assertEquals('5.27', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
+    $this->assertEquals('5.36', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
     $this->assertFileGlobs(['mixin/polyfill.php' => 1]);
     $this->assertMixinStatuses([
       'setting-php@1' => 'on+backport',

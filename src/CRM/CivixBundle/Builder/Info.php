@@ -11,11 +11,18 @@ use SimpleXMLElement;
  */
 class Info extends XML {
 
+  const MINIMUM_COMPATIBILITY_NEW_EXTENSION = '5.36';
+
   public function init(&$ctx) {
     $ctx += [
       // FIXME: Auto-detect current installed civi version
       'compatibilityVerMin' => 5.45,
     ];
+
+    if (version_compare($ctx['compatibilityVerMin'], static::MINIMUM_COMPATIBILITY_NEW_EXTENSION, '<')) {
+      Civix::io()->warning('To support recommended info.xml conventions, new extensions target CiviCRM v' . static::MINIMUM_COMPATIBILITY_NEW_EXTENSION . '+. Updating minimum requirements.');
+      $ctx['compatibilityVerMin'] = static::MINIMUM_COMPATIBILITY_NEW_EXTENSION;
+    }
 
     $xml = new SimpleXMLElement('<extension></extension>');
     $xml->addAttribute('key', $ctx['fullName']);
