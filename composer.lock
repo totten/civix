@@ -111,7 +111,7 @@
         },
         {
             "name": "civicrm/cv-lib",
-            "version": "v0.3.45",
+            "version": "v0.3.48",
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/cv-lib.git",
@@ -147,7 +147,7 @@
             ],
             "description": "Bootstrap library for CiviCRM CLI tools",
             "support": {
-                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.45"
+                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.48"
             },
             "time": "2023-07-13T12:37:59+00:00"
         },
