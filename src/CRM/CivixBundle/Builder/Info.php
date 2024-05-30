@@ -11,11 +11,18 @@ use SimpleXMLElement;
  */
 class Info extends XML {
 
+  const MINIMUM_COMPATIBILITY_NEW_EXTENSION = '5.36';
+
   public function init(&$ctx) {
     $ctx += [
       // FIXME: Auto-detect current installed civi version
       'compatibilityVerMin' => 5.45,
     ];
+
+    if (version_compare($ctx['compatibilityVerMin'], static::MINIMUM_COMPATIBILITY_NEW_EXTENSION, '<')) {
+      Civix::io()->warning('To support recommended info.xml conventions, new extensions target CiviCRM v' . static::MINIMUM_COMPATIBILITY_NEW_EXTENSION . '+. Updating minimum requirements.');
+      $ctx['compatibilityVerMin'] = static::MINIMUM_COMPATIBILITY_NEW_EXTENSION;
+    }
 
     $xml = new SimpleXMLElement('<extension></extension>');
     $xml->addAttribute('key', $ctx['fullName']);
@@ -25,10 +32,12 @@ class Info extends XML {
     $xml->addChild('name', $ctx['fullName']);
     $xml->addChild('description', 'FIXME');
     // urls
-    $xml->addChild('license', isset($ctx['license']) ? $ctx['license'] : 'FIXME');
-    $maint = $xml->addChild('maintainer');
-    $maint->addChild('author', isset($ctx['author']) ? $ctx['author'] : 'FIXME');
-    $maint->addChild('email', isset($ctx['email']) ? $ctx['email'] : 'FIXME@example.com');
+    $xml->addChild('license', $ctx['license'] ?? 'FIXME');
+    $authors = $xml->addChild('authors');
+    $maint = $authors->addChild('author');
+    $maint->addChild('name', $ctx['author'] ?? 'FIXME');
+    $maint->addChild('email', $ctx['email'] ?? 'FIXME@example.com');
+    $maint->addChild('role', 'Maintainer');
 
     $urls = $xml->addChild('urls');
     $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Main Extension Page');
