@@ -42,6 +42,7 @@ class ConvertEntityCommand extends AbstractCommand {
     $mixins->removeMixin('entity-types-php@1');
     $mixins->addMixin('entity-types-php@2');
     $mixins->save($ctx, $output);
+    $info->save($ctx, $output);
 
     \Civix::io()->note("Finding entities");
 
