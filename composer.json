@@ -4,7 +4,7 @@
     "homepage": "https://github.com/totten/civix",
     "license": "AGPL-3.0",
     "require": {
-        "php": ">=7.3.0",
+        "php": "~7.4 || ~8",
         "civicrm/cv-lib": "~0.3.45",
         "civicrm/composer-compile-plugin": "~0.18",
         "civicrm/composer-downloads-plugin": "~2.1|^3",
