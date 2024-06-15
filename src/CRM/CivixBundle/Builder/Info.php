@@ -40,9 +40,9 @@ class Info extends XML {
     $maint->addChild('role', 'Maintainer');
 
     $urls = $xml->addChild('urls');
-    $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Main Extension Page');
-    $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Documentation');
-    $urls->addChild('url', 'http://FIXME')->addAttribute('desc', 'Support');
+    $urls->addChild('url', 'https://FIXME')->addAttribute('desc', 'Main Extension Page');
+    $urls->addChild('url', 'https://FIXME')->addAttribute('desc', 'Documentation');
+    $urls->addChild('url', 'https://FIXME')->addAttribute('desc', 'Support');
 
     $licenses = new Repository();
     if (isset($ctx['license']) && $license = $licenses->get($ctx['license'])) {
