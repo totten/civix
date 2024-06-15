@@ -4,7 +4,7 @@ namespace CRM\CivixBundle\Builder;
 use SimpleXMLElement;
 
 /**
- * Build/update info.xml
+ * Build phpunit.xml.dist
  */
 class PhpUnitXML extends XML {
 
@@ -27,7 +27,7 @@ class PhpUnitXML extends XML {
 
     $this->set($xml);
 
-    $this->addTestSuite('My Test Suite', ['./tests/phpunit']);
+    $this->addTestSuite($ctx['fullName'] . ' Tests', ['./tests/phpunit']);
 
     $this->get()
       ->addChild('coverage')
