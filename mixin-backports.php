@@ -95,18 +95,18 @@ return [
   ],
   'smarty@1' => [
     // Newer variant. Prettier name.
-    'version' => '1.0.2',
-    'sha256' => '71915fc6c8a826611495f07d9f350e23630c0a90d47cfebe61eca291fe6e7451',
-    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/2b2dfaceabf56966da8be1c605e6cd4131ff8d4f/mixin/smarty%401/mixin.php',
+    'version' => '1.0.3',
+    'sha256' => 'a10fbe1508383b7a6e038416e4bb2204bcbf0484e9419b759e27985353c15c63',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.74.0/mixin/smarty%401/mixin.php',
     'local' => 'extern/mixin/smarty@1/mixin.php',
     'provided-by' => '5.74',
     'minimum' => '5.27', /* Compat may go back to 5.25; only really tested 5.33 */
   ],
   'smarty-v2@1' => [
     // Original variant. Name was more specific than we actually need.
-    'version' => '1.0.2',
-    'sha256' => '22da33821d990b2a625f353b0c4f11a626eee28708b32c0e77cf62e5d038a49b',
-    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/2b2dfaceabf56966da8be1c605e6cd4131ff8d4f/mixin/smarty-v2%401/mixin.php',
+    'version' => '1.0.3',
+    'sha256' => '06b5a9b69289d30221ecb0239c99341a4b661cc1d33ee7c9c48e2722402a2210',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.74.0/mixin/smarty-v2%401/mixin.php',
     'local' => 'extern/mixin/smarty-v2@1/mixin.php',
     'provided-by' => '5.74',
     'minimum' => '5.27', /* Compat may go back to 5.25; only really tested 5.33 */
