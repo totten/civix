@@ -4,8 +4,11 @@ namespace CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
+use PhpArrayDocument\ArrayItemNode;
+use PhpArrayDocument\PhpArrayDocument;
+use PhpArrayDocument\Printer;
+use PhpArrayDocument\ScalarNode;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\VarExporter\VarExporter;
 
 /**
  * Write a data file in PHP format
@@ -106,7 +109,7 @@ class PhpData implements Builder {
   /**
    * Specify which items should be unwrapped and used literally
    *
-   * @param string $literals
+   * @param string[] $literals
    * @return void
    */
   public function setLiterals(array $literals) {
@@ -116,7 +119,7 @@ class PhpData implements Builder {
   /**
    * Specify which items should be wrapped in an anonymous function
    *
-   * @param string $callbacks
+   * @param string[] $callbacks
    * @return void
    */
   public function setCallbacks(array $callbacks) {
@@ -129,69 +132,38 @@ class PhpData implements Builder {
   public function save(&$ctx, OutputInterface $output) {
     $output->writeln("<info>Write</info> " . Files::relativize($this->path));
     Path::for(dirname($this->path))->mkdir();
+    $doc = PhpArrayDocument::create();
 
-    $content = "<?php\n";
+    $ts = 'ts';
     if ($this->extensionUtil) {
-      $content .= "use $this->extensionUtil as E;\n";
+      $doc->addUse($this->extensionUtil, 'E');
+      $ts = 'E::ts';
     }
+
     if ($this->header) {
-      $content .= $this->header;
+      // FIXME: We should probably be using inner-comments instead of outer-comments.
+      $doc->setOuterComments(preg_split('@(?=\n)@', $this->header));
     }
-    $content .= "\nreturn ";
-    $content .= $this->varExport($this->data);
-    $content .= ";\n";
+
+    $doc->getRoot()->importData($this->data);
+
+    foreach ($doc->getRoot()->walkNodes(ArrayItemNode::class) as $arrayItem) {
+      /**
+       * @var \PhpArrayDocument\ArrayItemNode $arrayItem
+       */
+      if (in_array($arrayItem->getKey(), $this->keysToTranslate ?: []) && $arrayItem->getValue() instanceof ScalarNode) {
+        $arrayItem->getValue()->setFactory($ts);
+      }
+      if (in_array($arrayItem->getKey(), $this->useCallbacks)) {
+        $arrayItem->getValue()->setDeferred(TRUE);
+      }
+      if (in_array($arrayItem->getKey(), $this->literals)) {
+        $arrayItem->getValue()->setFactory('constant');
+      }
+    }
+
+    $content = (new Printer())->print($doc);
     file_put_contents($this->path, $content);
-  }
-
-  private function varExport($values) {
-    $output = VarExporter::export($values);
-    $output = $this->reduceIndentation($output);
-    $output = $this->ucConstants($output);
-    if ($this->keysToTranslate) {
-      $output = $this->translateStrings($output, $this->keysToTranslate);
-    }
-    foreach ($this->useCallbacks as $key) {
-      $output = str_replace("  '$key' => ", "  '$key' => fn() => ",  $output);
-    }
-    foreach ($this->literals as $key) {
-      $output = preg_replace("/  '$key' => '(.*)',/", "  '$key' => \$1,",  $output);
-    }
-    return $output;
-  }
-
-  /**
-   * VarExporter indents with 4x spaces. Civi/Drupal code standard is 2x spaces.
-   */
-  private function reduceIndentation(string $data): string {
-    return preg_replace_callback('/^ +/m',
-      function($m) {
-        $spaces = $m[0];
-        return substr($spaces, 0, ceil(strlen($spaces) / 2));
-      },
-      $data
-    );
-  }
-
-  /**
-   * Uppercase constants to match Civi/Drupal code standard
-   */
-  private function ucConstants(string $data): string {
-    foreach (['null', 'false', 'true'] as $const) {
-      $uc = strtoupper($const);
-      $data = str_replace(" $const,", " $uc,", $data);
-    }
-    return $data;
-  }
-
-  /**
-   * Wrap strings in E::ts()
-   */
-  private function translateStrings(string $data, array $keysToTranslate): string {
-    $ts = ($this->extensionUtil) ? 'E::ts' : 'ts';
-
-    $keys = implode('|', array_unique($keysToTranslate));
-    $data = preg_replace("/'($keys)' => ('.+'),\\n/", "'\$1' => $ts(\$2),\n", $data);
-    return $data;
   }
 
 }
