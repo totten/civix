@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d1ee5420fb1539794be981453b4b749",
+    "content-hash": "82c149e1cd619c69283bfec3563c9c78",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -150,6 +150,45 @@
                 "source": "https://github.com/civicrm/cv-lib/tree/v0.3.51"
             },
             "time": "2024-06-25T21:02:58+00:00"
+        },
+        {
+            "name": "civicrm/php-array-doc",
+            "version": "v0.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/totten/php-array-doc.git",
+                "reference": "c462840f178d3ccce652baa7e01b8d4bf1e92750"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/c462840f178d3ccce652baa7e01b8d4bf1e92750",
+                "reference": "c462840f178d3ccce652baa7e01b8d4bf1e92750",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.3|~8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpArrayDocument\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Otten",
+                    "email": "totten@civicrm.org"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/totten/php-array-doc/issues",
+                "source": "https://github.com/totten/php-array-doc/tree/v0.1.4"
+            },
+            "time": "2024-06-26T21:38:17+00:00"
         },
         {
             "name": "psr/container",
