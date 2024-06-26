@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5592a3df476be469baa755d54e61757",
+    "content-hash": "9d1ee5420fb1539794be981453b4b749",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -111,16 +111,16 @@
         },
         {
             "name": "civicrm/cv-lib",
-            "version": "v0.3.48",
+            "version": "v0.3.51",
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/cv-lib.git",
-                "reference": "40b85edaa8a1ceefe3230fe4cea8289ecc2ef9c7"
+                "reference": "539143223baefe92a756ae746d3626a1c7e5846b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/civicrm/cv-lib/zipball/40b85edaa8a1ceefe3230fe4cea8289ecc2ef9c7",
-                "reference": "40b85edaa8a1ceefe3230fe4cea8289ecc2ef9c7",
+                "url": "https://api.github.com/repos/civicrm/cv-lib/zipball/539143223baefe92a756ae746d3626a1c7e5846b",
+                "reference": "539143223baefe92a756ae746d3626a1c7e5846b",
                 "shasum": ""
             },
             "require": {
@@ -147,9 +147,9 @@
             ],
             "description": "Bootstrap library for CiviCRM CLI tools",
             "support": {
-                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.48"
+                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.51"
             },
-            "time": "2023-07-13T12:37:59+00:00"
+            "time": "2024-06-25T21:02:58+00:00"
         },
         {
             "name": "psr/container",
@@ -1315,5 +1315,5 @@
     "platform-overrides": {
         "php": "7.3.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
