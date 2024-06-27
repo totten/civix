@@ -86,13 +86,11 @@ function build_snapshot() {
       $CIVIX $VERBOSITY generate:upgrader
       $CIVIX $VERBOSITY generate:entity MyEntityThree -A3
 #      $CIVIX $VERBOSITY generate:entity MyEntityThree
-      $CIVIX $VERBOSITY generate:entity-boilerplate
       ;;
 
     entity34)
       $CIVIX $VERBOSITY generate:upgrader
       $CIVIX $VERBOSITY generate:entity MyEntityThreeFour -A3,4
-      $CIVIX $VERBOSITY generate:entity-boilerplate
       ;;
 
     kitchensink)
@@ -104,7 +102,6 @@ function build_snapshot() {
       $CIVIX $VERBOSITY generate:entity MyEntityThree -A3
 #      $CIVIX $VERBOSITY generate:entity MyEntityThree
       $CIVIX $VERBOSITY generate:entity MyEntityThreeFour -A3,4
-      $CIVIX $VERBOSITY generate:entity-boilerplate
       $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
       $CIVIX $VERBOSITY generate:form My_StuffyForm civicrm/my-stuffy-form
       $CIVIX $VERBOSITY generate:page MyPage civicrm/my-page
