@@ -118,18 +118,11 @@ explicity.');
     $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
-      $entityDefn = [
-        'name' => $ctx['entityNameCamel'],
-        'class' => $ctx['daoClassName'],
-        'table' => $ctx['tableName'],
-        'getPaths' => [],
-        'getFields' => [],
-        'getIndices' => [],
-      ];
+      $entityDefn = $this->createDefaultSchema($ctx['entityNameCamel'], $ctx['tableName'], $ctx['daoClassName']);
       $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile']);
       $ext->builders['entityType.php']->useExtensionUtil($info->getExtensionUtilClass());
-      $ext->builders['entityType.php']->useTs(['title', 'label', 'description']);
-      $ext->builders['entityType.php']->setCallbacks(['getPaths', 'getFields', 'getIndices']);
+      $ext->builders['entityType.php']->useTs(['title', 'title_plural', 'label', 'description']);
+      $ext->builders['entityType.php']->setCallbacks(['getPaths', 'getFields', 'getIndices', 'getInfo']);
       $ext->builders['entityType.php']->set($entityDefn);
     }
 
@@ -154,6 +147,53 @@ explicity.');
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
 
     return 0;
+  }
+
+  /**
+   * @param string $entityNameCamel
+   *   Ex: 'Mailing'
+   * @param string $tableName
+   *   Ex: 'civicrm_mailing'
+   * @param string $daoClassName
+   *   Ex: 'CRM_Foo_DAO_Mailing'
+   * @return array
+   */
+  protected function createDefaultSchema(string $entityNameCamel, string $tableName, string $daoClassName): array {
+    return [
+      'name' => $entityNameCamel,
+      'table' => $tableName,
+      'class' => $daoClassName,
+      'getInfo' => [
+        'title' => $entityNameCamel,
+        'title_plural' => \CRM_Utils_String::pluralize($entityNameCamel),
+        'description' => 'FIXME',
+        'log' => TRUE,
+      ],
+      'getFields' => [
+        'id' => [
+          'title' => 'ID',
+          'sql_type' => 'int unsigned',
+          'input_type' => 'Number',
+          'required' => TRUE,
+          'description' => sprintf('Unique %s ID', $entityNameCamel),
+          'primary_key' => TRUE,
+          'auto_increment' => TRUE,
+        ],
+        'contact_id' => [
+          'title' => 'Contact ID',
+          'sql_type' => 'int unsigned',
+          'input_type' => 'EntityRef',
+          'description' => 'FK to Contact',
+          'entity_reference' => [
+            'entity' => 'Contact',
+            'key' => 'id',
+            'on_delete' => 'CASCADE',
+          ],
+        ],
+      ],
+      'getIndices' => [],
+      'getPaths' => [],
+    ];
   }
 
 }
