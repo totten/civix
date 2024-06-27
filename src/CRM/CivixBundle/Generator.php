@@ -11,6 +11,8 @@ use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\MixinLibraries;
 use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Path;
+use PhpArrayDocument\Parser;
+use PhpArrayDocument\Printer;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -174,6 +176,27 @@ class Generator {
     $phpData->loadInit($ctx);
     $filter($phpData);
     $phpData->save($ctx, $this->output);
+  }
+
+  /**
+   * Update a PHP-style data-file. (If the file is new, create it.)
+   *
+   * Ex: updatePhpArrayDocument('foobar.mgd.php', fn(PhpArrayDocument $doc) => $doc->setInnerComment("Hello world"))
+   *
+   * TIP: updatePhpData() and updatePhpArrayDocument() fill a similar niche.
+   * - updatePhpArrayDocument reveals and preserves more metadata.
+   * - updatePhpData has a simpler API.
+   *
+   * @param $path
+   * @param callable $filter
+   */
+  public function updatePhpArrayDocument($path, callable $filter): void {
+    $file = Path::for($path)->string();
+    $oldCode = file_get_contents($file);
+    $doc = (new Parser())->parse($oldCode);
+    $filter($doc);
+    $newCode = (new Printer())->print($doc);
+    $this->writeTextFile($file, $newCode, TRUE);
   }
 
   /**
