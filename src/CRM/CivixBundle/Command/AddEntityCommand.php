@@ -87,7 +87,6 @@ explicity.');
     $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
     $ctx['baoClassName'] = strtr($ctx['namespace'], '/', '_') . '_BAO_' . $input->getArgument('<EntityName>');
     $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
-    $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
     $ctx['entityTypeFile'] = $basedir->string('schema', $input->getArgument('<EntityName>') . '.entityType.php');
     $ctx['extensionName'] = $info->getExtensionName();
     $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
@@ -99,7 +98,6 @@ explicity.');
       dirname($ctx['api4File']),
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
-      dirname($ctx['schemaFile']),
       dirname($ctx['testApi3ClassFile']),
     ]);
     $ext->builders['dirs']->save($ctx, $output);
@@ -113,7 +111,6 @@ explicity.');
     }
     $ext->builders['dao.php'] = new Template('entity-dao.php.php', $ctx['daoClassFile'], FALSE, Civix::templating());
     $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Civix::templating());
-    $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
       $entityDefn = [
