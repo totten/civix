@@ -2,6 +2,10 @@
 
 namespace E2E;
 
+use PhpArrayDocument\ArrayNode;
+use PhpArrayDocument\PhpArrayDocument;
+use PhpArrayDocument\ScalarNode;
+
 class AddEntityTest extends \PHPUnit\Framework\TestCase {
 
   use CivixProjectTestTrait;
@@ -30,11 +34,17 @@ class AddEntityTest extends \PHPUnit\Framework\TestCase {
     ]);
     chdir(static::getKey());
 
+    \Civix::ioStack()->push(...$this->createInputOutput());
     $this->assertFileGlobs([
       'info.xml' => 1,
       'civix_addentity.php' => 1,
       'civix_addentity.civix.php' => 1,
     ]);
+  }
+
+  protected function tearDown(): void {
+    parent::tearDown();
+    \Civix::ioStack()->reset();
   }
 
   public function testAddEntity(): void {
@@ -48,11 +58,11 @@ class AddEntityTest extends \PHPUnit\Framework\TestCase {
     $this->civixGenerateEntity('Sandwich');
     $this->civixGenerateEntity('Meal');
     $this->civixGenerateEntity('Flour');
-    $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Bread.xml'), 'flour', 'civicrm_flour');
-    $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Sandwich.xml'), 'bread', 'civicrm_bread');
-    $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Meal.xml'), 'sandwich', 'civicrm_sandwich');
+    $this->addExampleFK($this->getExtPath('schema/Bread.entityType.php'), 'flour', 'Flour', 'civicrm_flour');
+    $this->addExampleFK($this->getExtPath('schema/Sandwich.entityType.php'), 'bread', 'Bread', 'civicrm_bread');
+    $this->addExampleFK($this->getExtPath('schema/Meal.entityType.php'), 'sandwich', 'Sandwich', 'civicrm_sandwich');
     // add FK referencing its own table
-    $this->addExampleFK($this->getExtPath('xml/schema/CRM/CivixAddentity/Meal.xml'), 'next_meal', 'civicrm_meal');
+    $this->addExampleFK($this->getExtPath('schema/Meal.entityType.php'), 'next_meal', 'Meal', 'civicrm_meal');
 
     $this->assertFileGlobs([
       // No longer use static files
@@ -77,34 +87,25 @@ class AddEntityTest extends \PHPUnit\Framework\TestCase {
     return array_values(preg_grep($pattern, $lines));
   }
 
-  private function addExampleFK(string $xmlFile, string $field, string $foreignTable) {
-    $newXmlTpl = '<field>
-      <name>%%FIELD%%</name>
-      <title>%%FIELD%% ID</title>
-      <type>int unsigned</type>
-      <comment>FK to %%TABLE%% ID</comment>
-      <html>
-        <label>%%TABLE%%</label>
-      </html>
-      <add>2.0</add>
-    </field>
-    <foreignKey>
-      <name>%%FIELD%%</name>
-      <table>%%TABLE%%</table>
-      <key>id</key>
-      <add>2.0</add>
-      <onDelete>CASCADE</onDelete>
-    </foreignKey>';
-    $newXml = strtr($newXmlTpl, [
-      '%%FIELD%%' => $field,
-      '%%TABLE%%' => $foreignTable,
-    ]);
-
-    $tail = '</table>';
-
-    $raw = file_get_contents($xmlFile);
-    $raw = str_replace($tail, "{$newXml}\n{$tail}", $raw);
-    file_put_contents($xmlFile, $raw);
+  private function addExampleFK(string $schemaFile, string $fieldName, string $foreignEntity, string $foreignTable) {
+    \Civix::generator()->updatePhpArrayDocument($schemaFile, function (PhpArrayDocument $doc) use ($fieldName, $foreignEntity, $foreignTable) {
+      $field = ArrayNode::create()->importData([
+        'title' => ScalarNode::create("$fieldName ID")->setFactory('E::ts'),
+        'sql_type' => 'int unsigned',
+        'input_type' => 'EntityRef',
+        'description' => ScalarNode::create("FK to $foreignTable ID")->setFactory('E::ts'),
+        'add' => '2.0',
+        'input_attrs' => [
+          'label' => ScalarNode::create("$foreignTable")->setFactory('E::ts'), /* weird */
+        ],
+        'entity_reference' => [
+          'entity' => $foreignEntity,
+          'key' => 'id',
+          'on_delete' => 'CASCADE',
+        ],
+      ]);
+      $doc->getRoot()['getFields'][$fieldName] = $field;
+    });
   }
 
 }
