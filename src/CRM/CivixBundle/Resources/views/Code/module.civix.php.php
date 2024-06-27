@@ -107,8 +107,22 @@ pathload()->addSearchDir(__DIR__ . '/mixin/lib');
 spl_autoload_register('_<?php echo $mainFile ?>_civix_class_loader', TRUE, TRUE);
 
 function _<?php echo $mainFile ?>_civix_class_loader($class) {
-  // This allows us to tap-in to the installation process (without incurring real file-reads on typical requests).
 <?php $_clPrefix = 'CiviMix\\Schema\\' . \CRM\CivixBundle\Utils\Naming::createCamelName($mainFile) . '\\' ?>
+<?php $_localBase = $_namespace . '_DAO_Base'; ?>
+  if ($class === <?php var_export($_localBase); ?>) {
+    if (version_compare(CRM_Utils_System::version(), '5.74.beta', '>=')) {
+      class_alias('CRM_Core_DAO_Base', <?php var_export($_localBase); ?>);
+      // ^^ Materialize concrete names -- encourage IDE's to pick up on this association.
+    }
+    else {
+      $realClass = <?php var_export($_clPrefix . "DAO") ?>;
+      class_alias($realClass, $class);
+      // ^^ Abstract names -- discourage IDE's from picking up on this association.
+    }
+    return;
+  }
+
+  // This allows us to tap-in to the installation process (without incurring real file-reads on typical requests).
   if (strpos($class, <?php var_export($_clPrefix) ?>) === 0) {
     // civimix-schema@5 is designed for backported use in download/activation workflows,
     // where new revisions may become dynamically available.
