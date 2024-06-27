@@ -26,7 +26,6 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
     // Make an example
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
     $this->civixGenerateEntity('MyEntity');
-    $this->civixGenerateEntityBoilerplate();
     $start = $this->getExtSnapshot();
 
     // Do the upgrade
@@ -50,7 +49,6 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
     // Make an example
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
     $this->civixGenerateEntity('MyEntity');
-    $this->civixGenerateEntityBoilerplate();
     $start = $this->getExtSnapshot();
 
     // Do the upgrade
@@ -75,7 +73,6 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
     // Make an example
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
     $this->civixGenerateEntity('MyEntity');
-    $this->civixGenerateEntityBoilerplate();
     $start = $this->getExtSnapshot();
 
     // Do the upgrade
