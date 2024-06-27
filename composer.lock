@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "82c149e1cd619c69283bfec3563c9c78",
+    "content-hash": "58d69c576dad4c0c695a42c04902821f",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -153,16 +153,16 @@
         },
         {
             "name": "civicrm/php-array-doc",
-            "version": "v0.1.4",
+            "version": "v0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/totten/php-array-doc.git",
-                "reference": "c462840f178d3ccce652baa7e01b8d4bf1e92750"
+                "reference": "5cf825ac5ec1cb80f75d54977e3217e9897ac559"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/c462840f178d3ccce652baa7e01b8d4bf1e92750",
-                "reference": "c462840f178d3ccce652baa7e01b8d4bf1e92750",
+                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/5cf825ac5ec1cb80f75d54977e3217e9897ac559",
+                "reference": "5cf825ac5ec1cb80f75d54977e3217e9897ac559",
                 "shasum": ""
             },
             "require": {
@@ -186,9 +186,9 @@
             ],
             "support": {
                 "issues": "https://github.com/totten/php-array-doc/issues",
-                "source": "https://github.com/totten/php-array-doc/tree/v0.1.4"
+                "source": "https://github.com/totten/php-array-doc/tree/v0.1.5"
             },
-            "time": "2024-06-26T21:38:17+00:00"
+            "time": "2024-06-27T00:20:32+00:00"
         },
         {
             "name": "psr/container",
