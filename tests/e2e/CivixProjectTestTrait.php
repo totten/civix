@@ -2,8 +2,9 @@
 
 namespace E2E;
 
-use CRM\CivixBundle\Application;
 use CRM\CivixBundle\Generator;
+use CRM\CivixBundle\Test\CommandTester;
+use CRM\CivixBundle\Test\SubProcessCommandTester;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
 use ProcessHelper\ProcessHelper as PH;
@@ -11,7 +12,6 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Add this to a test-class to define an E2E test with a new civix-style extension/project.
@@ -71,11 +71,32 @@ trait CivixProjectTestTrait {
     return static::getWorkspacePath(...$subpath);
   }
 
-  public static function civix(string $command): CommandTester {
+  public static function civix(string $subCommand): CommandTester {
     \Civix::reset();
-    $application = new Application();
-    $command = $application->find($command);
-    return new CommandTester($command);
+
+    $isolation = getenv('CIVIX_TEST_ISOLATION') ?: 'on';
+
+    switch ($isolation) {
+      case 'on':
+        if (getenv('CIVIX_TEST_BINARY')) {
+          $baseCommand = [getenv('CIVIX_TEST_BINARY')];
+        }
+        else {
+          $baseCommand = ['php', (dirname(__DIR__, 2) . '/bin/civix')];
+        }
+        $baseCommand[] = $subCommand;
+        return new SubProcessCommandTester($baseCommand);
+
+      case 'off':
+        $application = new \CRM\CivixBundle\Application();
+        $command = $application->find($subCommand);
+        return new class ($command) extends \Symfony\Component\Console\Tester\CommandTester implements CommandTester {
+
+        };
+
+      default:
+        throw new \RuntimeException("Unrecognized value of CIVIX_TEST_BINARY. Specify on|off.");
+    }
   }
 
   public function civixGenerateModule(string $key, array $options = []): CommandTester {
@@ -85,7 +106,7 @@ trait CivixProjectTestTrait {
       '--enable' => 'false',
     ]);
     if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate module (%s)", $key));
+      throw new \RuntimeException(sprintf("Failed to generate module (%s):\n%s", $key, $tester->getDisplay(TRUE)));
     }
     return $tester;
   }
