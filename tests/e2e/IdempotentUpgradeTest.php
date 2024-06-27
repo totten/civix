@@ -25,6 +25,7 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function testBasicUpgrade(): void {
     // Make an example
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
+    $this->civixGenerateUpgrader(); /* TODO: Make this implicit with generate:entity */
     $this->civixGenerateEntity('MyEntity');
     $start = $this->getExtSnapshot();
 
@@ -48,6 +49,7 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function testResetVersion0(): void {
     // Make an example
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
+    $this->civixGenerateUpgrader(); /* TODO: Make this implicit with generate:entity */
     $this->civixGenerateEntity('MyEntity');
     $start = $this->getExtSnapshot();
 
@@ -72,6 +74,7 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function testResetVersion2201(): void {
     // Make an example
     $this->civixGeneratePage('MyPage', 'civicrm/thirty');
+    $this->civixGenerateUpgrader(); /* TODO: Make this implicit with generate:entity */
     $this->civixGenerateEntity('MyEntity');
     $start = $this->getExtSnapshot();
 
