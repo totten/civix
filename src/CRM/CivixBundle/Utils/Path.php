@@ -2,6 +2,8 @@
 
 namespace CRM\CivixBundle\Utils;
 
+use Webmozart\Glob\Glob;
+
 class Path {
 
   /**
@@ -94,7 +96,7 @@ class Path {
     [$patternType, $patternValue] = explode(':', $pattern, 2);
     switch ($patternType) {
       case 'glob':
-        return (array) glob($this->string($patternValue));
+        return Glob::glob($this->string($patternValue));
 
       case 'find':
         $relDir = dirname($patternValue);
