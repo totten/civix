@@ -77,7 +77,7 @@ explicity.');
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
 
-    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@1.0']);
+    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@2.0']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
 
@@ -127,6 +127,8 @@ explicity.');
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
+
+    Civix::generator()->updateModuleCivixPhp();
 
     if (count($apiVersions) >= 2) {
       $output->writeln('<comment>Generated API skeletons for APIv3 and APIv4.</comment>');
