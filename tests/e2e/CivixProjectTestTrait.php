@@ -132,15 +132,6 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
-  public function civixGenerateEntityBoilerplate(): CommandTester {
-    $tester = static::civix('generate:entity-boilerplate');
-    $tester->execute([]);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate entity boilerplate (%s)", static::getKey()));
-    }
-    return $tester;
-  }
-
   public function civixGenerateService(string $name, array $options = []): CommandTester {
     $tester = static::civix('generate:service');
     $tester->execute($options + ['name' => $name]);
