@@ -105,9 +105,7 @@ trait CivixProjectTestTrait {
       'key' => $key,
       '--enable' => 'false',
     ]);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate module (%s):\n%s", $key, $tester->getDisplay(TRUE)));
-    }
+    $this->assertTesterOk($tester, 'Failed to generate module');
     return $tester;
   }
 
@@ -117,36 +115,28 @@ trait CivixProjectTestTrait {
       '<ClassName>' => $className,
       '<web/path>' => $webPath,
     ]);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate module (%s)", static::getKey()));
-    }
+    $this->assertTesterOk($tester, 'Failed to generate page');
     return $tester;
   }
 
   public function civixGenerateEntity(string $entity, array $options = []): CommandTester {
     $tester = static::civix('generate:entity');
     $tester->execute(['<EntityName>' => $entity] + $options);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate entity (%s)", static::getKey()));
-    }
+    $this->assertTesterOk($tester, 'Failed to generate entity');
     return $tester;
   }
 
   public function civixGenerateService(string $name, array $options = []): CommandTester {
     $tester = static::civix('generate:service');
     $tester->execute($options + ['name' => $name]);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate service (%s)", $name));
-    }
+    $this->assertTesterOk($tester, 'Failed to generate service');
     return $tester;
   }
 
   public function civixGenerateUpgrader(array $options = []): CommandTester {
     $tester = static::civix('generate:upgrader');
     $tester->execute($options);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to generate upgrader (%s)", static::getKey()));
-    }
+    $this->assertTesterOk($tester, 'Failed to generate upgrader');
     return $tester;
   }
 
@@ -160,9 +150,7 @@ trait CivixProjectTestTrait {
     $tester->execute([
       '--xpath' => $xpath,
     ]);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to get \"%s\"", $xpath));
-    }
+    $this->assertTesterOk($tester, sprintf("Failed to get \"%s\"", $xpath));
     return $tester;
   }
 
@@ -178,9 +166,7 @@ trait CivixProjectTestTrait {
       '--xpath' => $xpath,
       '--to' => $value,
     ]);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to set \"%s\" to \"%s\"", $xpath, $value));
-    }
+    $this->assertTesterOk($tester, sprintf("Failed to set \"%s\" to \"%s\"", $xpath, $value));
     return $tester;
   }
 
@@ -195,9 +181,7 @@ trait CivixProjectTestTrait {
   public function civixMixin(array $options): CommandTester {
     $tester = static::civix('mixin');
     $tester->execute($options);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to call \"civix mixin\" with options: %s", json_encode($options)));
-    }
+    $this->assertTesterOk($tester, sprintf("Failed to call \"civix mixin\" with options: %s", json_encode($options)));
     return $tester;
   }
 
@@ -210,9 +194,7 @@ trait CivixProjectTestTrait {
   public function civixUpgrade(array $options = []): CommandTester {
     $tester = static::civix('upgrade');
     $tester->execute($options);
-    if ($tester->getStatusCode() !== 0) {
-      throw new \RuntimeException(sprintf("Failed to run upgrade (%s)", static::getKey()));
-    }
+    $this->assertTesterOk($tester, sprintf("Failed to run upgrade (%s)", static::getKey()));
     return $tester;
   }
 
@@ -384,6 +366,14 @@ trait CivixProjectTestTrait {
     $input->setInteractive(FALSE);
     $output = new NullOutput();
     return [$input, $output];
+  }
+
+  protected function assertTesterOk(CommandTester $tester, string $message = NULL) {
+    if ($tester->getStatusCode() !== 0) {
+      $message = $message ?: 'Failed to run command';
+      $command = is_callable([$tester, 'getCommandLine']) ? $tester->getCommandLine() : "(unknown)";
+      throw new \RuntimeException(sprintf("(%s) %s\nCOMMMAND: %s\nOUTPUT:\n%s", static::getKey(), $message, $command, $tester->getDisplay(TRUE)));
+    }
   }
 
 }
