@@ -242,6 +242,9 @@ class Civix {
     if (isset(static::$cache['boot'])) {
       $new['boot'] = static::$cache['boot'];
     }
+    if (isset(static::$cache['ioStack'])) {
+      $new['ioStack'] = static::$cache['ioStack'];
+    }
     static::$cache = $new;
     static::$extDir = NULL;
   }
