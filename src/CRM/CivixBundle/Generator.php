@@ -4,6 +4,7 @@ namespace CRM\CivixBundle;
 use Civix;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
+use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Command\Mgd;
 use CRM\CivixBundle\Utils\Files;
@@ -85,6 +86,19 @@ class Generator {
       $this->output->writeln('<info>Write</info> ' . $fileName);
       file_put_contents($fileName, $newContent);
     }
+  }
+
+  /**
+   * Re-generate the 'module.civix.php' boilerplate.
+   */
+  public function updateModuleCivixPhp(): void {
+    $ctx = $this->createDefaultCtx();
+    $info = new Info($this->baseDir->string('info.xml'));
+    $info->load($ctx);
+
+    $module = new Module(Civix::templating());
+    $module->loadInit($ctx);
+    $module->save($ctx, \Civix::output());
   }
 
   /**

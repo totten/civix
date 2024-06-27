@@ -1,9 +1,7 @@
 <?php
 namespace CRM\CivixBundle\Command;
 
-use CRM\CivixBundle\Builder\Module;
 use Civix;
-use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
@@ -89,16 +87,13 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $gen->cleanEmptyHooks();
     $gen->cleanEmptyLines();
     $gen->reconcileMixins();
+    $gen->updateModuleCivixPhp();
 
     /**
      * @var \CRM\CivixBundle\Builder\Info $info
      */
     [$ctx, $info] = $this->loadCtxInfo();
     $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
-
-    $module = new Module(Civix::templating());
-    $module->loadInit($ctx);
-    $module->save($ctx, \Civix::output());
 
     if ($ctx['namespace']) {
       $phpFile = $basedir->string(Naming::createClassFile($ctx['namespace'], 'Upgrader', 'Base.php'));
