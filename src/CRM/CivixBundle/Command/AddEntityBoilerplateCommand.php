@@ -53,12 +53,6 @@ class AddEntityBoilerplateCommand extends AbstractCommand {
     $basedir = new Path($ctx['basedir']);
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
-    $attrs = $info->get()->attributes();
-
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return;
-    }
 
     $xmlSchemaGlob = "xml/schema/{$ctx['namespace']}/*.xml";
     $absXmlSchemaGlob = $basedir->string($xmlSchemaGlob);

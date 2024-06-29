@@ -64,10 +64,6 @@ as separate groups:
 
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
-    if ($info->getType() != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $info->getType() . '</error>');
-      return;
-    }
 
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
     $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);

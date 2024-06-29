@@ -42,11 +42,6 @@ class AddCustomDataCommand extends AbstractCommand {
 
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return 1;
-    }
 
     $dirs = new Dirs([
       $basedir->string('xml'),
