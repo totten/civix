@@ -140,7 +140,6 @@ explicity.');
       $output->writeln('<comment>Generated API skeletons for APIv4. To generate APIv3, specify <info>--api-version=3</info></comment>');
     }
 
-    $output->writeln('<comment>You should now make any changes to the entity xml file and run `civix generate:entity-boilerplate` to generate necessary boilerplate.</comment>');
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
 
     return 0;
