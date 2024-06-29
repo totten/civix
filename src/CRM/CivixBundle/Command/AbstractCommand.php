@@ -51,6 +51,7 @@ abstract class AbstractCommand extends Command {
   }
 
   protected function assertCurrentFormat() {
+    // Note: getModuleInfo() asserts that type is 'module'
     $info = $this->getModuleInfo($ctx);
     $actualVersion = $info->detectFormat();
     $expectedVersion = Civix::upgradeList()->getHeadVersion();

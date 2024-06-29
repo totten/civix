@@ -44,10 +44,6 @@ For more, see https://docs.angularjs.org/guide/directive');
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
     $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return 1;
-    }
 
     $ctx['tsDomain'] = (string) $attrs['key'];
     $ctx['angularModuleName'] = $input->getOption('am') ? $input->getOption('am') : $ctx['angularModuleName'];

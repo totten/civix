@@ -30,11 +30,6 @@ class AddUpgraderCommand extends AbstractCommand {
 
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
-    $attrs = $info->get()->attributes();
-    if ($attrs['type'] != 'module') {
-      $output->writeln('<error>Wrong extension type: ' . $attrs['type'] . '</error>');
-      return 1;
-    }
 
     $dirs = [
       $basedir->string('sql'),
