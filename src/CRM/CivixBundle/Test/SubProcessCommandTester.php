@@ -22,6 +22,11 @@ class SubProcessCommandTester implements CommandTester {
   protected $statusCode;
 
   /**
+   * @var string|null
+   */
+  protected $commandLine;
+
+  /**
    * @param array $baseCommand
    */
   public function __construct(array $baseCommand) {
@@ -59,6 +64,8 @@ class SubProcessCommandTester implements CommandTester {
     $buffer = fopen('php://memory', 'w+');
 
     $p = new Process($command);
+    $this->commandLine = $p->getCommandLine();
+
     $p->run(function ($type, $data) use ($buffer) {
       // Default policy - combine STDOUT and STDIN into one continuous stream.
       fwrite($buffer, $data);
@@ -83,6 +90,10 @@ class SubProcessCommandTester implements CommandTester {
 
   public function getStatusCode(): int {
     return $this->statusCode;
+  }
+
+  public function getCommandLine(): string {
+    return $this->commandLine;
   }
 
 }

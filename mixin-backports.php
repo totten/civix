@@ -50,7 +50,7 @@ return [
     'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5d5c59c9453fabf1c3f709c7b8e26c680312d9a8/mixin/entity-types-php@2/mixin.php',
     'local' => 'extern/mixin/entity-types-php@2/mixin.php',
     'provided-by' => '5.73',
-    'minimum' => '5.51',
+    'minimum' => '5.45',
   ],
   'menu-xml@1' => [
     'version' => '1.0.0',

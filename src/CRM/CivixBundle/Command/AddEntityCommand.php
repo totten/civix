@@ -77,7 +77,7 @@ explicity.');
       throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
     }
 
-    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@1.0']);
+    $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@2.0']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
 
@@ -87,8 +87,7 @@ explicity.');
     $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
     $ctx['baoClassName'] = strtr($ctx['namespace'], '/', '_') . '_BAO_' . $input->getArgument('<EntityName>');
     $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
-    $ctx['schemaFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.xml');
-    $ctx['entityTypeFile'] = $basedir->string('xml', 'schema', $ctx['namespace'], $input->getArgument('<EntityName>') . '.entityType.php');
+    $ctx['entityTypeFile'] = $basedir->string('schema', $input->getArgument('<EntityName>') . '.entityType.php');
     $ctx['extensionName'] = $info->getExtensionName();
     $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
     $ctx['testApi3ClassFile'] = $basedir->string('tests', 'phpunit', strtr($ctx['testApi3ClassName'], '_', '/') . '.php');
@@ -99,7 +98,6 @@ explicity.');
       dirname($ctx['api4File']),
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
-      dirname($ctx['schemaFile']),
       dirname($ctx['testApi3ClassFile']),
     ]);
     $ext->builders['dirs']->save($ctx, $output);
@@ -111,21 +109,16 @@ explicity.');
     if (in_array('4', $apiVersions)) {
       $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Civix::templating());
     }
+    $ext->builders['dao.php'] = new Template('entity-dao.php.php', $ctx['daoClassFile'], FALSE, Civix::templating());
     $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Civix::templating());
-    $ext->builders['entity.xml'] = new Template('entity-schema.xml.php', $ctx['schemaFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
-      $mgdEntities = [
-        [
-          'name' => $ctx['entityNameCamel'],
-          'class' => $ctx['daoClassName'],
-          'table' => $ctx['tableName'],
-        ],
-      ];
-      $header = "// This file declares a new entity type. For more details, see \"hook_civicrm_entityTypes\" at:\n"
-        . "// https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes";
-      $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile'], $header);
-      $ext->builders['entityType.php']->set($mgdEntities);
+      $entityDefn = $this->createDefaultSchema($ctx['entityNameCamel'], $ctx['tableName'], $ctx['daoClassName']);
+      $ext->builders['entityType.php'] = new PhpData($ctx['entityTypeFile']);
+      $ext->builders['entityType.php']->useExtensionUtil($info->getExtensionUtilClass());
+      $ext->builders['entityType.php']->useTs(['title', 'title_plural', 'label', 'description']);
+      $ext->builders['entityType.php']->setCallbacks(['getPaths', 'getFields', 'getIndices', 'getInfo']);
+      $ext->builders['entityType.php']->set($entityDefn);
     }
 
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
@@ -134,6 +127,8 @@ explicity.');
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
+
+    Civix::generator()->updateModuleCivixPhp();
 
     if (count($apiVersions) >= 2) {
       $output->writeln('<comment>Generated API skeletons for APIv3 and APIv4.</comment>');
@@ -149,6 +144,53 @@ explicity.');
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
 
     return 0;
+  }
+
+  /**
+   * @param string $entityNameCamel
+   *   Ex: 'Mailing'
+   * @param string $tableName
+   *   Ex: 'civicrm_mailing'
+   * @param string $daoClassName
+   *   Ex: 'CRM_Foo_DAO_Mailing'
+   * @return array
+   */
+  protected function createDefaultSchema(string $entityNameCamel, string $tableName, string $daoClassName): array {
+    return [
+      'name' => $entityNameCamel,
+      'table' => $tableName,
+      'class' => $daoClassName,
+      'getInfo' => [
+        'title' => $entityNameCamel,
+        'title_plural' => \CRM_Utils_String::pluralize($entityNameCamel),
+        'description' => 'FIXME',
+        'log' => TRUE,
+      ],
+      'getFields' => [
+        'id' => [
+          'title' => 'ID',
+          'sql_type' => 'int unsigned',
+          'input_type' => 'Number',
+          'required' => TRUE,
+          'description' => sprintf('Unique %s ID', $entityNameCamel),
+          'primary_key' => TRUE,
+          'auto_increment' => TRUE,
+        ],
+        'contact_id' => [
+          'title' => 'Contact ID',
+          'sql_type' => 'int unsigned',
+          'input_type' => 'EntityRef',
+          'description' => 'FK to Contact',
+          'entity_reference' => [
+            'entity' => 'Contact',
+            'key' => 'id',
+            'on_delete' => 'CASCADE',
+          ],
+        ],
+      ],
+      'getIndices' => [],
+      'getPaths' => [],
+    ];
   }
 
 }

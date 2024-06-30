@@ -4,6 +4,7 @@ namespace CRM\CivixBundle\Command;
 use CRM\CivixBundle\Application;
 use Civix;
 use CRM\CivixBundle\Utils\Files;
+use CRM\CivixBundle\Utils\Naming;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
@@ -50,9 +51,8 @@ class AddUpgraderCommand extends AbstractCommand {
       $output->writeln(sprintf('<error>Skip %s: file already exists, defer to customized version</error>', Files::relativize($phpFile)));
     }
 
-    if (!$info->get()->xpath('upgrader')) {
-      $info->get()->addChild('upgrader', $crmPrefix . '_Upgrader');
-    }
+    // AutomaticUpgrader delegates to CRM_*_Upgrader and also supports automatic SQL generation.
+    $info->get()->upgrader = sprintf('CiviMix\\Schema\\%s\\AutomaticUpgrader', Naming::createCamelName($info->getFile()));
     $info->raiseCompatibilityMinimum('5.38');
     $info->save($ctx, $output);
 
