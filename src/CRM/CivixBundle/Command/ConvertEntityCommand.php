@@ -277,9 +277,6 @@ class ConvertEntityCommand extends AbstractCommand {
       }
       $attributes = isset($fieldXml->html) ? self::snakeCaseKeys((array) $fieldXml->html) : [];
       unset($attributes['type']);
-      if (!empty($typeAttributes['length'])) {
-        $attributes['maxlength'] = (int) $typeAttributes['length'];
-      }
       // Fix if xml erroneously includes multiple labels
       if (!empty($attributes['label']) && !is_string($attributes['label'])) {
         $attributes['label'] = ((array) $attributes['label'])[0];
