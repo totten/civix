@@ -56,6 +56,10 @@ explicity.');
       throw new Exception("In --api-versions, found unrecognized versions. Expected: '3' and/or '4'");
     }
 
+    if (!\Civix::checker()->hasUpgrader()) {
+      \Civix::generator()->addUpgrader();
+    }
+
     $ctx = [];
     $ctx['type'] = 'module';
     $ctx['basedir'] = \CRM\CivixBundle\Application::findExtDir();

@@ -1,14 +1,14 @@
 <?php
-echo "<?php\n";
-$_namespace = preg_replace(':/:', '_', $namespace);
+echo "<" . "?php\n";
+if ($classNamespaceDecl) {
+  echo "$classNamespaceDecl\n\n";
+}
+echo "$useE\n";
 ?>
-
-use <?php echo $_namespace ?>_ExtensionUtil as E;
-
 /**
  * Collection of upgrade steps.
  */
-class <?php echo $_namespace ?>_Upgrader extends <?php echo $baseUpgrader ?> {
+class <?php echo $className ?> extends \CRM_Extension_Upgrader_Base {
 
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).

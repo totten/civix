@@ -685,11 +685,13 @@ class Generator {
    *     - classNameFull (e.g. "Civi\Foo\Bar")
    *     - classNamespace (e.g. "Civi\Foo")
    *     - classNamespaceDecl (e.g. "namespace Civi\Foo;")
+   *     - classRenaming (bool; whether developer should be allowed to change the class name)
    *     - useE (e.g. 'use CRM_Myextension_ExtensionUtil as E;')
    * @return void
    */
   public function addClass(string $className, string $template, array $tplData = []): void {
-    $tplData = array_merge($this->createClassVars($className), $tplData);
+    $tplData['classRenaming'] = $tplData['classRenaming'] ?? TRUE;
+    $tplData = array_merge($this->createClassVars($className, $tplData['classRenaming']), $tplData);
     $classFile = $tplData['classFile'];
     $className = $tplData['className'];
 
@@ -703,7 +705,7 @@ class Generator {
       }
     }
 
-    $this->io->note("Write " . Files::relativize($classFile, getcwd()));
+    $this->io->writeln(sprintf("<info>Write</info> %s", Files::relativize($classFile, getcwd())));
     $rendered = Civix::templating()->render($template, $tplData);
     Path::for(dirname($classFile))->mkdir();
     file_put_contents($classFile, $rendered);
@@ -711,12 +713,13 @@ class Generator {
 
   /**
    * @param string $className
-   * @param string $layout
+   * @param bool $classRenaming
+   *   Whether developer should be allowed to change the class name
    * @return array
    * @internal
    */
-  public function createClassVars($className, string $layout = 'auto'): array {
-    if ($this->input->isInteractive()) {
+  public function createClassVars($className, bool $classRenaming = TRUE): array {
+    if ($classRenaming && $this->input->isInteractive()) {
       $className = $this->io->ask('Class name', $className);
     }
     $classFile = preg_replace(';[_/\\\];', '/', $className) . '.php';
@@ -742,6 +745,23 @@ class Generator {
       $tplData['classNamespaceDecl'] = sprintf('namespace %s;', $tplData['classNamespace']);
     }
     return $tplData;
+  }
+
+  /**
+   * Add an "upgrader" class ("CRM_MyExtension_Upgrader")
+   */
+  public function addUpgrader(): void {
+    // TODO: Re-test comprehensively to ensure that "Civi\Foo\Upgrader" is valid/workable. Drop coercion.
+    $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), 'CRM');
+    $className = Naming::createClassName($namespace, 'Upgrader');
+    $this->addClass($className, 'upgrader.php.php', ['classRenaming' => FALSE]);
+
+    $this->updateInfo(function($info) {
+      $info->get()->upgrader = sprintf('CiviMix\\Schema\\%s\\AutomaticUpgrader', Naming::createCamelName($info->getFile()));
+      // <upgrader> tag only exists in 5.38+.
+      $info->raiseCompatibilityMinimum('5.38');
+    });
+    $this->updateModuleCivixPhp();
   }
 
   // -------------------------------------------------
