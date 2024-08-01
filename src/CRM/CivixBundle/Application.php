@@ -31,7 +31,6 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new Command\AddCaseTypeCommand();
     $commands[] = new Command\AddCustomDataCommand();
     $commands[] = new Command\AddEntityCommand();
-    $commands[] = new Command\AddEntityBoilerplateCommand();
     $commands[] = new Command\AddFormCommand();
     $commands[] = new Command\AddManagedEntityCommand();
     $commands[] = new Command\AddPageCommand();

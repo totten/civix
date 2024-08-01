@@ -4,11 +4,15 @@ namespace CRM\CivixBundle;
 use Civix;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
+use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Command\Mgd;
 use CRM\CivixBundle\Utils\Files;
+use CRM\CivixBundle\Utils\MixinLibraries;
 use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Path;
+use PhpArrayDocument\Parser;
+use PhpArrayDocument\Printer;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -49,6 +53,11 @@ class Generator {
   public $infoXml;
 
   /**
+   * @var \CRM\CivixBundle\Utils\MixinLibraries
+   */
+  public $mixinLibraries;
+
+  /**
    * @param \CRM\CivixBundle\Utils\Path $baseDir
    *   The folder that contains the extension.
    */
@@ -57,6 +66,7 @@ class Generator {
     $this->output = \Civix::output();
     $this->io = \Civix::io();
     $this->baseDir = $baseDir;
+    $this->mixinLibraries = new MixinLibraries($baseDir->path('mixin/lib'), \Civix::appDir('lib'));
     $this->reloadInfo();
   }
 
@@ -78,6 +88,19 @@ class Generator {
       $this->output->writeln('<info>Write</info> ' . $fileName);
       file_put_contents($fileName, $newContent);
     }
+  }
+
+  /**
+   * Re-generate the 'module.civix.php' boilerplate.
+   */
+  public function updateModuleCivixPhp(): void {
+    $ctx = $this->createDefaultCtx();
+    $info = new Info($this->baseDir->string('info.xml'));
+    $info->load($ctx);
+
+    $module = new Module(Civix::templating());
+    $module->loadInit($ctx);
+    $module->save($ctx, \Civix::output());
   }
 
   /**
@@ -118,6 +141,22 @@ class Generator {
   }
 
   /**
+   * Apply a filter to the "mixin/lib" (Mixin Libraries).
+   *
+   * @param callable $function
+   *   signature: `function(MixinLibraries $mixinLibraries): void`
+   */
+  public function updateMixinLibraries(callable $function): void {
+    $function($this->mixinLibraries);
+    if (\Civix::checker()->hasMixinLibrary() && !\Civix::checker()->coreHasPathload()) {
+      $this->copyFile(Civix::appDir('lib/pathload-0.php'), Civix::extDir('mixin/lib/pathload-0.php'));
+    }
+    else {
+      $this->removeFile(Civix::extDir('mixin/lib/pathload-0.php'));
+    }
+  }
+
+  /**
    * Update a PHP-style data-file. (If the file is new, create it.)
    *
    * Ex: updatePhpData('foobar.mgd.php', \fn(PhpData $data) => $data->set([...]))
@@ -137,6 +176,27 @@ class Generator {
     $phpData->loadInit($ctx);
     $filter($phpData);
     $phpData->save($ctx, $this->output);
+  }
+
+  /**
+   * Update a PHP-style data-file. (If the file is new, create it.)
+   *
+   * Ex: updatePhpArrayDocument('foobar.mgd.php', fn(PhpArrayDocument $doc) => $doc->setInnerComment("Hello world"))
+   *
+   * TIP: updatePhpData() and updatePhpArrayDocument() fill a similar niche.
+   * - updatePhpArrayDocument reveals and preserves more metadata.
+   * - updatePhpData has a simpler API.
+   *
+   * @param $path
+   * @param callable $filter
+   */
+  public function updatePhpArrayDocument($path, callable $filter): void {
+    $file = Path::for($path)->string();
+    $oldCode = file_get_contents($file);
+    $doc = (new Parser())->parse($oldCode);
+    $filter($doc);
+    $newCode = (new Printer())->print($doc);
+    $this->writeTextFile($file, $newCode, TRUE);
   }
 
   /**
@@ -308,6 +368,35 @@ class Generator {
     $this->output->writeln("<info>Write</info> " . $relPath);
     if (!file_put_contents($file, $content)) {
       throw new \RuntimeException("Failed to write $file");
+    }
+  }
+
+  /**
+   * Create or update an exact copy of a file.
+   *
+   * If the file is the same, do nothing.
+   *
+   * @param string $src
+   * @param string $dest
+   */
+  public function copyFile(string $src, string $dest) {
+    if (!Files::isIdenticalFile($src, $dest)) {
+      $relPath = Files::relativize($dest, getcwd());
+      $this->output->writeln("<info>Write</info> " . $relPath);
+      copy($src, $dest);
+    }
+  }
+
+  /**
+   * Remove a file (if it exists).
+   *
+   * @param string $file
+   */
+  public function removeFile(string $file) {
+    if (file_exists($file)) {
+      $relPath = Files::relativize($file, getcwd());
+      $this->output->writeln("<info>Remove</info> " . $relPath);
+      unlink($file);
     }
   }
 
@@ -596,11 +685,13 @@ class Generator {
    *     - classNameFull (e.g. "Civi\Foo\Bar")
    *     - classNamespace (e.g. "Civi\Foo")
    *     - classNamespaceDecl (e.g. "namespace Civi\Foo;")
+   *     - classRenaming (bool; whether developer should be allowed to change the class name)
    *     - useE (e.g. 'use CRM_Myextension_ExtensionUtil as E;')
    * @return void
    */
   public function addClass(string $className, string $template, array $tplData = []): void {
-    $tplData = array_merge($this->createClassVars($className), $tplData);
+    $tplData['classRenaming'] = $tplData['classRenaming'] ?? TRUE;
+    $tplData = array_merge($this->createClassVars($className, $tplData['classRenaming']), $tplData);
     $classFile = $tplData['classFile'];
     $className = $tplData['className'];
 
@@ -622,12 +713,13 @@ class Generator {
 
   /**
    * @param string $className
-   * @param string $layout
+   * @param bool $classRenaming
+   *   Whether developer should be allowed to change the class name
    * @return array
    * @internal
    */
-  public function createClassVars($className, string $layout = 'auto'): array {
-    if ($this->input->isInteractive()) {
+  public function createClassVars($className, bool $classRenaming = TRUE): array {
+    if ($classRenaming && $this->input->isInteractive()) {
       $className = $this->io->ask('Class name', $className);
     }
     $classFile = preg_replace(';[_/\\\];', '/', $className) . '.php';
@@ -653,6 +745,23 @@ class Generator {
       $tplData['classNamespaceDecl'] = sprintf('namespace %s;', $tplData['classNamespace']);
     }
     return $tplData;
+  }
+
+  /**
+   * Add an "upgrader" class ("CRM_MyExtension_Upgrader")
+   */
+  public function addUpgrader(): void {
+    // TODO: Re-test comprehensively to ensure that "Civi\Foo\Upgrader" is valid/workable. Drop coercion.
+    $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), 'CRM');
+    $className = Naming::createClassName($namespace, 'Upgrader');
+    $this->addClass($className, 'upgrader.php.php', ['classRenaming' => FALSE]);
+
+    $this->updateInfo(function($info) {
+      $info->get()->upgrader = sprintf('CiviMix\\Schema\\%s\\AutomaticUpgrader', Naming::createCamelName($info->getFile()));
+      // <upgrader> tag only exists in 5.38+.
+      $info->raiseCompatibilityMinimum('5.38');
+    });
+    $this->updateModuleCivixPhp();
   }
 
   // -------------------------------------------------
