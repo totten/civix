@@ -97,19 +97,21 @@ explicity.');
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
-      dirname($ctx['apiFile']),
-      dirname($ctx['api4File']),
       dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
-      dirname($ctx['testApi3ClassFile']),
     ]);
     $ext->builders['dirs']->save($ctx, $output);
 
+    $hasPhpUnit = FALSE;
     if (in_array('3', $apiVersions)) {
+      $ext->builders['dirs']->addPath(dirname($ctx['apiFile']));
       $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Civix::templating());
+      $ext->builders['dirs']->addPath(dirname($ctx['testApi3ClassFile']));
       $ext->builders['test.php'] = new Template('entity-api3-test.php.php', $ctx['testApi3ClassFile'], FALSE, Civix::templating());
+      $hasPhpUnit = TRUE;
     }
     if (in_array('4', $apiVersions)) {
+      $ext->builders['dirs']->addPath(dirname($ctx['api4File']));
       $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Civix::templating());
     }
     $ext->builders['dao.php'] = new Template('entity-dao.php.php', $ctx['daoClassFile'], FALSE, Civix::templating());
@@ -124,10 +126,12 @@ explicity.');
       $ext->builders['entityType.php']->set($entityDefn);
     }
 
-    Civix::generator()->addPhpunit();
-
     $ext->init($ctx);
     $ext->save($ctx, $output);
+
+    if ($hasPhpUnit) {
+      Civix::generator()->addPhpunit();
+    }
 
     Civix::generator()->updateModuleCivixPhp();
 
