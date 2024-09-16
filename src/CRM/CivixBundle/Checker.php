@@ -85,4 +85,14 @@ class Checker {
     return $this->generator->mixinLibraries->hasActive($majorName);
   }
 
+  /**
+   * Determine defines any schema/entities using `schema/*.entityType.php`.
+   *
+   * @return bool
+   */
+  public function hasSchemaPhp(): bool {
+    $files = is_dir(\Civix::extDir('schema')) && \Civix::extDir()->search('glob:schema/*.entityType.php');
+    return !empty($files);
+  }
+
 }
