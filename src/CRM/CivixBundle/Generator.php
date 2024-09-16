@@ -6,6 +6,7 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
+use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use CRM\CivixBundle\Command\Mgd;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\MixinLibraries;
@@ -663,6 +664,18 @@ class Generator {
         $mixins->addMixin($mixinConstraint);
       }
     });
+  }
+
+  /**
+   * Add skeletal initialization files for PHPUnit.
+   *
+   * @return void
+   */
+  public function addPhpunit(): void {
+    $ctx = $this->createDefaultCtx();
+    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
+    $phpUnitInitFiles->initPhpunitXml($this->baseDir->string('phpunit.xml.dist'), $ctx, Civix::output());
+    $phpUnitInitFiles->initPhpunitBootstrap($this->baseDir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, Civix::output());
   }
 
   /**

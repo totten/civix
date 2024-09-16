@@ -2,7 +2,6 @@
 namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
-use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use Civix;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -125,9 +124,7 @@ explicity.');
       $ext->builders['entityType.php']->set($entityDefn);
     }
 
-    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
-    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
-    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+    Civix::generator()->addPhpunit();
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
