@@ -108,6 +108,8 @@ class ConvertEntityCommand extends AbstractCommand {
       $phpData->setCallbacks(['getInfo', 'getPaths', 'getFields', 'getIndices']);
       $phpData->set($entity);
       $phpData->save($ctx, Civix::output());
+
+      Civix::generator()->addDaoClass($entity['class'], $entity['table'], 'overwrite');
     }
 
     // Cleanup old files

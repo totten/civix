@@ -1,8 +1,10 @@
 <?php
-echo "<?php\n";
-$_namespace = preg_replace(':/:', '_', $namespace);
+echo "<" . "?php\n";
+if ($classNamespaceDecl) {
+  echo "$classNamespaceDecl\n\n";
+}
+echo "$useE\n";
 ?>
-use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 /**
  * DAOs provide an OOP-style facade for reading and writing database records.
@@ -13,7 +15,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
  * This stub provides compatibility. It is not intended to be modified in a
  * substantive way. However, you may add comments and annotations.
  */
-class <?php echo $daoClassName ?> extends <?php echo $_namespace . '_DAO_Base'; ?> {
+class <?php echo $className ?> extends <?php echo $daoBaseClass; ?> {
 
   // Required by some versions of CiviCRM.
   public static $_tableName = <?php var_export($tableName); ?>;

@@ -16,6 +16,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
   $xmlSchemaFiles = civix::extDir()->search('find:xml/schema/*.xml');
   if (!empty($xmlSchemaFiles)) {
     $steps[] = "Convert xml/schema/*.xml to schema/*.entityType.php";
+    $steps[] = "Regenerate CRM/*/DAO/*.php";
     $steps[] = "Update mixin entity-types-php@1 to entity-types-php@2";
   }
 

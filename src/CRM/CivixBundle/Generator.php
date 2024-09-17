@@ -373,6 +373,25 @@ class Generator {
   }
 
   /**
+   * @param string $class
+   *   Ex: 'CRM_Foo_DAO_Bar'
+   * @param string $tableName
+   *   Ex: 'civicrm_foo_bar'
+   * @param string $overwrite
+   *   Ex: 'overwrite' or 'ask' (per checkOverwrite())
+   * @return void
+   */
+  public function addDaoClass(string $class, string $tableName, string $overwrite): void {
+    $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), 'CRM');
+
+    $this->addClass($class, 'entity-dao.php.php', [
+      'tableName' => $tableName,
+      'daoBaseClass' => Naming::createClassName($namespace, 'DAO', 'Base'),
+      'classRenaming' => FALSE,
+    ], $overwrite);
+  }
+
+  /**
    * Create or update an exact copy of a file.
    *
    * If the file is the same, do nothing.

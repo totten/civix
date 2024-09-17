@@ -97,7 +97,6 @@ explicity.');
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
-      dirname($ctx['daoClassFile']),
       dirname($ctx['baoClassFile']),
     ]);
     $ext->builders['dirs']->save($ctx, $output);
@@ -114,7 +113,6 @@ explicity.');
       $ext->builders['dirs']->addPath(dirname($ctx['api4File']));
       $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Civix::templating());
     }
-    $ext->builders['dao.php'] = new Template('entity-dao.php.php', $ctx['daoClassFile'], FALSE, Civix::templating());
     $ext->builders['bao.php'] = new Template('entity-bao.php.php', $ctx['baoClassFile'], FALSE, Civix::templating());
 
     if (!file_exists($ctx['entityTypeFile'])) {
@@ -128,6 +126,8 @@ explicity.');
 
     $ext->init($ctx);
     $ext->save($ctx, $output);
+
+    Civix::generator()->addDaoClass($ctx['daoClassName'], $ctx['tableName'], 'if-forced');
 
     if ($hasPhpUnit) {
       Civix::generator()->addPhpunit();
