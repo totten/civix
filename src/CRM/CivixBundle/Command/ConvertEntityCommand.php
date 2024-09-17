@@ -54,11 +54,9 @@ class ConvertEntityCommand extends AbstractCommand {
   /**
    * @param $xmlFiles
    * @param $isCore
-   *
-   * @return array
    * @throws \Exception
    */
-  public static function convertEntities(array $xmlFiles, bool $isCore): array {
+  public static function convertEntities(array $xmlFiles, bool $isCore): void {
     $xmlFiles = preg_grep('/files.xml$/', $xmlFiles, PREG_GREP_INVERT);
     $xmlFiles = preg_grep('/Schema.xml$/', $xmlFiles, PREG_GREP_INVERT);
 
@@ -114,10 +112,7 @@ class ConvertEntityCommand extends AbstractCommand {
 
     // Cleanup old files
     array_map('unlink', glob($basedir->string('xml/schema/CRM/*/*.entityType.php')));
-    return $ctx;
-    //  array_map('unlink', $xmlFiles);
-    //  unlink($basedir->string('sql/auto_install.sql'));
-    //  unlink($basedir->string('sql/auto_uninstall.sql'));
+    array_map('unlink', $xmlFiles);
   }
 
   public static function getTablesForThisExtension($xmlFiles): array {
