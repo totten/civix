@@ -822,11 +822,18 @@ class Generator {
       return 'write';
     }
 
+    if ($mode === 'ask' && !$this->input->isInteractive()) {
+      $mode = 'if-forced';
+    }
+    if ($mode === 'if-forced') {
+      $mode = $this->input->hasOption('force') && $this->input->getOption('force') ? 'overwrite' : 'keep';
+    }
+
     if ($mode === 'overwrite' || $mode === TRUE) {
       return 'write';
     }
     if ($mode === 'keep'|| $mode === FALSE) {
-      $this->io->warning("Skip $file: file already exists");
+      $this->io->writeln("<error>Skip " . Files::relativize($file) . ": file already exists</error>");
       return 'keep';
     }
     if ($mode === 'abort') {
@@ -847,12 +854,6 @@ class Generator {
       }
       else {
         throw new \RuntimeException("File $relPath already exists. Operation aborted");
-      }
-    }
-    if ($mode === 'ask' || $mode === 'if-forced') {
-      if ($this->input->hasOption('force') && $this->input->getOption('force')) {
-        $this->io->note("Overwrite $file in --force mode");
-        return 'write';
       }
     }
 
