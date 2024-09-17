@@ -817,10 +817,10 @@ class Generator {
     }
     if ($mode === 'ask' && $this->input->isInteractive()) {
       $relPath = Files::relativize($file, $this->baseDir->string());
-      $action = mb_strtolower($this->io->choice("File $relPath already exists. What should we do?", [
-        'o' => '[O]verwrite the file',
-        'k' => '[K]eep the current file',
-        'a' => '[A]bort the process',
+      $action = mb_strtolower($this->io->choice("File \"$relPath\" already exists. What should we do?", [
+        'o' => 'Overwrite the file',
+        'k' => 'Keep the current file',
+        'a' => 'Abort the process',
       ]));
       if ($action === 'o') {
         return 'write';
