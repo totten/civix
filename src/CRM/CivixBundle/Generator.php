@@ -732,12 +732,6 @@ class Generator {
     if ('keep' === $this->checkOverwrite($classFile, $overwrite)) {
       return;
     }
-    if (file_exists($classFile)) {
-      $forced = $this->input->hasOption('force') && $this->input->getOption('force');
-      if (!$forced && !$this->io->confirm("Class $className already exists. Overwrite?")) {
-        return;
-      }
-    }
 
     $this->io->writeln(sprintf("<info>Write</info> %s", Files::relativize($classFile, getcwd())));
     $rendered = Civix::templating()->render($template, $tplData);
@@ -783,12 +777,14 @@ class Generator {
 
   /**
    * Add an "upgrader" class ("CRM_MyExtension_Upgrader")
+   *
+   * @param string $overwrite
    */
-  public function addUpgrader(): void {
+  public function addUpgrader(string $overwrite = 'ask'): void {
     // TODO: Re-test comprehensively to ensure that "Civi\Foo\Upgrader" is valid/workable. Drop coercion.
     $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), 'CRM');
     $className = Naming::createClassName($namespace, 'Upgrader');
-    $this->addClass($className, 'upgrader.php.php', ['classRenaming' => FALSE]);
+    $this->addClass($className, 'upgrader.php.php', ['classRenaming' => FALSE], $overwrite);
 
     $this->updateInfo(function($info) {
       $info->get()->upgrader = sprintf('CiviMix\\Schema\\%s\\AutomaticUpgrader', Naming::createCamelName($info->getFile()));

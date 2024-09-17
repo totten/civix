@@ -55,9 +55,7 @@ explicity.');
       throw new Exception("In --api-versions, found unrecognized versions. Expected: '3' and/or '4'");
     }
 
-    if (!\Civix::checker()->hasUpgrader()) {
-      \Civix::generator()->addUpgrader();
-    }
+    Civix::generator()->addUpgrader('if-forced');
 
     $ctx = [];
     $ctx['type'] = 'module';

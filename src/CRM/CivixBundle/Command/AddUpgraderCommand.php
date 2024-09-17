@@ -16,13 +16,7 @@ class AddUpgraderCommand extends AbstractCommand {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     $this->assertCurrentFormat();
-    if (!\Civix::checker()->hasUpgrader()) {
-      Civix::generator()->addUpgrader();
-    }
-    else {
-      // TODO: Realign existence-check with Generator::addClass().
-      $output->writeln("<comment>Upgrader already exists</comment>");
-    }
+    Civix::generator()->addUpgrader('if-forced');
     return 0;
   }
 
