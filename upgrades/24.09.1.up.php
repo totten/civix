@@ -5,50 +5,61 @@ use CRM\CivixBundle\Utils\Naming;
 
 return function (\CRM\CivixBundle\Generator $gen) {
 
-  $files = Civix::extDir()->search('glob:sql/auto_*.sql');
-  $relFiles = array_map([\CRM\CivixBundle\Utils\Files::class, 'relativize'], $files);
+  $sqlFiles = Civix::extDir()->search('glob:sql/auto_*.sql');
+  $relSqlFiles = array_map([\CRM\CivixBundle\Utils\Files::class, 'relativize'], $sqlFiles);
 
   $oldClass = (string) $gen->infoXml->get()->upgrader;
   $newClass = sprintf('CiviMix\\Schema\\%s\\AutomaticUpgrader', Naming::createCamelName($gen->infoXml->getFile()));
   $delegateClass = Naming::createClassName($gen->infoXml->getNamespace(), 'Upgrader');
 
   $steps = [];
+  $xmlSchemaFiles = civix::extDir()->search('find:xml/schema/*.xml');
+  if (!empty($xmlSchemaFiles)) {
+    $steps[] = "Convert xml/schema/*.xml to schema/*.entityType.php";
+    $steps[] = "Update mixin entity-types-php@1 to entity-types-php@2";
+  }
+
   if ($oldClass && $oldClass !== $newClass) {
+    $steps[] = "Update info.xml to use $newClass (which delegates to $delegateClass)";
+  }
+  else {
     $steps[] = "Update info.xml to use $newClass";
   }
-  if (!empty($relFiles)) {
-    $steps[] = 'Delete ' . implode(' and ', $relFiles);
+  if (!empty($relSqlFiles)) {
+    $steps[] = 'Delete ' . implode(' and ', $relSqlFiles);
   }
 
   if (empty($steps)) {
     return;
   }
 
-  $notes = [
-    "This extension includes generated SQL files:\n\n" . Formatting::ul("%s\n", $relFiles),
-    'These files are liable to install SQL tables incorrectly. The character-set and collation do not always match the user\'s CiviCRM database.',
-    "Civix now supports automatic (on-the-fly) SQL generation, which ensures that new installations have proper collation. Enabling this requires the following changes:\n\n" . Formatting::ol("%s\n", $steps),
+  $warnings = [
+    "Your target environment is CiviCRM v5.44 or earlier.",
+    "The SQL files include custom/manual statements.",
   ];
-  if (empty($oldClass) || $oldClass === $newClass) {
-    // OK
+  if ($oldClass) {
+    // $warnings[] = "$delegateClass class has non-standard revision tracking (such as Step-NNN class-files).";
+    $warnings[] = "The class $delegateClass overrides any internal plumbing (e.g. setCurrentRevision(), appendTask(), or getRevisions())";
   }
-  elseif ($oldClass === $delegateClass) {
-    $notes[] = "AutomaticUpgrader will transparently call your existing $delegateClass, so any `upgrade_NNN()` functions will work the same. However, it is incompatible with some unusual customizations, such as:";
-    $notes[] = Formatting::ul("%s\n", [
-      'Manual SQL code in ' . implode(' or ', $relFiles),
-      'Non-standard revision-tracking (e.g. Step-NNN PHP classes)',
-    ]);
-  }
-  else {
-    $notes[] = "However, your extension has an unrecognized upgrader ($oldClass) which may not be compatible.";
+  if ($oldClass && $oldClass !== $delegateClass) {
+    $warnings[] = "The old upgrader ($oldClass) does not match the expected name ($delegateClass).";
   }
 
-  $notes[] = "You may skip this update. However, in the future, you will be responsible for keeping the SQL files up-to-date.";
-  \Civix::io()->note($notes);
+  $notes = [
+    "This update converts data-storage from Entity Framework v1 (EFv1) to Entity Framework v2 (EFv2).",
+    "EFv2 stores schema as *.php. It has simpler workflows and less boilerplate. SQL is generated during installation. (More details: https://github.com/totten/civix/wiki/Entity-Templates)",
+    // "For a full comparison, see: https://github.com/totten/civix/wiki/Entity-Templates",
+    "The upgrader will make the following changes:\n\n" . Formatting::ol("%s\n", $steps),
+    "This should work for many extensions, but it should be tested. You may encounter issues if any of these scenarios apply:\n\n" . Formatting::ol("%s\n", $warnings),
+    "You may skip this update. However, going forward, civix will only support EFv2. You will be responsible for maintaining any boilerplate for EFv1.",
+  ];
+
+  Civix::io()->title("Entity Framework v1 => v2");
+  Civix::io()->note($notes);
 
   $actions = [
-    'y' => 'Yes, apply update. Use AutomaticUpgrader to generate SQL.',
-    'n' => 'No, skip update. Keep current SQL files.',
+    'y' => 'Yes, update to Entity Framework v2',
+    'n' => 'No, stay on Entity Framework v1',
     'a' => 'Abort',
   ];
   $action = Civix::io()->choice("Should we apply the update?", $actions, 'y');
@@ -59,6 +70,8 @@ return function (\CRM\CivixBundle\Generator $gen) {
     return;
   }
 
+  // OK go!
+
   // The logic to toggle 'pathload' and `civimix-schema@5` is actually
   // a general/recurring update in CRM\CivixBundle\Builder\Module::save().
   // But it only applies if the $newClass has been set.
@@ -68,8 +81,11 @@ return function (\CRM\CivixBundle\Generator $gen) {
       $info->get()->upgrader = $newClass;
     });
   }
-  foreach ($files as $file) {
+  foreach ($sqlFiles as $file) {
     $gen->removeFile($file);
   }
+
+  Civix::boot(['output' => Civix::output()]);
+  \CRM\CivixBundle\Command\ConvertEntityCommand::convertEntities($xmlSchemaFiles, FALSE);
 
 };
