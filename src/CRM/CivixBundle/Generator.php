@@ -700,15 +700,17 @@ class Generator {
    *     - classNamespaceDecl (e.g. "namespace Civi\Foo;")
    *     - classRenaming (bool; whether developer should be allowed to change the class name)
    *     - useE (e.g. 'use CRM_Myextension_ExtensionUtil as E;')
+   * @param string $overwrite
+   *   Whether to overwrite existing files. (See options in checkOverwrite().)
    * @return void
    */
-  public function addClass(string $className, string $template, array $tplData = []): void {
+  public function addClass(string $className, string $template, array $tplData = [], string $overwrite = 'ask'): void {
     $tplData['classRenaming'] = $tplData['classRenaming'] ?? TRUE;
     $tplData = array_merge($this->createClassVars($className, $tplData['classRenaming']), $tplData);
     $classFile = $tplData['classFile'];
     $className = $tplData['className'];
 
-    if ('keep' === $this->checkOverwrite($classFile, 'ask')) {
+    if ('keep' === $this->checkOverwrite($classFile, $overwrite)) {
       return;
     }
     if (file_exists($classFile)) {
