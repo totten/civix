@@ -6,7 +6,7 @@ use CRM\CivixBundle\Builder\Mixins;
 use Civix;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Files;
-use Symfony\Component\Console\Helper\Table;
+use CRM\CivixBundle\Utils\SchemaBackport;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,19 +31,6 @@ class ConvertEntityCommand extends AbstractCommand {
     Civix::boot(['output' => $output]);
     $this->assertCurrentFormat();
 
-    $ctx = [];
-    $ctx['type'] = 'module';
-    $ctx['basedir'] = \Civix::extDir();
-    $basedir = new Path($ctx['basedir']);
-    $info = $this->getModuleInfo($ctx);
-
-    // Switch mixin from v1 to v2
-    $mixins = new Mixins($info, $basedir->string('mixin'));
-    $mixins->removeMixin('entity-types-php@1');
-    $mixins->addMixin('entity-types-php@2');
-    $mixins->save($ctx, $output);
-    $info->save($ctx, $output);
-
     \Civix::io()->note("Finding entities");
 
     $isCore = $input->getOption('core-style');
@@ -51,15 +38,43 @@ class ConvertEntityCommand extends AbstractCommand {
     if (empty($input->getArgument('xmlFiles'))) {
       $schemaPath = $isCore ? 'xml/schema' : 'xml/schema/CRM';
       $xmlFiles = array_merge(
-        (array) glob($basedir->string("$schemaPath/*/*.xml")),
-        (array) glob($basedir->string("$schemaPath/*/*/*.xml"))
+        (array) glob(\Civix::extDir()->string("$schemaPath/*/*.xml")),
+        (array) glob(\Civix::extDir()->string("$schemaPath/*/*/*.xml"))
       );
     }
     else {
       $xmlFiles = $input->getArgument('xmlFiles');
     }
+
+    static::convertEntities($xmlFiles, $isCore);
+
+    return 0;
+  }
+
+  /**
+   * @param $xmlFiles
+   * @param $isCore
+   *
+   * @return array
+   * @throws \Exception
+   */
+  public static function convertEntities(array $xmlFiles, bool $isCore): array {
     $xmlFiles = preg_grep('/files.xml$/', $xmlFiles, PREG_GREP_INVERT);
     $xmlFiles = preg_grep('/Schema.xml$/', $xmlFiles, PREG_GREP_INVERT);
+
+    $ctx = [];
+    $ctx['type'] = 'module';
+    $ctx['basedir'] = \Civix::extDir();
+    $basedir = new Path($ctx['basedir']);
+    $info = Civix::generator()->reloadInfo();
+
+    // Switch mixin from v1 to v2
+    $mixins = new Mixins($info, $basedir->string('mixin'));
+    $mixins->removeMixin('entity-types-php@1');
+    $mixins->addMixin('entity-types-php@2');
+    $mixins->save($ctx, Civix::output());
+    $info->save($ctx, Civix::output());
+
     $thisTables = self::getTablesForThisExtension($xmlFiles);
 
     \Civix::io()->note("Found: " . implode(' ', $thisTables));
@@ -67,7 +82,8 @@ class ConvertEntityCommand extends AbstractCommand {
     foreach ($xmlFiles as $fileName) {
       $entity = self::convertXmlToEntity($fileName, $thisTables);
       if (!$entity) {
-        \Civix::io()->writeln("<error>Failed to find entity. Skip file:</error> " . Files::relativize($fileName, getcwd()));
+        \Civix::io()
+          ->writeln("<error>Failed to find entity. Skip file:</error> " . Files::relativize($fileName, getcwd()));
         continue;
       }
       if ($isCore) {
@@ -91,16 +107,15 @@ class ConvertEntityCommand extends AbstractCommand {
       $phpData->setLiterals(['serialize']);
       $phpData->setCallbacks(['getInfo', 'getPaths', 'getFields', 'getIndices']);
       $phpData->set($entity);
-      $phpData->save($ctx, $output);
+      $phpData->save($ctx, Civix::output());
     }
 
     // Cleanup old files
     array_map('unlink', glob($basedir->string('xml/schema/CRM/*/*.entityType.php')));
+    return $ctx;
     //  array_map('unlink', $xmlFiles);
     //  unlink($basedir->string('sql/auto_install.sql'));
     //  unlink($basedir->string('sql/auto_uninstall.sql'));
-
-    return 0;
   }
 
   public static function getTablesForThisExtension($xmlFiles): array {
@@ -121,8 +136,8 @@ class ConvertEntityCommand extends AbstractCommand {
     \Civix::io()->writeln("<info>Parse</info> " . Files::relativize($fileName, getcwd()));
     [$xml, $error] = \CRM_Utils_XML::parseFile($fileName);
     if ($error) {
-        \Civix::io()->writeln("<error>Failed to parse file: </error>" . Files::relativize($fileName, getcwd()));
-        return NULL;
+      \Civix::io()->writeln("<error>Failed to parse file: </error>" . Files::relativize($fileName, getcwd()));
+      return NULL;
     }
     elseif (!empty($xml->drop)) {
       \Civix::io()->writeln("<info>Entity was previously dropped. Skipping: </info>" . Files::relativize($fileName, getcwd()));
@@ -203,18 +218,20 @@ class ConvertEntityCommand extends AbstractCommand {
   }
 
   private static function getFieldsFromXml($xml, $thisTables): array {
+    $utilSchem = class_exists('CRM_Utils_Schema') ? \CRM_Utils_Schema::class : SchemaBackport::class;
+
     $fields = [];
     foreach ($xml->field as $fieldXml) {
       if (isset($fieldXml->drop)) {
         continue;
       }
       $name = self::toString('name', $fieldXml);
-      $typeAttributes = \CRM_Utils_Schema::getTypeAttributes($fieldXml);
+      $typeAttributes = $utilSchem::getTypeAttributes($fieldXml);
       if ($typeAttributes['crmType'] == 'CRM_Utils_Type::T_BOOLEAN') {
         $typeAttributes['sqlType'] = 'boolean';
       }
       $fields[$name] = [
-        'title' => self::toString('title', $fieldXml) ?: \CRM_Utils_Schema::composeTitle($name),
+        'title' => self::toString('title', $fieldXml) ?: $utilSchem::composeTitle($name),
         'sql_type' => $typeAttributes['sqlType'],
         'input_type' => ((string) $fieldXml->html->type) ?: NULL,
       ];
@@ -268,9 +285,9 @@ class ConvertEntityCommand extends AbstractCommand {
         $fields[$name]['serialize'] = 'CRM_Core_DAO::SERIALIZE_' . $fieldXml->serialize;
       }
       if (!empty($fieldXml->permission)) {
-        $fields[$name]['permission'] = \CRM_Utils_Schema::getFieldPermission($fieldXml);
+        $fields[$name]['permission'] = $utilSchem::getFieldPermission($fieldXml);
       }
-      $usage = \CRM_Utils_Schema::getFieldUsage($fieldXml);
+      $usage = $utilSchem::getFieldUsage($fieldXml);
       $usage = array_keys(array_filter($usage));
       if ($usage) {
         $fields[$name]['usage'] = $usage;
