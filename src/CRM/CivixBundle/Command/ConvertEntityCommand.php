@@ -305,6 +305,9 @@ class ConvertEntityCommand extends AbstractCommand {
             $attributes[$intKey] = (int) $attributes[$intKey];
           }
         }
+        if (isset($attributes['multiple'])) {
+          $attributes['multiple'] = (bool) $attributes['multiple'];
+        }
         $fields[$name]['input_attrs'] = $attributes;
       }
       if (!empty($fieldXml->pseudoconstant)) {
