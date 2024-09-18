@@ -379,15 +379,18 @@ class Generator {
    *   Ex: 'civicrm_foo_bar'
    * @param string $overwrite
    *   Ex: 'overwrite' or 'ask' (per checkOverwrite())
+   * @param array $props
+   *   Class properties to annotate
    * @return void
    */
-  public function addDaoClass(string $class, string $tableName, string $overwrite): void {
+  public function addDaoClass(string $class, string $tableName, string $overwrite, array $props = []): void {
     $namespace = Naming::coerceNamespace($this->infoXml->getNamespace(), 'CRM');
 
     $this->addClass($class, 'entity-dao.php.php', [
       'tableName' => $tableName,
       'daoBaseClass' => Naming::createClassName($namespace, 'DAO', 'Base'),
       'classRenaming' => FALSE,
+      'properties' => $props,
     ], $overwrite);
   }
 

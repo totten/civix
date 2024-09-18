@@ -107,7 +107,9 @@ class ConvertEntityCommand extends AbstractCommand {
       $phpData->set($entity);
       $phpData->save($ctx, Civix::output());
 
-      Civix::generator()->addDaoClass($entity['class'], $entity['table'], 'overwrite');
+      $props = array_map([__CLASS__, 'getPhpType'], $entity['getFields']);
+
+      Civix::generator()->addDaoClass($entity['class'], $entity['table'], 'overwrite', $props);
     }
 
     // Cleanup old files
@@ -400,6 +402,31 @@ class ConvertEntityCommand extends AbstractCommand {
       unset($result['comment']);
     }
     return $result;
+  }
+
+  /**
+   * Returns the PHPtype used within the DAO object
+   */
+  public static function getPhpType(array $field) {
+    $phpType = 'string';
+    $sqlType = $field['sql_type'] ?? '';
+
+    if ($sqlType == 'boolean' || $sqlType == 'tinyint') {
+      $phpType = 'bool';
+    }
+    elseif (str_contains('int', $sqlType)) {
+      $phpType = 'int';
+    }
+    elseif (str_contains('decimal', $sqlType) || $sqlType == 'double') {
+      $phpType = 'float';
+    }
+
+    if ($phpType !== 'string') {
+      // Values are almost always fetched from the database as string
+      $phpType .= '|string';
+    }
+
+    return $phpType;
   }
 
 }
