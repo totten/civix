@@ -218,6 +218,16 @@ class Civix {
   }
 
   /**
+   * Get the checker for analyzing extension usage/design/requirements.
+   *
+   * @param string|Path|null $extDir
+   * @return \CRM\CivixBundle\Checker
+   */
+  public static function checker($extDir = NULL): \CRM\CivixBundle\Checker {
+    return new \CRM\CivixBundle\Checker(static::generator($extDir));
+  }
+
+  /**
    * @return \CRM\CivixBundle\UpgradeList
    */
   public static function upgradeList(): \CRM\CivixBundle\UpgradeList {
@@ -231,6 +241,9 @@ class Civix {
     $new = [];
     if (isset(static::$cache['boot'])) {
       $new['boot'] = static::$cache['boot'];
+    }
+    if (isset(static::$cache['ioStack'])) {
+      $new['ioStack'] = static::$cache['ioStack'];
     }
     static::$cache = $new;
     static::$extDir = NULL;

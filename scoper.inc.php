@@ -41,6 +41,8 @@ return [
 
   // Do not filter template files
   'exclude-files' => array_merge(
+    glob('lib/*.phar'),
+    glob('lib/*.php'),
     glob('src/CRM/CivixBundle/Resources/views/*/*.php'),
     glob('extern/*/*/*.php'),
     glob('extern/*/*.php'),

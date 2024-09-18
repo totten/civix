@@ -10,7 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Path;
-use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use Exception;
 
 class AddTestCommand extends AbstractCommand {
@@ -65,9 +64,7 @@ as separate groups:
     $info = new Info($basedir->string('info.xml'));
     $info->load($ctx);
 
-    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
-    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
-    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+    Civix::generator()->addPhpunit();
     $this->initTestClass(
       $input->getArgument('<CRM_Full_ClassName>'), $this->getTestTemplate($input->getOption('template')), $basedir, $ctx, $output);
 

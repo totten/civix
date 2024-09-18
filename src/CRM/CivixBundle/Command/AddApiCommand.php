@@ -9,7 +9,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Builder\Dirs;
-use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
@@ -156,9 +155,7 @@ action names.
       $output->writeln(sprintf('<error>Skip %s: file already exists</error>', Files::relativize($ctx['apiTestFile'])));
     }
 
-    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
-    $phpUnitInitFiles->initPhpunitXml($basedir->string('phpunit.xml.dist'), $ctx, $output);
-    $phpUnitInitFiles->initPhpunitBootstrap($basedir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, $output);
+    Civix::generator()->addPhpunit();
 
     $info->save($ctx, $output);
     return 0;

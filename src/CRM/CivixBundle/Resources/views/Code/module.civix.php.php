@@ -82,10 +82,56 @@ class <?php echo $_namespace ?>_ExtensionUtil {
     return self::CLASS_PREFIX . '_' . str_replace('\\', '_', $suffix);
   }
 
+<?php if (\Civix::checker()->hasUpgrader()) { ?>  /**
+   * @return \CiviMix\Schema\SchemaHelperInterface
+   */
+  public static function schema() {
+    if (!isset($GLOBALS['CiviMixSchema'])) {
+      pathload()->loadPackage('civimix-schema@5', TRUE);
+    }
+    return $GLOBALS['CiviMixSchema']->getHelper(static::LONG_NAME);
+  }
+<?php } ?>
+
 }
 
 use <?php echo $_namespace ?>_ExtensionUtil as E;
 
+<?php if (\Civix::checker()->hasMixinLibrary() && !\Civix::checker()->coreHasPathload()) { ?>
+($GLOBALS['_PathLoad'][0] ?? require __DIR__ . '/mixin/lib/pathload-0.php');
+<?php } ?>
+<?php if (\Civix::checker()->hasMixinLibrary()) { ?>
+pathload()->addSearchDir(__DIR__ . '/mixin/lib');
+<?php } ?>
+<?php if (\Civix::checker()->hasSchemaPhp() || \Civix::checker()->hasMixinLibrary('civimix-schema@5')) { ?>
+spl_autoload_register('_<?php echo $mainFile ?>_civix_class_loader', TRUE, TRUE);
+
+function _<?php echo $mainFile ?>_civix_class_loader($class) {
+<?php $_clPrefix = 'CiviMix\\Schema\\' . \CRM\CivixBundle\Utils\Naming::createCamelName($mainFile) . '\\' ?>
+<?php $_localBase = $_namespace . '_DAO_Base'; ?>
+  if ($class === <?php var_export($_localBase); ?>) {
+    if (version_compare(CRM_Utils_System::version(), '5.74.beta', '>=')) {
+      class_alias('CRM_Core_DAO_Base', <?php var_export($_localBase); ?>);
+      // ^^ Materialize concrete names -- encourage IDE's to pick up on this association.
+    }
+    else {
+      $realClass = <?php var_export($_clPrefix . "DAO") ?>;
+      class_alias($realClass, $class);
+      // ^^ Abstract names -- discourage IDE's from picking up on this association.
+    }
+    return;
+  }
+
+  // This allows us to tap-in to the installation process (without incurring real file-reads on typical requests).
+  if (strpos($class, <?php var_export($_clPrefix) ?>) === 0) {
+    // civimix-schema@5 is designed for backported use in download/activation workflows,
+    // where new revisions may become dynamically available.
+    pathload()->loadPackage('civimix-schema@5', TRUE);
+    CiviMix\Schema\loadClass($class);
+  }
+}
+
+<?php } ?>
 <?php if (version_compare($_compatibility, '5.45.beta1', '<')) { ?>
 function _<?php echo $mainFile ?>_civix_mixin_polyfill() {
   if (!class_exists('CRM_Extension_MixInfo')) {

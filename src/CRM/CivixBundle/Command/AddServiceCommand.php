@@ -56,7 +56,7 @@ class AddServiceCommand extends AbstractCommand {
 
     $gen->addClass($className, 'service.php.php', [
       'service' => $serviceName,
-    ]);
+    ], 'ask');
   }
 
 }
