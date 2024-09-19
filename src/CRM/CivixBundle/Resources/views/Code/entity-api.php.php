@@ -24,7 +24,7 @@ function _<?php echo $apiFunctionPrefix ?>create_spec(&$spec) {
  * @return array
  *   API result descriptor
  *
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function <?php echo $apiFunctionPrefix ?>create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params, <?php var_export($entityNameCamel); ?>);
@@ -38,7 +38,7 @@ function <?php echo $apiFunctionPrefix ?>create($params) {
  * @return array
  *   API result descriptor
  *
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function <?php echo $apiFunctionPrefix ?>delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
@@ -52,7 +52,7 @@ function <?php echo $apiFunctionPrefix ?>delete($params) {
  * @return array
  *   API result descriptor
  *
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function <?php echo $apiFunctionPrefix ?>get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, TRUE, <?php var_export($entityNameCamel); ?>);

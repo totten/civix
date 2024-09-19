@@ -26,7 +26,7 @@ function _<?php echo $apiFunction ?>_spec(&$spec) {
  *
  * @see civicrm_api3_create_success
  *
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function <?php echo $apiFunction ?>($params) {
   if (array_key_exists('magicword', $params) && $params['magicword'] == 'sesame') {
@@ -43,6 +43,6 @@ function <?php echo $apiFunction ?>($params) {
     return civicrm_api3_create_success($returnValues, $params, '<?php echo $entityNameCamel; ?>', '<?php echo $actionNameCamel; ?>');
   }
   else {
-    throw new API_Exception(/*error_message*/ 'Everyone knows that the magicword is "sesame"', /*error_code*/ 'magicword_incorrect');
+    throw new CRM_Core_Exception(/*error_message*/ 'Everyone knows that the magicword is "sesame"', /*error_code*/ 'magicword_incorrect');
   }
 }
