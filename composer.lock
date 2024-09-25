@@ -1206,12 +1206,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/totten/license-data.git",
-                "reference": "50c5d843de00af80774e89b8a4598a6a6d273b3a"
+                "reference": "96097070e47732d92c0a25d62b85a00dbe1c3aed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/totten/license-data/zipball/50c5d843de00af80774e89b8a4598a6a6d273b3a",
-                "reference": "50c5d843de00af80774e89b8a4598a6a6d273b3a",
+                "url": "https://api.github.com/repos/totten/license-data/zipball/96097070e47732d92c0a25d62b85a00dbe1c3aed",
+                "reference": "96097070e47732d92c0a25d62b85a00dbe1c3aed",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1231,9 +1231,9 @@
             "description": "Dataset with open-source licenses",
             "support": {
                 "issues": "https://github.com/totten/license-data/issues",
-                "source": "https://github.com/totten/license-data/tree/master"
+                "source": "https://github.com/totten/license-data/tree/0.3"
             },
-            "time": "2015-08-18T16:41:33+00:00"
+            "time": "2024-05-28T04:34:28+00:00"
         },
         {
             "name": "totten/lurkerlite",
@@ -1403,5 +1403,5 @@
     "platform-overrides": {
         "php": "7.3.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
