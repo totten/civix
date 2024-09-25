@@ -33,7 +33,7 @@ class Path {
       $this->basedir = $basedir->basedir;
     }
     else {
-      $this->basedir = $basedir;
+      $this->basedir = static::normalize($basedir);
     }
   }
 
@@ -52,7 +52,7 @@ class Path {
   public function string() {
     $args = func_get_args();
     array_unshift($args, $this->basedir);
-    return implode(DIRECTORY_SEPARATOR, $args);
+    return static::normalize(implode('/', $args));
   }
 
   /**
@@ -65,7 +65,7 @@ class Path {
   public function path() {
     $args = func_get_args();
     array_unshift($args, $this->basedir);
-    return new Path(implode(DIRECTORY_SEPARATOR, $args));
+    return new Path(implode('/', $args));
   }
 
   /**
@@ -106,6 +106,10 @@ class Path {
       default:
         throw new \RuntimeException("Unrecognized file pattern: $pattern");
     }
+  }
+
+  protected static function normalize(string $path) {
+    return str_replace('\\', '/', $path);
   }
 
 }
