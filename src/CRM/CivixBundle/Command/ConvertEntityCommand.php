@@ -318,6 +318,9 @@ class ConvertEntityCommand extends AbstractCommand {
       if (!empty($fields[$name]['pseudoconstant']['suffixes'])) {
         $fields[$name]['pseudoconstant']['suffixes'] = explode(',', $fields[$name]['pseudoconstant']['suffixes']);
       }
+      if (!empty($fields[$name]['pseudoconstant']['callback']) && str_contains('::', $fields[$name]['pseudoconstant']['callback'])) {
+        $fields[$name]['pseudoconstant']['callback'] = explode('::', $fields[$name]['pseudoconstant']['callback']);
+      }
     }
     foreach ($xml->foreignKey ?? [] as $fkXml) {
       if (empty($fkXml->drop)) {
