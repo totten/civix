@@ -2,6 +2,9 @@
 
 namespace CRM\CivixBundle\Utils;
 
+/**
+ * @group unit
+ */
 class NamingTest extends \PHPUnit\Framework\TestCase {
 
   public function getFullNameExamples() {
