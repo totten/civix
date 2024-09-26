@@ -28,6 +28,7 @@ use ProcessHelper\ProcessHelper as PH;
  *      - 'qf': An extension with some QuickForm pages/forms.
  *      - 'entity3': An extension with an entity supporting APIv3.
  *      - 'entity34': An extension with an entity supporting APIv3 and APIv4.
+ *      - 'entity4': An extension with an entity supporting APIv4.
  *      - 'kitchensink': An extension with a bunch of random things. (Varies based on the CIVIX_VERSION.)
  *      - 'svc': An extension with a service-object.
  *      - (NOTE: For a more detailed sketch of each scenario, see `tests/make-snapshots.sh`.)
@@ -135,6 +136,22 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
     $descriptions3 = array_column($parsed3['values'], 'description');
     $this->assertTrue(in_array("Unique $entity ID", $descriptions3), "$entity.id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
     $this->assertTrue(in_array('FK to Contact', $descriptions3), "$entity.contact_id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
+
+    $getFields4 = PH::runOK("cv api4 $entity.getFields --out=json");
+    $parsed4 = json_decode($getFields4->getOutput(), TRUE);
+    $descriptions4 = array_column($parsed4, 'description');
+    $this->assertTrue(in_array("Unique $entity ID", $descriptions4), "$entity.id should have APIv4 description. Actual metadata response was: ");
+    $this->assertTrue(in_array('FK to Contact', $descriptions4), "$entity.contact_id should have APIv4 description. Actual metadata response was: ");
+  }
+
+  /**
+   * The "*-entity4.zip" snapshots include an entity ("MyEntityFour") with APIv4 support.
+   * This also appears in some kitchen-sink builds.
+   */
+  public function checkSnapshot_entity4(): void {
+    $this->runsIf($this->isScenario('entity4') || $this->isKitchenSinkWith('xml/schema/CRM/Civixsnapshot/MyEntityFour.xml'));
+
+    $entity = 'MyEntityFour';
 
     $getFields4 = PH::runOK("cv api4 $entity.getFields --out=json");
     $parsed4 = json_decode($getFields4->getOutput(), TRUE);
