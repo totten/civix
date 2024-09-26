@@ -18,7 +18,7 @@ use CRM\CivixBundle\Utils\Naming;
 use Exception;
 
 class AddEntityCommand extends AbstractCommand {
-  const API_VERSION = 3;
+  const API_VERSION = 4;
 
   protected function configure() {
     parent::configure();
@@ -27,7 +27,6 @@ class AddEntityCommand extends AbstractCommand {
       ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL*)')
       ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")')
       ->addOption('table-name', NULL, InputOption::VALUE_OPTIONAL, 'The SQL table name. (see usage)')
-      ->addOption('api-version', 'A', InputOption::VALUE_REQUIRED, 'Comma-separated list of versions (3,4)', '4')
       ->setHelp('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension.
 This command is experimental. Developer discretion is advised.
 
@@ -50,10 +49,7 @@ explicity.');
 
     $this->assertCurrentFormat();
 
-    $apiVersions = explode(',', $input->getOption('api-version'));
-    if (!empty(array_diff($apiVersions, ['3', '4']))) {
-      throw new Exception("In --api-versions, found unrecognized versions. Expected: '3' and/or '4'");
-    }
+    $apiVersions = [self::API_VERSION];
 
     Civix::generator()->addUpgrader('if-forced');
 
@@ -71,18 +67,11 @@ explicity.');
 
     $ctx['entityNameCamel'] = ucfirst($input->getArgument('<EntityName>'));
     $ctx['tableName'] = $input->getOption('table-name') ? $input->getOption('table-name') : Naming::createTableName($input->getArgument('<EntityName>'));
-    if (function_exists('_civicrm_api_get_entity_name_from_camel')) {
-      $ctx['apiFunctionPrefix'] = 'civicrm_api' . self::API_VERSION . '_' . _civicrm_api_get_entity_name_from_camel($ctx['entityNameCamel']) . '_';
-    }
-    else {
-      throw new Exception("Failed to determine proper API function name. Perhaps the API internals have changed?");
-    }
 
     $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@2.0']);
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
 
-    $ctx['apiFile'] = $basedir->string('api', 'v3', $ctx['entityNameCamel'] . '.php');
     $ctx['api4File'] = $basedir->string('Civi', 'Api4', $ctx['entityNameCamel'] . '.php');
     $ctx['daoClassName'] = strtr($ctx['namespace'], '/', '_') . '_DAO_' . $input->getArgument('<EntityName>');
     $ctx['daoClassFile'] = $basedir->string(strtr($ctx['daoClassName'], '_', '/') . '.php');
@@ -90,8 +79,6 @@ explicity.');
     $ctx['baoClassFile'] = $basedir->string(strtr($ctx['baoClassName'], '_', '/') . '.php');
     $ctx['entityTypeFile'] = $basedir->string('schema', $input->getArgument('<EntityName>') . '.entityType.php');
     $ctx['extensionName'] = $info->getExtensionName();
-    $ctx['testApi3ClassName'] = 'api_v3_' . $ctx['entityNameCamel'] . 'Test';
-    $ctx['testApi3ClassFile'] = $basedir->string('tests', 'phpunit', strtr($ctx['testApi3ClassName'], '_', '/') . '.php');
 
     $ext = new Collection();
     $ext->builders['dirs'] = new Dirs([
@@ -100,13 +87,7 @@ explicity.');
     $ext->builders['dirs']->save($ctx, $output);
 
     $hasPhpUnit = FALSE;
-    if (in_array('3', $apiVersions)) {
-      $ext->builders['dirs']->addPath(dirname($ctx['apiFile']));
-      $ext->builders['api.php'] = new Template('entity-api.php.php', $ctx['apiFile'], FALSE, Civix::templating());
-      $ext->builders['dirs']->addPath(dirname($ctx['testApi3ClassFile']));
-      $ext->builders['test.php'] = new Template('entity-api3-test.php.php', $ctx['testApi3ClassFile'], FALSE, Civix::templating());
-      $hasPhpUnit = TRUE;
-    }
+
     if (in_array('4', $apiVersions)) {
       $ext->builders['dirs']->addPath(dirname($ctx['api4File']));
       $ext->builders['api4.php'] = new Template('entity-api4.php.php', $ctx['api4File'], FALSE, Civix::templating());
@@ -133,14 +114,8 @@ explicity.');
 
     Civix::generator()->updateModuleCivixPhp();
 
-    if (count($apiVersions) >= 2) {
-      $output->writeln('<comment>Generated API skeletons for APIv3 and APIv4.</comment>');
-    }
-    elseif ($apiVersions == ['3']) {
-      $output->writeln('<comment>Generated API skeletons for APIv3. To generate APIv4, specify <info>--api-version=4</info></comment>');
-    }
-    elseif ($apiVersions == ['4']) {
-      $output->writeln('<comment>Generated API skeletons for APIv4. To generate APIv3, specify <info>--api-version=3</info></comment>');
+    if ($apiVersions == [4]) {
+      $output->writeln('<comment>Generated API skeletons for APIv4.</comment>');
     }
 
     $output->writeln('<comment>Note: no changes have been made to the database. You can update the database by uninstalling and re-enabling the extension.</comment>');
