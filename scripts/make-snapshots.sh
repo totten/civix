@@ -22,13 +22,13 @@ while [ -n "$1" ]; do
     --version) SNAPSHOT_VER="$1" ; shift ; ;;
     --test|-t) RUN_TEST=1 ; ;;
     --keep|-k) KEEP=1 ; ;;
-    empty|qf|entity3|entity34|kitchensink|svc) SCENARIOS="$SCENARIOS $OPT" ; ;;
+    empty|qf|entity4|kitchensink|svc) SCENARIOS="$SCENARIOS $OPT" ; ;;
     *) echo "Unrecognized option: $OPT" 1>&2 ; exit 1 ;;
   esac
 done
 
 if [ -z "$SCENARIOS" ]; then
-  SCENARIOS="empty qf entity3 entity34 kitchensink svc"
+  SCENARIOS="empty qf entity4 kitchensink svc"
 fi
 
 ################################################
@@ -47,11 +47,11 @@ function show_help() {
   echo "  --keep: Keep the temporary work folder"
   echo
   echo "Scenarios:"
-  echo "  empty qf entity3 entity34 kitchensink svc"
+  echo "  empty qf entity4 kitchensink svc"
   echo
   echo "Example:"
   echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src"
-  echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src --keep entity34"
+  echo "  CIVIX_WORKSPACE=\$CIVIBUILD_HOME/dmaster/web/sites/all/modules/civicrm/ext/civixtest bash $0 --src --keep entity4"
 }
 
 function clean_workspace() {
@@ -82,15 +82,9 @@ function build_snapshot() {
       $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
       ;;
 
-    entity3)
+    entity4)
       $CIVIX $VERBOSITY generate:upgrader
-      $CIVIX $VERBOSITY generate:entity MyEntityThree -A3
-#      $CIVIX $VERBOSITY generate:entity MyEntityThree
-      ;;
-
-    entity34)
-      $CIVIX $VERBOSITY generate:upgrader
-      $CIVIX $VERBOSITY generate:entity MyEntityThreeFour -A3,4
+      $CIVIX $VERBOSITY generate:entity MyEntityFour
       ;;
 
     kitchensink)
@@ -98,10 +92,7 @@ function build_snapshot() {
       $CIVIX $VERBOSITY generate:api MyEntity myaction2
       $CIVIX $VERBOSITY generate:case-type MyLabel MyName
       # $CIVIX $VERBOSITY generate:custom-xml -f --data="FIXME" --uf="FIXME"
-      $CIVIX $VERBOSITY generate:entity MyEntityFour -A4
-      $CIVIX $VERBOSITY generate:entity MyEntityThree -A3
-#      $CIVIX $VERBOSITY generate:entity MyEntityThree
-      $CIVIX $VERBOSITY generate:entity MyEntityThreeFour -A3,4
+      $CIVIX $VERBOSITY generate:entity MyEntityFour
       $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
       $CIVIX $VERBOSITY generate:form My_StuffyForm civicrm/my-stuffy-form
       $CIVIX $VERBOSITY generate:page MyPage civicrm/my-page
