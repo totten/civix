@@ -103,7 +103,7 @@ use <?php echo $_namespace ?>_ExtensionUtil as E;
 <?php if (\Civix::checker()->hasMixinLibrary()) { ?>
 pathload()->addSearchDir(__DIR__ . '/mixin/lib');
 <?php } ?>
-<?php if (\Civix::checker()->hasSchemaPhp() || \Civix::checker()->hasMixinLibrary('civimix-schema@5')) { ?>
+<?php if (\Civix::checker()->hasSchemaPhp() || \Civix::checker()->hasMixinLibrary('civimix-schema@5') || \Civix::checker()->hasUpgrader()) { ?>
 spl_autoload_register('_<?php echo $mainFile ?>_civix_class_loader', TRUE, TRUE);
 
 function _<?php echo $mainFile ?>_civix_class_loader($class) {
