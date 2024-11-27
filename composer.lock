@@ -795,16 +795,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.35",
+            "version": "v4.4.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "c2098705326addae6e6742151dfade47ac71da1b"
+                "reference": "5cee9cdc4f7805e2699d9fd66991a0e6df8252a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/c2098705326addae6e6742151dfade47ac71da1b",
-                "reference": "c2098705326addae6e6742151dfade47ac71da1b",
+                "url": "https://api.github.com/repos/symfony/process/zipball/5cee9cdc4f7805e2699d9fd66991a0e6df8252a2",
+                "reference": "5cee9cdc4f7805e2699d9fd66991a0e6df8252a2",
                 "shasum": ""
             },
             "require": {
@@ -837,7 +837,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v4.4.35"
+                "source": "https://github.com/symfony/process/tree/v4.4.44"
             },
             "funding": [
                 {
@@ -853,7 +853,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-22T22:36:24+00:00"
+            "time": "2022-06-27T13:16:42+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -1300,20 +1300,20 @@
         },
         {
             "name": "totten/process-helper",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/totten/process-helper.git",
-                "reference": "4cd78744c60ca8fff3a1a1e453e53a8e099d9c4e"
+                "reference": "7c80621ec03909a981ddf55f9363d9f0d4e29010"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/totten/process-helper/zipball/4cd78744c60ca8fff3a1a1e453e53a8e099d9c4e",
-                "reference": "4cd78744c60ca8fff3a1a1e453e53a8e099d9c4e",
+                "url": "https://api.github.com/repos/totten/process-helper/zipball/7c80621ec03909a981ddf55f9363d9f0d4e29010",
+                "reference": "7c80621ec03909a981ddf55f9363d9f0d4e29010",
                 "shasum": ""
             },
             "require": {
-                "symfony/process": "^2.0 || ^3.0 || ^4.0"
+                "symfony/process": "^2.0 || ^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0"
             },
             "type": "library",
             "autoload": {
@@ -1334,9 +1334,9 @@
             "description": "Some quick sugar for working with Symfony Process",
             "support": {
                 "issues": "https://github.com/totten/process-helper/issues",
-                "source": "https://github.com/totten/process-helper/tree/v1.0.1"
+                "source": "https://github.com/totten/process-helper/tree/v1.0.2"
             },
-            "time": "2019-08-09T07:44:46+00:00"
+            "time": "2024-11-27T05:50:39+00:00"
         },
         {
             "name": "webmozart/glob",
