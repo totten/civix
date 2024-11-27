@@ -39,7 +39,7 @@ class TestRunCommand extends Command {
       ->addOption('debug', NULL, InputOption::VALUE_NONE, 'Run PHPUnit in debug mode.');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     Civix::boot(['output' => $output]);
     $basedir = new Path(getcwd());
 

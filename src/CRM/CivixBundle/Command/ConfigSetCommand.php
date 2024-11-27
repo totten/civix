@@ -19,7 +19,7 @@ class ConfigSetCommand extends AbstractCommand {
       ->addArgument('value', InputArgument::REQUIRED, 'Parameter value');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $ctx = [];
     $ext = new Collection();
 

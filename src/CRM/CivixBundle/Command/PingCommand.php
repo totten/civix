@@ -14,7 +14,7 @@ class PingCommand extends AbstractCommand {
       ->setDescription('Test whether the CiviCRM client is properly configured');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     Civix::boot(['output' => $output]);
     $civicrm_api3 = Civix::api3();
     if ($civicrm_api3->Contact->Get(['option.limit' => 1])) {

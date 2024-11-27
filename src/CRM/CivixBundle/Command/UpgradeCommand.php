@@ -33,7 +33,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     parent::configure();
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
       $verAliases = ['0' => '13.10.0'];
