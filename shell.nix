@@ -1,5 +1,5 @@
 /**
- * This shell is suitable for compiling civix.phar.... and not much else.
+ * This shell is suitable for compiling PHAR executables.... and not much else.
  *
  * Ex: `nix-shell --run ./scripts/build.sh`
  */
