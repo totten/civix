@@ -33,7 +33,7 @@ $ civix generate:theme foobar
 ');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
 
     //// Figure out template data ////

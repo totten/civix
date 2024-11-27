@@ -37,7 +37,7 @@ To add a new Angular-absed page, this command autogenerates three things:
 For more, see https://docs.angularjs.org/guide');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
 
     //// Figure out template data ////

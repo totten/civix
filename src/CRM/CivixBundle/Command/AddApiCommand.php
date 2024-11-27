@@ -46,7 +46,7 @@ action names.
 ');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $io = new SymfonyStyle($input, $output);
 
     // load Civi to get access to civicrm_api_get_function_name
@@ -54,7 +54,7 @@ action names.
     $civicrm_api3 = Civix::api3();
     if (!$civicrm_api3 || !$civicrm_api3->local) {
       $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-      return;
+      return 1;
     }
 
     $this->assertCurrentFormat();

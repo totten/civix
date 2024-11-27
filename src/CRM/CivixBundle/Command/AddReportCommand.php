@@ -28,7 +28,7 @@ class AddReportCommand extends AbstractCommand {
       ->addOption('copy', NULL, InputOption::VALUE_OPTIONAL, 'Full class name of an existing report which should be copied (eg "CRM_Report_Form_Activity")');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
 
     //// Figure out template data and put it in $ctx ////
@@ -102,7 +102,7 @@ class AddReportCommand extends AbstractCommand {
       $civicrm_api3 = Civix::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-        return;
+        return 1;
       }
 
       $origTplFile = 'templates/' . preg_replace('/_/', '/', $srcClassName) . '.tpl';
