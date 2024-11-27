@@ -38,7 +38,7 @@ explicity.');
 
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     // load Civi to get access to civicrm_api_get_function_name
     Civix::boot(['output' => $output]);
     $civicrm_api3 = Civix::api3();

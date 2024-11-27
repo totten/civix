@@ -53,7 +53,7 @@ as separate groups:
       ->addArgument('<CRM_Full_ClassName>', InputArgument::REQUIRED, 'The full class name (eg "CRM_Myextension_MyTest" or "Civi\Myextension\MyTest")');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
 
     $ctx = [];

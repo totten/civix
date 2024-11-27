@@ -16,7 +16,7 @@ class ConfigGetCommand extends AbstractCommand {
       ->addArgument('parameter', InputArgument::OPTIONAL, 'Parameter name');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $config = Civix::config();
     foreach ($this->getInterestingParameters() as $key) {
       printf("%-40s \"%s\"\n", $key, @$config['parameters'][$key]);

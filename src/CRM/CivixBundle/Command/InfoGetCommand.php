@@ -41,7 +41,7 @@ Examples:
 Common fields:\n * " . implode("\n * ", $fields) . "\n");
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $basedir = new Path(\CRM\CivixBundle\Application::findExtDir());
     $info = new Info($basedir->string('info.xml'));
     $ctx = [];

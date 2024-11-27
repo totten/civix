@@ -16,7 +16,7 @@ class BuildCommand extends AbstractCommand {
       ->setDescription('Build a zip file for a CiviCRM Extension');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
 
     $ctx = [];

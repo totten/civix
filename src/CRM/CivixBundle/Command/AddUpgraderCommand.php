@@ -14,7 +14,7 @@ class AddUpgraderCommand extends AbstractCommand {
       ->setDescription('Add an example upgrader class to a CiviCRM Module-Extension');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
     Civix::generator()->addUpgrader('if-forced');
     return 0;

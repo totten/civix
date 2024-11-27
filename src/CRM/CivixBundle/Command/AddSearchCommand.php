@@ -27,7 +27,7 @@ class AddSearchCommand extends AbstractCommand {
       ->addOption('copy', NULL, InputOption::VALUE_OPTIONAL, 'Full class name of an existing search which should be copied (eg "CRM_Contact_Form_Search_Custom_ZipCodeRange")');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->assertCurrentFormat();
 
     //// Figure out template data ////
@@ -81,7 +81,7 @@ class AddSearchCommand extends AbstractCommand {
       $civicrm_api3 = Civix::api3();
       if (!$civicrm_api3 || !$civicrm_api3->local) {
         $output->writeln("<error>--copy requires access to local CiviCRM source tree. Configure civicrm_api3_conf_path.</error>");
-        return;
+        return 1;
       }
 
       if (self::findTpl($srcClassName) == self::GENERIC_SEARCH_TEMPLATE) {

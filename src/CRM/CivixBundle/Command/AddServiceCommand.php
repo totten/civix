@@ -22,7 +22,7 @@ class AddServiceCommand extends AbstractCommand {
     parent::configure();
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $gen = \Civix::generator();
     $gen->addMixins(['scan-classes@1.0']);
 
@@ -57,6 +57,8 @@ class AddServiceCommand extends AbstractCommand {
     $gen->addClass($className, 'service.php.php', [
       'service' => $serviceName,
     ], 'ask');
+
+    return 0;
   }
 
 }

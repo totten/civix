@@ -27,7 +27,7 @@ class ConvertEntityCommand extends AbstractCommand {
     parent::configure();
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     Civix::boot(['output' => $output]);
     $this->assertCurrentFormat();
 

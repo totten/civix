@@ -21,7 +21,7 @@ abstract class AbstractAddPageCommand extends AbstractCommand {
       ->addArgument('<web/path>', InputArgument::REQUIRED, 'The path which maps to this page (eg "civicrm/my-page")');
   }
 
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     if (!preg_match('/^civicrm\//', $input->getArgument('<web/path>'))) {
       throw new Exception("Web path must begin with 'civicrm/'");
     }
