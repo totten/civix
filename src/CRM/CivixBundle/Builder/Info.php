@@ -15,8 +15,7 @@ class Info extends XML {
 
   public function init(&$ctx) {
     $ctx += [
-      // FIXME: Auto-detect current installed civi version
-      'compatibilityVerMin' => 5.45,
+      'compatibilityVerMin' => self::getCiviVersion(),
     ];
 
     if (version_compare($ctx['compatibilityVerMin'], static::MINIMUM_COMPATIBILITY_NEW_EXTENSION, '<')) {
@@ -176,7 +175,11 @@ class Info extends XML {
   public function getCompatibilityVer(string $mode = 'MIN'): ?string {
     $vers = [];
     foreach ($this->get()->xpath('compatibility/ver') as $ver) {
-      $vers[] = (string) $ver;
+      $ver = (string) $ver;
+      if ($ver === '[civicrm.majorVersion]') {
+        $ver = self::getCiviVersion();
+      }
+      $vers[] = $ver;
     }
     return Versioning::pickVer($vers, $mode);
   }
@@ -266,6 +269,13 @@ class Info extends XML {
       $rule->addAttribute('prefix', $loader['prefix']);
       $rule->addAttribute('path', $loader['path']);
     }
+  }
+
+  public static function getCiviVersion(): string {
+    Civix::boot();
+    // Return major.minor but exclude the trailing patch version
+    [$major, $minor] = explode('.', \CRM_Utils_System::version());
+    return "$major.$minor";
   }
 
   private function findCreateElement(SimpleXMLElement $base, string $tag): SimpleXMLElement {
