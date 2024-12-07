@@ -309,7 +309,7 @@ class Generator {
       ])->indexBy('name');
 
       $meta = $afform;
-      unset($meta['name'], $meta['layout'], $meta['navigation']);
+      unset($meta['name'], $meta['layout'], $meta['navigation'], $meta['search_displays']);
       // Simplify meta file by removing readonly fields and values that match the defaults
       foreach ($meta as $field => $value) {
         if ($fields[$field]['readonly'] ||
