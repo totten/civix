@@ -87,6 +87,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
   }
 
   Civix::boot(['output' => Civix::output()]);
-  \CRM\CivixBundle\Command\ConvertEntityCommand::convertEntities($xmlSchemaFiles, FALSE);
-
+  if (!empty($xmlSchemaFiles)) {
+    \CRM\CivixBundle\Command\ConvertEntityCommand::convertEntities($xmlSchemaFiles, FALSE);
+  }
 };
