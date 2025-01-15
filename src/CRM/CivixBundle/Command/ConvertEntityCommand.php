@@ -31,7 +31,7 @@ class ConvertEntityCommand extends AbstractCommand {
     Civix::boot(['output' => $output]);
     $this->assertCurrentFormat();
 
-    \Civix::io()->note("Finding entities");
+    \Civix::io()->note('Finding legacy xml entities');
 
     $isCore = $input->getOption('core-style');
 
@@ -46,7 +46,11 @@ class ConvertEntityCommand extends AbstractCommand {
       $xmlFiles = $input->getArgument('xmlFiles');
     }
 
-    static::convertEntities($xmlFiles, $isCore);
+    if (!empty($xmlFiles)) {
+      static::convertEntities($xmlFiles, $isCore);
+    } else {
+      \Civix::io()->note('No legacy xml entities found');
+    }
 
     return 0;
   }
