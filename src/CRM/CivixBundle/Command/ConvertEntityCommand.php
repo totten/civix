@@ -61,6 +61,9 @@ class ConvertEntityCommand extends AbstractCommand {
    * @throws \Exception
    */
   public static function convertEntities(array $xmlFiles, bool $isCore): void {
+    if (empty($xmlFiles)) {
+      return;
+    }
     $xmlFiles = preg_grep('/files.xml$/', $xmlFiles, PREG_GREP_INVERT);
     $xmlFiles = preg_grep('/Schema.xml$/', $xmlFiles, PREG_GREP_INVERT);
 
