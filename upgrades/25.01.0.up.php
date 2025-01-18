@@ -1,6 +1,6 @@
 <?php
 
-use CRM\CivixBundle\Utils\PrimitiveFunctionVisitor;
+use CRM\CivixBundle\Parse\PrimitiveFunctionVisitor;
 
 /**
  * If you have EFv2, then you probably don't want to implement hook_entityTypes directly.

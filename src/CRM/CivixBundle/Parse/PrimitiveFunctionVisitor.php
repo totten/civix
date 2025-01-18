@@ -1,6 +1,6 @@
 <?php
 
-namespace CRM\CivixBundle\Utils;
+namespace CRM\CivixBundle\Parse;
 
 /**
  * Given a PHP file, visit all functions in the file. Use this for primitive
