@@ -20,11 +20,8 @@ return function (\CRM\CivixBundle\Generator $gen) {
     $steps[] = "Update mixin entity-types-php@1 to entity-types-php@2";
   }
 
-  if ($oldClass && $oldClass !== $newClass) {
-    $steps[] = "Update info.xml to use $newClass (which delegates to $delegateClass)";
-  }
-  else {
-    $steps[] = "Update info.xml to use $newClass";
+  if (!empty($oldClass)) {
+    $steps[] = $oldClass !== $newClass ? "Update info.xml to use $newClass (which delegates to $delegateClass)" : "Update info.xml to use $newClass";
   }
   if (!empty($relSqlFiles)) {
     $steps[] = 'Delete ' . implode(' and ', $relSqlFiles);
