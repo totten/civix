@@ -63,20 +63,23 @@ class PrimitiveFunctionVisitor {
 
   public function run(): string {
     $output = '';
-    while (($token = $this->nextToken()) !== NULL) {
-      if ($token->is(T_FUNCTION)) {
+
+    while (($peek = $this->peek()) !== NULL) {
+      if ($peek->is(T_FUNCTION)) {
         $output .= $this->parseFunction();
       }
       else {
-        $output .= $token->value();
+        $output .= $this->consume()->value();
       }
     }
     return $output;
   }
 
   private function parseFunction(): string {
+    $this->consume()->assert(T_FUNCTION);
+
     $pad0 = $this->fastForward(T_STRING);
-    $function = $this->nextToken()->value();
+    $function = $this->consume()->value();
 
     $pad1 = $this->fastForward('(');
     $signature = $this->parseSection('(', ')');
@@ -104,52 +107,46 @@ class PrimitiveFunctionVisitor {
   }
 
   private function parseSection(string $openChar, string $closeChar): string {
-    if ($this->peekToken() === NULL) {
-      echo '';
-    }
-    $this->peekToken()->assert($openChar);
+    $this->consume()->assert($openChar);
+    $depth = 1;
     $section = '';
-    $depth = 0;
 
-    while (($token = $this->nextToken()) !== NULL) {
-      $section .= $token->value();
-
-      if ($token->is($openChar)) {
-        $depth++;
-      }
-      elseif ($token->is($closeChar)) {
+    while (($token = $this->consume()) !== NULL) {
+      if ($token->is($closeChar)) {
         $depth--;
         if ($depth === 0) {
           break;
         }
       }
+      $section .= $token->value();
+      if ($token->is($openChar)) {
+        $depth++;
+      }
     }
-    return substr($section, 1, -1);
+    return $section;
   }
 
-  private function nextToken(?string $assertType = NULL): ?Token {
+  private function consume(): ?Token {
     if ($this->currentIndex < count($this->tokens)) {
-      $token = $this->tokens[$this->currentIndex++];
-      $token->assert($assertType);
-      return $token;
+      return $this->tokens[$this->currentIndex++];
     }
     return NULL;
   }
 
-  private function peekToken(): ?Token {
+  private function peek(): ?Token {
     return $this->tokens[$this->currentIndex] ?? NULL;
   }
 
   private function fastForward($expectedToken): string {
     $output = '';
-    while (($token = $this->peekToken()) !== NULL) {
+    while (($token = $this->peek()) !== NULL) {
       if ($token->is($expectedToken)) {
         break;
       }
       else {
         $output .= $token->value();
       }
-      $this->nextToken();
+      $this->consume();
     }
     return $output;
   }

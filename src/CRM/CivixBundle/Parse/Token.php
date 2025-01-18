@@ -74,11 +74,20 @@ class Token {
    *   One of:
    *    - Integer: The token-type ID
    *    - String: The raw value of the token
+   *    - Array: List of strings or integers; any one to match
    * @return bool
    */
   public function is($expect): bool {
     if ($expect === NULL) {
       return TRUE; /* wildcard */
+    }
+    if (is_array($expect)) {
+      foreach ($expect as $expectOption) {
+        if ($this->is($expectOption)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
     }
     if (is_int($expect)) {
       return $this->typeId === $expect;
