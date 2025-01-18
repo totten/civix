@@ -28,6 +28,10 @@ namespace CRM\CivixBundle\Parse;
  *  });
  */
 class PrimitiveFunctionVisitor {
+
+  /**
+   * @var Token[]
+   */
   private $tokens;
   private $filter;
   private $currentIndex = 0;
@@ -53,18 +57,18 @@ class PrimitiveFunctionVisitor {
   }
 
   public function __construct(string $code, callable $filter) {
-    $this->tokens = token_get_all($code);
+    $this->tokens = Token::tokenize($code);
     $this->filter = $filter;
   }
 
   public function run(): string {
     $output = '';
     while (($token = $this->nextToken()) !== NULL) {
-      if ($this->isToken($token, T_FUNCTION)) {
+      if ($token->is(T_FUNCTION)) {
         $output .= $this->parseFunction();
       }
       else {
-        $output .= is_array($token) ? $token[1] : $token;
+        $output .= $token->value();
       }
     }
     return $output;
@@ -72,7 +76,7 @@ class PrimitiveFunctionVisitor {
 
   private function parseFunction(): string {
     $pad0 = $this->fastForward(T_STRING);
-    $function = $this->nextToken()[1];
+    $function = $this->nextToken()->value();
 
     $pad1 = $this->fastForward('(');
     $signature = $this->parseSection('(', ')');
@@ -100,19 +104,22 @@ class PrimitiveFunctionVisitor {
   }
 
   private function parseSection(string $openChar, string $closeChar): string {
-    $this->assertToken($this->peekToken(), $openChar);
+    if ($this->peekToken() === NULL) {
+      echo '';
+    }
+    $this->peekToken()->assert($openChar);
     $section = '';
-    $parenthesisCount = 0;
+    $depth = 0;
 
     while (($token = $this->nextToken()) !== NULL) {
-      $section .= is_array($token) ? $token[1] : $token;
+      $section .= $token->value();
 
-      if ($token === $openChar) {
-        $parenthesisCount++;
+      if ($token->is($openChar)) {
+        $depth++;
       }
-      elseif ($token === $closeChar) {
-        $parenthesisCount--;
-        if ($parenthesisCount === 0) {
+      elseif ($token->is($closeChar)) {
+        $depth--;
+        if ($depth === 0) {
           break;
         }
       }
@@ -120,60 +127,27 @@ class PrimitiveFunctionVisitor {
     return substr($section, 1, -1);
   }
 
-  private function isToken($token, $type): bool {
-    if (is_array($token)) {
-      return $token[0] === $type;
-    }
-    else {
-      return $token === $type;
-    }
-  }
-
-  private function assertToken($token, $type): void {
-    if ($type === NULL) {
-      return;
-    }
-
-    if ($this->isToken($token, $type)) {
-      return;
-    }
-
-    $actualTypeName = is_array($token) ? token_name($token[0]) : $token;
-    $expectTypeName = is_string($type) ? $token : token_name($type);
-    throw new \RuntimeException(sprintf('Token %s does not match type %s', json_encode($actualTypeName), json_encode($expectTypeName)));
-  }
-
-  private function nextToken(?string $assertType = NULL) {
+  private function nextToken(?string $assertType = NULL): ?Token {
     if ($this->currentIndex < count($this->tokens)) {
       $token = $this->tokens[$this->currentIndex++];
-      $this->assertToken($token, $assertType);
+      $token->assert($assertType);
       return $token;
     }
     return NULL;
   }
 
-  private function peekToken() {
+  private function peekToken(): ?Token {
     return $this->tokens[$this->currentIndex] ?? NULL;
   }
 
   private function fastForward($expectedToken): string {
     $output = '';
     while (($token = $this->peekToken()) !== NULL) {
-      if (is_array($token)) {
-        if ($token[0] === $expectedToken) {
-          break;
-        }
-        else {
-          $output .= $token[1];
-        }
+      if ($token->is($expectedToken)) {
+        break;
       }
       else {
-        if ($token === $expectedToken) {
-          break;
-        }
-        else {
-          $output .= $token;
-        }
+        $output .= $token->value();
       }
       $this->nextToken();
     }
