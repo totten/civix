@@ -2,6 +2,8 @@
 
 namespace CRM\CivixBundle;
 
+use CRM\CivixBundle\Builder\Mixins;
+
 /**
  * This is a random grab-bag of conditionals that are show up when deciding how to generate code.
  */
@@ -71,6 +73,18 @@ class Checker {
   public function hasUpgrader(string $pattern = '/.+/'): bool {
     $upgrader = $this->generator->infoXml->get()->upgrader;
     return $upgrader && preg_match($pattern, $upgrader);
+  }
+
+  /**
+   * @param string $pattern
+   *   Regex.
+   * @return bool
+   *   TRUE if any mixin constraint matches the regex.
+   */
+  public function hasMixin(string $pattern = '/.+/'): bool {
+    $mixins = new Mixins($this->generator->infoXml, $this->generator->baseDir->string('mixin'));
+    $declared = $mixins->getDeclaredMixinConstraints();
+    return !empty(preg_grep($pattern, $declared));
   }
 
   /**
