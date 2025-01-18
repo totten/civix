@@ -37,17 +37,20 @@ class PrimitiveFunctionVisitor {
   private $currentIndex = 0;
 
   /**
-   * Parse a PHP script and visit all the function(){} declarations.
+   * Parse a PHP script and visit all the function() declarations in the main script.
    *
    * @param string $code
    *   Fully formed PHP code
    * @param callable $filter
-   *   This callback is executed against each function.
+   *   This callback is executed against each function from the main-script.
    *
-   *   function(string &$functionName, string &$signature, string &$code): ?string
+   *   function(?string &$functionName, string &$signature, string &$code): ?string
    *
    *   Note that inputs are all alterable. Additionally, the result may optionally specify
    *   an action to perform on the overall function ('DELETE', 'COMMENT').
+   *
+   *   If the main-script has an anonymous function (long-form: `$f = function (...) use (...) { ... }`),
+   *   then it will be recognized with NULL name. However, short-form `fn()` is not.
    *
    * @return string
    */
@@ -78,8 +81,13 @@ class PrimitiveFunctionVisitor {
   private function parseFunction(): string {
     $this->consume()->assert(T_FUNCTION);
 
-    $pad0 = $this->fastForward(T_STRING);
-    $function = $this->consume()->value();
+    $pad0 = $this->fastForward([T_STRING, '(']);
+    if ($this->peek()->is(T_STRING)) {
+      $function = $this->consume()->value();
+    }
+    else {
+      $function = NULL;
+    }
 
     $pad1 = $this->fastForward('(');
     $signature = $this->parseSection('(', ')');
@@ -100,6 +108,9 @@ class PrimitiveFunctionVisitor {
           },
           explode("\n", $code)
         )) . "\n";
+    }
+    elseif ($function == NULL) {
+      return 'function' . $pad0 . $pad1 . '(' . $signature . ')' . $pad2 . '{' . $codeBlock . '}';
     }
     else {
       return 'function' . $pad0 . $function . $pad1 . '(' . $signature . ')' . $pad2 . '{' . $codeBlock . '}';

@@ -24,11 +24,19 @@ class PrimitiveFunctionVisitorTest extends \PHPUnit\Framework\TestCase {
     $code .= "// Complex\n";
     $code .= '$anon = function(int $a) { return 100; };';
     $code .= '$bufA = [];';
-    $code .= '(new Stuff())->do(wrapping(200, function($x, $y) use ($buf) { return $x; }));';
-    $code .= 'function zero($a) {};';
+    $code .= '(new Stuff())->do(wrapping(200, function($x, $y) use ($buf) {';
+    $code .= '  if ($y) {';
+    $code .= '    if (time()) {';
+    $code .= '      return $x;';
+    $code .= '    }';
+    $code .= '    else {}';
+    $code .= '  }';
+    $code .= '  else { womp(); womp(); }';
+    $code .= '}));';
+    $code .= 'function zero($a) { /* nullop */ };';
     $code .= '?>';
     $code .= $this->getBasicFile();
-    $code .= 'function finale($a) {}';
+    $code .= 'function finale($z) {}';
     return $code;
   }
 
@@ -133,24 +141,24 @@ class PrimitiveFunctionVisitorTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals($input, $output);
   }
 
-  // public function testComplexFileVisitOrder(): void {
-  //   $input = $this->getComplexFile();
-  //
-  //   $visited = [];
-  //   $output = PrimitiveFunctionVisitor::visit($input, function (&$func, &$sig, &$code) use (&$visited) {
-  //     $visited[] = $func;
-  //   });
-  //   $this->assertEquals(['zero', 'first', 'second', 'third', 'finale'], $visited);
-  //
-  //   $this->assertEquals($input, $output);
-  // }
+  public function testComplexFileVisitOrder(): void {
+    $input = $this->getComplexFile();
 
-  // public function testAnonymousFunctions(): void {
-  //   $input = '<' . '?php ';
-  //   $input .= "// Woop\n";
-  //   $input .= "// Woop\n";
-  //   $input .= "function first() { echo 1; }";
-  //   $input .= "/**\n * Woop\n */\n";
-  // }
+    $visited = [];
+    $output = PrimitiveFunctionVisitor::visit($input, function (&$func, &$sig, &$code) use (&$visited) {
+      $visited[] = ['func' => $func, 'sig' => $sig, 'code' => $code];
+    });
+    $expected = [];
+    $expected[] = ['func' => NULL, 'sig' => 'int $a', 'code' => ' return 100; '];
+    $expected[] = ['func' => NULL, 'sig' => '$x, $y', 'code' => '  if ($y) {    if (time()) {      return $x;    }    else {}  }  else { womp(); womp(); }'];
+    $expected[] = ['func' => 'zero', 'sig' => '$a', 'code' => ' /* nullop */ '];
+    $expected[] = ['func' => 'first', 'sig' => '', 'code' => ' echo 1; '];
+    $expected[] = ['func' => 'second', 'sig' => 'array ?$xs = []', 'code' => ' echo 2; '];
+    $expected[] = ['func' => 'third', 'sig' => '$a, $b, $c', 'code' => ' echo 3; '];
+    $expected[] = ['func' => 'finale', 'sig' => '$z', 'code' => ''];
+    $this->assertEquals($expected, $visited);
+
+    $this->assertEquals($input, $output);
+  }
 
 }
