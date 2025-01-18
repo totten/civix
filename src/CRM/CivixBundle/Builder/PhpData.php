@@ -151,13 +151,13 @@ class PhpData implements Builder {
       /**
        * @var \PhpArrayDocument\ArrayItemNode $arrayItem
        */
-      if (in_array($arrayItem->getKey(), $this->keysToTranslate ?: []) && $arrayItem->getValue() instanceof ScalarNode) {
+      if (in_array($arrayItem->getKey(), $this->keysToTranslate ?: [], true) && $arrayItem->getValue() instanceof ScalarNode) {
         $arrayItem->getValue()->setFactory($ts);
       }
-      if (in_array($arrayItem->getKey(), $this->useCallbacks)) {
+      if (in_array($arrayItem->getKey(), $this->useCallbacks, true)) {
         $arrayItem->getValue()->setDeferred(TRUE);
       }
-      if (in_array($arrayItem->getKey(), $this->literals)) {
+      if (in_array($arrayItem->getKey(), $this->literals, true)) {
         $arrayItem->getValue()->setFactory('constant');
       }
     }
