@@ -5,9 +5,9 @@
  */
 return [
   'polyfill' => [
-    'sha256' => '4a60b871ca6ef75172459667e130d0692998d10b6ee59cfc3be541e50d0da3f7',
-    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/f55a0e7978c92e76c18cd613ece11489052b5b33/mixin/polyfill.php',
-    // ^^ This link can be updated when there is tag for 5.58.
+    'sha256' => 'fe28125744b6c78a62a3a365253295df0f15b6335cdc8c0e7ad28827625a0fa8',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/4d32ebf95a5214cc5cea8a0d2578cb8d2c511746/mixin/polyfill.php',
+    // ^^ This revision was technically merged in 6.0. However, it's basically NFC compared to the prior 5.58-era revision.
     'local' => 'extern/mixin/polyfill.php',
     'provided-by' => '5.45.beta1',
     'minimum' => '5.27', /* Compat may go back further; haven't tested */
