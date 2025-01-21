@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8a15250f0e9b14dbeebfdff9db59dd65",
+    "content-hash": "3a0d3dd240fd0f0a8b48bc1c0a66669c",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -111,16 +111,16 @@
         },
         {
             "name": "civicrm/cv-lib",
-            "version": "v0.3.59",
+            "version": "v0.3.60",
             "source": {
                 "type": "git",
                 "url": "https://github.com/civicrm/cv-lib.git",
-                "reference": "186542397c1a2f55dc0ab634887d1ffd6d8757f0"
+                "reference": "74a4f65e48176d3902d85e3b298d87dcea51e2fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/civicrm/cv-lib/zipball/186542397c1a2f55dc0ab634887d1ffd6d8757f0",
-                "reference": "186542397c1a2f55dc0ab634887d1ffd6d8757f0",
+                "url": "https://api.github.com/repos/civicrm/cv-lib/zipball/74a4f65e48176d3902d85e3b298d87dcea51e2fa",
+                "reference": "74a4f65e48176d3902d85e3b298d87dcea51e2fa",
                 "shasum": ""
             },
             "require": {
@@ -147,9 +147,9 @@
             ],
             "description": "Bootstrap library for CiviCRM CLI tools",
             "support": {
-                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.59"
+                "source": "https://github.com/civicrm/cv-lib/tree/v0.3.60"
             },
-            "time": "2024-11-27T03:56:17+00:00"
+            "time": "2025-01-21T01:51:02+00:00"
         },
         {
             "name": "civicrm/php-array-doc",
@@ -1649,9 +1649,9 @@
     "platform": {
         "php": ">=7.3.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.3.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
