@@ -65,6 +65,12 @@ class MixinLibraries {
       }
     }
 
+    // When copying the library to the new folder, we may have a choice about which
+    // format (eg PHAR/DIR/PHP) to provide. In terms of general design/workflow,
+    // PHAR would be sensible here. However, Civi extensions target heterogeneous
+    // environments, and some downstreams have (exaggerated/misplaced) limits re:PHAR.
+    // As a compatibility measure, this code coerces the format (PHAR=>DIR).
+
     switch ($avail->type) {
       case 'php':
       case 'dir':
