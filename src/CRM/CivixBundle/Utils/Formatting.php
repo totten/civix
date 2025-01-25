@@ -52,4 +52,18 @@ class Formatting {
     return rtrim($buf);
   }
 
+  /**
+   * @param array $headers
+   * @param array $rows
+   * @return string
+   */
+  public static function table(array $headers, array $rows) {
+    $buffer = new \Symfony\Component\Console\Output\BufferedOutput();
+    $table = new \Symfony\Component\Console\Helper\Table($buffer);
+    $table->setHeaders($headers);
+    $table->setRows($rows);
+    $table->render();
+    return $buffer->fetch();
+  }
+
 }

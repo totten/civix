@@ -43,7 +43,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
     $warnings[] = "The old upgrader ($oldClass) does not match the expected name ($delegateClass).";
   }
 
-  $notes = [
+  $rows = [
     "This update converts data-storage from Entity Framework v1 (EFv1) to Entity Framework v2 (EFv2).",
     "EFv2 stores schema as *.php. It has simpler workflows and less boilerplate. SQL is generated during installation. (More details: https://github.com/totten/civix/wiki/Entity-Templates)",
     // "For a full comparison, see: https://github.com/totten/civix/wiki/Entity-Templates",
@@ -53,7 +53,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
   ];
 
   Civix::io()->title("Entity Framework v1 => v2");
-  Civix::io()->note($notes);
+  Civix::io()->note($rows);
 
   $actions = [
     'y' => 'Yes, update to Entity Framework v2',
@@ -66,6 +66,52 @@ return function (\CRM\CivixBundle\Generator $gen) {
   }
   if ($action === 'n') {
     return;
+  }
+
+  // Build a table to describe the EFv1 files (*.xml, *.entityType.php).
+  $trimFiles = function($array, $trimSuffix) use ($gen) {
+    $array = array_map(function($file) use ($trimSuffix, $gen) {
+      $f = \CRM\CivixBundle\Utils\Files::relativize($file, $gen->baseDir->string() . '/');
+      return substr($f, 0, -1 * strlen($trimSuffix));
+    }, $array);
+    sort($array);
+    return $array;
+  };
+  $xmls = $trimFiles($gen->baseDir->search('find:xml/schema/*.xml'), '.xml');
+  $phps = $trimFiles($gen->baseDir->search('find:xml/schema/*.entityType.php'), '.entityType.php');
+  $all = array_unique(array_merge($phps, $xmls));
+  $headers = ['Entity', 'Folder', 'XML', 'PHP'];
+  $rows = [];
+  foreach ($all as $filePrefix) {
+    $rows[] = [
+      basename($filePrefix),
+      "./" . dirname($filePrefix) . '/',
+      in_array($filePrefix, $xmls) ? 'Found' : 'Missing',
+      in_array($filePrefix, $phps) ? 'Found' : 'Missing',
+    ];
+  }
+
+  Civix::io()->section('Review Entity Framework v1');
+
+  $notes = [
+    "Before converting, please review the existing entity configuration files.",
+    'Every entity should normally have a pair of files (XML+PHP).',
+    // 'In EFv1, every entity in ./xml/schema/ should have two files (*.xml and *.entityType.php). We have detected the following:',
+    rtrim(Formatting::table($headers, $rows), "\n"),
+    'The converter will read any XML files and generate new (consolidated) PHP files in ./schema.',
+  ];
+
+  Civix::io()->note($notes);
+  if ($phps != $xmls) {
+    Civix::io()->caution([
+      "EFv1 has some inconsistencies. The may indicate inactive files or custom registration rules.",
+      "We may still continue conventing files for EFv2.",
+      "After the upgrade, you should inspect the entity list carefully.",
+    ]);
+  }
+
+  if (!Civix::io()->confirm('Continue?')) {
+    throw new \RuntimeException('User stopped upgrade');
   }
 
   // OK go!
