@@ -27,9 +27,15 @@ class MixinLibraries {
    */
   public $available;
 
+  /**
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  protected $fs;
+
   public function __construct($activeDir, $availableDir) {
     $this->activeDir = Path::for($activeDir);
     $this->availableDir = Path::for($availableDir);
+    $this->fs = new \Symfony\Component\Filesystem\Filesystem();
     $this->refresh();
   }
 
@@ -59,10 +65,30 @@ class MixinLibraries {
       }
     }
 
-    $newFile = $this->activeDir->string(basename($avail->file));
-    \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
-    $this->activeDir->mkdir();
-    copy($avail->file, $newFile);
+    // When copying the library to the new folder, we may have a choice about which
+    // format (eg PHAR/DIR/PHP) to provide. In terms of general design/workflow,
+    // PHAR would be sensible here. However, Civi extensions target heterogeneous
+    // environments, and some downstreams have (exaggerated/misplaced) limits re:PHAR.
+    // As a compatibility measure, this code coerces the format (PHAR=>DIR).
+
+    switch ($avail->type) {
+      case 'php':
+      case 'dir':
+        $newFile = $this->activeDir->string(basename($avail->file));
+        \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
+        $this->activeDir->mkdir();
+        $this->fs->mirror($avail->file, $newFile);
+        break;
+
+      case 'phar':
+        $newFile = $this->activeDir->string(preg_replace('/\.phar$/', '', basename($avail->file)));
+        \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
+        $this->activeDir->mkdir();
+        $phar = new \Phar($avail->file);
+        $phar->extractTo($newFile);
+        break;
+    }
+
     $this->refresh();
   }
 
@@ -76,7 +102,7 @@ class MixinLibraries {
     $active = $this->active[$majorName] ?? NULL;
     if ($active) {
       \Civix::output()->writeln("<info>Remove</info> " . Files::relativize($active->file));
-      unlink($active->file);
+      $this->fs->remove($active->file);
     }
     $this->refresh();
   }
