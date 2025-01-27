@@ -175,11 +175,7 @@ class Info extends XML {
   public function getCompatibilityVer(string $mode = 'MIN'): ?string {
     $vers = [];
     foreach ($this->get()->xpath('compatibility/ver') as $ver) {
-      $ver = (string) $ver;
-      if ($ver === '[civicrm.majorVersion]') {
-        $ver = self::getCiviVersion();
-      }
-      $vers[] = $ver;
+      $vers[] = self::resolveVersionNumber($ver);
     }
     return Versioning::pickVer($vers, $mode);
   }
@@ -193,14 +189,15 @@ class Info extends XML {
    * - If necessary, it will add a constraint for `X.Y`.
    *
    * @param string $newMin
-   *   Ex: '5.27'
+   *   Ex: '6.11'
    */
   public function raiseCompatibilityMinimum(string $newMin): void {
     /** @var \SimpleXMLElement $xml */
     $xml = $this->get();
     $keptConstraints = 0;
     foreach ($xml->xpath('compatibility/ver') as $existingConstraint) {
-      if (version_compare((string) $existingConstraint, $newMin, '>=')) {
+      $ver = self::resolveVersionNumber($existingConstraint);
+      if (version_compare($ver, $newMin, '>=')) {
         $keptConstraints++;
       }
       else {
@@ -269,6 +266,18 @@ class Info extends XML {
       $rule->addAttribute('prefix', $loader['prefix']);
       $rule->addAttribute('path', $loader['path']);
     }
+  }
+
+  /**
+   * @param string|SimpleXMLElement $ver
+   * @return string
+   */
+  public static function resolveVersionNumber($ver): string {
+    $ver = (string) $ver;
+    if ($ver === '[civicrm.majorVersion]') {
+      $ver = self::getCiviVersion();
+    }
+    return $ver;
   }
 
   public static function getCiviVersion(): string {
