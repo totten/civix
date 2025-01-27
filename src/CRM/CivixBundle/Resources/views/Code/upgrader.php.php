@@ -3,7 +3,7 @@ echo "<" . "?php\n";
 if ($classNamespaceDecl) {
   echo "$classNamespaceDecl\n\n";
 }
-echo "$useE\n";
+echo "$useE\n\n";
 ?>
 /**
  * Collection of upgrade steps.
