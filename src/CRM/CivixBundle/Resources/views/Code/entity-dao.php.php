@@ -15,7 +15,7 @@ if ($classNamespaceDecl) {
  * substantive way. Property annotations may be added, but are not required.
 <?php
 foreach ($properties as $propName => $propType) {
-  echo " * @property $propType \$$propName \n";
+  echo " * @property $propType \$$propName\n";
 }
 ?> */
 class <?php echo $className ?> extends <?php echo $daoBaseClass; ?> {
