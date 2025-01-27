@@ -81,8 +81,9 @@ class <?php echo $_namespace ?>_ExtensionUtil {
   public static function findClass($suffix) {
     return self::CLASS_PREFIX . '_' . str_replace('\\', '_', $suffix);
   }
+<?php if (\Civix::checker()->hasUpgrader()) { ?>
 
-<?php if (\Civix::checker()->hasUpgrader()) { ?>  /**
+  /**
    * @return \CiviMix\Schema\SchemaHelperInterface
    */
   public static function schema() {
