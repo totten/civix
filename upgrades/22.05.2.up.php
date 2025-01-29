@@ -24,7 +24,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
     ];
 
     $newContent = EvilEx::rewriteMultilineChunk($content, $hookBody, function(array $matchLines) use ($hookFunc, $content, $gen, $hasSettingMixin, &$action) {
-      /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
+      /* @var \Symfony\Component\Console\Style\OutputStyle $io */
       $io = \Civix::io();
       $matchLineKeys = array_keys($matchLines);
       $allLines = explode("\n", $content);

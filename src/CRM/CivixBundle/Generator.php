@@ -14,7 +14,7 @@ use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Path;
 use PhpArrayDocument\Parser;
 use PhpArrayDocument\Printer;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Style\OutputStyle;
 
 /**
  * The "Generator" class is a utility provided to various upgrade-scripts.
@@ -34,7 +34,7 @@ class Generator {
   private $output;
 
   /**
-   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   * @var \Symfony\Component\Console\Style\OutputStyle
    * @readonly
    */
   private $io;
@@ -910,12 +910,12 @@ class Generator {
       $fmt = sprintf('% 5d', 1 + $i);
       if ($focusStart !== NULL && $focusEnd !== NULL && $i >= $focusStart && $i <= $focusEnd) {
         $this->io->write("<error>*{$fmt}: ");
-        $this->io->write($lines[$i], SymfonyStyle::OUTPUT_RAW);
+        $this->io->write($lines[$i], OutputStyle::OUTPUT_RAW);
         $this->io->write("</error>");
       }
       else {
         $this->io->write("<comment> {$fmt}:</comment> ");
-        $this->io->writeln($lines[$i], SymfonyStyle::OUTPUT_RAW);
+        $this->io->writeln($lines[$i], OutputStyle::OUTPUT_RAW);
       }
     }
   }

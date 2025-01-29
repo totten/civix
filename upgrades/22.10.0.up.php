@@ -10,7 +10,7 @@
 return function (\CRM\CivixBundle\Generator $gen) {
 
   $gen->updateInfo(function (\CRM\CivixBundle\Builder\Info $info) use ($gen) {
-    /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
+    /* @var \Symfony\Component\Console\Style\OutputStyle $io */
     $io = \Civix::io();
 
     $loaders = $info->getClassloaders();

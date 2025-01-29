@@ -2,7 +2,7 @@
 use CRM\CivixBundle\Utils\Formatting;
 
 return function (\CRM\CivixBundle\Generator $gen) {
-  /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
+  /* @var \Symfony\Component\Console\Style\OutputStyle $io */
   $io = \Civix::io();
 
   $previewChanges = [];
