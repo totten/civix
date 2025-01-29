@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 abstract class AbstractCommand extends Command {
 
   protected function configure() {
-    $this->addOption('yes', NULL, InputOption::VALUE_NONE, 'Answer yes to any questions');
+    $this->addOption('yes', NULL, InputOption::VALUE_NONE, 'Use the default confirmation for all questions');
   }
 
   public function run(InputInterface $input, OutputInterface $output) {
