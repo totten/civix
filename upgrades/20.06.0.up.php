@@ -5,7 +5,7 @@
  * You can remove this.  The option has been inert and will raise errors in newer versions of PHPUnit.
  */
 return function (\CRM\CivixBundle\Generator $gen) {
-  /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
+  /* @var \Symfony\Component\Console\Style\OutputStyle $io */
   $io = \Civix::io();
 
   $files = array_filter([

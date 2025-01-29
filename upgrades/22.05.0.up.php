@@ -1,7 +1,7 @@
 <?php
 
 return function (\CRM\CivixBundle\Generator $gen) {
-  /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
+  /* @var \Symfony\Component\Console\Style\OutputStyle $io */
   $io = \Civix::io();
   $prefix = $gen->infoXml->getFile();
 
