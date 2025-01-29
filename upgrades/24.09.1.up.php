@@ -10,6 +10,9 @@ return function (\CRM\CivixBundle\Generator $gen) {
 
   $oldClass = (string) $gen->infoXml->get()->upgrader;
   $newClass = sprintf('CiviMix\\Schema\\%s\\AutomaticUpgrader', Naming::createCamelName($gen->infoXml->getFile()));
+  if (strpos($oldClass, 'CiviMix\\Schema\\') === 0) {
+    $newClass = $oldClass;
+  }
   $delegateClass = Naming::createClassName($gen->infoXml->getNamespace(), 'Upgrader');
 
   $steps = [];
@@ -20,7 +23,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
     $steps[] = "Update mixin entity-types-php@1 to entity-types-php@2";
   }
 
-  if (!empty($oldClass)) {
+  if (!empty($oldClass) && strpos($oldClass, 'CiviMix\\Schema\\') !== 0) {
     $steps[] = $oldClass !== $newClass ? "Update info.xml to use $newClass (which delegates to $delegateClass)" : "Update info.xml to use $newClass";
   }
   if (!empty($relSqlFiles)) {
