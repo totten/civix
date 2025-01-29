@@ -3,6 +3,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use Civix;
+use CRM\CivixBundle\Utils\CivixStyle;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +13,6 @@ use CRM\CivixBundle\Builder\Dirs;
 use CRM\CivixBundle\Builder\PhpData;
 use CRM\CivixBundle\Utils\Path;
 use Exception;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AddApiCommand extends AbstractCommand {
   const API_VERSION = 3;
@@ -47,7 +47,7 @@ action names.
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
-    $io = new SymfonyStyle($input, $output);
+    $io = new CivixStyle($input, $output);
 
     // load Civi to get access to civicrm_api_get_function_name
     Civix::boot(['output' => $output]);
