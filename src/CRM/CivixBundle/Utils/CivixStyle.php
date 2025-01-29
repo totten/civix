@@ -24,4 +24,12 @@ class CivixStyle extends SymfonyStyle {
     return parent::confirm($question, $default);
   }
 
+  public function choice(string $question, array $choices, $default = NULL) {
+    if ($this->input->hasOption('yes') && $this->input->getOption('yes') && $default !== NULL) {
+      return $default;
+    }
+
+    return parent::choice($question, $choices, $default);
+  }
+
 }
