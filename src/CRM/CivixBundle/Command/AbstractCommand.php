@@ -8,12 +8,24 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class AbstractCommand extends Command {
 
   protected function configure() {
-    $this->addOption('yes', NULL, InputOption::VALUE_NONE, 'Answer yes to any questions');
+    $this->addOption('yes', NULL, InputOption::VALUE_NONE, '(DEPRECATED) Alias for --no-interaction. All questions confirmed with their default choices.');
+  }
+
+  protected function initialize(InputInterface $input, OutputInterface $output) {
+    if ($input->hasOption('yes') && $input->getOption('yes')) {
+      $output->writeln('<error>ALERT</error>: <comment>The option "--yes" is a deprecated alias. Please use "--no-interaction" or "-n".</comment>');
+      // IMHO, `--yes` is a more intuitive name. However, it implies that prompts are boolean, and it's
+      // a little ambiguous what it means for multiple-choice questions.
+      // By comparison, `--no-interaction` is the standardized name from Symfony Console. It's less ambiguous.
+      // But at least
+      $input->setOption('no-interaction', TRUE);
+      $input->setInteractive(FALSE);
+    }
+    parent::initialize($input, $output);
   }
 
   public function run(InputInterface $input, OutputInterface $output) {
@@ -24,19 +36,6 @@ abstract class AbstractCommand extends Command {
     finally {
       \Civix::ioStack()->pop();
     }
-  }
-
-  protected function confirm(InputInterface $input, OutputInterface $output, $message, $default = TRUE) {
-    $message = '<info>' . $message . '</info>'; /* FIXME Let caller stylize */
-    if ($input->getOption('yes')) {
-      $output->writeln($message . ($default ? 'Y' : 'N'));
-      return $default;
-    }
-
-    /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
-    $helper = $this->getHelper('question');
-    $question = new ConfirmationQuestion($message, $default);
-    return (bool) $helper->ask($input, $output, $question);
   }
 
   protected function getModuleInfo(&$ctx): Info {

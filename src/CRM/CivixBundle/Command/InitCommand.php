@@ -125,7 +125,7 @@ class InitCommand extends AbstractCommand {
       $output->writeln("requested command requires splitting the names. You may continue with");
       $output->writeln("split names, or you may cancel and try again with a simpler name.");
       $output->writeln("");
-      if (!$this->confirm($input, $output, "Continue with current (split) name? [Y/n] ")) {
+      if (!Civix::io()->confirm("Continue with current (split) name?")) {
         return 1;
       }
     }
@@ -182,7 +182,7 @@ class InitCommand extends AbstractCommand {
         return FALSE;
       }
 
-      if ($input->getOption('enable') === 'yes' || $this->confirm($input, $output, "Enable extension ($key) in \"$siteName\"? [Y/n] ")) {
+      if (Civix::io()->confirm("Enable extension \"$key\" in \"$siteName\"?")) {
         $output->writeln("<info>Enable extension ($key) in</info> $siteName");
         if (!$civicrm_api3->Extension->install(['key' => $key])) {
           $output->writeln("<error>Install error: " . $civicrm_api3->errorMsg() . "</error>");
