@@ -61,7 +61,8 @@ return function (\CRM\CivixBundle\Generator $gen) {
       $io->note([
         "In Entity Framework v2, conventions for metadata have changed.",
         "Metadata is usually loaded from schema/*.entityType.php.",
-        "We suggest disabling hook_entityTypes and testing with just *.entityType.php. This reduces the risk of conflicts. However, if you need hook_entityTypes, you can still use it.",
+        "This implementation of hook_entityTypes contains special declarations. Consider whether this is needed.",
+        "For example:\n - This function might duplicate the content of schema/*.entityType.php. Remove it to avoid conflicts.\n - This function might define special, dynamic entities. Keep it ensure continued operation.",
       ]);
 
       $actionLabels = [
