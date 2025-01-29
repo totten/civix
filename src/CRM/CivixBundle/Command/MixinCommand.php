@@ -4,13 +4,14 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use Civix;
+use CRM\CivixBundle\Utils\CivixStyle;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use CRM\CivixBundle\Utils\Path;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Style\OutputStyle;
 
 class MixinCommand extends AbstractCommand {
 
@@ -72,7 +73,7 @@ class MixinCommand extends AbstractCommand {
       $info->save($ctx, $output);
     }
     else {
-      $io = new SymfonyStyle($input, $output);
+      $io = new CivixStyle($input, $output);
       $this->showList($io, $mixins);
     }
 
@@ -105,7 +106,7 @@ class MixinCommand extends AbstractCommand {
     }
   }
 
-  protected function showList(SymfonyStyle $io, Mixins $mixins) {
+  protected function showList(OutputStyle $io, Mixins $mixins) {
     $mixlib = Civix::mixlib();
     $mixinBackports = preg_grep(';@;', array_keys(Civix::mixinBackports()));
 

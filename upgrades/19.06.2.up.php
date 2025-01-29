@@ -17,7 +17,7 @@
  * existing unit-tests to use the name base-classes.
  */
 return function (\CRM\CivixBundle\Generator $gen) {
-  /* @var \Symfony\Component\Console\Style\SymfonyStyle $io */
+  /* @var \Symfony\Component\Console\Style\OutputStyle $io */
   $io = \Civix::io();
 
   $testFiles = \CRM\CivixBundle\Utils\Files::findFiles($gen->baseDir->string('tests'), '*.php');
