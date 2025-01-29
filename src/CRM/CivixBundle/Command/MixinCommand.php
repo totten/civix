@@ -4,6 +4,7 @@ namespace CRM\CivixBundle\Command;
 
 use CRM\CivixBundle\Builder\Mixins;
 use Civix;
+use CRM\CivixBundle\Utils\CivixStyle;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -72,7 +73,7 @@ class MixinCommand extends AbstractCommand {
       $info->save($ctx, $output);
     }
     else {
-      $io = new SymfonyStyle($input, $output);
+      $io = new CivixStyle($input, $output);
       $this->showList($io, $mixins);
     }
 

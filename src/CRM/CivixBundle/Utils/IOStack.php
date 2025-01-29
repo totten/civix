@@ -2,8 +2,6 @@
 
 namespace CRM\CivixBundle\Utils;
 
-use Symfony\Component\Console\Style\SymfonyStyle;
-
 class IOStack {
 
   protected $stack = [];
@@ -12,7 +10,7 @@ class IOStack {
     array_unshift($this->stack, [
       'input' => $input,
       'output' => $output,
-      'io' => new SymfonyStyle($input, $output),
+      'io' => new CivixStyle($input, $output),
     ]);
   }
 
