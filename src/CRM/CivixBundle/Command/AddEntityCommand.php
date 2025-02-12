@@ -24,17 +24,17 @@ class AddEntityCommand extends AbstractCommand {
     parent::configure();
     $this
       ->setName('generate:entity')
-      ->setDescription('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension (*EXPERIMENTAL*)')
+      ->setDescription('Add a new Entity+API+Sql Table to a CiviCRM Module-Extension')
       ->addArgument('<EntityName>', InputArgument::REQUIRED, 'The brief, unique name of the entity")')
       ->addOption('table-name', NULL, InputOption::VALUE_OPTIONAL, 'The SQL table name. (see usage)')
-      ->setHelp('Add a new API/BAO/GenCode entity to a CiviCRM Module-Extension.
-This command is experimental. Developer discretion is advised.
+      ->setHelp('Add a new SQL-based Entity to a CiviCRM Module-Extension.
+It includes an .entityType.php file, an Api4 file, and a DAO file.
 
 In most cases generate:entity is able to derive a suitable snake_case table name
 from The CamelCase <EntityName>. However, in some instances (notably when the
 entity contains a number or a capitalised acronym) the table name may differ
 from your expectations. In these cases, you may wish to set the table name
-explicity.');
+explicitly.');
 
   }
 

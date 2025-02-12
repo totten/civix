@@ -17,13 +17,9 @@ class AddThemeCommand extends AbstractCommand {
   protected function configure() {
     $this
       ->setName('generate:theme')
-      ->setDescription('Add a new theme to a CiviCRM Module-Extension (EXPERIMENTAL)')
+      ->setDescription('Add a new theme to a CiviCRM Module-Extension')
       ->addArgument('name', InputArgument::OPTIONAL, 'The name of the theme')
       ->setHelp('Add a new theme to a CiviCRM Module-Extension
-
-EXPERIMENTAL: At time of writing, this relies on a hook that has not yet
-been released in a stable version of CiviCRM. The final hook should go out
-on or after 5.8.x, but it is subject to change and approval.
 
 Example: Generate an eponymous theme directly in the extension
 $ civix generate:theme
