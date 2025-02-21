@@ -51,6 +51,7 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new Command\UpgradeCommand();
     $commands[] = new Command\InfoGetCommand();
     $commands[] = new Command\InfoSetCommand();
+    $commands[] = new Command\InspectFunctionCommand();
     return $commands;
   }
 
