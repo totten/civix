@@ -84,12 +84,27 @@ class MixinLibraries {
         $newFile = $this->activeDir->string(preg_replace('/\.phar$/', '', basename($avail->file)));
         \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
         $this->activeDir->mkdir();
-        $phar = new \Phar($avail->file);
-        $phar->extractTo($newFile);
+        $this->extractPhar($avail->file, $newFile);
         break;
     }
 
     $this->refresh();
+  }
+
+  protected function extractPhar(string $srcPhar, string $destFolder): void {
+    $isNestedPhar = preg_match(';^phar://;', $srcPhar);
+    if ($isNestedPhar) {
+      // Two steps: Copy the nested PHAR to regular file, then extract.
+      $tmpFile = dirname($destFolder) . DIRECTORY_SEPARATOR . basename($destFolder) . '.tmp.phar';
+      $this->fs->copy($srcPhar, $tmpFile, TRUE);
+      $pharOp = new \Phar($tmpFile);
+      $pharOp->extractTo($destFolder);
+      $this->fs->remove($tmpFile);
+    }
+    else {
+      $pharOp = new \Phar($srcPhar);
+      $pharOp->extractTo($destFolder);
+    }
   }
 
   /**
