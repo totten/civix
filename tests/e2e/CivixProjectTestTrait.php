@@ -85,6 +85,7 @@ trait CivixProjectTestTrait {
           $baseCommand = ['php', (dirname(__DIR__, 2) . '/bin/civix')];
         }
         $baseCommand[] = $subCommand;
+        $baseCommand[] = '-v';
         return new SubProcessCommandTester($baseCommand);
 
       case 'off':
