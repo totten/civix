@@ -35,7 +35,13 @@ Example: Find all functions matching the name and code patterns
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
     $functionNamePattern = $input->getOption('name');
+    if ($functionNamePattern) {
+      $this->assertRegex($functionNamePattern, '--name');
+    }
     $codePattern = $input->getOption('code');
+    if ($codePattern) {
+      $this->assertRegex($codePattern, '--code');
+    }
     $printer = [$this, 'printMatch'];
     if ($input->getOption('files-with-matches')) {
       $printer = [$this, 'printFileName'];
@@ -82,15 +88,26 @@ Example: Find all functions matching the name and code patterns
   }
 
   /**
-   * @param string $code
-   * @param $hi
-   * @param $matches
+   * Split a block of $code into highlighted and non-highlighted sections.
    *
+   * @param string $code
+   *   The code to search/highlight
+   * @param string $hi
+   *   Regex identifying the expressions to highlight
    * @return array
    */
   protected function splitHighlights(string $code, $hi): array {
     $buf = $code;
-    $hiPat = $hi[0] . '^(.*)(' . substr($hi, 1, -1) . ')' . $hi[0] . 'msU';
+    $delimQuot = preg_quote($hi[0], ';');
+    if (preg_match(';' . $delimQuot . '([a-zA-Z]+)$;', $hi, $m)) {
+      $modifiers = $m[1];
+      $hi = substr($hi, 0, -1 * strlen($modifiers));
+    }
+    else {
+      $modifiers = '';
+    }
+
+    $hiPat = $hi[0] . '^(.*)(' . substr($hi, 1, -1) . ')' . $hi[0] . 'msU' . $modifiers;
     $hiParts = [];
     while (!empty($buf)) {
       if (preg_match($hiPat, $buf, $matches)) {
@@ -104,6 +121,24 @@ Example: Find all functions matching the name and code patterns
       }
     }
     return $hiParts;
+  }
+
+  /**
+   * Assert that $regex is a plausible-looking regular expression.
+   *
+   * @param string $regex
+   * @param string $regexOption
+   */
+  protected function assertRegex(string $regex, string $regexOption): void {
+    $delim = $regex[0];
+    $delimQuote = preg_quote($delim, ';');
+    $allowDelim = '/|:;,.#';
+    if (strpos($allowDelim, $delim) === FALSE) {
+      throw new \Exception("Option \"$regexOption\" should have a symbolic delimiter, such as: $allowDelim");
+    }
+    if (!preg_match(';^' . $delimQuote . '.*' . $delimQuote . '[a-zA-Z]*$;', $regex)) {
+      throw new \Exception("Option \"$regexOption\" should be well-formed");
+    }
   }
 
 }
