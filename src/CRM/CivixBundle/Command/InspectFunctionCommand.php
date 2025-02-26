@@ -17,7 +17,7 @@ class InspectFunctionCommand extends AbstractCommand {
       ->setName('inspect:fun')
       ->setDescription('Search codebase for functions')
       ->addOption('name', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing the function-names you wnt to see')
-      ->addOption('code', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing function bodies that you want to see')
+      ->addOption('body', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing function bodies that you want to see')
       ->addOption('files-with-matches', 'l', InputOption::VALUE_NONE, 'Print only file names')
       ->addArgument('files', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'List of files')
       ->setHelp('Search PHP functions
@@ -26,10 +26,10 @@ Example: Find all functions named like "_civicrm_permission"
   civix inspect:fun --name=/_civicrm_permission/ *.php
 
 Example: Find all functions which call civicrm_api3()
-  civix inspect:fun --code=/civicrm_api3/ *.php
+  civix inspect:fun --body=/civicrm_api3/ *.php
 
-Example: Find all functions matching the name and code patterns
-  civix inspect:fun --name=/_civicrm_permission/ --code=/label/ *.php
+Example: Find all functions named like "_civicrm_permission" AND having a body with "label"
+  civix inspect:fun --name=/_civicrm_permission/ --body=/label/ *.php
 ');
   }
 
@@ -38,9 +38,9 @@ Example: Find all functions matching the name and code patterns
     if ($functionNamePattern) {
       $this->assertRegex($functionNamePattern, '--name');
     }
-    $codePattern = $input->getOption('code');
-    if ($codePattern) {
-      $this->assertRegex($codePattern, '--code');
+    $bodyPattern = $input->getOption('body');
+    if ($bodyPattern) {
+      $this->assertRegex($bodyPattern, '--body');
     }
     $printer = [$this, 'printMatch'];
     if ($input->getOption('files-with-matches')) {
@@ -52,16 +52,16 @@ Example: Find all functions matching the name and code patterns
         $output->writeln("## SCAN FILE: $file");
       }
 
-      $code = file_get_contents($file);
-      PrimitiveFunctionVisitor::visit($code, function (?string &$functionName, string &$signature, string &$code) use ($codePattern, $functionNamePattern, $file, $input, $printer) {
+      $fileContent = file_get_contents($file);
+      PrimitiveFunctionVisitor::visit($fileContent, function (?string &$functionName, string &$signature, string &$body) use ($bodyPattern, $functionNamePattern, $file, $input, $printer) {
         if ($functionNamePattern && !preg_match($functionNamePattern, $functionName)) {
           return;
         }
-        if ($codePattern && !preg_match($codePattern, $code)) {
+        if ($bodyPattern && !preg_match($bodyPattern, $body)) {
           return;
         }
 
-        $printer($file, $functionName, $signature, $code, $codePattern);
+        $printer($file, $functionName, $signature, $body, $bodyPattern);
       });
     }
 
@@ -72,14 +72,14 @@ Example: Find all functions matching the name and code patterns
     Civix::output()->writeln($file, OutputInterface::OUTPUT_RAW);
   }
 
-  protected function printMatch($file, ?string $functionName, string $signature, string $code, $codePattern): void {
+  protected function printMatch($file, ?string $functionName, string $signature, string $body, $bodyPattern): void {
     Civix::output()->writeln(sprintf("## FILE: %s", $file));
     Civix::output()->write(sprintf("<comment>function <info>%s</info>(%s)</comment> {", $functionName, $signature));
-    if (!$codePattern) {
-      Civix::output()->write($code, FALSE, OutputInterface::OUTPUT_RAW);
+    if (!$bodyPattern) {
+      Civix::output()->write($body, FALSE, OutputInterface::OUTPUT_RAW);
     }
     else {
-      $hiParts = $this->splitHighlights($code, $codePattern);
+      $hiParts = $this->splitHighlights($body, $bodyPattern);
       foreach ($hiParts as $part) {
         Civix::output()->write($part[0], FALSE, $part[1]);
       }
