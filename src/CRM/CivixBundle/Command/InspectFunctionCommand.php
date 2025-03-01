@@ -11,6 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class InspectFunctionCommand extends AbstractCommand {
 
+  const SKIP = '/^\./';
+
+  const PHP_FILES = '/\.(php|module|inc|install)$/';
+
   protected function configure() {
     parent::configure();
     $this
@@ -47,9 +51,24 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
       $printer = [$this, 'printFileName'];
     }
 
-    foreach ($input->getArgument('files') as $file) {
+    $todo = $input->getArgument('files');
+    while (!empty($todo)) {
+      $file = array_shift($todo);
+      $file = rtrim($file, DIRECTORY_SEPARATOR . '/');
+
       if ($output->isVeryVerbose()) {
         $output->writeln("## SCAN FILE: $file");
+      }
+
+      if (preg_match(static::SKIP, basename($file)) || is_link($file)) {
+        continue;
+      }
+      if (is_dir($file)) {
+        $todo = array_merge($todo, glob("$file/*"));
+        continue;
+      }
+      if (!preg_match(self::PHP_FILES, $file)) {
+        continue;
       }
 
       $fileContent = file_get_contents($file);
