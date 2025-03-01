@@ -92,7 +92,12 @@ class PrimitiveFunctionVisitor {
     $pad1 = $this->fastForward('(');
     $signature = $this->parseSection('(', ')');
 
-    $pad2 = $this->fastForward('{');
+    $pad2 = $this->fastForward(['{', ';']);
+    if ($this->peek()->is(';')) {
+      // Abstract functions don't have bodies. For the moment, we don't care about visiting them.
+      // but maybe that changes at some point...
+      return 'function' . $pad0 . $function . $pad1 . '(' . $signature . ')' . $pad2 . $this->consume()->value();
+    }
     $codeBlock = $this->parseSection('{', '}');
 
     $result = ($this->filter)($function, $signature, $codeBlock);
