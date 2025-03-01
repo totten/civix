@@ -95,7 +95,7 @@ class Token {
     if (is_string($expect)) {
       return $this->value === $expect;
     }
-    throw new \RuntimeException("Token::is() expects type ID or literal value");
+    throw new ParseException("Token::is() expects type ID or literal value");
   }
 
   public function assert($expect): void {
@@ -112,7 +112,8 @@ class Token {
     else {
       $expectPretty = json_encode($expect, JSON_UNESCAPED_SLASHES);
     }
-    throw new \RuntimeException(sprintf('Token %s does not match expectation %s', $this->__toString(), $expectPretty));
+
+    throw new ParseException(sprintf('Token %s does not match expectation %s', $this->__toString(), $expectPretty));
   }
 
   public function __toString(): string {
