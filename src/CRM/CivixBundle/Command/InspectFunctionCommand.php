@@ -25,6 +25,7 @@ class InspectFunctionCommand extends AbstractCommand {
       ->addOption('body', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing function bodies that you want to see')
       ->addOption('files-with-matches', 'l', InputOption::VALUE_NONE, 'Print only file names')
       ->addOption('file-size-max', NULL, InputOption::VALUE_REQUIRED, 'Only scan files within this limit (KB)', 1024)
+      ->addOption('exclude-dir', NULL, InputOption::VALUE_REQUIRED)
       ->addArgument('files', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'List of files')
       ->setHelp('Search PHP functions
 
@@ -36,6 +37,9 @@ Example: Find all functions which call civicrm_api3()
 
 Example: Find all functions named like "_civicrm_permission" AND having a body with "label"
   civix inspect:fun --name=/_civicrm_permission/ --body=/label/ *.php
+
+Example: Find all functions which call civicrm_api3()
+  civix inspect:fun --body=/civicrm_api3/ *.php --exclude-dir=\'/^(vendor|packages)/\'
 ');
   }
 
@@ -67,8 +71,10 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
         continue;
       }
       if (is_dir($file)) {
-        $todo = array_merge($todo, glob("$file/*"));
-        sort($todo);
+        if (empty($input->getOption('exclude-dir')) || !preg_match($input->getOption('exclude-dir'), basename($file))) {
+          $todo = array_merge($todo, glob("$file/*"));
+          sort($todo);
+        }
         continue;
       }
       if (!preg_match(self::PHP_FILES, $file)) {
