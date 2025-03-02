@@ -23,6 +23,7 @@ class InspectFunctionCommand extends AbstractCommand {
       ->addOption('name', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing the function-names you wnt to see')
       ->addOption('body', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing function bodies that you want to see')
       ->addOption('files-with-matches', 'l', InputOption::VALUE_NONE, 'Print only file names')
+      ->addOption('file-size-max', NULL, InputOption::VALUE_REQUIRED, 'Only scan files within this limit (KB)', 1024)
       ->addArgument('files', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'List of files')
       ->setHelp('Search PHP functions
 
@@ -68,6 +69,11 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
         continue;
       }
       if (!preg_match(self::PHP_FILES, $file)) {
+        continue;
+      }
+      $size = ceil(filesize($file) / 1024);
+      if ($size > $input->getOption('file-size-max')) {
+        $output->writeln(sprintf('<error>WARNING</error> Skip file "%s". Size (%d KB) exceeds limit (%s KB)', $file, $size, $input->getOption('file-size-max')));
         continue;
       }
 
