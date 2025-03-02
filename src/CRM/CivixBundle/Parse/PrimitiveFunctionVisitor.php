@@ -67,7 +67,7 @@ class PrimitiveFunctionVisitor {
   public function run(): string {
     $output = '';
 
-    while (($peek = $this->peek()) !== NULL) {
+    while (($peek = $this->peek(FALSE)) !== NULL) {
       if ($peek->is(T_USE)) {
         $statement = $this->fastForward(';');
         $output .= $statement;
@@ -146,20 +146,26 @@ class PrimitiveFunctionVisitor {
     return $section;
   }
 
-  private function consume(): ?Token {
+  private function consume(bool $required = TRUE): ?Token {
     if ($this->currentIndex < count($this->tokens)) {
       return $this->tokens[$this->currentIndex++];
+    }
+    if ($required) {
+      throw new ParseException("Unexpected end of file. Cannot consume next token.");
     }
     return NULL;
   }
 
-  private function peek(): ?Token {
+  private function peek(bool $required = TRUE): ?Token {
+    if ($required && !isset($this->tokens[$this->currentIndex])) {
+      throw new ParseException("Unexpected end of file. Cannot peek at next token.");
+    }
     return $this->tokens[$this->currentIndex] ?? NULL;
   }
 
   private function fastForward($expectedToken): string {
     $output = '';
-    while (($token = $this->peek()) !== NULL) {
+    while (($token = $this->peek(FALSE)) !== NULL) {
       if ($token->is($expectedToken)) {
         break;
       }

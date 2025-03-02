@@ -3,6 +3,7 @@
 namespace CRM\CivixBundle\Command;
 
 use Civix;
+use CRM\CivixBundle\Parse\ParseException;
 use CRM\CivixBundle\Parse\PrimitiveFunctionVisitor;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,16 +81,21 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
       }
 
       $fileContent = file_get_contents($file);
-      PrimitiveFunctionVisitor::visit($fileContent, function (?string &$functionName, string &$signature, string &$body) use ($bodyPattern, $functionNamePattern, $file, $input, $printer) {
-        if ($functionNamePattern && !preg_match($functionNamePattern, $functionName)) {
-          return;
-        }
-        if ($bodyPattern && !preg_match($bodyPattern, $body)) {
-          return;
-        }
+      try {
+        PrimitiveFunctionVisitor::visit($fileContent, function (?string &$functionName, string &$signature, string &$body) use ($bodyPattern, $functionNamePattern, $file, $input, $printer) {
+          if ($functionNamePattern && !preg_match($functionNamePattern, $functionName)) {
+            return;
+          }
+          if ($bodyPattern && !preg_match($bodyPattern, $body)) {
+            return;
+          }
 
-        $printer($file, $functionName, $signature, $body, $bodyPattern);
-      });
+          $printer($file, $functionName, $signature, $body, $bodyPattern);
+        });
+      }
+      catch (ParseException $e) {
+        $output->writeln(sprintf('<error>ERROR</error> Skip file "%s". Parse exception: %s', $file, $e->getMessage()));
+      }
     }
 
     return 0;
