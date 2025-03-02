@@ -53,6 +53,7 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
     }
 
     $todo = $input->getArgument('files');
+    sort($todo);
     while (!empty($todo)) {
       $file = array_shift($todo);
       $file = rtrim($file, DIRECTORY_SEPARATOR . '/');
@@ -66,6 +67,7 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
       }
       if (is_dir($file)) {
         $todo = array_merge($todo, glob("$file/*"));
+        sort($todo);
         continue;
       }
       if (!preg_match(self::PHP_FILES, $file)) {
