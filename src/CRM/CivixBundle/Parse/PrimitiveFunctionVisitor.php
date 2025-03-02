@@ -68,7 +68,11 @@ class PrimitiveFunctionVisitor {
     $output = '';
 
     while (($peek = $this->peek()) !== NULL) {
-      if ($peek->is(T_FUNCTION)) {
+      if ($peek->is(T_USE)) {
+        $statement = $this->fastForward(';');
+        $output .= $statement;
+      }
+      elseif ($peek->is(T_FUNCTION)) {
         $output .= $this->parseFunction();
       }
       else {
