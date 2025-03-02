@@ -67,8 +67,12 @@ class PrimitiveFunctionVisitor {
   public function run(): string {
     $output = '';
 
-    while (($peek = $this->peek()) !== NULL) {
-      if ($peek->is(T_FUNCTION)) {
+    while (($peek = $this->peek(FALSE)) !== NULL) {
+      if ($peek->is(T_USE)) {
+        $statement = $this->fastForward(';');
+        $output .= $statement;
+      }
+      elseif ($peek->is(T_FUNCTION)) {
         $output .= $this->parseFunction();
       }
       else {
@@ -92,7 +96,12 @@ class PrimitiveFunctionVisitor {
     $pad1 = $this->fastForward('(');
     $signature = $this->parseSection('(', ')');
 
-    $pad2 = $this->fastForward('{');
+    $pad2 = $this->fastForward(['{', ';']);
+    if ($this->peek()->is(';')) {
+      // Abstract functions don't have bodies. For the moment, we don't care about visiting them.
+      // but maybe that changes at some point...
+      return 'function' . $pad0 . $function . $pad1 . '(' . $signature . ')' . $pad2 . $this->consume()->value();
+    }
     $codeBlock = $this->parseSection('{', '}');
 
     $result = ($this->filter)($function, $signature, $codeBlock);
@@ -137,20 +146,26 @@ class PrimitiveFunctionVisitor {
     return $section;
   }
 
-  private function consume(): ?Token {
+  private function consume(bool $required = TRUE): ?Token {
     if ($this->currentIndex < count($this->tokens)) {
       return $this->tokens[$this->currentIndex++];
+    }
+    if ($required) {
+      throw new ParseException("Unexpected end of file. Cannot consume next token.");
     }
     return NULL;
   }
 
-  private function peek(): ?Token {
+  private function peek(bool $required = TRUE): ?Token {
+    if ($required && !isset($this->tokens[$this->currentIndex])) {
+      throw new ParseException("Unexpected end of file. Cannot peek at next token.");
+    }
     return $this->tokens[$this->currentIndex] ?? NULL;
   }
 
   private function fastForward($expectedToken): string {
     $output = '';
-    while (($token = $this->peek()) !== NULL) {
+    while (($token = $this->peek(FALSE)) !== NULL) {
       if ($token->is($expectedToken)) {
         break;
       }

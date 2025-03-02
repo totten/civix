@@ -141,6 +141,37 @@ class PrimitiveFunctionVisitorTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals($input, $output);
   }
 
+  public function testInterface(): void {
+    $input = '<' . '?php ';
+    $input .= "interface Food {";
+    $input .= "  public function apple();\n";
+    $input .= "  public function banana();\n";
+    $input .= "}\n";
+
+    // For the moment, we don't really care about visiting abstract functions. But maybe that changes sometime.
+    $visited = [];
+    $output = PrimitiveFunctionVisitor::visit($input, function (&$func, &$sig, &$code) use (&$visited) {
+      $visited[] = $func;
+    });
+    $this->assertEquals([], $visited);
+    $this->assertEquals($input, $output);
+  }
+
+  public function testUseFunction(): void {
+    $input = '<' . '?php ';
+    $input .= 'namespace foo;';
+    $input .= 'use function bar;';
+    $input .= 'class Whiz { function bang() {} }';
+
+    // For the moment, we don't really care about visiting abstract functions. But maybe that changes sometime.
+    $visited = [];
+    $output = PrimitiveFunctionVisitor::visit($input, function (&$func, &$sig, &$code) use (&$visited) {
+      $visited[] = $func;
+    });
+    $this->assertEquals(['bang'], $visited);
+    $this->assertEquals($input, $output);
+  }
+
   public function testComplexFileVisitOrder(): void {
     $input = $this->getComplexFile();
 

@@ -3,6 +3,7 @@
 namespace CRM\CivixBundle\Command;
 
 use Civix;
+use CRM\CivixBundle\Parse\ParseException;
 use CRM\CivixBundle\Parse\PrimitiveFunctionVisitor;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,6 +11,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InspectFunctionCommand extends AbstractCommand {
+
+  const SKIP = '/^\./';
+
+  const PHP_FILES = '/\.(php|module|inc|install)$/';
 
   protected function configure() {
     parent::configure();
@@ -19,6 +24,8 @@ class InspectFunctionCommand extends AbstractCommand {
       ->addOption('name', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing the function-names you wnt to see')
       ->addOption('body', NULL, InputOption::VALUE_REQUIRED, 'Pattern describing function bodies that you want to see')
       ->addOption('files-with-matches', 'l', InputOption::VALUE_NONE, 'Print only file names')
+      ->addOption('file-size-max', NULL, InputOption::VALUE_REQUIRED, 'Only scan files within this limit (KB)', 1024)
+      ->addOption('exclude-dir', NULL, InputOption::VALUE_REQUIRED)
       ->addArgument('files', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'List of files')
       ->setHelp('Search PHP functions
 
@@ -30,6 +37,9 @@ Example: Find all functions which call civicrm_api3()
 
 Example: Find all functions named like "_civicrm_permission" AND having a body with "label"
   civix inspect:fun --name=/_civicrm_permission/ --body=/label/ *.php
+
+Example: Find all functions which call civicrm_api3()
+  civix inspect:fun --body=/civicrm_api3/ *.php --exclude-dir=\'/^(vendor|packages)/\'
 ');
   }
 
@@ -47,22 +57,51 @@ Example: Find all functions named like "_civicrm_permission" AND having a body w
       $printer = [$this, 'printFileName'];
     }
 
-    foreach ($input->getArgument('files') as $file) {
+    $todo = $input->getArgument('files');
+    sort($todo);
+    while (!empty($todo)) {
+      $file = array_shift($todo);
+      $file = rtrim($file, DIRECTORY_SEPARATOR . '/');
+
       if ($output->isVeryVerbose()) {
         $output->writeln("## SCAN FILE: $file");
       }
 
-      $fileContent = file_get_contents($file);
-      PrimitiveFunctionVisitor::visit($fileContent, function (?string &$functionName, string &$signature, string &$body) use ($bodyPattern, $functionNamePattern, $file, $input, $printer) {
-        if ($functionNamePattern && !preg_match($functionNamePattern, $functionName)) {
-          return;
+      if (preg_match(static::SKIP, basename($file)) || is_link($file)) {
+        continue;
+      }
+      if (is_dir($file)) {
+        if (empty($input->getOption('exclude-dir')) || !preg_match($input->getOption('exclude-dir'), basename($file))) {
+          $todo = array_merge($todo, glob("$file/*"));
+          sort($todo);
         }
-        if ($bodyPattern && !preg_match($bodyPattern, $body)) {
-          return;
-        }
+        continue;
+      }
+      if (!preg_match(self::PHP_FILES, $file)) {
+        continue;
+      }
+      $size = ceil(filesize($file) / 1024);
+      if ($size > $input->getOption('file-size-max')) {
+        $output->writeln(sprintf('<error>WARNING</error> Skip file "%s". Size (%d KB) exceeds limit (%s KB)', $file, $size, $input->getOption('file-size-max')));
+        continue;
+      }
 
-        $printer($file, $functionName, $signature, $body, $bodyPattern);
-      });
+      $fileContent = file_get_contents($file);
+      try {
+        PrimitiveFunctionVisitor::visit($fileContent, function (?string &$functionName, string &$signature, string &$body) use ($bodyPattern, $functionNamePattern, $file, $input, $printer) {
+          if ($functionNamePattern && !preg_match($functionNamePattern, $functionName)) {
+            return;
+          }
+          if ($bodyPattern && !preg_match($bodyPattern, $body)) {
+            return;
+          }
+
+          $printer($file, $functionName, $signature, $body, $bodyPattern);
+        });
+      }
+      catch (ParseException $e) {
+        $output->writeln(sprintf('<error>ERROR</error> Skip file "%s". Parse exception: %s', $file, $e->getMessage()));
+      }
     }
 
     return 0;
