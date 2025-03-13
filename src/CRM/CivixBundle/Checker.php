@@ -38,7 +38,7 @@ class Checker {
    * @return bool
    */
   public function coreHasPathload(): bool {
-    return $this->coreVersionIs('>=', '5.73.beta1');
+    return $this->coreVersionIs('>=', '5.74.beta1');
   }
 
   /**
