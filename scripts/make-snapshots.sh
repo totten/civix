@@ -72,54 +72,12 @@ function build_snapshot() {
   $CIVIX $VERBOSITY generate:module "$EXMODULE" --enable=no --no-interaction --compatibility=5.0
 
   pushd "$EXMODULE"
-  case "$name" in
-
-    empty)
-      echo "Nothing to add"
-      ;;
-
-    qf)
-      $CIVIX $VERBOSITY generate:page MyPage civicrm/my-page
-      $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
-      ;;
-
-    entity4)
-      $CIVIX $VERBOSITY generate:upgrader
-      $CIVIX $VERBOSITY generate:entity MyEntityFour
-      ;;
-
-    kitchensink)
-      $CIVIX $VERBOSITY generate:api MyEntity Myaction
-      $CIVIX $VERBOSITY generate:api MyEntity myaction2
-      $CIVIX $VERBOSITY generate:case-type MyLabel MyName
-      # $CIVIX $VERBOSITY generate:custom-xml -f --data="FIXME" --uf="FIXME"
-      $CIVIX $VERBOSITY generate:entity MyEntityFour
-      $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
-      $CIVIX $VERBOSITY generate:form My_StuffyForm civicrm/my-stuffy-form
-      $CIVIX $VERBOSITY generate:page MyPage civicrm/my-page
-      $CIVIX $VERBOSITY generate:report MyReport CiviContribute
-      $CIVIX $VERBOSITY generate:search MySearch
-      $CIVIX $VERBOSITY generate:test --template=headless 'Civi\Civiexample\BarTest'
-      $CIVIX $VERBOSITY generate:test --template=e2e 'Civi\Civiexample\EndTest'
-      $CIVIX $VERBOSITY generate:test --template=phpunit 'Civi\CiviExample\PHPUnitTest'
-      $CIVIX $VERBOSITY generate:upgrader
-      $CIVIX $VERBOSITY generate:angular-module
-      $CIVIX $VERBOSITY generate:angular-page FooCtrl foo
-      $CIVIX $VERBOSITY generate:angular-directive foo-bar
-      $CIVIX $VERBOSITY generate:theme
-      $CIVIX $VERBOSITY generate:theme extratheme
-      ;;
-
-    svc)
-      $CIVIX $VERBOSITY generate:service some.thing --naming=Civi --no-interaction
-      ;;
-
-    *)
-      echo "Error: unrecognized snapshot type $name" 1>&2
+    if [ -f "$SCENARIO_TESTS/$name/make.sh" ]; then
+      source "$SCENARIO_TESTS/$name/make.sh"
+    else
+      echo "Error: snapshot type $name has no build script ($SCENARIO_TESTS/$name/make.sh)" 1>&2
       exit 1
-      ;;
-
-  esac
+    fi
   popd
 
   zip -r "$zipfile" "$EXMODULE"
@@ -133,7 +91,7 @@ function build_snapshot() {
         phpunit9 --group headless
         phpunit9 --group e2e
       fi
-      if [ -e "$SCENARIO_TESTS/$name" ]; then
+      if [ -e "$SCENARIO_TESTS/$name/phpunit.xml.dist" ]; then
         ln -sf "$SCENARIO_TESTS/$name" "scenario-tests"
         (cd scenario-tests && phpunit9)
       fi
