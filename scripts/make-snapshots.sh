@@ -8,6 +8,7 @@ CIVIX_BUILD_TYPE=
 EXMODULE=${EXMODULE:-org.example.civixsnapshot}
 SNAPSHOT_DIR="$PWD/tests/snapshots"
 SNAPSHOT_VER='HEAD'
+SCENARIO_TESTS="$PWD/tests/scenarios"
 #SNAPSHOT_VER=$( git describe --tags )
 VERBOSITY=
 RUN_TEST=
@@ -131,6 +132,10 @@ function build_snapshot() {
       if [ -e 'tests/phpunit' ]; then
         phpunit9 --group headless
         phpunit9 --group e2e
+      fi
+      if [ -e "$SCENARIO_TESTS/$name" ]; then
+        ln -sf "$SCENARIO_TESTS/$name" "scenario-tests"
+        (cd scenario-tests && phpunit9)
       fi
     popd
   fi
