@@ -1,0 +1,1 @@
+$CIVIX $VERBOSITY generate:service some.thing --naming=Civi --no-interaction
