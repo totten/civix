@@ -1,7 +1,6 @@
 <?php
 namespace CRM\CivixBundle\Builder;
 
-use Civix;
 use CRM\CivixBundle\Utils\Files;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,6 +15,9 @@ class PHPUnitGenerateInitFiles {
     if (!file_exists($phpunitXmlFile)) {
       $phpunitXml = new PhpUnitXML($phpunitXmlFile);
       $phpunitXml->init($ctx);
+      if (empty($phpunitXml->get()->testsuites)) {
+        $phpunitXml->addTestSuite($ctx['fullName'] . ' Tests', ['./tests/phpunit']);
+      }
       $phpunitXml->save($ctx, $output);
     }
     else {

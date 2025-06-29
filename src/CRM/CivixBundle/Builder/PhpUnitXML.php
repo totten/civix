@@ -27,8 +27,6 @@ class PhpUnitXML extends XML {
 
     $this->set($xml);
 
-    $this->addTestSuite($ctx['fullName'] . ' Tests', ['./tests/phpunit']);
-
     $this->get()
       ->addChild('coverage')
       ->addChild('include')
