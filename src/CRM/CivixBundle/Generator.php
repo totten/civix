@@ -695,6 +695,9 @@ class Generator {
    */
   public function addPhpunit(): void {
     $ctx = $this->createDefaultCtx();
+    $info = new Info($this->baseDir->string('info.xml'));
+    $info->load($ctx);
+    $ctx['fullName'] = $info->getKey();
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
     $phpUnitInitFiles->initPhpunitXml($this->baseDir->string('phpunit.xml.dist'), $ctx, Civix::output());
     $phpUnitInitFiles->initPhpunitBootstrap($this->baseDir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, Civix::output());
