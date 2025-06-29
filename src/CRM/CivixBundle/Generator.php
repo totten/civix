@@ -700,7 +700,12 @@ class Generator {
     $ctx['fullName'] = $info->getKey();
     $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
     $phpUnitInitFiles->initPhpunitXml($this->baseDir->string('phpunit.xml.dist'), $ctx, Civix::output());
-    $phpUnitInitFiles->initPhpunitBootstrap($this->baseDir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, Civix::output());
+
+    $this->writeTextFile(
+      $this->baseDir->string('tests', 'phpunit', 'bootstrap.php'),
+      Civix::templating()->render('phpunit-boot-cv.php.php', []),
+      'if-forced'
+    );
   }
 
   /**
