@@ -6,7 +6,7 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Mixins;
 use CRM\CivixBundle\Builder\Module;
 use CRM\CivixBundle\Builder\PhpData;
-use CRM\CivixBundle\Builder\PHPUnitGenerateInitFiles;
+use CRM\CivixBundle\Builder\PhpUnitXML;
 use CRM\CivixBundle\Command\Mgd;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\MixinLibraries;
@@ -177,6 +177,25 @@ class Generator {
     $phpData->loadInit($ctx);
     $filter($phpData);
     $phpData->save($ctx, $this->output);
+  }
+
+  /**
+   * Update a phpunit.xml-style file.
+   *
+   * @param string|Path $path
+   * @param callable $function
+   *   Filter function to inspect/update the phpunit.xml
+   *   Function(PhpUnitXML $phpunitXml): void
+   * @return void
+   */
+  public function updatePhpUnitXML($path, callable $function): void {
+    $file = Path::for($path)->string();
+    Path::for(dirname($file))->mkdir();
+    $ctx = $this->createDefaultCtx();
+    $phpunitXml = new PhpUnitXML($file);
+    $phpunitXml->loadInit($ctx);
+    $function($phpunitXml);
+    $phpunitXml->save($ctx, $this->output);
   }
 
   /**
@@ -694,13 +713,19 @@ class Generator {
    * @return void
    */
   public function addPhpunit(): void {
-    $ctx = $this->createDefaultCtx();
-    $info = new Info($this->baseDir->string('info.xml'));
-    $info->load($ctx);
-    $ctx['fullName'] = $info->getKey();
-    $phpUnitInitFiles = new PHPUnitGenerateInitFiles();
-    $phpUnitInitFiles->initPhpunitXml($this->baseDir->string('phpunit.xml.dist'), $ctx, Civix::output());
-    $phpUnitInitFiles->initPhpunitBootstrap($this->baseDir->string('tests', 'phpunit', 'bootstrap.php'), $ctx, Civix::output());
+    $path = $this->baseDir;
+
+    $this->updatePhpUnitXML($path->string('phpunit.xml.dist'), function(PHPUnitXML $phpunitXml) {
+      if (empty($phpunitXml->get()->testsuites)) {
+        $phpunitXml->addTestSuite($this->infoXml->getKey() . ' Tests', ['./tests/phpunit']);
+      }
+    });
+
+    $this->writeTextFile(
+      $path->string('tests', 'phpunit', 'bootstrap.php'),
+      Civix::templating()->render('phpunit-boot-cv.php.php', []),
+      'if-forced'
+    );
   }
 
   /**
