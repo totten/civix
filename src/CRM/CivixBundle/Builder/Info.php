@@ -12,6 +12,7 @@ use SimpleXMLElement;
 class Info extends XML {
 
   const MINIMUM_COMPATIBILITY_NEW_EXTENSION = '5.36';
+  const CURRENT_PHP_VERSIONS = ['8.0', '8.1', '8.2', '8.3', '8.4'];
 
   public function init(&$ctx) {
     $ctx += [
@@ -55,6 +56,13 @@ class Info extends XML {
     $xml->addChild('version', '1.0.0');
     $xml->addChild('develStage', 'alpha');
     $xml->addChild('compatibility')->addChild('ver', $ctx['compatibilityVerMin']);
+    $phpCompatibility = $xml->addChild('php_compatibility');
+    foreach (self::CURRENT_PHP_VERSIONS as $PHP_VERSION) {
+      $phpCompatibility->addChild('ver', $PHP_VERSION);
+    }
+    // Add smarty compatibility. New extensions should support Smarty5, anything else can
+    // be manually added by discretion.
+    $xml->addChild('smarty_compatibility')->addChild('ver', 5);
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
     // APIv4 will look for classes+files matching 'Civi/Api4', and
