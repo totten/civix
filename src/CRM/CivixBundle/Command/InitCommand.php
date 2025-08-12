@@ -231,7 +231,7 @@ class InitCommand extends AbstractCommand {
   protected function getGitConfig($key, $default) {
     $result = NULL;
     if (\CRM\CivixBundle\Utils\Commands::findExecutable('git')) {
-      $result = trim(`git config --get $key`);
+      $result = trim((string) `git config --get $key`);
     }
     if (empty($result)) {
       $result = $default;
