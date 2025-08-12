@@ -55,14 +55,25 @@ class Info extends XML {
     $xml->addChild('releaseDate', date('Y-m-d'));
     $xml->addChild('version', '1.0.0');
     $xml->addChild('develStage', 'alpha');
-    $xml->addChild('compatibility')->addChild('ver', $ctx['compatibilityVerMin']);
+
+    $compatibility = $xml->addChild('compatibility');
+    $compatibility->addAttribute('mode', 'semver');
+    $compatibility->addChild('comments', 'Semantic versioning. For example, compatibility with "6.1" implies compatibility with "6.2".');
+    $compatibility->addChild('ver', $ctx['compatibilityVerMin']);
+
     $phpCompatibility = $xml->addChild('php_compatibility');
+    $phpCompatibility->addAttribute('mode', 'list');
+    $phpCompatibility->addChild('comments', 'Listed versions. For example, specify both "8.1" and "8.2".');
     foreach (self::CURRENT_PHP_VERSIONS as $PHP_VERSION) {
       $phpCompatibility->addChild('ver', $PHP_VERSION);
     }
     // Add smarty compatibility. New extensions should support Smarty5, anything else can
     // be manually added by discretion.
-    $xml->addChild('smarty_compatibility')->addChild('ver', 5);
+    $smartyCompatibility = $xml->addChild('smarty_compatibility');
+    $smartyCompatibility->addAttribute('mode', 'list');
+    $smartyCompatibility->addChild('comments', 'Listed versions. For example, specify both "4" and "5".');
+    $smartyCompatibility->addChild('ver', 5);
+
     $xml->addChild('comments', 'This is a new, undeveloped module');
 
     // APIv4 will look for classes+files matching 'Civi/Api4', and
