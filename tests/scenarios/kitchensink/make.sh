@@ -7,7 +7,6 @@ $CIVIX $VERBOSITY generate:form MyForm civicrm/my-form
 $CIVIX $VERBOSITY generate:form My_StuffyForm civicrm/my-stuffy-form
 $CIVIX $VERBOSITY generate:page MyPage civicrm/my-page
 $CIVIX $VERBOSITY generate:report MyReport CiviContribute
-$CIVIX $VERBOSITY generate:search MySearch
 $CIVIX $VERBOSITY generate:test --template=headless 'Civi\Civiexample\BarTest'
 $CIVIX $VERBOSITY generate:test --template=e2e 'Civi\Civiexample\EndTest'
 $CIVIX $VERBOSITY generate:test --template=phpunit 'Civi\CiviExample\PHPUnitTest'

@@ -73,5 +73,4 @@ TODO
  * civix generate:page
  * civix generate:report
  * civix generate:report-ext
- * civix generate:search
  * civix generate:test
