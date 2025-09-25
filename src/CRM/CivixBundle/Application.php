@@ -35,7 +35,6 @@ class Application extends \Symfony\Component\Console\Application {
     $commands[] = new Command\AddManagedEntityCommand();
     $commands[] = new Command\AddPageCommand();
     $commands[] = new Command\AddReportCommand();
-    $commands[] = new Command\AddSearchCommand();
     $commands[] = new Command\AddServiceCommand();
     $commands[] = new Command\AddTestCommand();
     $commands[] = new Command\AddThemeCommand();
