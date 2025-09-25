@@ -63,7 +63,7 @@ class <?php echo $testClass ?> extends \PHPUnit\Framework\TestCase implements En
    * Example: Test that we're using a real CMS (Drupal, WordPress, etc).
    */
   public function testWellFormedUF(): void {
-    $this->assertMatchesRegularExpression('/^(Drupal|Backdrop|WordPress|Joomla)/', CIVICRM_UF);
+    $this->assertMatchesRegularExpression('/^(Drupal|Backdrop|Standalone|WordPress|Joomla)/', CIVICRM_UF);
   }
 
 }
