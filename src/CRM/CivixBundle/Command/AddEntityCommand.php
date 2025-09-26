@@ -69,6 +69,10 @@ explicitly.');
     $ctx['tableName'] = $input->getOption('table-name') ? $input->getOption('table-name') : Naming::createTableName($input->getArgument('<EntityName>'));
 
     $mixins = new Mixins($info, $basedir->string('mixin'), ['entity-types-php@2.0']);
+    if (in_array('4', $apiVersions)) {
+      // Needed to pick up the new Api4 class
+      $mixins->addMixin('scan-classes@1.0');
+    }
     $mixins->save($ctx, $output);
     $info->save($ctx, $output);
 
