@@ -3,6 +3,8 @@
 namespace CRM\CivixBundle;
 
 use CRM\CivixBundle\Builder\Mixins;
+use CRM\CivixBundle\Parse\PrimitiveFunctionVisitor;
+use CRM\CivixBundle\Utils\Files;
 
 /**
  * This is a random grab-bag of conditionals that are show up when deciding how to generate code.
@@ -107,6 +109,59 @@ class Checker {
   public function hasSchemaPhp(): bool {
     $files = is_dir(\Civix::extDir('schema')) && \Civix::extDir()->search('glob:schema/*.entityType.php');
     return !empty($files);
+  }
+
+  public function getMyGlobalFunctions(): array {
+    $names = [];
+    foreach (['.php', '.civix.php'] as $suffix) {
+      $file = $this->generator->baseDir->string($this->generator->infoXml->getFile() . $suffix);
+      if (file_exists($file)) {
+        $content = file_get_contents($file);
+        $names = array_merge($names, PrimitiveFunctionVisitor::getAllNames($content));
+      }
+    }
+    return $names;
+  }
+
+  /**
+   * Determine if we have any classes some parent class.
+   *
+   * @param string $pattern
+   *   Ex: "CRM_Foo_"
+   * @return bool
+   */
+  public function hasSubclassesOf(string $pattern): bool {
+    return !empty($this->grep(';extends[ \r\n\t]+' . $pattern . ';', ['CRM', 'Civi'], '*.php'));
+  }
+
+  /**
+   * Search the source tree for a regex.
+   *
+   * @param string $bodyPattern
+   *   Search for files which match this pattern.
+   * @param array $dirs
+   *   List of relative to search. Ex: ['CRM', 'Civi']
+   * @param string $wildcard
+   *   File-extension to search. Ex: '*.php'
+   * @return array
+   */
+  public function grep(string $bodyPattern, array $dirs, string $wildcard): array {
+    $matches = [];
+    foreach ($dirs as $dir) {
+      $files = Files::findFiles(\Civix::extDir($dir), $wildcard);
+      $matches = array_merge($matches, Files::grepFiles($bodyPattern, $files));
+    }
+    return $matches;
+  }
+
+  /**
+   * Determine if we have a declared <requires> for another extension
+   *
+   * @param string $requiredExt
+   * @return bool
+   */
+  public function hasRequirement(string $requiredExt): bool {
+    return in_array($requiredExt, $this->generator->infoXml->getRequiredExtensions());
   }
 
 }
