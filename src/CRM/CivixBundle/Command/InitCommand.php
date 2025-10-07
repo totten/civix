@@ -18,8 +18,6 @@ use CRM\CivixBundle\Utils\Path;
 
 class InitCommand extends AbstractCommand {
 
-  protected $defaultMixins = ['setting-php@1', 'mgd-php@1', 'smarty-v2@1'];
-
   protected function configure() {
     Civix::templating();
     $this
@@ -149,7 +147,7 @@ class InitCommand extends AbstractCommand {
       $basedir->string('images'),
       $basedir->string($ctx['namespace']),
     ]);
-    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input));
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), $this->getMixins($input, $ctx['compatibilityVerMin']));
     $ext->builders['info'] = $info;
     $ext->builders['module'] = new Module(Civix::templating());
     $ext->builders['license'] = new License($licenses->get($ctx['license']), $basedir->string('LICENSE.txt'), FALSE);
@@ -239,10 +237,18 @@ class InitCommand extends AbstractCommand {
     return $result;
   }
 
-  protected function getMixins(InputInterface $input) {
+  protected function getMixins(InputInterface $input, string $minimumVersion) {
     $requested = explode(',', implode(',', $input->getOption('mixins')));
-    $merged = array_unique(array_merge($this->defaultMixins, $requested));
+    $merged = array_unique(array_merge($this->getDefaultMixins($minimumVersion), $requested));
     return array_filter($merged);
+  }
+
+  protected function getDefaultMixins(string $minimumVersion): array {
+    $defaults = ['setting-php@1', 'mgd-php@1', 'smarty-v2@1'];
+    if (version_compare($minimumVersion, '5.51', '>=')) {
+      $defaults[] = 'scan-classes@1';
+    }
+    return $defaults;
   }
 
 }

@@ -168,6 +168,43 @@ class Info extends XML {
     return str_replace('/', '_', $this->getNamespace()) . '_ExtensionUtil';
   }
 
+  public function getRequiredExtensions(): array {
+    $requires = [];
+    $xml = $this->xml;
+    if ($xml->requires) {
+      foreach ($xml->requires->ext as $ext) {
+        $requires[] = (string) $ext;
+      }
+    }
+    return $requires;
+  }
+
+  public function setRequiredExtensions(array $updatedRequires): void {
+    $currentRequires = $this->getRequiredExtensions();
+    $removals = array_diff($currentRequires, $updatedRequires);
+    $additions = array_diff($updatedRequires, $currentRequires);
+
+    $xml = $this->get();
+
+    foreach ($removals as $removal) {
+      $nodes = $xml->xpath('requires/ext[text() = "' . $removal . '")]');
+      foreach ($nodes as $node) {
+        Civix::output()->writeln("<info>Unregister</info> " . $node);
+        unset($node[0]);
+      }
+    }
+
+    if ($additions) {
+      if (empty($xml->xpath('requires'))) {
+        $xml->addChild('requires');
+      }
+      $requireXml = $xml->requires;
+      foreach ($additions as $addition) {
+        $requireXml->addChild('ext', $addition);
+      }
+    }
+  }
+
   /**
    * Get the namespace into which civix should place files
    * @return string

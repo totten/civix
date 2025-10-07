@@ -59,6 +59,20 @@ class PrimitiveFunctionVisitor {
     return $instance->run();
   }
 
+  /**
+   * @param string $code
+   *   Fully formed PHP code
+   * @return array
+   *   List of functions defined in this file.
+   */
+  public static function getAllNames(string $code): array {
+    $names = [];
+    static::visit($code, function (?string &$functionName, string &$signature, string &$code) use (&$names) {
+      $names[] = $code;
+    });
+    return $names;
+  }
+
   public function __construct(string $code, callable $filter) {
     $this->tokens = Token::tokenize($code);
     $this->filter = $filter;
