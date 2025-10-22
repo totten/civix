@@ -1,7 +1,12 @@
 <?php
 echo "<?php\n";
+?>
+
+declare(strict_types = 1);
+<?php
 $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
+
 use <?php echo $_namespace ?>_ExtensionUtil as E;
 
 class <?php echo preg_replace(':/:', '_', $fullClassName) ?> extends CRM_Core_Page {

@@ -2,6 +2,8 @@
 echo "<?php\n";
 ?>
 
+declare(strict_types = 1);
+
 /**
  * This is a generic test class for the extension (implemented with PHPUnit).
  */
