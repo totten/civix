@@ -40,6 +40,7 @@ class Civix {
     if (!isset(self::$cache['boot'])) {
       $cwd = getcwd();
       // TODO: It might be better for civix commands to use cv's BootTrait.
+      \Civi\Cv\PharOut\PharOut::prepare();
       if (!empty(getenv('CIVICRM_BOOT'))) {
         \Civi\Cv\CmsBootstrap::singleton()
           ->addOptions($options)
@@ -51,6 +52,9 @@ class Civix {
         Bootstrap::singleton()->boot($options);
         \CRM_Core_Config::singleton();
         \CRM_Utils_System::loadBootStrap([], FALSE);
+      }
+      if (CIVICRM_UF === 'Joomla') {
+        \Civi\Cv\PharOut\PharOut::reset();
       }
       chdir($cwd);
       self::$cache['boot'] = 1;
