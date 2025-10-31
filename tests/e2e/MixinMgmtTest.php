@@ -23,7 +23,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'mixin/setting-php@1.*.*.mixin.php' => 1,
       'mixin/case-xml@1.*.*.mixin.php' => 0,
       'mixin/menu-xml@1.*.*.mixin.php' => 0,
-      'mixin/mgd-php@1.*.*.mixin.php' => 1,
+      'mixin/mgd-php@2.*.*.mixin.php' => 1,
     ]);
   }
 
@@ -58,14 +58,14 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     ]);
 
     $enableAll = $this->civix('mixin');
-    $this->assertEquals(0, $enableAll->execute(['--enable' => 'menu-xml@1.0.0,mgd-php@1.0.0']));
+    $this->assertEquals(0, $enableAll->execute(['--enable' => 'menu-xml@1.0.0,mgd-php@2.0.0']));
 
     $this->assertEquals('5.36', trim($this->civixInfoGet('compatibility/ver')->getDisplay()));
     $this->assertFileGlobs(['mixin/polyfill.php' => 1]);
     $this->assertMixinStatuses([
       'setting-php@1' => 'on+backport',
       'menu-xml@1' => 'on+backport',
-      'mgd-php@1' => 'on+backport',
+      'mgd-php@2' => 'on+backport',
       'scan-classes@1' => 'off',
     ]);
 
@@ -77,7 +77,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $this->assertMixinStatuses([
       'setting-php@1' => 'off',
       'menu-xml@1' => 'off',
-      'mgd-php@1' => 'off',
+      'mgd-php@2' => 'off',
       'scan-classes@1' => 'off',
     ]);
   }
@@ -106,7 +106,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'setting-php@1' => 'on',
       'menu-xml@1' => 'on',
       'scan-classes@1' => 'on',
-      'mgd-php@1' => 'on',
+      'mgd-php@2' => 'on+backport',
     ]);
 
     $disableAll = $this->civix('mixin');
@@ -118,7 +118,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'setting-php@1' => 'off',
       'menu-xml@1' => 'off',
       'scan-classes@1' => 'off',
-      'mgd-php@1' => 'off',
+      'mgd-php@2' => 'off',
     ]);
   }
 

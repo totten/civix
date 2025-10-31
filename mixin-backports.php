@@ -68,6 +68,14 @@ return [
     'provided-by' => '5.45.beta1',
     'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
+  'mgd-php@2' => [
+    'version' => '2.0.0',
+    'sha256' => '842556ce199aee263aaf762c54cf36335649f940cf05b129b135dd2e30091fe1',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/2442175547aa43718bbaa01fbc61fcfa18813e5b/mixin/mgd-php@2/mixin.php',
+    'local' => 'extern/mixin/mgd-php@2/mixin.php',
+    'provided-by' => '6.9.beta1',
+    'minimum' => '5.27', /* Compat may go back further; haven't tested */
+  ],
   'scan-classes@1' => [
     // scan-calsses is not meaningful to backport, but tracking metadata helps with admin.
     'version' => '1.0.0',

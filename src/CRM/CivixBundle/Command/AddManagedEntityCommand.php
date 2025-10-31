@@ -41,7 +41,7 @@ The command has some support for updating (re-exporting) managed records.
     Civix::boot(['output' => $output]);
 
     $gen = \Civix::generator();
-    $gen->addMixins(['mgd-php@1.0']);
+    $gen->addMixins(['mgd-php@2.0']);
     if ($entityName === 'Afform') {
       $gen->exportAfform($entityId);
     }

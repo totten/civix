@@ -302,7 +302,7 @@ trait CivixProjectTestTrait {
       }
 
     }
-    $this->assertEquals([], $errors);
+    $this->assertEquals('', implode("\n", $errors));
   }
 
   /**
