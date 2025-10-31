@@ -1,8 +1,7 @@
 <?php
 echo "<?php\n";
+echo "declare(strict_types = 1);\n";
 ?>
-
-declare(strict_types = 1);
 
 // Note: $b overrides $a
 function _civix_phpunit_settings_merge($a, $b) {

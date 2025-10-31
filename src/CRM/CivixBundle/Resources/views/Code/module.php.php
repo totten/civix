@@ -1,9 +1,8 @@
 <?php
 echo "<?php\n";
+echo "declare(strict_types = 1);\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
-
-declare(strict_types = 1);
 
 // phpcs:disable PSR1.Files.SideEffects
 require_once '<?php echo $mainFile ?>.civix.php';

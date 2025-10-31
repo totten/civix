@@ -1,9 +1,6 @@
 <?php
 echo "<?php\n";
-?>
-
-declare(strict_types = 1);
-<?php
+echo "declare(strict_types = 1);\n";
 $_namespace = preg_replace(':/:', '_', $namespace);
 ?>
 
