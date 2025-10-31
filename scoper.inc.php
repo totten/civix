@@ -16,10 +16,12 @@ return [
 
     // Joomla bootstrap
     'TYPO3\\PharStreamWrapper',
+    'Joomla\\',
   ],
 
   'exclude-classes' => [
     '/^(CRM_|HTML_|DB_|Log_)/',
+    '/^PEAR_(Error|Exception)/',
     'civicrm_api3',
     'Mixlib',
     'DB',
@@ -27,6 +29,7 @@ return [
     'JFactory',
     'Civi',
     'Drupal',
+    'Joomla',
   ],
   'exclude-functions' => [
     '/^civicrm_/',
@@ -48,5 +51,12 @@ return [
     glob('extern/*/*.php'),
     glob('vendor/symfony/polyfill-php80/Resources/stubs/*php'), /* polyfill-php80@1.27.0 + box@4.8.3 */
   ),
+  'exclude-constants' => [
+    'JPATH_BASE',
+    'JPATH_LIBRARIES',
+    'CIVICRM_SETTINGS_PATH',
+    'DS',
+    '_JEXEC',
+  ],
 
 ];
