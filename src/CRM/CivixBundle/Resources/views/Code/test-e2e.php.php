@@ -1,6 +1,6 @@
 <?php
 echo "<?php\n";
-
+echo "declare(strict_types = 1);\n";
 if ($testNamespace) {
   echo "namespace $testNamespace;\n";
 }

@@ -1,5 +1,6 @@
 <?php
 echo "<" . "?php\n";
+echo "declare(strict_types = 1);\n";
 if ($classNamespaceDecl) {
   echo "$classNamespaceDecl\n\n";
 }
@@ -8,7 +9,7 @@ echo "$useE\n\n";
 /**
  * Collection of upgrade steps.
  */
-class <?php echo $className ?> extends \CRM_Extension_Upgrader_Base {
+final class <?php echo $className ?> extends \CRM_Extension_Upgrader_Base {
 
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).

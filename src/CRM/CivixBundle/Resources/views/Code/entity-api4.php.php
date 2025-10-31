@@ -1,4 +1,6 @@
 <?php echo "<?php\n"; ?>
+declare(strict_types = 1);
+
 namespace Civi\Api4;
 
 /**

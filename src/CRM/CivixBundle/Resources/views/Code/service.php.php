@@ -1,5 +1,6 @@
 <?php
 echo "<" . "?php\n";
+echo "declare(strict_types = 1);\n";
 if ($classNamespaceDecl) {
   echo "$classNamespaceDecl\n\n";
 }
