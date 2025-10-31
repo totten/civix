@@ -114,7 +114,7 @@ class AddReportCommand extends AbstractCommand {
       $ext->builders['page.tpl.php'] = new Template('report.tpl.php', $ctx['reportTplFile'], FALSE, Civix::templating());
     }
 
-    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@1.0']);
+    $ext->builders['mixins'] = new Mixins($info, $basedir->string('mixin'), ['mgd-php@2.0']);
     $ext->builders['info'] = $info;
 
     $ext->loadInit($ctx);

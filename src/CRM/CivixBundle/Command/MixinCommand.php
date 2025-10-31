@@ -33,7 +33,7 @@ class MixinCommand extends AbstractCommand {
         "  civix mixin --enable-all\n" .
         "  civix mixin --enable=ang-php@1,setting-php@1\n" .
         "  civix mixin --disable=ang-php@1\n" .
-        "  civix mixin --disable-all --enable=mgd-php@1\n" .
+        "  civix mixin --disable-all --enable=mgd-php@2\n" .
         "\n"
       );
     parent::configure();

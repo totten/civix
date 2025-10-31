@@ -244,7 +244,7 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function getDefaultMixins(string $minimumVersion): array {
-    $defaults = ['setting-php@1', 'mgd-php@1', 'smarty-v2@1'];
+    $defaults = ['setting-php@1', 'mgd-php@2', 'smarty-v2@1'];
     if (version_compare($minimumVersion, '5.51', '>=')) {
       $defaults[] = 'scan-classes@1';
     }

@@ -25,7 +25,7 @@ class AddManagedEntityTest extends \PHPUnit\Framework\TestCase {
   }
 
   public function testAddMgd(): void {
-    $this->assertMixinStatuses(['mgd-php@1' => 'off']);
+    $this->assertMixinStatuses(['mgd-php@2' => 'off']);
     $this->assertFileGlobs(['managed/OptionGroup_preferred_communication_method.mgd.php' => 0]);
 
     $tester = static::civix('export');
@@ -34,7 +34,10 @@ class AddManagedEntityTest extends \PHPUnit\Framework\TestCase {
       throw new \RuntimeException(sprintf("Failed to generate mgd (%s)", static::getKey()));
     }
 
-    $this->assertMixinStatuses(['mgd-php@1' => 'on']);
+    $compatVer = trim($this->civixInfoGet('compatibility/ver')->getDisplay());
+    $this->assertMixinStatuses([
+      'mgd-php@2' => version_compare($compatVer, '6.9.alpha1', '>=') ? 'on' : 'on+backport',
+    ]);
     $this->assertFileGlobs(['managed/OptionGroup_preferred_communication_method.mgd.php' => 1]);
 
     ProcessHelper::runOk('php -l managed/OptionGroup_preferred_communication_method.mgd.php');

@@ -110,7 +110,7 @@ action names.
     }
 
     if ($input->getOption('schedule')) {
-      $mixins = new Mixins($info, $basedir->string('mixin'), 'mgd-php@1.0');
+      $mixins = new Mixins($info, $basedir->string('mixin'), 'mgd-php@2.0');
       $mixins->save($ctx, $output);
 
       if (!file_exists($ctx['apiCronFile'])) {
