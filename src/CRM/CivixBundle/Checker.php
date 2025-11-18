@@ -46,6 +46,9 @@ class Checker {
   /**
    * Determine if a mixin-library is already provided by civicrm-core.
    *
+   * If core is v5.78, and if we want library v5.75, then core already provides.
+   * If core is v5.63, and if we want library v5.75, then our version is required.
+   *
    * @param string $majorName
    * @return bool
    */
@@ -60,10 +63,26 @@ class Checker {
       throw new \RuntimeException("Unrecognized library: $majorName");
     }
 
-    // civimix-* libraries track the version#s in core.
-    // If core is v5.78, and if we want library v5.75, then core already provides.
-    // If core is v5.63, and if we want library v5.75, then our version is required.
-    return $this->coreVersionIs('>=', $avail->version);
+    // Some version of civicrm-core provides this version of our library. Which one?
+    switch ($majorName) {
+      case 'civimix-schema@5':
+        // CivCRM 6.0 made an overall version-bump, but civimix-schema@5 continued as 5.x.
+        // Ex: civimix-schema@5.82 <=> civicrm-core@5.82
+        // Ex: civimix-schema@5.83 <=> civicrm-core@6.0
+        // https://github.com/civicrm/civicrm-core/pull/31763
+        $parts = explode('.', $avail->version);
+        $providedBy = $parts[1] < 83
+          ? $avail->version
+          : implode('.', ['6', $parts[1] - 83, $parts[2]]);
+        break;
+
+      default:
+        // The general idea is to match core-versions.
+        $providedBy = $avail->version;
+        break;
+    }
+
+    return $this->coreVersionIs('>=', $providedBy);
   }
 
   /**
