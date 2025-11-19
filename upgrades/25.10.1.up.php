@@ -43,7 +43,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
 
   // These are some cases where people have undeclared dependencies.
   $extClasses = [
-    ['Legacy Custom Search', 'legacycustomsearch', 'CRM_Contact_Form_Search_Custom_Base'],
+    ['Legacy Custom Search', 'legacycustomsearches', 'CRM_Contact_Form_Search_Custom_Base'],
     ['CiviRules', 'org.civicoop.civirules', 'CRM_Civirules'],
   ];
   foreach ($extClasses as $extClass) {
