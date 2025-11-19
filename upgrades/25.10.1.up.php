@@ -28,7 +28,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
   $default = 's';
 
   if (!file_exists(Civix::extDir('Civi/Api4'))) {
-    $addIndicator('OK', 'Civi\Api4');
+    $addIndicator('OK', 'Civi\Api4', "Not applicable");
   }
   else {
     $addIndicator('IMPORTANT', 'Civi\Api4', "You must enable scanning to ensure future compatibility.\n(See https://github.com/civicrm/civicrm-core/pull/33371)");
