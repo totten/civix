@@ -7,7 +7,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
   $checker = \Civix::checker();
 
   $extClasses = [
-    ['Legacy Custom Search', 'legacycustomsearch', ';CRM_Contact_Form_Search_Custom_Base;i'],
+    ['Legacy Custom Search', 'legacycustomsearches', ';CRM_Contact_Form_Search_Custom_Base;i'],
     ['CiviRules', 'org.civicoop.civirules', ';CRM_Civirules;i'],
   ];
   foreach ($extClasses as $extClass) {

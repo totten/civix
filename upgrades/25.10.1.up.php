@@ -28,7 +28,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
   $default = 's';
 
   if (!file_exists(Civix::extDir('Civi/Api4'))) {
-    $addIndicator('OK', 'Civi\Api4');
+    $addIndicator('OK', 'Civi\Api4', "Not applicable");
   }
   else {
     $addIndicator('IMPORTANT', 'Civi\Api4', "You must enable scanning to ensure future compatibility.\n(See https://github.com/civicrm/civicrm-core/pull/33371)");
@@ -43,7 +43,7 @@ return function (\CRM\CivixBundle\Generator $gen) {
 
   // These are some cases where people have undeclared dependencies.
   $extClasses = [
-    ['Legacy Custom Search', 'legacycustomsearch', 'CRM_Contact_Form_Search_Custom_Base'],
+    ['Legacy Custom Search', 'legacycustomsearches', 'CRM_Contact_Form_Search_Custom_Base'],
     ['CiviRules', 'org.civicoop.civirules', 'CRM_Civirules'],
   ];
   foreach ($extClasses as $extClass) {
