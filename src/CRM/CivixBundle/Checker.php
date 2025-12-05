@@ -71,6 +71,10 @@ class Checker {
         // Ex: civimix-schema@5.83 <=> civicrm-core@6.0
         // https://github.com/civicrm/civicrm-core/pull/31763
         $parts = explode('.', $avail->version);
+        if (count($parts) < 3) {
+          // Fill in third digit. (Implies that 'civimix-schema@X.Y.phar' is provided by 'core@X.Y.beta1')
+          $parts[] = 'beta1';
+        }
         $providedBy = $parts[1] < 83
           ? $avail->version
           : implode('.', ['6', $parts[1] - 83, $parts[2]]);
