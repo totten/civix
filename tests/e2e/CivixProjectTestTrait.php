@@ -123,6 +123,16 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
+  public function civixGenerateReport(string $className, string $component, array $options = []): CommandTester {
+    $tester = static::civix('generate:report');
+    $tester->execute($options + [
+      '<ClassName>' => $className,
+      '<CiviComponent>' => $component,
+    ]);
+    $this->assertTesterOk($tester, 'Failed to generate report');
+    return $tester;
+  }
+
   public function civixGenerateEntity(string $entity, array $options = []): CommandTester {
     $tester = static::civix('generate:entity');
     $tester->execute(['<EntityName>' => $entity] + $options);
@@ -372,14 +382,14 @@ trait CivixProjectTestTrait {
    * @return array
    *   [0 => InputInterface, 1 => OutputInterface]
    */
-  protected function createInputOutput(array $argv = NULL): array {
+  protected function createInputOutput(?array $argv = NULL): array {
     $input = new ArgvInput($argv);
     $input->setInteractive(FALSE);
     $output = new NullOutput();
     return [$input, $output];
   }
 
-  protected function assertTesterOk(CommandTester $tester, string $message = NULL) {
+  protected function assertTesterOk(CommandTester $tester, ?string $message = NULL) {
     if ($tester->getStatusCode() !== 0) {
       $message = $message ?: 'Failed to run command';
       $command = is_callable([$tester, 'getCommandLine']) ? $tester->getCommandLine() : "(unknown)";

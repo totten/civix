@@ -71,6 +71,5 @@ TODO
  * civix generate:form
  * civix generate:module
  * civix generate:page
- * civix generate:report
  * civix generate:report-ext
  * civix generate:test
