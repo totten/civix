@@ -2,19 +2,24 @@
 
 ## Generate an update
 
-Consider `civimix-schema@X.X.X.phar`, which is generated from `civicrm-core:mixin/lib/civimix-schema`.
+Consider `civimix-schema@X.X.X`, which is:
 
-Suppose a new version (`Y.Y.Y`) is available upstream.
+* Developed canonically in `civicrm-core.git`:`mixin/lib/civimix-schema/`
+* Generated as PHAR with `civicrm-core.git`:`tools/mixin/bin/build-lib`
+* Distributed as a civix backport in `civix.git`:`lib/`
 
-Here's how to update the version civix:
+Here's are some steps for backporting a newer version of `civimix-schema@X.X.X.phar`:
 
 ```bash
-## Export new lib
+## Export new version
 cd CIVICRM_REPO
 ./tools/mixin/bin/build-lib /tmp/civimix
 
-## Update civix: Remove old lib. Add new lib.
+## Update civix: Remove old version
 cd CIVIX_REPO
-rm lib/civimix-schema@X.X.X.phar
-cp /tmp/civimix/civimix-schema@Y.Y.Y.phar lib/
+git rm lib/civimix-schema@*.phar
+
+## Update civix: Add new version
+cp /tmp/civimix/civimix-schema@*.phar lib/
+git add lib/civimix-schema@*.phar
 ```
