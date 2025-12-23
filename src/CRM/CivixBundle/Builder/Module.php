@@ -51,6 +51,15 @@ class Module implements Builder {
     );
 
     $moduleCivix->save($ctx, $output);
+
+    // Add composer package info
+    $composerPackage = new Template(
+      'composer.json.php',
+      $basedir->string('composer.json'),
+      'ignore',
+      $this->templateEngine
+    );
+    $composerPackage->save($ctx, $output);
   }
 
 }
