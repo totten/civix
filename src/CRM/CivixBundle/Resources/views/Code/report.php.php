@@ -15,7 +15,9 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
   protected $_summary = NULL;
 
   protected $_customGroupExtends = ['Membership'];
-  protected $_customGroupGroupBy = FALSE; function __construct() {
+  protected $_customGroupGroupBy = FALSE;
+
+  public function __construct() {
     $this->_columns = [
       'civicrm_contact' => [
         'dao' => 'CRM_Contact_DAO_Contact',
@@ -132,12 +134,12 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
     parent::__construct();
   }
 
-  function preProcess() {
+  public function preProcess() {
     $this->assign('reportTitle', E::ts('Membership Detail Report'));
     parent::preProcess();
   }
 
-  function from() {
+  public function from() {
     $this->_from = NULL;
 
     $this->_from = "
@@ -164,7 +166,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
    *
    * @return string
    */
-  function selectClause(&$tableName, $tableKey, &$fieldName, &$field) {
+  public function selectClause(&$tableName, $tableKey, &$fieldName, &$field) {
     return parent::selectClause($tableName, $tableKey, $fieldName, $field);
   }
 
@@ -185,7 +187,7 @@ class <?php echo $reportClassName ?> extends CRM_Report_Form {
     return parent::whereClause($field, $op, $value, $min, $max);
   }
 
-  function alterDisplay(&$rows) {
+  public function alterDisplay(&$rows) {
     // custom code to alter rows
     $entryFound = FALSE;
     $checkList = [];
