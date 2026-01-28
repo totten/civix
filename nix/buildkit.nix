@@ -1,10 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 
 ## Get civicrm-buildkit from github.
-## Based on "master" branch circa 2024-02-26 04:31 UTC
+## Based on "master" branch circa 2026-01-27 23:56 UTC
 import (pkgs.fetchzip {
-  url = "https://github.com/civicrm/civicrm-buildkit/archive/d6f6b8dd2d5944c35cd78cb319fef21673214b35.tar.gz";
-  sha256 = "02p2yzdfgv66a2zf8i36h6pjfi78wnp92m3klij7fqbfd9mpvi5a";
+  url = "https://github.com/civicrm/civicrm-buildkit/archive/ad82671e7468491131e6db19440b26b6b35d8d86.tar.gz";
+  sha256 = "0igyhcd18agy90p4h9gmzx0q8rmigab0hxjc4z7yp6kkc663byya";
 })
 
 ## Get a local copy of civicrm-buildkit. (Useful for developing patches.)
