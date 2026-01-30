@@ -56,8 +56,15 @@ class MixinLibraries {
     if (!$avail) {
       throw new \RuntimeException("Cannot enable unknown library ($majorName)");
     }
+
+    // Each backport-library has a file-format (eg PHAR, directory, or flat php-file).
+    // We prefer to copy-through and preserve that file-format. However, some target-environments
+    // have constraints. (Ex: With Backdrop+CiviCRM before 6.1, PHAR files could not be loaded.)
+    // So we may sometimes convert the file-format for compatibility.
+    $preferType = ($avail->type === 'phar' && !\Civix::checker()->coreEnablesPhar()) ? 'dir' : $avail->type;
+
     if ($active) {
-      if (version_compare($active->version, $avail->version, '>=')) {
+      if (version_compare($active->version, $avail->version, '>=') && $active->type === $preferType) {
         return;
       }
       else {
@@ -65,27 +72,31 @@ class MixinLibraries {
       }
     }
 
-    // When copying the library to the new folder, we may have a choice about which
-    // format (eg PHAR/DIR/PHP) to provide. In terms of general design/workflow,
-    // PHAR would be sensible here. However, Civi extensions target heterogeneous
-    // environments, and some downstreams have (exaggerated/misplaced) limits re:PHAR.
-    // As a compatibility measure, this code coerces the format (PHAR=>DIR).
-
-    switch ($avail->type) {
-      case 'php':
-      case 'dir':
+    switch ($avail->type . '->' . $preferType) {
+      case 'dir->dir':
         $newFile = $this->activeDir->string(basename($avail->file));
         \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
         $this->activeDir->mkdir();
         $this->fs->mirror($avail->file, $newFile);
         break;
 
-      case 'phar':
+      case 'php->php':
+      case 'phar->phar':
+        $newFile = $this->activeDir->string(basename($avail->file));
+        \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
+        $this->activeDir->mkdir();
+        copy($avail->file, $newFile);
+        break;
+
+      case 'phar->dir':
         $newFile = $this->activeDir->string(preg_replace('/\.phar$/', '', basename($avail->file)));
         \Civix::output()->writeln("<info>Write</info> " . Files::relativize($newFile));
         $this->activeDir->mkdir();
         $this->extractPhar($avail->file, $newFile);
         break;
+
+      default:
+        throw new \RuntimeException("Cannot write library ($majorName) with given type ($avail->type -> $preferType)");
     }
 
     $this->refresh();
