@@ -44,6 +44,17 @@ class Checker {
   }
 
   /**
+   * Does CiviCRM ensure that *.phar files are loadable?
+   *
+   * Before 6.1, this was left to chance (CMS-dependent). In 6.1+, it's ensured.
+   *
+   * @return bool
+   */
+  public function coreEnablesPhar(): bool {
+    return $this->coreVersionIs('>=', '6.1.beta1');
+  }
+
+  /**
    * Determine if a mixin-library is already provided by civicrm-core.
    *
    * If core is v5.78, and if we want library v5.75, then core already provides.
