@@ -1,7 +1,7 @@
 #!/usr/bin/env pogo
 <?php
 #!depdir ../extern/releaser-deps
-#!require clippy/std: ~0.4.6
+#!require clippy/std: ~0.5.1
 #!require clippy/container: '~1.2'
 
 ###############################################################################
