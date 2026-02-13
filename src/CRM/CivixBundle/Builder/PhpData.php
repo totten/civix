@@ -152,7 +152,10 @@ class PhpData implements Builder {
        * @var \PhpArrayDocument\ArrayItemNode $arrayItem
        */
       if (in_array($arrayItem->getKey(), $this->keysToTranslate ?: [], true) && $arrayItem->getValue() instanceof ScalarNode) {
-        $arrayItem->getValue()->setFactory($ts);
+        // Only use ts if value is not empty
+        if ($arrayItem->getValue()->getScalar()) {
+          $arrayItem->getValue()->setFactory($ts);
+        }
       }
       if (in_array($arrayItem->getKey(), $this->useCallbacks, true)) {
         $arrayItem->getValue()->setDeferred(TRUE);
