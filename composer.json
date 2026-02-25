@@ -15,7 +15,7 @@
         "symfony/templating": "^4|^5",
         "symfony/var-dumper": "^4|^5",
         "symfony/var-exporter": "^4.4|^5",
-        "totten/license-data": "dev-master",
+        "totten/license-data": "~0.4",
         "totten/process-helper": "^1.0.1",
         "webmozart/glob": "^4.7"
     },
