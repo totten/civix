@@ -3,6 +3,7 @@ echo "<?php\n";
 ?>
 
 ini_set('memory_limit', '2G');
+define('CIVICRM_TEST', 1);
 
 // phpcs:disable
 eval(cv('php:boot --level=classloader', 'phpcode'));
