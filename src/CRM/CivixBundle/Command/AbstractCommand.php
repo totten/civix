@@ -28,7 +28,7 @@ abstract class AbstractCommand extends Command {
     parent::initialize($input, $output);
   }
 
-  public function run(InputInterface $input, OutputInterface $output) {
+  public function run(InputInterface $input, OutputInterface $output): int {
     try {
       \Civix::ioStack()->push($input, $output);
       return parent::run($input, $output);
