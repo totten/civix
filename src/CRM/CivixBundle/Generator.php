@@ -237,7 +237,7 @@ class Generator {
 
       $filter($phpData);
 
-      $localizable = explode(',', PhpData::COMMON_LOCALIZBLE);
+      $localizable = explode(',', PhpData::COMMON_LOCALIZABLE);
       // Lookup entity-specific fields that should be wrapped in E::ts()
       foreach ($phpData->get() as $item) {
         $fields = (array) \civicrm_api4($item['entity'], 'getFields', [
@@ -266,7 +266,7 @@ class Generator {
       // Instead, force-enable for all *.aff.php.
       $phpData->useExtensionUtil($this->infoXml->getExtensionUtilClass());
       $filter($phpData);
-      $phpData->useTs(explode(',', PhpData::COMMON_LOCALIZBLE));
+      $phpData->useTs(explode(',', PhpData::COMMON_LOCALIZABLE));
     });
   }
 

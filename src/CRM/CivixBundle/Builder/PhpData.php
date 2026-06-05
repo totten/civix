@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PhpData implements Builder {
 
-  const COMMON_LOCALIZBLE = 'title,label,description,text';
+  const COMMON_LOCALIZABLE = 'title,label,description,text';
 
   /**
    * @var string
