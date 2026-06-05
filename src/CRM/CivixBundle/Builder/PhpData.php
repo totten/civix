@@ -4,10 +4,8 @@ namespace CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Builder;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
-use PhpArrayDocument\ArrayItemNode;
 use PhpArrayDocument\PhpArrayDocument;
 use PhpArrayDocument\Printer;
-use PhpArrayDocument\ScalarNode;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -36,6 +34,11 @@ class PhpData implements Builder {
    * @var string[]
    */
   private $keysToTranslate;
+
+  /**
+   * @var string[]
+   */
+  private $keysToExcludeTs = [];
 
   /**
    * @var string
@@ -97,6 +100,16 @@ class PhpData implements Builder {
   }
 
   /**
+   * Specify fields (and their children) that will not be wrapped in E::ts()
+   *
+   * @param array $keysToExclude
+   * @return void
+   */
+  public function excludeTs(array $keysToExclude) {
+    $this->keysToExcludeTs = $keysToExclude;
+  }
+
+  /**
    * Adds `use Foo_ExtensionUtil as E;` to the top of the file
    *
    * @param string $extensionUtilClass
@@ -147,26 +160,43 @@ class PhpData implements Builder {
 
     $doc->getRoot()->importData($this->data);
 
-    foreach ($doc->getRoot()->walkNodes(ArrayItemNode::class) as $arrayItem) {
-      /**
-       * @var \PhpArrayDocument\ArrayItemNode $arrayItem
-       */
-      if (in_array($arrayItem->getKey(), $this->keysToTranslate ?: [], true) && $arrayItem->getValue() instanceof ScalarNode) {
-        // Only use ts if value is not empty
-        if ($arrayItem->getValue()->getScalar()) {
-          $arrayItem->getValue()->setFactory($ts);
-        }
-      }
-      if (in_array($arrayItem->getKey(), $this->useCallbacks, true)) {
-        $arrayItem->getValue()->setDeferred(TRUE);
-      }
-      if (in_array($arrayItem->getKey(), $this->literals, true)) {
-        $arrayItem->getValue()->setFactory('constant');
-      }
-    }
+    $this->applyTranslations($doc->getRoot(), $this->keysToExcludeTs ?: [], $ts);
 
     $content = (new Printer())->print($doc);
     file_put_contents($this->path, $content);
+  }
+
+  /**
+   * Recursively processes nodes and sets factory/deferred flags.
+   *
+   * @param \PhpArrayDocument\BaseNode $node
+   * @param array $excludeKeys
+   * @param string $ts
+   * @param bool $isExcluded
+   * @return void
+   */
+  private function applyTranslations(\PhpArrayDocument\BaseNode $node, array $excludeKeys, string $ts, bool $isExcluded = FALSE) {
+    if ($node instanceof \PhpArrayDocument\ArrayNode) {
+      foreach ($node->getItems() as $arrayItem) {
+        $key = $arrayItem->getKey();
+        $itemExcluded = $isExcluded || in_array($key, $excludeKeys, TRUE);
+        $value = $arrayItem->getValue();
+
+        if (in_array($key, $this->keysToTranslate ?: [], TRUE) && !$itemExcluded && $value instanceof \PhpArrayDocument\ScalarNode) {
+          if ($value->getScalar()) {
+            $value->setFactory($ts);
+          }
+        }
+        if (in_array($key, $this->useCallbacks, TRUE)) {
+          $value->setDeferred(TRUE);
+        }
+        if (in_array($key, $this->literals, TRUE)) {
+          $value->setFactory('constant');
+        }
+
+        $this->applyTranslations($value, $excludeKeys, $ts, $itemExcluded);
+      }
+    }
   }
 
 }
