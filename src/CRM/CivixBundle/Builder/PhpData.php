@@ -32,11 +32,13 @@ class PhpData implements Builder {
 
   /**
    * @var string[]
+   *   Ex: ['title', 'description'] means "Translate individual fields named `title` or `description`"
    */
   private $keysToTranslate;
 
   /**
    * @var string[]
+   *   Ex: ['extra'] means "Skip translation for subtrees named `extra`; e.g. skip `extra.title`".
    */
   private $keysToExcludeTs = [];
 
