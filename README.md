@@ -53,7 +53,7 @@ There are several more options for downloading `civix`. See also:
     * 🟡 [Install `civix.phar` (binary) as project tool (phive)](doc/download.md#phar-phive)
     * 🟡 [Install `civix.git` (source) as project tool (composer)](doc/download.md#src-composer)
 
-(*🟢=Well supported.  🟡=May require more tools/customization*)
+(*🟢=Generally recommended.  🟡=May require more tools/customization*)
 
 ## Documentation
 
