@@ -45,13 +45,15 @@ There are several more options for downloading `civix`. See also:
 * [Download URLs for alternate versions](doc/download.md#urls)
 * [Comparison of install options](doc/download.md#comparison)
 * Install `civix` as a system-wide/standalone tool
-    * [Install `civix.phar` (binary) as system-wide tool (Linux/BSD/macOS)](doc/download.md#phar-unix)
-    * [Install `civix.git` (source) as standalone project (Linux/BSD/macOS)](doc/download.md#src-unix)
-    * [Install `civix.git` (source) as standalone project (Windows)](doc/download.md#src-win)
+    * 🟢 [Install `civix.phar` (binary) as system-wide tool (Linux/BSD/macOS)](doc/download.md#phar-unix)
+    * 🟡 [Install `civix.git` (source) as standalone project (Linux/BSD/macOS)](doc/download.md#src-unix)
+    * 🟡 [Install `civix.git` (source) as standalone project (Windows)](doc/download.md#src-win)
 * Install `civix` as a tool within another project
-    * [Install `civix.phar` (binary) as project tool (composer)](doc/download.md#phar-composer)
-    * [Install `civix.phar` (binary) as project tool (phive)](doc/download.md#phar-phive)
-    * [Install `civix.git` (source) as project tool (composer)](doc/download.md#src-composer)
+    * 🟢 [Install `civix.phar` (binary) as project tool (composer)](doc/download.md#phar-composer)
+    * 🟡 [Install `civix.phar` (binary) as project tool (phive)](doc/download.md#phar-phive)
+    * 🟡 [Install `civix.git` (source) as project tool (composer)](doc/download.md#src-composer)
+
+(*🟢=Well supported.  🟡=May require more tools/customization*)
 
 ## Documentation
 
