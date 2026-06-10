@@ -50,10 +50,10 @@ There are several more options for downloading `civix`. See also:
     * 🟡 [Install `civix.git` (source) as standalone project (Windows)](doc/download.md#src-win)
 * Install `civix` as a tool within another project
     * 🟢 [Install `civix.phar` (binary) as project tool (composer)](doc/download.md#phar-composer)
-    * 🟡 [Install `civix.phar` (binary) as project tool (phive)](doc/download.md#phar-phive)
+    * 🟢 [Install `civix.phar` (binary) as project tool (phive)](doc/download.md#phar-phive)
     * 🟡 [Install `civix.git` (source) as project tool (composer)](doc/download.md#src-composer)
 
-(*🟢=Generally recommended.  🟡=May require more tools/customization*)
+(*🟢=Binary installs are generally recommended.  🟡=Source installs may require extra attention to local compatibility.*)
 
 ## Documentation
 
