@@ -111,6 +111,7 @@ function _<?php echo $mainFile ?>_civix_class_loader($class) {
 <?php $_clPrefix = 'CiviMix\\Schema\\' . \CRM\CivixBundle\Utils\Naming::createCamelName($mainFile) . '\\' ?>
 <?php $_localBase = $_namespace . '_DAO_Base'; ?>
   if ($class === <?php var_export($_localBase); ?>) {
+<?php if (version_compare($_compatibility, '5.74.beta', '<')) { ?>
     if (version_compare(CRM_Utils_System::version(), '5.74.beta', '>=')) {
       class_alias('CRM_Core_DAO_Base', <?php var_export($_localBase); ?>);
       // ^^ Materialize concrete names -- encourage IDE's to pick up on this association.
@@ -120,6 +121,13 @@ function _<?php echo $mainFile ?>_civix_class_loader($class) {
       class_alias($realClass, $class);
       // ^^ Abstract names -- discourage IDE's from picking up on this association.
     }
+<?php
+}
+else {
+?>
+    class_alias('CRM_Core_DAO_Base', <?php var_export($_localBase); ?>);
+    // ^^ Materialize concrete names -- encourage IDE's to pick up on this association.
+<?php } ?>
     return;
   }
 
