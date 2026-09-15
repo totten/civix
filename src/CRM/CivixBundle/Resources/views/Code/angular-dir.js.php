@@ -1,4 +1,4 @@
-(function(angular, $, _) {
+(function(angular, $) {
   // "<?php echo $dirNameCamel ?>" is a basic skeletal directive.
   // Example usage: <div <?php echo $dirNameHyp ?>="{foo: 1, bar: 2}"></div>
   angular.module('<?php echo $angularModuleName ?>').directive('<?php echo $dirNameCamel ?>', function() {
@@ -16,4 +16,4 @@
       }
     };
   });
-})(angular, CRM.$, CRM._);
+})(angular, CRM.$);
