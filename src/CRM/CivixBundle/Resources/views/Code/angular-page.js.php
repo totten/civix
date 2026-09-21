@@ -1,4 +1,4 @@
-(function(angular, $, _) {
+(function(angular, $) {
 
   angular.module('<?php echo $angularModuleName ?>').config(function($routeProvider) {
       $routeProvider.when('/<?php echo $ctrlRelPath ?>', {
@@ -48,4 +48,4 @@
     };
   });
 
-})(angular, CRM.$, CRM._);
+})(angular, CRM.$);
