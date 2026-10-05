@@ -12,6 +12,9 @@ use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Builder\Template;
 use CRM\CivixBundle\Utils\Path;
 
+/**
+ * @deprecated
+ */
 class AddAngularPageCommand extends AbstractCommand {
 
   protected function configure() {
