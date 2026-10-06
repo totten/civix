@@ -134,6 +134,13 @@ trait CivixProjectTestTrait {
     return $tester;
   }
 
+  public function civixGenerateTest(string $className, array $options = []): CommandTester {
+    $tester = static::civix('generate:test');
+    $tester->execute($options + ['<CRM_Full_ClassName>' => $className]);
+    $this->assertTesterOk($tester, 'Failed to generate test');
+    return $tester;
+  }
+
   public function civixGenerateUpgrader(array $options = []): CommandTester {
     $tester = static::civix('generate:upgrader');
     $tester->execute($options);
