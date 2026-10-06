@@ -66,7 +66,9 @@ as separate groups:
 
     Civix::generator()->addPhpunit();
     $this->initTestClass(
-      $input->getArgument('<CRM_Full_ClassName>'), $this->getTestTemplate($input->getOption('template')), $basedir, $ctx, $output);
+      trim($input->getArgument('<CRM_Full_ClassName>')),
+      $this->getTestTemplate($input->getOption('template')),
+      $basedir, $ctx, $output);
 
     return 0;
   }
