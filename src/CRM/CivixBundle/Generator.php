@@ -128,6 +128,16 @@ class Generator {
   }
 
   /**
+   * @param string $newMin
+   */
+  public function updateCompatibilityMinimum(string $newMin): void {
+    $this->updateInfo(function (Info $info) use ($newMin) {
+      $this->io->writeln("<info>Set min compatibility to </info>$newMin<info> in </info>info.xml");
+      $info->raiseCompatibilityMinimum($newMin);
+    });
+  }
+
+  /**
    * Apply a filter to the "Mixins" list.
    *
    * @param callable $function

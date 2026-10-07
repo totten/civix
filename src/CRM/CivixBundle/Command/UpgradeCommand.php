@@ -4,6 +4,7 @@ namespace CRM\CivixBundle\Command;
 use Civix;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
+use CRM\CivixBundle\Utils\Versioning;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,6 +35,8 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
+    $this->recommendCompatibilityBump($input);
+
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
       $verAliases = ['0' => '13.10.0'];
@@ -43,6 +46,49 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $this->executeIncrementalUpgrades();
     $this->executeGenericUpgrade();
     return 0;
+  }
+
+  protected function recommendCompatibilityBump(InputInterface $input): void {
+    if (!$input->isInteractive()) {
+      return;
+    }
+
+    [$ctx, $info] = $this->loadCtxInfo();
+    if ($info->hasMajorVersionPlaceholder()) {
+      return;
+    }
+
+    $earliestStable = Versioning::getEarliestStableVersion();
+    if (!$earliestStable) {
+      return;
+    }
+
+    $minCompatibility = $info->getCompatibilityVer('MIN');
+
+    if ($minCompatibility === NULL || version_compare($minCompatibility, $earliestStable, '<')) {
+      $io = Civix::io();
+      $minText = $minCompatibility ? "set to $minCompatibility which is EOL" : 'undeclared';
+      $io->note(sprintf(
+        'This is a good time to bump the minimum CiviCRM version. It\'s currently %s. The oldest secure version is %s.',
+        $minText,
+        $earliestStable
+      ));
+      $questionText = sprintf('"y" to bump to %s, or enter a different version number ("n" to skip) [y/n/x.x]', $earliestStable);
+      $answer = $io->ask($questionText, 'no', function ($value) {
+        $trimmed = trim((string) $value);
+        if (preg_match('/^(y|yes|n|no)$/i', $trimmed) || preg_match('/^\d+(\.[\w\.\-]+)*$/', $trimmed)) {
+          return $trimmed;
+        }
+        throw new \RuntimeException('Please enter yes, no, or a version number (e.g. 6.30).');
+      });
+
+      if (preg_match('/^(y|yes)$/i', $answer)) {
+        Civix::generator()->updateCompatibilityMinimum($earliestStable);
+      }
+      elseif (preg_match('/^\d+(\.[\w\.\-]+)*$/', $answer) && !preg_match('/^(n|no)$/i', $answer)) {
+        Civix::generator()->updateCompatibilityMinimum($answer);
+      }
+    }
   }
 
   protected function executeIncrementalUpgrades() {

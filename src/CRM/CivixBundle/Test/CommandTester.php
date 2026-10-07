@@ -31,4 +31,12 @@ interface CommandTester {
    */
   public function getStatusCode();
 
+  /**
+   * Sets the input to send to the command.
+   *
+   * @param array $inputs An array of strings representing each input
+   * @return $this
+   */
+  public function setInputs(array $inputs);
+
 }

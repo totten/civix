@@ -15,7 +15,7 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function setUp(): void {
     chdir(static::getWorkspacePath());
     static::cleanDir(static::getKey());
-    $this->civixGenerateModule(static::getKey(), ['--compatibility' => '5.0']);
+    $this->civixGenerateModule(static::getKey(), ['--compatibility' => '6.0']);
     chdir(static::getKey());
   }
 
@@ -91,6 +91,151 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
     // Compare before+after
     $end = $this->getExtSnapshot();
     $this->assertEquals($start, $end);
+  }
+
+  public function testUpgradeBumpCompatibilityYes(): void {
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['yes']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('is EOL', $result);
+    $this->assertStringContainsString('version is 6.4', $result);
+    $this->assertStringContainsString('Set min compatibility to 6.4 in info.xml', $result);
+
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    $this->assertContains('6.4', $vers);
+    $this->assertNotContains('6.0', $vers);
+  }
+
+  public function testUpgradeBumpCompatibilityNo(): void {
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['no']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('is EOL', $result);
+    $this->assertStringContainsString('version is 6.4', $result);
+    $this->assertStringNotContainsString('Set min compatibility to', $result);
+
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    $this->assertContains('6.0', $vers);
+    $this->assertNotContains('6.4', $vers);
+  }
+
+  public function testUpgradeCompatibilityAlreadyCurrent(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+
+    $tester = static::civix('upgrade');
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringNotContainsString('is EOL', $result);
+    $this->assertStringNotContainsString('Do you want to bump the minimum compatibility version', $result);
+  }
+
+  public function testUpgradeBumpCompatibilityCustomVersion(): void {
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['6.10']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('is EOL', $result);
+    $this->assertStringContainsString('Set min compatibility to 6.10 in info.xml', $result);
+
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    $this->assertContains('6.10', $vers);
+    $this->assertNotContains('6.0', $vers);
+  }
+
+  public function testUpgradeBumpCompatibilityShortY(): void {
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['y']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('Set min compatibility to 6.4 in info.xml', $result);
+
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    $this->assertContains('6.4', $vers);
+  }
+
+  public function testUpgradeBumpCompatibilityShortN(): void {
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['n']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringNotContainsString('Set min compatibility to', $result);
+
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    $this->assertContains('6.0', $vers);
+    $this->assertNotContains('6.4', $vers);
+  }
+
+  public function testUpgradeBumpCompatibilitySkippedForMajorVersionPlaceholder(): void {
+    $this->civixInfoSet('compatibility/ver', '[civicrm.majorVersion]');
+
+    $tester = static::civix('upgrade');
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringNotContainsString('is EOL', $result);
+    $this->assertStringNotContainsString('Do you want to bump the minimum compatibility version', $result);
+    $this->assertStringNotContainsString('Set min compatibility to', $result);
+
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    $this->assertContains('[civicrm.majorVersion]', $vers);
+  }
+
+  public function testUpgradeBumpCompatibilityUsesMockData(): void {
+    $originalUrl = getenv('CIVIX_LATEST_STABLE_URL');
+    $customMock = static::getWorkspacePath('custom-versions.json')->string();
+    file_put_contents($customMock, json_encode([
+      '6.6' => ['status' => 'stable'],
+      '6.7' => ['status' => 'eol'],
+    ]));
+    putenv('CIVIX_LATEST_STABLE_URL=' . $customMock);
+
+    try {
+      $tester = static::civix('upgrade');
+      $tester->setInputs(['yes']);
+      $tester->execute([]);
+      $result = $tester->getDisplay(TRUE);
+
+      $this->assertStringContainsString('version is 6.6', $result);
+      $this->assertStringContainsString('Set min compatibility to 6.6 in info.xml', $result);
+    }
+    finally {
+      putenv('CIVIX_LATEST_STABLE_URL=' . $originalUrl);
+      if (file_exists($customMock)) {
+        unlink($customMock);
+      }
+    }
   }
 
 }

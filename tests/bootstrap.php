@@ -17,3 +17,11 @@ if (!isset($loader)) {
 
 #### Extra - Register classes in "tests" directory
 $loader->addPsr4('E2E\\', __DIR__ . '/e2e');
+
+#### Default mock for version API in tests
+if (!getenv('CIVIX_LATEST_STABLE_URL')) {
+  $mockUrl = __DIR__ . '/fixtures/version-api.json';
+  if (file_exists($mockUrl)) {
+    putenv('CIVIX_LATEST_STABLE_URL=' . $mockUrl);
+  }
+}
