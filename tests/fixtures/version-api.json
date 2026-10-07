@@ -1,0 +1,113 @@
+{
+  "6.4": {
+    "status": "stable",
+    "message": "6.4.x is an <strong><a target=\"_blank\" href=\"https://civicrm.org/esr\">Extended Security Release</a>.</strong>",
+    "releases": [
+      {
+        "version": "6.4.0",
+        "date": "2025-07-02"
+      },
+      {
+        "version": "6.4.1",
+        "date": "2025-08-06",
+        "message": "Fix security issues <a target=\"_blank\" href='https://civicrm.org/advisory'>CIVI-SA-2025-01 through CIVI-SA-2025-06</a>.",
+        "severity": "critical",
+        "security": "true"
+      },
+      {
+        "version": "6.4.2",
+        "date": "2025-12-17",
+        "message": "Fix security issues <a target=\"_blank\" href='https://civicrm.org/advisory'>CIVI-SA-2025-07 through CIVI-SA-2025-08</a>. (<a target=\"_blank\" href='https://civicrm.org/esr'>ESR</a>)",
+        "severity": "critical",
+        "security": "true"
+      }
+    ]
+  },
+  "6.5": {
+    "status": "eol",
+    "releases": [
+      {
+        "version": "6.5.0",
+        "date": "2025-08-06"
+      },
+      {
+        "version": "6.5.1",
+        "date": "2025-09-03",
+        "message": "Fix recent issues with custom-data and APIv4 caching."
+      }
+    ]
+  },
+  "6.6": {
+    "status": "eol",
+    "releases": [
+      {
+        "version": "6.6.0",
+        "date": "2025-09-03"
+      },
+      {
+        "version": "6.6.1",
+        "date": "2025-09-07",
+        "message": "Fix recent issues with CiviContribute emails and with Danish regions."
+      },
+      {
+        "version": "6.6.2",
+        "date": "2025-09-16",
+        "message": "Fix recent issues involving the standalone installer and Smarty notifications."
+      },
+      {
+        "version": "6.6.3",
+        "date": "2025-09-24",
+        "message": "Fix recent issues involving state-province customizations, the \"Batch Entry\" extension, and more."
+      }
+    ]
+  },
+  "6.7": {
+    "status": "eol",
+    "releases": [
+      {
+        "version": "6.7.0",
+        "date": "2025-10-02"
+      },
+      {
+        "version": "6.7.1",
+        "date": "2025-10-07",
+        "message": "Fix reccent issues involving the upgrade process, editing of \"Events\", and anonymous access to custom forms."
+      },
+      {
+        "version": "6.7.2",
+        "date": "2025-10-30",
+        "message": "Fix reccent issues involving certain imports, opt-out links, and more."
+      }
+    ]
+  },
+  "6.8": {
+    "status": "eol",
+    "releases": [
+      {
+        "version": "6.8.0",
+        "date": "2025-11-05"
+      }
+    ]
+  },
+  "6.9": {
+    "status": "eol",
+    "releases": [
+      {
+        "version": "6.9.0",
+        "date": "2025-12-03"
+      },
+      {
+        "version": "6.9.1",
+        "date": "2025-12-17",
+        "message": "Fix security issues <a target=\"_blank\" href='https://civicrm.org/advisory'>CIVI-SA-2025-07 through CIVI-SA-2025-08</a>.",
+        "severity": "critical",
+        "security": "true"
+      },
+      {
+        "version": "6.9.2",
+        "date": "2025-01-07",
+        "message": "Fix recent issues with install/upgrade on Drupal 10/11."
+      }
+    ]
+  }
+}
