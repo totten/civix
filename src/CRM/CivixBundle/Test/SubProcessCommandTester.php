@@ -27,10 +27,28 @@ class SubProcessCommandTester implements CommandTester {
   protected $commandLine;
 
   /**
+   * @var array
+   */
+  protected $inputs = [];
+
+  /**
    * @param array $baseCommand
    */
   public function __construct(array $baseCommand) {
     $this->baseCommand = $baseCommand;
+  }
+
+  /**
+   * Sets the user inputs.
+   *
+   * @param array $inputs An array of strings representing each input
+   *                      passed to the command input stream
+   *
+   * @return $this
+   */
+  public function setInputs(array $inputs) {
+    $this->inputs = $inputs;
+    return $this;
   }
 
   /**
@@ -64,6 +82,9 @@ class SubProcessCommandTester implements CommandTester {
     $buffer = fopen('php://memory', 'w+');
 
     $p = new Process($command);
+    if (!empty($this->inputs)) {
+      $p->setInput(implode(\PHP_EOL, $this->inputs) . \PHP_EOL);
+    }
     $this->commandLine = $p->getCommandLine();
 
     $p->run(function ($type, $data) use ($buffer) {

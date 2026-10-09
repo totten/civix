@@ -22,6 +22,16 @@ interface CommandTester {
   public function execute(array $input, array $options = []);
 
   /**
+   * Sets the user inputs.
+   *
+   * @param array $inputs An array of strings representing each input
+   *                      passed to the command input stream
+   *
+   * @return $this
+   */
+  public function setInputs(array $inputs);
+
+  /**
    * @return string
    */
   public function getDisplay(bool $normalize = FALSE);

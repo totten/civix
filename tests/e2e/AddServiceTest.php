@@ -44,4 +44,30 @@ class AddServiceTest extends \PHPUnit\Framework\TestCase {
     $this->assertStringSequence($expect, $code);
   }
 
+  public function testAddServiceInteractive(): void {
+    $this->assertFileGlobs([
+      'CRM/CivixAddsvc/Interactive/Service.php' => 0,
+    ]);
+
+    $tester = static::civix('generate:service');
+    $tester->setInputs(['civix_addsvc.interactive.service']);
+    $tester->execute([]);
+    $this->assertTesterOk($tester, 'Failed to generate service interactively');
+
+    $this->assertFileGlobs([
+      'CRM/CivixAddsvc/Interactive/Service.php' => 1,
+    ]);
+
+    $code = file_get_contents('CRM/CivixAddsvc/Interactive/Service.php');
+    $expect = [
+      'use CRM_CivixAddsvc_ExtensionUtil as E',
+      'use Civi\Core\Service\AutoService',
+      'use Symfony\Component\EventDispatcher\EventSubscriberInterface',
+      '@service civix_addsvc.interactive.service',
+      'class CRM_CivixAddsvc_Interactive_Service extends AutoService implements EventSubscriberInterface',
+      'function getSubscribedEvents',
+    ];
+    $this->assertStringSequence($expect, $code);
+  }
+
 }
