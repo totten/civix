@@ -5,9 +5,9 @@ namespace E2E;
 use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Test\CommandTester;
 use CRM\CivixBundle\Test\SubProcessCommandTester;
+use CRM\CivixBundle\Test\TestHelper as TH;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Path;
-use ProcessHelper\ProcessHelper as PH;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -222,7 +222,7 @@ trait CivixProjectTestTrait {
    * @param string $dir
    */
   protected static function cleanDir($dir): void {
-    PH::runOk(['if [ -d @DIR ]; then rm -rf @DIR ; fi', 'DIR' => $dir]);
+    TH::runOk(['if [ -d @DIR ]; then rm -rf @DIR ; fi', 'DIR' => $dir]);
   }
 
   protected function assertFileGlobs(array $globs): void {
