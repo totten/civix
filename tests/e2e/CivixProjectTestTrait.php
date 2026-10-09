@@ -45,6 +45,9 @@ trait CivixProjectTestTrait {
   }
 
   public static function tearDownAfterClass(): void {
+    chdir(static::getWorkspacePath());
+    TH::runOk(['cv ext:uninstall @1', static::getKey()]);
+
     chdir(static::$origDir);
     self::$origDir = NULL;
   }
