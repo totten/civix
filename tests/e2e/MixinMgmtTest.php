@@ -93,6 +93,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'setting-php@1' => 'on+backport',
       'menu-xml@1' => 'off',
       'scan-classes@1' => 'off',
+      'include-path@1' => 'off',
     ]);
 
     $enableAll = $this->civix('mixin');
@@ -107,6 +108,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'menu-xml@1' => 'on',
       'scan-classes@1' => 'on',
       'mgd-php@2' => 'on+backport',
+      'include-path@1' => 'on+backport',
     ]);
 
     $disableAll = $this->civix('mixin');
@@ -119,6 +121,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'menu-xml@1' => 'off',
       'scan-classes@1' => 'off',
       'mgd-php@2' => 'off',
+      'include-path@1' => 'off',
     ]);
   }
 
