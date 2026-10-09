@@ -35,6 +35,8 @@ use ProcessHelper\ProcessHelper as PH;
  *
  * SnapshotUpgradeTest MUST run in an environment with `civibuild` and `cv`. It will use `civibuild restore`
  * to reinitialize the database.
+ *
+ * @group snapshot
  */
 class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
