@@ -10,11 +10,22 @@ class CommandTesterInputTest extends \PHPUnit\Framework\TestCase {
 
   public static $key = 'civix_testerinput';
 
+  protected $originalTestIsolation;
+
   public function setUp(): void {
+    $this->originalTestIsolation = getenv('CIVIX_TEST_ISOLATION');
+
     chdir(static::getWorkspacePath());
     static::cleanDir(static::getKey());
     $this->civixGenerateModule(static::getKey());
     chdir(static::getKey());
+  }
+
+  public function tearDown(): void {
+    putenv($this->originalTestIsolation === FALSE
+      ? 'CIVIX_TEST_ISOLATION'
+      : ('CIVIX_TEST_ISOLATION=' . $this->originalTestIsolation)
+    );
   }
 
   public function testInputWithIsolationOn(): void {
