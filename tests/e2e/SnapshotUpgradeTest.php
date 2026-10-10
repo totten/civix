@@ -3,7 +3,7 @@
 namespace E2E;
 
 use CRM\CivixBundle\RunMethodsTrait;
-use ProcessHelper\ProcessHelper as PH;
+use CRM\CivixBundle\Test\TestHelper as TH;
 
 /**
  * This is general sniff-test for running `civix upgrade`. It takes a list of example
@@ -35,6 +35,8 @@ use ProcessHelper\ProcessHelper as PH;
  *
  * SnapshotUpgradeTest MUST run in an environment with `civibuild` and `cv`. It will use `civibuild restore`
  * to reinitialize the database.
+ *
+ * @group snapshot
  */
 class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
@@ -102,7 +104,7 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
    * All snapshots will have big E support ("CRM_*_ExtensionUtil"). We can make sure that it's loadable.
    */
   public function checkSnapshot_common() {
-    $getName = PH::runOk('cv ev "echo CRM_Civixsnapshot_ExtensionUtil::LONG_NAME";');
+    $getName = TH::runOk('cv ev "echo CRM_Civixsnapshot_ExtensionUtil::LONG_NAME";');
     $this->assertEquals('org.example.civixsnapshot', trim($getName->getOutput()));
   }
 
@@ -115,7 +117,7 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
     $entity = 'MyEntityThree';
 
-    $getFields3 = PH::runOK("cv api3 $entity.getfields --out=json");
+    $getFields3 = TH::runOk("cv api3 $entity.getfields --out=json");
     $parsed3 = json_decode($getFields3->getOutput(), TRUE);
     $descriptions3 = array_column($parsed3['values'], 'description');
     $this->assertTrue(in_array("Unique $entity ID", $descriptions3), "$entity.id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
@@ -131,13 +133,13 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
     $entity = 'MyEntityThreeFour';
 
-    $getFields3 = PH::runOK("cv api3 $entity.getfields --out=json");
+    $getFields3 = TH::runOk("cv api3 $entity.getfields --out=json");
     $parsed3 = json_decode($getFields3->getOutput(), TRUE);
     $descriptions3 = array_column($parsed3['values'], 'description');
     $this->assertTrue(in_array("Unique $entity ID", $descriptions3), "$entity.id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
     $this->assertTrue(in_array('FK to Contact', $descriptions3), "$entity.contact_id should have APIv3 description. Actual metadata response was: " . $getFields3->getOutput());
 
-    $getFields4 = PH::runOK("cv api4 $entity.getFields --out=json");
+    $getFields4 = TH::runOk("cv api4 $entity.getFields --out=json");
     $parsed4 = json_decode($getFields4->getOutput(), TRUE);
     $descriptions4 = array_column($parsed4, 'description');
     $this->assertTrue(in_array("Unique $entity ID", $descriptions4), "$entity.id should have APIv4 description. Actual metadata response was: ");
@@ -153,7 +155,7 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
 
     $entity = 'MyEntityFour';
 
-    $getFields4 = PH::runOK("cv api4 $entity.getFields --out=json");
+    $getFields4 = TH::runOk("cv api4 $entity.getFields --out=json");
     $parsed4 = json_decode($getFields4->getOutput(), TRUE);
     $descriptions4 = array_column($parsed4, 'description');
     $this->assertTrue(in_array("Unique $entity ID", $descriptions4), "$entity.id should have APIv4 description. Actual metadata response was: ");
@@ -167,32 +169,32 @@ class SnapshotUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function checkSnapshot_qf(): void {
     $this->runsIf($this->isScenario('qf') || $this->isKitchenSinkWith('CRM/Civixsnapshot/Page/MyPage.php'));
 
-    $getPage = PH::runOK('cv api4 Route.get +w path=civicrm/my-page +s page_callback');
+    $getPage = TH::runOk('cv api4 Route.get +w path=civicrm/my-page +s page_callback');
     $this->assertTrue((bool) preg_match('/CRM_Civixsnapshot_Page_MyPage/', $getPage->getOutput()), 'Route should be registered');
 
-    $classExists = PH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Page_MyPage::class) ? "found" : "missing";\'');
+    $classExists = TH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Page_MyPage::class) ? "found" : "missing";\'');
     $this->assertTrue((bool) preg_match('/^found/', $classExists->getOutput()), 'Class should be loadable/parsable.');
 
-    $getPage = PH::runOK('cv api4 Route.get +w path=civicrm/my-form +s page_callback');
+    $getPage = TH::runOk('cv api4 Route.get +w path=civicrm/my-form +s page_callback');
     $this->assertTrue((bool) preg_match('/CRM_Civixsnapshot_Form_MyForm/', $getPage->getOutput()), 'Route should be registered');
 
-    $classExists = PH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Form_MyForm::class) ? "found" : "missing";\'');
+    $classExists = TH::runOk('cv ev \'echo class_exists(CRM_Civixsnapshot_Form_MyForm::class) ? "found" : "missing";\'');
     $this->assertTrue((bool) preg_match('/^found/', $classExists->getOutput()), 'Class should be loadable/parsable.');
 
-    $httpGet = PH::runOk('cv en authx && cv http -LU admin civicrm/my-page');
+    $httpGet = TH::runOk('cv en authx && cv http -LU admin civicrm/my-page');
     $this->assertMatchesRegularExpression(';The current time is;', $httpGet->getOutput());
   }
 
   public function checkSnapshot_svc(): void {
     $this->runsIf($this->isScenario('svc') || $this->isKitchenSinkWith('Civi/Civixsnapshot/Some/Thing.php'));
 
-    $getSystem = PH::runOK('cv api3 System.get --out=json');
+    $getSystem = TH::runOk('cv api3 System.get --out=json');
     $system = json_decode($getSystem->getOutput(), TRUE);
     if (!version_compare($system['values'][0]['version'], '5.55', '>=')) {
       return;
     }
 
-    $getServices = PH::runOK("cv service some.thing --out=json");
+    $getServices = TH::runOk("cv service some.thing --out=json");
     $parsed = json_decode($getServices->getOutput(), TRUE);
     $this->assertEquals('some.thing', $parsed[0]['service'], 'Expected to find service name');
     $this->assertEquals('Civi\\Civixsnapshot\\Some\\Thing', $parsed[0]['class'], 'Expected to find class name');

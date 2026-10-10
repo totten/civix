@@ -2,7 +2,7 @@
 
 namespace E2E;
 
-use ProcessHelper\ProcessHelper as PH;
+use CRM\CivixBundle\Test\TestHelper as TH;
 
 /**
  * For this test, we create and enable two extensions.
@@ -18,7 +18,7 @@ class MultiExtensionTest extends \PHPUnit\Framework\TestCase {
 
   public function setUp(): void {
     chdir(static::getWorkspacePath());
-    PH::runOk('civibuild restore');
+    TH::runOk('civibuild restore');
 
     foreach (static::$keys as $key) {
       static::cleanDir($key);
@@ -36,7 +36,7 @@ class MultiExtensionTest extends \PHPUnit\Framework\TestCase {
 
   protected function tearDown(): void {
     chdir(static::getWorkspacePath());
-    PH::runOk('civibuild restore');
+    TH::runOk('civibuild restore');
     \Civix::ioStack()->reset();
   }
 
@@ -47,12 +47,12 @@ class MultiExtensionTest extends \PHPUnit\Framework\TestCase {
       $this->civixGeneratePage("My$camel", "civicrm/example/$name");
       $this->assertFileGlobs(["CRM/$camel/Page/My$camel.php" => 1]);
 
-      PH::runOK('cv en ' . escapeshellarg($name));
+      TH::runOK('cv en ' . escapeshellarg($name));
     }
 
     foreach ($this->visitExts() as $name) {
       $camel = ucfirst($name);
-      $getPage = PH::runOK("cv api4 Route.get +w path=civicrm/example/$name +s page_callback");
+      $getPage = TH::runOK("cv api4 Route.get +w path=civicrm/example/$name +s page_callback");
       $this->assertTrue((bool) preg_match("/CRM_{$camel}_Page_My{$camel}/", $getPage->getOutput()), "Route 'civicrm/example/$name' should be registered");
     }
   }

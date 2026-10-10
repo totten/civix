@@ -2,7 +2,7 @@
 namespace E2E;
 
 use CRM\CivixBundle\Utils\Path;
-use ProcessHelper\ProcessHelper as PH;
+use CRM\CivixBundle\Test\TestHelper as TH;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -44,9 +44,9 @@ trait CivixSnapshotUpgradeTestTrait {
     $this->snapshot = $snapshot;
 
     $fs->remove(["$snapshotDir/upgrade", "$snapshotDir/upgrade.diff", "$snapshotDir/upgrade.log"]);
-    PH::runOk('civibuild restore');
+    TH::runOk('civibuild restore');
 
-    PH::runOk('unzip ' . escapeshellarg("$snapshotDir/original.zip"));
+    TH::runOk('unzip ' . escapeshellarg("$snapshotDir/original.zip"));
     chdir(static::getKey());
     $upgrade = $this->civixUpgrade();
     $this->upgradeLog = $upgrade->getDisplay(TRUE);
@@ -54,11 +54,11 @@ trait CivixSnapshotUpgradeTestTrait {
     if ($this->resolveConstant('SNAPSHOT_SAVE', FALSE)) {
       file_put_contents("$snapshotDir/upgrade.log", $this->upgradeLog);
       $fs->mirror('.', "$snapshotDir/upgrade");
-      PH::runOk(sprintf('zipdiff %s/original.zip %s/upgrade > %s/upgrade.diff', escapeshellarg($snapshotDir), escapeshellarg($snapshotDir), escapeshellarg($snapshotDir)));
+      TH::runOk(sprintf('zipdiff %s/original.zip %s/upgrade > %s/upgrade.diff', escapeshellarg($snapshotDir), escapeshellarg($snapshotDir), escapeshellarg($snapshotDir)));
     }
 
     $this->assertStringSequence(['Incremental upgrades', 'General upgrade'], $this->upgradeLog);
-    PH::runOk('cv en civixsnapshot');
+    TH::runOk('cv en civixsnapshot');
   }
 
   public static function getSnapshotPath(...$subpath): Path {
