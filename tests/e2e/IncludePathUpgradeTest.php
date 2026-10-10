@@ -11,7 +11,9 @@ class IncludePathUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function setUp(): void {
     chdir(static::getWorkspacePath());
     static::cleanDir(static::getKey());
-    $this->civixGenerateModule(static::getKey());
+    $this->civixGenerateModule(static::getKey(), [
+      '--compatibility' => '6.4',
+    ]);
     chdir(static::getKey());
 
     $this->assertFileExists('info.xml');
@@ -46,7 +48,7 @@ class IncludePathUpgradeTest extends \PHPUnit\Framework\TestCase {
     $this->assertStringContainsString('PHP Include Path Optimization', $display);
     $this->assertStringContainsString('Added "include-path@1" mixin', $display);
     $this->assertMixinStatuses([
-      'include-path@1' => 'on',
+      'include-path@1' => 'on+backport',
     ]);
   }
 
@@ -85,7 +87,7 @@ class IncludePathUpgradeTest extends \PHPUnit\Framework\TestCase {
   public function testUpgradeSkippedWhenMixinAlreadyPresent(): void {
     $this->civixMixin(['--enable' => 'include-path@1.0.0']);
     $this->assertMixinStatuses([
-      'include-path@1' => 'on',
+      'include-path@1' => 'on+backport',
     ]);
 
     mkdir('api/v3', 0777, TRUE);
@@ -94,7 +96,7 @@ class IncludePathUpgradeTest extends \PHPUnit\Framework\TestCase {
     $upgrade = $this->civixUpgrade(['--start' => '26.10.1']);
     $this->assertStringNotContainsString('PHP Include Path', $upgrade->getDisplay());
     $this->assertMixinStatuses([
-      'include-path@1' => 'on',
+      'include-path@1' => 'on+backport',
     ]);
   }
 
@@ -111,7 +113,7 @@ class IncludePathUpgradeTest extends \PHPUnit\Framework\TestCase {
     $this->assertStringContainsString($expectedReason, $display);
     $this->assertStringContainsString('Added "include-path@1" mixin', $display);
     $this->assertMixinStatuses([
-      'include-path@1' => 'on',
+      'include-path@1' => 'on+backport',
     ]);
   }
 
