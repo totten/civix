@@ -162,9 +162,6 @@ function _<?php echo $mainFile ?>_civix_civicrm_config($config = NULL) {
   }
   $configured = TRUE;
 
-  $extRoot = __DIR__ . DIRECTORY_SEPARATOR;
-  $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
-  set_include_path($include_path);
 <?php echo $_invokePolyfill; ?>
 }
 
