@@ -39,13 +39,16 @@ class AddReportCommand extends AbstractCommand {
 
     $info = $this->getModuleInfo($ctx);
 
-    if (!in_array($input->getArgument('<CiviComponent>'), $this->getReportComponents())) {
+    $className = $input->getArgument('<ClassName>');
+    $componentName = $input->getArgument('<CiviComponent>');
+
+    if (!in_array($componentName, $this->getReportComponents())) {
       throw new \Exception("Component must be one of: " . implode(', ', $this->getReportComponents()));
     }
 
     $ctx['reportClassName'] = strtr($ctx['namespace'], '/', '_') . '_Form_Report_' . $input->getArgument('<ClassName>');
     $ctx['reportClassFile'] = $basedir->string(strtr($ctx['reportClassName'], '_', '/') . '.php');
-    $ctx['reportMgdFile'] = $basedir->string(strtr($ctx['reportClassName'], '_', '/') . '.mgd.php');
+    $ctx['reportMgdFile'] = $basedir->string("managed/$className.mgd.php");
     $ctx['reportTplFile'] = $basedir->string('templates', strtr($ctx['reportClassName'], '_', '/') . '.tpl');
 
     $webPath = $input->getOption('webPath');
@@ -76,23 +79,31 @@ class AddReportCommand extends AbstractCommand {
       $mgdEntities = [
         [
           'name' => $ctx['reportClassName'],
-          'entity' => 'ReportTemplate',
+          'entity' => 'OptionValue',
           'params' => [
-            'version' => 3,
-            'label' => $input->getArgument('<ClassName>'),
-            'description' => sprintf("%s (%s)", $input->getArgument('<ClassName>'), $ctx['fullName']),
-            'class_name' => $ctx['reportClassName'],
-            'report_url' => $ctx['reportUrl'],
-            'component' => $input->getArgument('<CiviComponent>') == 'null' ? '' : $input->getArgument('<CiviComponent>'),
+            'version' => 4,
+            'values' => [
+              'option_group_id.name' => 'report_template',
+              'label' => $className,
+              'description' => sprintf("%s (%s)", $className, $ctx['fullName']),
+              'name' => $ctx['reportClassName'],
+              'value' => $ctx['reportUrl'],
+            ],
+            'match' => [
+              'option_group_id',
+              'name',
+            ],
           ],
         ],
       ];
-      $header = "// This file declares a managed database record of type \"ReportTemplate\".\n"
-        . "// The record will be automatically inserted, updated, or deleted from the\n"
-        . "// database as appropriate. For more details, see \"hook_civicrm_managed\" at:\n"
-        . "// https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed";
+      if ($componentName !== 'null') {
+        $mgdEntities[0]['params']['values']['component_id.name'] = $componentName;
+      }
+      $header = "// Managed entity for the $className ReportTemplate.\n";
       $ext->builders['mgd.php'] = new PhpData($ctx['reportMgdFile'], $header);
       $ext->builders['mgd.php']->set($mgdEntities);
+      $ext->builders['mgd.php']->useTs(['label', 'description']);
+      $ext->builders['mgd.php']->useExtensionUtil($info->getExtensionUtilClass());
     }
 
     // Create .php & .tpl by either copying from core source tree or using a civix template
