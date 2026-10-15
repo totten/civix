@@ -81,7 +81,7 @@ class SubProcessCommandTester implements CommandTester {
 
     $buffer = fopen('php://memory', 'w+');
 
-    $p = new Process($command);
+    $p = new Process($command, NULL, getenv());
     if (!empty($this->inputs)) {
       $p->setInput(implode(\PHP_EOL, $this->inputs) . \PHP_EOL);
     }

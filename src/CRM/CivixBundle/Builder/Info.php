@@ -237,6 +237,23 @@ class Info extends XML {
   }
 
   /**
+   * Determine if any compatibility version contains the [civicrm.majorVersion] placeholder.
+   *
+   * @return bool
+   */
+  public function hasMajorVersionPlaceholder(): bool {
+    $nodes = $this->get()->xpath('compatibility/ver');
+    if ($nodes) {
+      foreach ($nodes as $ver) {
+        if (strpos((string) $ver, '[civicrm.majorVersion]') !== FALSE) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
    * Increase the minimum requirement (`<compatibility><ver>X.Y</ver></compatibility>`).
    *
    * There may be multiple `<ver>` expressions. They will be reconciled as follows:
