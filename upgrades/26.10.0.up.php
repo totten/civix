@@ -2,6 +2,7 @@
 
 use CRM\CivixBundle\Generator;
 use CRM\CivixBundle\Utils\Files;
+use PhpArrayDocument\ParseException;
 use PhpArrayDocument\Printer;
 
 /**
@@ -42,12 +43,20 @@ return function (Generator $gen) {
 
   $reports = [];
   $expressionCount = 0;
+  $parseableDocs = [];
   foreach ($mgdFiles as $mgdFile) {
     $relPath = Files::relativize($mgdFile, $gen->baseDir->string());
-    /**
-     * @var \PhpArrayDocument\PhpArrayDocument $document
-     */
-    $document = (new \PhpArrayDocument\Parser())->parse(file_get_contents($relPath));
+    try {
+      /**
+       * @var \PhpArrayDocument\PhpArrayDocument $document
+       */
+      $document = (new \PhpArrayDocument\Parser())->parse(file_get_contents($mgdFile));
+    }
+    catch (ParseException $e) {
+      $io->warning(sprintf('Skipping %s: unable to parse (%s)', $relPath, $e->getMessage()));
+      continue;
+    }
+    $parseableDocs[$mgdFile] = $document;
     $expressions = [];
     foreach ($findSavedSearchStrings($document->getRoot()) as $stringNode) {
       $expressions[] = $printNode($stringNode);
@@ -95,13 +104,9 @@ return function (Generator $gen) {
     });
   }
   if ($action === 'r' || $action === 'p') {
-    foreach ($mgdFiles as $mgdFile) {
+    foreach ($parseableDocs as $mgdFile => $doc) {
       $relPath = Files::relativize($mgdFile, $gen->baseDir->string());
       $io->section("Update strings in $relPath");
-      /**
-       * @var \PhpArrayDocument\PhpArrayDocument $doc
-       */
-      $doc = (new \PhpArrayDocument\Parser())->parse(file_get_contents($mgdFile));
 
       foreach ($findSavedSearchStrings($doc->getRoot()) as $stringNode) {
         $stringNode->setFactory(NULL);
