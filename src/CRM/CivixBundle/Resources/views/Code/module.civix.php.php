@@ -223,4 +223,3 @@ function _<?php echo $mainFile ?>_civix_insert_navigation_menu(&$menu, $path, $i
     return $found;
   }
 }
-
