@@ -717,6 +717,16 @@ class Generator {
     });
   }
 
+  public function removeMixins(array $mixinNames): void {
+    $msg = count($mixinNames) > 1 ? 'Disable mixins' : 'Disable mixin';
+    $this->io->writeln("<info>$msg</info> " . implode(', ', $mixinNames));
+    $this->updateMixins(function (\CRM\CivixBundle\Builder\Mixins $mixins) use ($mixinNames) {
+      foreach ($mixinNames as $mixinName) {
+        $mixins->removeMixin($mixinName);
+      }
+    });
+  }
+
   /**
    * Add skeletal initialization files for PHPUnit.
    *
