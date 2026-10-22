@@ -54,7 +54,10 @@ class InitCommand extends AbstractCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
-    Civix::boot(['output' => $output]);
+    // Without a site, "--enable=no" with an explicit "--compatibility" still scaffolds.
+    if ($input->getOption('compatibility') === 'current' || $input->getOption('enable') !== 'no' || Civix::hasSite()) {
+      Civix::boot(['output' => $output]);
+    }
 
     $ctx = [];
     $ctx['type'] = 'module';
@@ -165,6 +168,10 @@ class InitCommand extends AbstractCommand {
    * @return bool TRUE on success; FALSE if there's no site or if there's an error
    */
   protected function tryEnable(InputInterface $input, OutputInterface $output, $key) {
+    if ($input->getOption('enable') === 'no' && !Civix::hasSite()) {
+      $output->writeln("NOTE: This might be a good time to refresh the extension list and install \"$key\".");
+      return FALSE;
+    }
     Civix::boot(['output' => $output]);
     $civicrm_api3 = Civix::api3();
 
