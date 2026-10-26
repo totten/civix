@@ -287,6 +287,10 @@ class Generator {
    * @param scalar $id
    */
   public function exportMgd($entityName, $id): void {
+    if ($this->input->isInteractive()) {
+      Mgd::ensureUniqueName($entityName, $id, $this->infoXml->getFile());
+    }
+
     $export = (array) \civicrm_api4($entityName, 'export', [
       'checkPermissions' => FALSE,
       'id' => $id,
@@ -311,7 +315,7 @@ class Generator {
    * @return void
    * @throws \Exception
    */
-  public function exportAfform(string $afformName) {
+  public function exportAfform(string $afformName): void {
     $angPath = Path::for($this->baseDir, 'ang');
     $angPath->mkdir();
 
@@ -323,9 +327,43 @@ class Generator {
       'layoutFormat' => 'html',
     ])->single();
 
+    // Prompt user to ensure their afform name is unique
+    if ($this->input->isInteractive()) {
+      Mgd::ensureUniqueAfformName($afform, $this->infoXml->getFile());
+    }
+
+    // Export embedded search display(s)
+    if (!empty($afform['search_displays'])) {
+      $searchNames = array_unique(array_map(function ($item) {
+        return explode('.', $item)[0];
+      }, $afform['search_displays']));
+      $searches = \civicrm_api4('SavedSearch', 'get', [
+        'checkPermissions' => FALSE,
+        'where' => [['name', 'IN', $searchNames]],
+        'select' => ['id', 'name'],
+      ]);
+      foreach ($searches as $search) {
+        $oldSearchName = $search['name'];
+        $this->exportMgd('SavedSearch', $search['id']);
+        $newSearchName = \civicrm_api4('SavedSearch', 'get', [
+          'checkPermissions' => FALSE,
+          'where' => [['id', '=', $search['id']]],
+          'select' => ['name'],
+        ])->first()['name'];
+        // The user may have been prompted to update the savedSearch name. If so, we must update the name in the markup.
+        if ($newSearchName !== $oldSearchName) {
+          $afform['layout'] = preg_replace(
+            '/search-name=(["\'])' . preg_quote($oldSearchName, '/') . '\1/',
+            'search-name=$1' . $newSearchName . '$1',
+            $afform['layout']
+          );
+        }
+      }
+    }
+
     // An Afform consists of 2 files - a layout file and a meta file
-    $layoutFileName = $angPath->string("$afformName.aff.html");
-    $metaFileName = $angPath->string("$afformName.aff.php");
+    $layoutFileName = $angPath->string("{$afform['name']}.aff.html");
+    $metaFileName = $angPath->string("{$afform['name']}.aff.php");
 
     // Export layout file
     $this->writeTextFile($layoutFileName, $afform['layout'], 'overwrite');
@@ -365,17 +403,13 @@ class Generator {
       }
     }
 
-    // Export embedded search display(s)
-    if (!empty($afform['search_displays'])) {
-      $searchNames = array_map(function ($item) {
-        return explode('.', $item)[0];
-      }, $afform['search_displays']);
-      $searchIds = \civicrm_api4('SavedSearch', 'get', [
-        'checkPermissions' => FALSE,
-        'where' => [['name', 'IN', $searchNames]],
-      ], ['id']);
-      foreach ($searchIds as $id) {
-        $this->exportMgd('SavedSearch', $id);
+    if ($this->input->isInteractive()) {
+      $io = \Civix::io();
+      if ($io->confirm('Afform exported from local site to extension. Delete the copy from the local site?', TRUE)) {
+        \civicrm_api4('Afform', 'revert', [
+          'checkPermissions' => FALSE,
+          'where' => [['name', '=', $afformName]],
+        ]);
       }
     }
   }
