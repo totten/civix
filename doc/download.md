@@ -57,7 +57,7 @@ That is the quickest procedure, but it does not defend against supply-chain atta
     curl -LsS https://download.civicrm.org/civix/civix-X.Y.Z.phar -o civix-X.Y.Z.phar
     ```
 
-2. Verify the binary with GPG or SHA256:
+2. Verify the binary with GPG (*[CiviCRM release key]( http://download.civicrm.org/gpg/7A1E75CB.asc)*) or SHA256:
 
     ```bash
     ## Verify with GPG
