@@ -12,7 +12,7 @@ use SimpleXMLElement;
 class Info extends XML {
 
   const MINIMUM_COMPATIBILITY_NEW_EXTENSION = '5.36';
-  const CURRENT_PHP_VERSIONS = ['8.0', '8.1', '8.2', '8.3', '8.4'];
+  const CURRENT_PHP_VERSIONS = ['8.1', '8.2', '8.3', '8.4', '8.5'];
 
   public function init(&$ctx) {
     $ctx += [
