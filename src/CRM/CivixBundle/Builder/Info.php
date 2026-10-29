@@ -15,9 +15,7 @@ class Info extends XML {
   const CURRENT_PHP_VERSIONS = ['8.0', '8.1', '8.2', '8.3', '8.4'];
 
   public function init(&$ctx) {
-    $ctx += [
-      'compatibilityVerMin' => self::getCiviVersion(),
-    ];
+    $ctx['compatibilityVerMin'] ??= self::getCiviVersion();
 
     if (version_compare($ctx['compatibilityVerMin'], static::MINIMUM_COMPATIBILITY_NEW_EXTENSION, '<')) {
       Civix::io()->warning('To support recommended info.xml conventions, new extensions target CiviCRM v' . static::MINIMUM_COMPATIBILITY_NEW_EXTENSION . '+. Updating minimum requirements.');

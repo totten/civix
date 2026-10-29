@@ -62,6 +62,18 @@ class Civix {
   }
 
   /**
+   * Whether boot() would find a site, checked without booting.
+   */
+  public static function hasSite(): bool {
+    if (isset(self::$cache['boot']) || !empty(getenv('CIVICRM_BOOT'))) {
+      return TRUE;
+    }
+    $bootstrap = Bootstrap::singleton();
+    $settings = $bootstrap->getCivicrmSettingsPhp($bootstrap->getOptions());
+    return !empty($settings) && file_exists($settings);
+  }
+
+  /**
    * Get a reference to the API class.
    *
    * Pre-requisite: call boot() to startup CiviCRM.
