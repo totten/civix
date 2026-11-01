@@ -138,6 +138,16 @@ class Generator {
   }
 
   /**
+   * @param array $versions
+   */
+  public function updatePhpCompatibility(array $versions): void {
+    $this->updateInfo(function (Info $info) use ($versions) {
+      $this->io->writeln("<info>Set php_compatibility to </info>" . implode(', ', $versions) . "<info> in </info>info.xml");
+      $info->setPhpCompatibility($versions);
+    });
+  }
+
+  /**
    * Apply a filter to the "Mixins" list.
    *
    * @param callable $function

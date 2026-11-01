@@ -2,6 +2,7 @@
 namespace CRM\CivixBundle\Command;
 
 use Civix;
+use CRM\CivixBundle\Builder\Info;
 use CRM\CivixBundle\Utils\Files;
 use CRM\CivixBundle\Utils\Naming;
 use CRM\CivixBundle\Utils\Versioning;
@@ -36,6 +37,7 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
     $this->recommendCompatibilityBump($input);
+    $this->recommendPhpCompatibilityBump($input);
 
     $startVer = $input->getOption('start');
     if ($startVer !== 'current') {
@@ -66,28 +68,85 @@ Most upgrade steps should be safe to re-run repeatedly, but this is not guarante
     $minCompatibility = $info->getCompatibilityVer('MIN');
 
     if ($minCompatibility === NULL || version_compare($minCompatibility, $earliestStable, '<')) {
-      $io = Civix::io();
       $minText = $minCompatibility ? "set to $minCompatibility which is EOL" : 'undeclared';
-      $io->note(sprintf(
+      $note = sprintf(
         'This is a good time to bump the minimum compatability version. It\'s currently %s. The oldest secure release of CiviCRM is %s.',
         $minText,
         $earliestStable
-      ));
-      $questionText = sprintf('Enter a version number to set ("y" to accept %s, "n" to skip) [y/n/x.x]', $earliestStable);
-      $answer = $io->ask($questionText, 'no', function ($value) use ($earliestStable) {
-        $trimmed = trim((string) $value);
-        if (preg_match('/^(y|yes|n|no)$/i', $trimmed) || preg_match('/^\d+(\.[\w\.\-]+)*$/', $trimmed)) {
-          return $trimmed;
-        }
-        throw new \RuntimeException(sprintf('Please enter yes, no, or a version number (e.g. %s).', $earliestStable));
-      });
-
-      if (preg_match('/^(y|yes)$/i', $answer)) {
-        Civix::generator()->updateCompatibilityMinimum($earliestStable);
-      }
-      elseif (preg_match('/^\d+(\.[\w\.\-]+)*$/', $answer) && !preg_match('/^(n|no)$/i', $answer)) {
+      );
+      $this->promptVersionBump($note, $earliestStable, '/^\d+(\.[\w\.\-]+)*$/', function ($answer) {
         Civix::generator()->updateCompatibilityMinimum($answer);
+      });
+    }
+  }
+
+  protected function recommendPhpCompatibilityBump(InputInterface $input): void {
+    if (!$input->isInteractive()) {
+      return;
+    }
+
+    [$ctx, $info] = $this->loadCtxInfo();
+    $currentPhpVersions = Info::CURRENT_PHP_VERSIONS;
+    $currentPhpStr = implode(', ', $currentPhpVersions);
+    $earliestCurrentPhp = $currentPhpVersions[0];
+    $latestCurrentPhp = end($currentPhpVersions);
+
+    $declaredVers = $info->getPhpCompatibilityVers();
+    $minDeclared = $info->getPhpCompatibilityVer('MIN');
+    $maxDeclared = $info->getPhpCompatibilityVer('MAX');
+
+    $needsBump = $minDeclared === NULL
+      || version_compare($minDeclared, $earliestCurrentPhp, '<')
+      || version_compare($maxDeclared, $latestCurrentPhp, '<');
+
+    if ($needsBump) {
+      if ($minDeclared === NULL) {
+        $minText = 'undeclared';
       }
+      elseif (version_compare($minDeclared, $earliestCurrentPhp, '<')) {
+        $minText = 'set to ' . implode(', ', $declaredVers) . ' which is EOL';
+      }
+      else {
+        $minText = 'set to ' . implode(', ', $declaredVers);
+      }
+
+      $note = sprintf(
+        'This is a good time to bump the PHP compatability version. It\'s currently %s. The current supported PHP versions are %s.',
+        $minText,
+        $currentPhpStr
+      );
+      $this->promptVersionBump($note, $currentPhpStr, '/^\d+(\.[\w\.\-]+)*([,\s]+\d+(\.[\w\.\-]+)*)*$/', function ($answer, $isDefault) use ($currentPhpVersions) {
+        $versions = $isDefault ? $currentPhpVersions : preg_split('/[,\s]+/', $answer);
+        Civix::generator()->updatePhpCompatibility($versions);
+      });
+    }
+  }
+
+  /**
+   * Prompt the user to accept a recommended version or specify a custom one.
+   *
+   * @param string $note
+   * @param string $recommended
+   * @param string $versionPattern
+   * @param callable $onAccept
+   */
+  protected function promptVersionBump(string $note, string $recommended, string $versionPattern, callable $onAccept): void {
+    $io = Civix::io();
+    $io->note($note);
+    $questionText = sprintf('Enter a version number to set ("y" to accept %s, "n" to skip) [y/n/x.x]', $recommended);
+    $answer = $io->ask($questionText, 'no', function ($value) use ($recommended, $versionPattern) {
+      $trimmed = trim((string) $value);
+      if (preg_match('/^(y|yes|n|no)$/i', $trimmed) || preg_match($versionPattern, $trimmed)) {
+        return $trimmed;
+      }
+      throw new \RuntimeException(sprintf('Please enter yes, no, or a version number (e.g. %s).', $recommended));
+    });
+
+    if (preg_match('/^(y|yes)$/i', $answer)) {
+      $onAccept($recommended, TRUE);
+    }
+    elseif (!preg_match('/^(n|no)$/i', $answer)) {
+      $onAccept($answer, FALSE);
     }
   }
 

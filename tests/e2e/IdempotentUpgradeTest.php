@@ -2,6 +2,8 @@
 
 namespace E2E;
 
+use CRM\CivixBundle\Builder\Info;
+
 /**
  * What happens if you take a new extension and run an upgrade on it?
  * The result should match.
@@ -236,6 +238,117 @@ class IdempotentUpgradeTest extends \PHPUnit\Framework\TestCase {
         unlink($customMock);
       }
     }
+  }
+
+  public function testUpgradeBumpPhpCompatibilityYes(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+    $this->setXmlPhpCompatibility(['8.0']);
+
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['yes']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('is EOL', $result);
+    $this->assertStringContainsString('Set php_compatibility to ' . implode(', ', Info::CURRENT_PHP_VERSIONS) . ' in info.xml', $result);
+
+    $this->assertEquals(Info::CURRENT_PHP_VERSIONS, $this->getXmlPhpCompatibility());
+  }
+
+  public function testUpgradeBumpPhpCompatibilityNo(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+    $this->setXmlPhpCompatibility(['8.0']);
+
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['no']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('is EOL', $result);
+    $this->assertStringNotContainsString('Set php_compatibility to', $result);
+
+    $this->assertEquals(['8.0'], $this->getXmlPhpCompatibility());
+  }
+
+  public function testUpgradeBumpPhpCompatibilityMissingTag(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+    $this->setXmlPhpCompatibility(NULL);
+
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['yes']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('undeclared', $result);
+    $this->assertStringContainsString('Set php_compatibility to ' . implode(', ', Info::CURRENT_PHP_VERSIONS) . ' in info.xml', $result);
+
+    $this->assertEquals(Info::CURRENT_PHP_VERSIONS, $this->getXmlPhpCompatibility());
+  }
+
+  public function testUpgradeBumpPhpCompatibilityMissingTagNo(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+    $this->setXmlPhpCompatibility(NULL);
+
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['no']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('undeclared', $result);
+    $this->assertStringNotContainsString('Set php_compatibility to', $result);
+
+    $this->assertEmpty($this->getXmlPhpCompatibility());
+  }
+
+  public function testUpgradeBumpPhpCompatibilityAlreadyCurrent(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+
+    $tester = static::civix('upgrade');
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringNotContainsString('bump the PHP compatability', $result);
+    $this->assertStringNotContainsString('Set php_compatibility to', $result);
+  }
+
+  public function testUpgradeBumpPhpCompatibilityCustomVersion(): void {
+    $this->civixInfoSet('compatibility/ver', '6.4');
+    $this->setXmlPhpCompatibility(['8.0']);
+
+    $tester = static::civix('upgrade');
+    $tester->setInputs(['8.2, 8.3']);
+    $tester->execute([]);
+    $result = $tester->getDisplay(TRUE);
+
+    $this->assertStringContainsString('is EOL', $result);
+    $this->assertStringContainsString('Set php_compatibility to 8.2, 8.3 in info.xml', $result);
+
+    $this->assertEquals(['8.2', '8.3'], $this->getXmlPhpCompatibility());
+  }
+
+  protected function getXmlPhpCompatibility(): array {
+    $xml = simplexml_load_file('info.xml');
+    $vers = [];
+    foreach ($xml->xpath('php_compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    return $vers;
+  }
+
+  protected function setXmlPhpCompatibility(?array $versions): void {
+    $xml = simplexml_load_file('info.xml');
+    if (!empty($xml->xpath('php_compatibility'))) {
+      $dom = dom_import_simplexml($xml->xpath('php_compatibility')[0]);
+      $dom->parentNode->removeChild($dom);
+    }
+    if ($versions !== NULL) {
+      $php = $xml->addChild('php_compatibility');
+      $php->addAttribute('mode', 'list');
+      foreach ($versions as $ver) {
+        $php->addChild('ver', $ver);
+      }
+    }
+    $xml->asXML('info.xml');
   }
 
 }
