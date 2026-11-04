@@ -53,11 +53,11 @@ return [
     'minimum' => '5.45',
   ],
   'include-path@1' => [
-    'version' => '1.0.0',
-    'sha256' => 'c8ccc0f3b7ca38695a80824b7c92def3fd55114fb567f07c0016c71b90f4c5c6',
-    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/refs/tags/6.19.0/mixin/include-path%401/mixin.php',
+    'version' => '1.0.1',
+    'sha256' => '869b4a5a21c2141ea1b453b8f05ed863c8c0b03c9efbcf3f19aefca8de1f2fa6',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/13808b0bfba2b04e45ef414d0c17171c9f8ba94f/mixin/include-path%401/mixin.php',
     'local' => 'extern/mixin/include-path@1/mixin.php',
-    'provided-by' => '6.19',
+    'provided-by' => '6.21.alpha1',
     'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'menu-xml@1' => [
