@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "daf63c6c7d1ca4c6a3d3b1cee95e0f26",
+    "content-hash": "f69fe33bcebb23f4852d2b0c6187c7e4",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -154,20 +154,20 @@
         },
         {
             "name": "civicrm/php-array-doc",
-            "version": "v1.0.1",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/totten/php-array-doc.git",
-                "reference": "c74d43c46081c793d4140ae7bc7d81e2aaf04689"
+                "reference": "e5297aa002d78b249abf650692af40e1d7aede36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/c74d43c46081c793d4140ae7bc7d81e2aaf04689",
-                "reference": "c74d43c46081c793d4140ae7bc7d81e2aaf04689",
+                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/e5297aa002d78b249abf650692af40e1d7aede36",
+                "reference": "e5297aa002d78b249abf650692af40e1d7aede36",
                 "shasum": ""
             },
             "require": {
-                "php": "~7.3|~8.0"
+                "php": "~8.0"
             },
             "type": "library",
             "autoload": {
@@ -187,9 +187,9 @@
             ],
             "support": {
                 "issues": "https://github.com/totten/php-array-doc/issues",
-                "source": "https://github.com/totten/php-array-doc/tree/v1.0.1"
+                "source": "https://github.com/totten/php-array-doc/tree/v1.1.1"
             },
-            "time": "2026-06-08T22:44:02+00:00"
+            "time": "2026-06-08T22:43:12+00:00"
         },
         {
             "name": "psr/container",
@@ -1650,11 +1650,11 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.4.0"
+        "php": ">=8.0.0"
     },
     "platform-dev": {},
     "platform-overrides": {
-        "php": "7.4.0"
+        "php": "8.0.0"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
