@@ -33,7 +33,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'setting-php@1' => 'on+backport',
     ]);
 
-    $this->civixInfoSet('compatibility/ver', '5.45');
+    $this->civixInfoSet('compatibility/ver', '6.20');
     $upgrade = $this->civix('upgrade');
     $this->assertEquals(0, $upgrade->execute([]));
 
@@ -104,7 +104,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $this->assertFileGlobs(['mixin/polyfill.php' => 0]);
     $this->assertMixinStatuses([
       // These are active but don't need backports (for 5.51).
-      'setting-php@1' => 'on',
+      'setting-php@1' => 'on+backport',
       'menu-xml@1' => 'on',
       'scan-classes@1' => 'on',
       'mgd-php@2' => 'on+backport',
@@ -147,8 +147,8 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
     $this->assertMatchesRegularExpression('|_civix_mixinrec_civix_mixin_polyfill\(\);|', $content);
   }
 
-  public function testAddPageFor545(): void {
-    $this->civixInfoSet('compatibility/ver', '5.45');
+  public function testAddPageFor621(): void {
+    $this->civixInfoSet('compatibility/ver', '6.21');
 
     $this->assertFileGlobs(['mixin/polyfill.php' => 1]);
     $this->assertMixinStatuses([
@@ -156,7 +156,7 @@ class MixinMgmtTest extends \PHPUnit\Framework\TestCase {
       'menu-xml@1' => 'off',
     ]);
 
-    $this->civixGeneratePage('FortyFive', 'civicrm/forty-five');
+    $this->civixGeneratePage('SixTwentyOne', 'civicrm/six-twenty-one');
 
     // Not only do we omit 'menu-xml' backport... but we also clean-up the extras...
     $this->assertFileGlobs(['mixin/polyfill.php' => 0]);

@@ -102,11 +102,11 @@ return [
     'minimum' => '5.27', /* civix ships a special backport from `./mixin-mods/` to provide broader compatibility. Compat may go back further; haven't tested. Mainline has higher requirements. */
   ],
   'setting-php@1' => [
-    'version' => '1.0.0',
-    'sha256' => '5ce236c1a1a63637ce5f0f4fe5bf7f21eaa06c750ca16c0fbf4dd792da0d23c9',
-    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/5.45.3/mixin/setting-php@1/mixin.php',
+    'version' => '1.1.0',
+    'sha256' => '96918ea85701e1ce5ce064c199aea2f34212bb6fe8c9d167755f0d2a1c74da2f',
+    'remote' => 'https://raw.githubusercontent.com/civicrm/civicrm-core/8e91f4f96ab9b6e8bb9be69ff6ef7b82ab3d532d/mixin/setting-php@1/mixin.php',
     'local' => 'extern/mixin/setting-php@1/mixin.php',
-    'provided-by' => '5.45.beta1',
+    'provided-by' => '6.20.beta1',
     'minimum' => '5.27', /* Compat may go back further; haven't tested */
   ],
   'smarty@1' => [
