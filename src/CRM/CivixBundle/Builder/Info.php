@@ -15,9 +15,9 @@ class Info extends XML {
   const CURRENT_PHP_VERSIONS = ['8.1', '8.2', '8.3', '8.4', '8.5'];
 
   public function init(&$ctx) {
-    $ctx += [
-      'compatibilityVerMin' => self::getCiviVersion(),
-    ];
+    if (!isset($ctx['compatibilityVerMin'])) {
+      $ctx['compatibilityVerMin'] = self::getCiviVersion();
+    }
 
     if (version_compare($ctx['compatibilityVerMin'], static::MINIMUM_COMPATIBILITY_NEW_EXTENSION, '<')) {
       Civix::io()->warning('To support recommended info.xml conventions, new extensions target CiviCRM v' . static::MINIMUM_COMPATIBILITY_NEW_EXTENSION . '+. Updating minimum requirements.');
@@ -61,12 +61,8 @@ class Info extends XML {
     $compatibility->addChild('comments', 'Semantic versioning. For example, compatibility with "6.1" implies compatibility with "6.2".');
     $compatibility->addChild('ver', $ctx['compatibilityVerMin']);
 
-    $phpCompatibility = $xml->addChild('php_compatibility');
-    $phpCompatibility->addAttribute('mode', 'list');
-    $phpCompatibility->addChild('comments', 'Listed versions. For example, specify both "8.1" and "8.2".');
-    foreach (self::CURRENT_PHP_VERSIONS as $PHP_VERSION) {
-      $phpCompatibility->addChild('ver', $PHP_VERSION);
-    }
+    $this->setPhpCompatibility(self::CURRENT_PHP_VERSIONS, $xml);
+
     // Add smarty compatibility. New extensions should support Smarty5, anything else can
     // be manually added by discretion.
     $smartyCompatibility = $xml->addChild('smarty_compatibility');
@@ -285,6 +281,74 @@ class Info extends XML {
         $xml->addChild('compatibility');
       }
       $xml->compatibility->addChild('ver', $newMin);
+    }
+  }
+
+  /**
+   * Determine if the <php_compatibility> tag exists in info.xml.
+   *
+   * @return bool
+   */
+  public function hasPhpCompatibility(): bool {
+    return !empty($this->get()->xpath('php_compatibility'));
+  }
+
+  /**
+   * Get all declared PHP versions from <php_compatibility><ver> tags.
+   *
+   * @return array
+   *   Ex: ['8.1', '8.2', '8.3']
+   */
+  public function getPhpCompatibilityVers(): array {
+    $vers = [];
+    foreach ($this->get()->xpath('php_compatibility/ver') as $ver) {
+      $vers[] = (string) $ver;
+    }
+    return $vers;
+  }
+
+  /**
+   * Determine the minimum or maximum declared PHP version.
+   *
+   * @param string $mode
+   *   'MIN' or 'MAX'
+   * @return string|null
+   *   Ex: '8.1'
+   */
+  public function getPhpCompatibilityVer(string $mode = 'MIN'): ?string {
+    $vers = $this->getPhpCompatibilityVers();
+    return Versioning::pickVer($vers, $mode);
+  }
+
+  /**
+   * Set or update <php_compatibility> in info.xml.
+   *
+   * @param array $versions
+   *   Ex: ['8.1', '8.2', '8.3', '8.4', '8.5']
+   * @param \SimpleXMLElement|null $xml
+   */
+  public function setPhpCompatibility(array $versions, ?\SimpleXMLElement $xml = NULL): void {
+    /** @var \SimpleXMLElement $xml */
+    $xml = $xml ?? $this->get();
+    $nodes = $xml->xpath('php_compatibility');
+    if (empty($nodes)) {
+      $phpCompatibility = $xml->addChild('php_compatibility');
+      $phpCompatibility->addAttribute('mode', 'list');
+      $phpCompatibility->addChild('comments', 'Listed versions. For example, specify both "8.1" and "8.2".');
+    }
+    else {
+      $phpCompatibility = $nodes[0];
+      if (!isset($phpCompatibility['mode'])) {
+        $phpCompatibility->addAttribute('mode', 'list');
+      }
+      foreach ($phpCompatibility->xpath('ver') as $existingVer) {
+        $dom = dom_import_simplexml($existingVer);
+        $dom->parentNode->removeChild($dom);
+      }
+    }
+
+    foreach ($versions as $ver) {
+      $phpCompatibility->addChild('ver', $ver);
     }
   }
 
