@@ -154,16 +154,16 @@
         },
         {
             "name": "civicrm/php-array-doc",
-            "version": "v1.1.1",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/totten/php-array-doc.git",
-                "reference": "e5297aa002d78b249abf650692af40e1d7aede36"
+                "reference": "04e1b9c2e8a94a278add164c963254d2da69caf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/e5297aa002d78b249abf650692af40e1d7aede36",
-                "reference": "e5297aa002d78b249abf650692af40e1d7aede36",
+                "url": "https://api.github.com/repos/totten/php-array-doc/zipball/04e1b9c2e8a94a278add164c963254d2da69caf4",
+                "reference": "04e1b9c2e8a94a278add164c963254d2da69caf4",
                 "shasum": ""
             },
             "require": {
@@ -187,9 +187,9 @@
             ],
             "support": {
                 "issues": "https://github.com/totten/php-array-doc/issues",
-                "source": "https://github.com/totten/php-array-doc/tree/v1.1.1"
+                "source": "https://github.com/totten/php-array-doc/tree/v1.1.2"
             },
-            "time": "2026-06-08T22:43:12+00:00"
+            "time": "2026-11-06T23:22:58+00:00"
         },
         {
             "name": "psr/container",
